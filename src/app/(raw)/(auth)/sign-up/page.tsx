@@ -115,7 +115,7 @@ export default function LoginPage() {
                                     id="firstname"
                                 />
                                 {state.errors?.firstname && (
-                                    <p className='text-red-400 text-sm'>{state.errors.firstname[0]}</p>
+                                    <p className='text-red-400 text-[12px]'>{state.errors.firstname[0]}</p>
                                 )}
                             </div>
                             <div className="space-y-2">
@@ -131,7 +131,7 @@ export default function LoginPage() {
                                     id="lastname"
                                 />
                                 {state.errors?.lastname && (
-                                    <p className='text-red-400 text-sm'>{state.errors.lastname[0]}</p>
+                                    <p className='text-red-400 text-[10px]'>{state.errors.lastname[0]}</p>
                                 )}
                             </div>
                         </div>

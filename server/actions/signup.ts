@@ -29,11 +29,13 @@ export async function SignUp(prevState: FormState, formData: FormData) {
       .string()
       .min(1, "Firstname is required")
       .max(20, "Firstname must be less than 20 characters")
+      .regex(/^[A-Za-z]+$/, "Firstname must contain only letters")
       .nonempty(),
     lastname: z
       .string()
       .min(1, "Lastname is required")
       .max(20, "Lastname must be less than 20 characters")
+      .regex(/^[A-Za-z]+$/, "Lastname must contain only letters")
       .nonempty(),
     email: z.string().email().nonempty(),
     password: z
