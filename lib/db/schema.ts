@@ -1,10 +1,16 @@
+import { relations } from "drizzle-orm";
 import {
   pgTable,
   text,
   timestamp,
   boolean,
   integer,
+  varchar,
+  pgEnum,
 } from "drizzle-orm/pg-core";
+
+export const roleEnum = pgEnum("role", ["none", "student", "mentor", "admin"]);
+export const paymentEnum = pgEnum("payment", ["unpaid", "paid"]);
 
 export const user = pgTable("user", {
   id: text("id").primaryKey(),
@@ -14,6 +20,7 @@ export const user = pgTable("user", {
     .$defaultFn(() => false)
     .notNull(),
   image: text("image"),
+  role: roleEnum("role").default("none"),
   createdAt: timestamp("created_at")
     .$defaultFn(() => /* @__PURE__ */ new Date())
     .notNull(),
@@ -65,3 +72,30 @@ export const verification = pgTable("verification", {
     () => /* @__PURE__ */ new Date()
   ),
 });
+
+export const studentProfile = pgTable("student_profile", {
+  userId: text("user_id")
+    .references(() => user.id)
+    .notNull()
+    .primaryKey(),
+  name: varchar("name", { length: 100 }).notNull(),
+  role: roleEnum("role").default("none"),
+  bio: text("bio"),
+  paymentStatus: paymentEnum("payment_status").default("unpaid"),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+export const userProfileRelation = relations(user, ({ one }) => ({
+  studentProfile: one(studentProfile, {
+    fields: [user.id],
+    references: [studentProfile.userId],
+  }),
+}));
+
+export const profileUserRelation = relations(studentProfile, ({ one }) => ({
+  user: one(user, {
+    fields: [studentProfile.userId],
+    references: [user.id],
+  }),
+}));
