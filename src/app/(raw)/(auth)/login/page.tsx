@@ -13,6 +13,9 @@ export default async function Page() {
     })
 
     if (session) {
+        if (!session.user.emailVerified) {
+            return redirect(`sign-up/verify-email?email=${encodeURIComponent(session.user.email)}`)
+        }
         const [userRecord] = await db.select().from(user).where(eq(user.id, session?.user.id))
 
         if (!userRecord) {
@@ -23,15 +26,15 @@ export default async function Page() {
             return redirect(`sign-up/verify-email?email=${encodeURIComponent(session.user.email)}`)
         }
 
-        if ((session && userRecord.role) === "student") {
+        if (userRecord.role === "student") {
             return redirect("/dashboard/student")
         }
-        else if (session && userRecord.role === "mentor") {
+        else if (userRecord.role === "mentor") {
             return redirect("/dashboard/mentor")
-        } else if (session && userRecord.role === "admin") {
+        } else if (userRecord.role === "admin") {
             return redirect("/admin")
-        } else if (session && userRecord.role === "none") {
-            redirect(`/select-role?email=${encodeURIComponent(session.user.email)}`)
+        } else if (userRecord.role === "none") {
+            return redirect(`/select-role?email=${encodeURIComponent(session.user.email)}`)
         }
     }
     return (
