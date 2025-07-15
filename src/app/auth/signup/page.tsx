@@ -57,8 +57,8 @@ export default function SignUpPage() {
   }, [state.message]);
 
   return (
-    <div className="flex h-screen w-full flex-col animate-in fade-in duration-400 items-center overflow-hidden">
-      <div className="hidden md:hidden lg:max-w-full h-screen lg:block w-full">
+    <div className="flex h-screen w-full flex-row animate-in fade-in duration-400 items-center overflow-hidden">
+      <div className="hidden  lg:max-w-1/2 lg:block w-full">
         <Image
           priority
           src="/signup.png"
@@ -69,7 +69,7 @@ export default function SignUpPage() {
         />
       </div>
 
-      <div className="h-full max-w-[80%] bg-[#FBFBFB] w-full flex items-center justify-center">
+      <div className="lg:max-w-1/2 bg-[#FBFBFB] w-full flex items-center justify-center">
         <form
           action={formAction}
           className="h-screen flex flex-col justify-center w-[550px] p-10 text-black"
@@ -181,7 +181,7 @@ export default function SignUpPage() {
           <button
             type="submit"
             disabled={isPending}
-            className="max-w-[440px] cursor-pointer w-full p-2 outline-none 
+            className="max-w-[440px] cursor-pointer w-full py-2 px-5 outline-none 
               bg-gradient-to-r from-[#5C6CF2] to-[#4ED7F1] 
               hover:scale-102
               transition-all duration-300 ease-in-out rounded font-bold
@@ -217,8 +217,8 @@ export default function SignUpPage() {
             )}
           </button>
 
-          <p className="mt-3 text-center text-sm">
-            Have an account?&nbsp;<Link
+          <p className="mt-3 text-center text-sm font-semibold">
+            Have an account ?&nbsp;<Link
               href="/auth/login"
               className="text-[#0F3DDE] hover:underline font-medium"
             >
