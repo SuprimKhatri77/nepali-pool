@@ -57,28 +57,28 @@ export default function SignUpPage() {
   }, [state.message]);
 
   return (
-    <div className="flex md:flex-row sm:flex-col flex-col-reverse gap-4 lg:gap-8 animate-in fade-in duration-400 justify-between items-center p-8">
-      <div className="hidden md:hidden lg:max-w-[818px] h-full lg:block w-full">
+    <div className="flex h-screen w-full flex-col animate-in fade-in duration-400 items-center overflow-hidden">
+      <div className="hidden md:hidden lg:max-w-full h-screen lg:block w-full">
         <Image
           priority
           src="/signup.png"
           alt="signup"
-          width={700}
+          width={960}
           height={700}
-          className="shadow-2xl rounded-2xl"
+          className="object-cover"
         />
       </div>
 
-      <div className="max-w-[550px] w-full flex items-center justify-center">
+      <div className="h-full max-w-[80%] bg-[#FBFBFB] w-full flex items-center justify-center">
         <form
           action={formAction}
-          className="w-[90%] p-10 text-black bg-[#FBFBFB] rounded-[13px] shadow-2xl"
+          className="h-screen flex flex-col justify-center w-[550px] p-10 text-black"
         >
           <h2 className="text-2xl font-bold mb-3 text-center">
             Get Started Now
           </h2>
 
-          <div className="flex items-center justify-between gap-2">
+          <div className="flex items-center gap-10">
             <div id="firstname" className="flex flex-col gap-1">
               <label htmlFor="firstname" className="block font-medium">
                 First Name
@@ -166,7 +166,7 @@ export default function SignUpPage() {
           <select
             name="role"
             defaultValue="student"
-            className="max-w-[440px] w-full  bg-[#FBFBFB] p-2 outline-none mb-3 rounded border border-[#333446]
+            className="max-w-[440px] w-full p-2 outline-none mb-3 rounded border border-[#333446]
             focus:border-blue-500 focus:ring-2 focus:ring-blue-300 
              transition duration-200"
           >
