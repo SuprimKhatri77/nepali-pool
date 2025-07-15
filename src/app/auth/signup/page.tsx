@@ -72,9 +72,9 @@ export default function SignUpPage() {
       <div className="lg:max-w-1/2 bg-[#FBFBFB] w-full flex items-center justify-center">
         <form
           action={formAction}
-          className="h-screen flex flex-col justify-center w-[550px] p-10 text-black"
+          className="h-screen flex flex-col justify-center w-[550px] p-15 text-black"
         >
-          <h2 className="text-2xl font-bold mb-3 text-center">
+          <h2 className="text-3xl font-bold mb-3 text-left">
             Get Started Now
           </h2>
 
