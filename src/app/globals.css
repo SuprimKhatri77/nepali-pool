@@ -116,7 +116,28 @@
   * {
     @apply border-border outline-ring/50;
   }
+
   body {
     @apply bg-background text-foreground;
+  }
+}
+
+@keyframes shine {
+  0% {
+    filter: brightness(1);
+  }
+
+  50% {
+    filter: brightness(1.75);
+  }
+
+  100% {
+    filter: brightness(1);
+  }
+}
+
+@layer utilities {
+  .shine {
+    animation: shine 800ms ease-in-out;
   }
 }

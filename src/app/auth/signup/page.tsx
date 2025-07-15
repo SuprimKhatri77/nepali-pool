@@ -4,7 +4,7 @@ import Image from "next/image";
 import React, { useEffect, useActionState } from "react";
 import { toast } from "sonner";
 import { FormState, SignUp } from "../../../../server/actions/signup";
-import Link  from "next/link";
+import Link from "next/link";
 
 export default function SignUpPage() {
   // we are setting initial state so the first time running the backend will not return values undefined or errors.
@@ -70,7 +70,7 @@ export default function SignUpPage() {
       <div className="max-w-[550px] w-full flex items-center justify-center">
         <form
           action={formAction}
-          className="w-[90%] p-6 text-black bg-[#A6AEBF] rounded-[13px] shadow-md"
+          className="w-[90%] p-6 text-black bg-[#FBFBFB] rounded-[13px] shadow-md"
         >
           <h2 className="text-2xl font-bold mb-3 text-center">
             Get Started Now
@@ -164,7 +164,7 @@ export default function SignUpPage() {
           <select
             name="role"
             defaultValue="student"
-            className="max-w-[440px] w-full  bg-[#A6AEBF] p-2 outline-none mb-3 rounded border border-[#333446]
+            className="max-w-[440px] w-full  bg-[#FBFBFB] p-2 outline-none mb-3 rounded border border-[#333446]
             focus:border-blue-500 focus:ring-2 focus:ring-blue-300 
              transition duration-200"
           >
@@ -181,9 +181,9 @@ export default function SignUpPage() {
             disabled={isPending}
             className="max-w-[440px] cursor-pointer w-full p-2 outline-none 
               bg-gradient-to-r from-[#5C6CF2] to-[#4ED7F1] 
-              hover:from-[#4ED7F1] hover:to-[#5C6CF2] 
+              hover:scale-102
               transition-all duration-300 ease-in-out rounded font-bold
-              flex items-center justify-center gap-2
+              flex items-center justify-center gap-2 
               "
           >
             {isPending ? (
@@ -223,6 +223,13 @@ export default function SignUpPage() {
               Sign in
             </Link>
           </p>
+          <div className="relative group w-full flex flex-wrap justify-center center- items-center">
+            <div className="relative w-[30%] h-auto"><div className="absolute top-5 left-5 w-[100%] bg-black h-[1px]"></div></div>
+            <Image src="/logo.png" alt="signup"
+              width={129}
+              height={129} className="group-hover:shine" />
+            <div className="relative w-[30%] h-auto"><div className=" absolute top-5 right-5 w-[100%] bg-black h-[1px]"></div></div>
+          </div>
         </form>
       </div>
     </div>
