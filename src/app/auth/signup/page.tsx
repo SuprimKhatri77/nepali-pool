@@ -1,11 +1,13 @@
 "use client";
 
 import Image from "next/image";
-import React, { useEffect, useState, useActionState } from "react";
+import React, { useEffect, useActionState } from "react";
 import { toast } from "sonner";
 import { FormState, SignUp } from "../../../../server/actions/signup";
+import Link  from "next/link";
 
 export default function SignUpPage() {
+  // we are setting initial state so the first time running the backend will not return values undefined or errors.
   const initialState: FormState = {
     errors: {},
     message: "",
@@ -16,16 +18,45 @@ export default function SignUpPage() {
     initialState
   );
 
-  const [role, setRole] = useState("student");
-
   useEffect(() => {
     if (state.message) {
-      toast.success(state.message);
+      console.log("State message:", state.message);
+      if (state.message === "Validation Failed") {
+        toast.error(
+          <div
+            className="flex items-center justify-between gap-2"
+            style={{ width: "300px" }}
+          >
+            <span>{state.message}</span>
+            <button
+              className="p-2 mr-2 border-none bg-red-500 text-sm cursor-pointer text-white rounded-md"
+              onClick={() => toast.dismiss()} // cancel current toast
+            >
+              Cancel
+            </button>
+          </div>
+        );
+      } else {
+        toast.success(
+          <div
+            className="flex items-center justify-between gap-2"
+            style={{ width: "300px" }}
+          >
+            <span>{state.message}</span>
+            <button
+              className="p-2 mr-2 border-none bg-red-500 text-sm cursor-pointer text-white rounded-md"
+              onClick={() => toast.dismiss()} // cancel current toast
+            >
+              Cancel
+            </button>
+          </div>
+        );
+      }
     }
   }, [state.message]);
 
   return (
-    <div className="flex md:flex-row sm:flex-col flex-col-reverse gap-4 lg:gap-8 justify-between items-center p-8">
+    <div className="flex md:flex-row sm:flex-col flex-col-reverse gap-4 lg:gap-8 animate-in fade-in duration-400 shadow-[0_8px_30px_rgb(0,0,0,0.12)] justify-between items-center p-8">
       <div className="hidden md:hidden lg:max-w-[818px] lg:block w-full">
         <Image
           priority
@@ -93,6 +124,7 @@ export default function SignUpPage() {
             Email
           </label>
           <input
+            defaultValue="email@gmail.com"
             autoComplete="off"
             type="email"
             name="email"
@@ -114,7 +146,6 @@ export default function SignUpPage() {
             autoComplete="off"
             type="password"
             name="password"
-            
             className="max-w-[440px] w-full p-2 outline-none mb-2 rounded border border-[#333446]
             focus:border-blue-500 focus:ring-2 focus:ring-blue-300 
              transition duration-200"
@@ -132,16 +163,14 @@ export default function SignUpPage() {
           </label>
           <select
             name="role"
-            value={role}
-            onChange={(e) => setRole(e.target.value)}
-            className="max-w-[440px] w-full bg-[#A6AEBF] p-2 outline-none mb-3 rounded border border-[#333446]
+            defaultValue="student"
+            className="max-w-[440px] w-full  bg-[#A6AEBF] p-2 outline-none mb-3 rounded border border-[#333446]
             focus:border-blue-500 focus:ring-2 focus:ring-blue-300 
              transition duration-200"
           >
             <option value="student">Student</option>
             <option value="mentor">Mentor</option>
           </select>
-          <input type="hidden" name="role" value={role} />
 
           {state.errors?.role && (
             <p className="text-red-600 text-sm mb-1">{state.errors.role[0]}</p>
@@ -151,21 +180,48 @@ export default function SignUpPage() {
             type="submit"
             disabled={isPending}
             className="max-w-[440px] cursor-pointer w-full p-2 outline-none 
-              bg-gradient-to-r from-[#4ED7F1] to-[#5C6CF2] 
-              hover:from-[#5C6CF2] hover:to-[#4ED7F1] 
-              transition-all duration-300 ease-in-out rounded font-bold"
+              bg-gradient-to-r from-[#5C6CF2] to-[#4ED7F1] 
+              hover:from-[#4ED7F1] hover:to-[#5C6CF2] 
+              transition-all duration-300 ease-in-out rounded font-bold
+              flex items-center justify-center gap-2
+              "
           >
-            {isPending ? "Submitting..." : "Sign Up"}
+            {isPending ? (
+              <>
+                <svg
+                  className="animate-spin h-5 w-5 text-cyan-200 drop-shadow-md"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <circle
+                    className="opacity-55"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="4"
+                  ></circle>
+                  <path
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                  ></path>
+                </svg>
+                Submitting...
+              </>
+            ) : (
+              "Sign Up"
+            )}
           </button>
 
           <p className="mt-3 text-center text-sm">
-            Have an account?&nbsp;
-            <a
+            Have an account?&nbsp;<Link
               href="/auth/login"
               className="text-[#0F3DDE] hover:underline font-medium"
             >
               Sign in
-            </a>
+            </Link>
           </p>
         </form>
       </div>
