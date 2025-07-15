@@ -5,6 +5,7 @@ import React, { useEffect, useActionState } from "react";
 import { toast } from "sonner";
 import { FormState, SignUp } from "../../../../server/actions/signup";
 import Link from "next/link";
+import Logo from "@/components/ui/Logo";
 
 export default function SignUpPage() {
   // we are setting initial state so the first time running the backend will not return values undefined or errors.
@@ -56,27 +57,28 @@ export default function SignUpPage() {
   }, [state.message]);
 
   return (
-    <div className="flex md:flex-row sm:flex-col flex-col-reverse gap-4 lg:gap-8 animate-in fade-in duration-400 shadow-[0_8px_30px_rgb(0,0,0,0.12)] justify-between items-center p-8">
-      <div className="hidden md:hidden lg:max-w-[818px] lg:block w-full">
+    <div className="flex md:flex-row sm:flex-col flex-col-reverse gap-4 lg:gap-8 animate-in fade-in duration-400 justify-between items-center p-8">
+      <div className="hidden md:hidden lg:max-w-[818px] h-full lg:block w-full">
         <Image
           priority
           src="/signup.png"
           alt="signup"
           width={700}
           height={700}
+          className="shadow-2xl rounded-2xl"
         />
       </div>
 
       <div className="max-w-[550px] w-full flex items-center justify-center">
         <form
           action={formAction}
-          className="w-[90%] p-6 text-black bg-[#FBFBFB] rounded-[13px] shadow-md"
+          className="w-[90%] p-10 text-black bg-[#FBFBFB] rounded-[13px] shadow-2xl"
         >
           <h2 className="text-2xl font-bold mb-3 text-center">
             Get Started Now
           </h2>
 
-          <div className="flex items-center justify-between p-1 gap-2">
+          <div className="flex items-center justify-between gap-2">
             <div id="firstname" className="flex flex-col gap-1">
               <label htmlFor="firstname" className="block font-medium">
                 First Name
@@ -223,13 +225,7 @@ export default function SignUpPage() {
               Sign in
             </Link>
           </p>
-          <div className="relative group w-full flex flex-wrap justify-center center- items-center">
-            <div className="relative w-[30%] h-auto"><div className="absolute top-5 left-5 w-[100%] bg-black h-[1px]"></div></div>
-            <Image src="/logo.png" alt="signup"
-              width={129}
-              height={129} className="group-hover:shine" />
-            <div className="relative w-[30%] h-auto"><div className=" absolute top-5 right-5 w-[100%] bg-black h-[1px]"></div></div>
-          </div>
+          <Logo/>
         </form>
       </div>
     </div>

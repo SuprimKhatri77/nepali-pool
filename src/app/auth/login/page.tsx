@@ -5,60 +5,61 @@ import Image from "next/image";
 import { useActionState, useEffect } from "react";
 import { FormState, SignIn } from "../../../../server/actions/signin";
 import { toast } from "sonner";
+import Logo from "@/components/ui/Logo";
 
 export default function LoginPage() {
-    const initialState:FormState ={
-        errors: {},
-        message: "",
-        success: false,
+  const initialState: FormState = {
+    errors: {},
+    message: "",
+    success: false,
+  }
+  const [state, formAction, isPending] = useActionState<FormState, FormData>(SignIn, initialState)
+
+
+  useEffect(() => {
+    if (state.message) {
+      console.log("State message:", state.message);
+      if (state.message === "Invalid email or password") {
+        toast.error(
+          <div
+            className="flex items-center justify-between gap-2"
+            style={{ width: "300px" }}
+          >
+            <span>{state.message}</span>
+            <button
+              className="p-2 mr-2 border-none bg-red-500 text-sm cursor-pointer text-white rounded-md"
+              onClick={() => toast.dismiss()} // cancel current toast
+            >
+              Cancel
+            </button>
+          </div>
+        );
+      }
+      else {
+        toast.success(state.message)
+
+      }
     }
-    const [state, formAction, isPending]= useActionState<FormState,FormData>(SignIn,initialState)
-
-
-    useEffect(()=>{
-        if(state.message){
-            console.log("State message:", state.message);
-            if(state.message === "Invalid email or password"){
-                toast.error(
-                    <div
-                        className="flex items-center justify-between gap-2"
-                        style={{ width: "300px" }}
-                    >
-                        <span>{state.message}</span>
-                        <button
-                            className="p-2 mr-2 border-none bg-red-500 text-sm cursor-pointer text-white rounded-md"
-                            onClick={() => toast.dismiss()} // cancel current toast
-                        >
-                            Cancel
-                        </button>
-                    </div>
-                );
-            }
-            else{
-            toast.success(state.message)
-                
-            }
-        }
-    },[state.message])
+  }, [state.message])
 
 
 
 
 
-    return (
-          <div className="w-full flex md:flex-row sm:flex-col flex-col-reverse gap-4 lg:gap-8 animate-in fade-in duration-400  justify-center items-center p-8">
-    
+  return (
+    <div className="w-full flex md:flex-row sm:flex-col flex-col-reverse gap-4 lg:gap-8 animate-in fade-in duration-400  justify-center items-center p-8">
 
-      <div className="max-w-[550px] w-full flex items-center justify-center bg-white rounded-sm">
+
+      <div className="max-w-[500px] w-full flex items-center justify-center bg-white rounded-sm shadow-2xl">
         <form
           action={formAction}
-          className="w-[90%] p-6 text-black  rounded-[13px] shadow-md"
+          className="w-[90%] pr-4 pl-4 pt-7 pb-7 mb-2 text-black  rounded-[13px]"
         >
-          <h2 className="text-2xl font-bold mb-3 text-center">
-            Welcome Back
+          <h2 className="text-2xl font-bold mb-2 text-left">
+            Welcome Back!
           </h2>
-          <p className="text-sm text-center font-medium">Enter your credentials to login</p>
-            
+          <p className="text-xs text-left mb-5 font-medium">Enter your credentials to access your account</p>
+
 
           <label htmlFor="email" className="block font-medium">
             Email
@@ -99,24 +100,24 @@ export default function LoginPage() {
           )}
 
           <div id="forget" className="flex items-center justify-end sm:justify-between mb-2 p-2">
-            
-          <div className="hidden sm:flex  sm:items-center  gap-2">
-            <input type="checkbox" name="remember" id="" />
-            <p>Remember me</p>
-          </div>
-          <Link
-            href="/auth/forgot-password"
-            className="text-[#0F3DDE] hover:underline sm:font-medium"
-          >
-            Forgot Password?
-          </Link>
+
+            <div className="hidden sm:flex  sm:items-center  gap-2">
+              <input type="checkbox" name="remember" id="" />
+              <p className="text-sm">Remember me</p>
+            </div>
+            <Link
+              href="/auth/forgot-password"
+              className="text-[#0F3DDE] text-sm hover:underline sm:font-medium"
+            >
+              Forgot Password?
+            </Link>
           </div>
 
           <button
             type="submit"
             disabled={isPending}
             className="max-w-[440px] cursor-pointer w-full p-2 outline-none 
-              bg-[#4ED7F1] font-bold mb-2 hover:scale-105
+              bg-[#4ED7F1] font-bold mb-2 hover:scale-102
               transition-all duration-300 ease-in rounded 
               flex items-center justify-center gap-2
               "
@@ -151,20 +152,21 @@ export default function LoginPage() {
           </button>
 
           <p className="mt-3 text-center text-sm sm:font-medium">
-           {`Don't have an account?`}&nbsp;<Link
+            {`Don't have an account?`}&nbsp;<Link
               href="/auth/signup"
               className="text-[#0F3DDE] hover:underline font-medium"
             >
-              Sign in
+              Sign up
             </Link>
           </p>
+          <Logo />
         </form>
       </div>
 
       <div className="lg:max-w-[618px] w-full lg:block hidden">
-         <Image
-            src="/sign-in.png" priority alt="signin" width={500} height={500}/>
+        <Image className="shadow-2xl overflow-hidden rounded-2xl"
+          src="/sign-in.png" priority alt="signin" width={500} height={500} />
       </div>
     </div>
-    )
+  )
 }
