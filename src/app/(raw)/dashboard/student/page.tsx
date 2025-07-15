@@ -1,43 +1,45 @@
-"use client"
+import StudentPage from "@/components/Student";
+import { auth } from "../../../../../server/lib/auth/auth";
+import { headers } from "next/headers";
+import { redirect } from "next/navigation";
+import { db } from "../../../../../lib/db";
+import { user } from "../../../../../lib/db/schema";
+import { eq } from "drizzle-orm";
 
-import { Button } from "@/components/ui/button";
-import { authClient } from "../../../../../server/lib/auth/auth-client";
-import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+export default async function Student() {
+    const session = await auth.api.getSession({
+        headers: await headers()
+    })
 
-export default function StudentPage() {
-    const [click, setClick] = useState(false)
-    const router = useRouter()
-
-    const { data: session } = authClient.useSession()
-
-    useEffect(() => {
-        if (session === null) {
-            return router.push("/login")
-        }
-
-        if (session && !session?.user.emailVerified) {
-            return router.push(`/sign-up/verify-email?email=${encodeURIComponent(session?.user.email)}`)
-        }
-    }, [session, router])
-
-
-
-    const handleClick = async () => {
-        setClick(true)
-        await authClient.signOut({
-            fetchOptions: {
-                onSuccess: () => {
-                    router.push("/")
-                }
-            }
-        })
-        setClick(false)
+    if (!session) {
+        return redirect("/login")
     }
-    return (
-        <div className="flex flex-col gap-4 min-h-screen items-center justify-center">
-            Sup student!
-            <Button onClick={handleClick} disabled={click}>Logout</Button>
-        </div>
+
+    const [userRecord] = await db.select().from(user).where(eq
+        (user.id, session.user.id)
     )
+
+    if (!userRecord.emailVerified) {
+        return redirect(`sign-up/verify-email?email=${encodeURIComponent(session.user.email)}`)
+    }
+
+    if (userRecord.role === "none") {
+        return redirect("/select-role")
+    }
+
+    if (userRecord.role === "admin") {
+        return redirect("/admin")
+    }
+
+    if (userRecord.role === "mentor") {
+        return redirect("/dashboard/mentor")
+    }
+
+    if (userRecord.role === "student") {
+
+        return <StudentPage />
+    }
+
+    return redirect("/select-role")
+
 }

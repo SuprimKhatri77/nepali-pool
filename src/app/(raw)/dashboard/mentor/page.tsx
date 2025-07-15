@@ -1,38 +1,45 @@
-"use client"
+import { headers } from "next/headers"
+import { auth } from "../../../../../server/lib/auth/auth"
+import { redirect } from "next/navigation"
+import { db } from "../../../../../lib/db"
+import { user } from "../../../../../lib/db/schema"
+import { eq } from "drizzle-orm"
+import MentorPage from "@/components/Mentor"
 
-import { Button } from "@/components/ui/button";
-import { authClient } from "../../../../../server/lib/auth/auth-client";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
 
-export default function MentorPage() {
-    const [click, setClick] = useState(false)
-    const router = useRouter()
 
-    const { data: session } = authClient.useSession()
+
+export default async function Mentor() {
+    const session = await auth.api.getSession({
+        headers: await headers()
+    })
+
     if (!session) {
-        return router.push("/login")
+        return redirect("/login")
     }
 
-    if (!session?.user.emailVerified) {
-        return router.push(`sign-up/verify-email?email=${encodeURIComponent(session?.user.email)}`)
+    const [userRecord] = await db.select().from(user).where(eq(user.id, session.user.id))
+
+    if (!userRecord.emailVerified) {
+        return redirect(`sign-up/verify-email?email=${encodeURIComponent(session.user.email)}`)
     }
 
-    const handleClick = async () => {
-        setClick(true)
-        await authClient.signOut({
-            fetchOptions: {
-                onSuccess: () => {
-                    router.push("/")
-                }
-            }
-        })
-        setClick(false)
+    if (userRecord.role === "none") {
+        return redirect("/select-role")
     }
-    return (
-        <div className="flex flex-col gap-4 min-h-screen items-center justify-center">
-            Sup mentor!
-            <Button onClick={handleClick} disabled={click}>Logout</Button>
-        </div>
-    )
+
+    if (userRecord.role === "student") {
+        return redirect("/dashboard/student")
+    }
+
+    if (userRecord.role === "admin") {
+        return redirect("/admin")
+    }
+
+    if (userRecord.role === "mentor") {
+
+        return <MentorPage />
+    }
+
+    return redirect("/select-role")
 }

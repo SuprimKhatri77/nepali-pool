@@ -24,15 +24,15 @@ export default async function SignUp() {
         }
 
 
-        if ((session && userRecord.role) === "student") {
+        if (userRecord.role === "student") {
             return redirect("/dashboard/student")
         }
-        else if (session && userRecord.role === "mentor") {
+        else if (userRecord.role === "mentor") {
             return redirect("/dashboard/mentor")
-        } else if (session && userRecord.role === "admin") {
+        } else if (userRecord.role === "admin") {
             return redirect("/admin")
-        } else if (session && userRecord.role === "none") {
-            redirect(`/select-role?email=${encodeURIComponent(session.user.email)}`)
+        } else if (userRecord.role === "none") {
+            return redirect(`/select-role?email=${encodeURIComponent(session.user.email)}`)
         }
     }
 
