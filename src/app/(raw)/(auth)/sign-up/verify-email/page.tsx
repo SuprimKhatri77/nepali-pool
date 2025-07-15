@@ -19,7 +19,7 @@ export default function VerifyEmail() {
             <p className="text-xl font-medium">Please click on the link and verify your email to continue.</p>
             <p className="text-lg font-medium">Didn't get a email verificaiton link?</p>
             <p className="font-medium">Don't worry we gotchu, you can resend it!</p>
-            <Button variant="link" onClick={handleClick}>Resend Verification Link</Button>
+            <Button variant="outline" onClick={handleClick}>Resend Verification Link</Button>
         </div>
     )
 }
