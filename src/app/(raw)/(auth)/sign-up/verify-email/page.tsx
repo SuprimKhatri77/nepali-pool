@@ -1,25 +1,46 @@
-"use client"
+import { headers } from "next/headers"
+import { auth } from "../../../../../../server/lib/auth/auth"
+import { Button } from "@/components/ui/button"
+import { db } from "../../../../../../lib/db"
+import { eq } from "drizzle-orm"
+import { user } from "../../../../../../lib/db/schema"
+import { redirect } from "next/navigation"
+import VerifyEmail from "@/components/VerifyEmail"
 
-import { Button } from "@/components/ui/button";
-import { useSearchParams } from "next/navigation";
-import { authClient } from "../../../../../../server/lib/auth/auth-client";
+export default async function VerifyEmailPage() {
+    const session = await auth.api.getSession({
+        headers: await headers()
+    })
 
-export default function VerifyEmail() {
-    const params = useSearchParams()
-    const email = params.get("email") as string;
-    const handleClick = async () => {
-        await authClient.sendVerificationEmail({
-            email,
-            callbackURL: "/sign-up/onboarding"
-        })
+
+    if (!session) {
+        return redirect("/login")
     }
-    return (
-        <div className="flex flex-col gap-2 justify-center items-center min-h-screen">
-            <h1 className="text-2xl font-bold">A verificaiton link has been sent to your email.</h1>
-            <p className="text-xl font-medium">Please click on the link and verify your email to continue.</p>
-            <p className="text-lg font-medium">Didn't get a email verificaiton link?</p>
-            <p className="font-medium">Don't worry we gotchu, you can resend it!</p>
-            <Button variant="outline" onClick={handleClick}>Resend Verification Link</Button>
-        </div>
-    )
+
+    const [userRecord] = await db.select().from(user).where(eq(user.id, session?.user.id))
+    if (!userRecord) {
+        return redirect("/login")
+    }
+
+    if (userRecord.emailVerified) {
+        if (userRecord.role === "none") {
+            return redirect("/select-role")
+        }
+
+        if (userRecord.role === "student") {
+            return redirect("/dashboard/student")
+        }
+
+        if (userRecord.role === "mentor") {
+            return redirect("/dashboard/mentor")
+        }
+
+        if (userRecord.role === "admin") {
+            return redirect("/admin")
+        }
+
+    }
+
+
+    return <VerifyEmail />
 }

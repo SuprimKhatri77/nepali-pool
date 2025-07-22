@@ -97,5 +97,7 @@ export async function SignUp(prevState: FormState, formData: FormData) {
     }
     throw error;
   }
-  redirect(`/sign-up/verify-email?email=${encodeURIComponent(email)}`);
+  redirect(
+    `/sign-up/verify-email?email=${encodeURIComponent(email)}?from=signup`
+  );
 }
