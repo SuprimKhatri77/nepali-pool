@@ -3,7 +3,6 @@
 import z from "zod";
 import { auth } from "../lib/auth/auth";
 import { APIError } from "better-auth/api";
-import { redirect } from "next/navigation";
 import { db } from "../../lib/db";
 import { user } from "../../lib/db/schema";
 import { eq } from "drizzle-orm";
@@ -16,11 +15,16 @@ export type FormState = {
     password?: string[];
     role?: string[];
   };
-  message: string;
-  success: boolean;
+  message?: string;
+  success?: boolean;
+  redirectTo?: string;
 };
 
-const roleEnum = z.enum(["none", "student", "mentor", "admin"]);
+const roleEnum = z
+  .string()
+  .refine((val) => ["none", "student", "mentor"].includes(val), {
+    message: "Invalid role. Allowed roles: student or mentor.",
+  }) as z.ZodType<"none" | "student" | "mentor">;
 const adminEmails = process.env.ADMIN_EMAILS?.split(",") ?? [];
 
 export async function SignUp(prevState: FormState, formData: FormData) {
@@ -84,6 +88,15 @@ export async function SignUp(prevState: FormState, formData: FormData) {
           : (normalizedRole as "none" | "student" | "mentor"),
       })
       .where(eq(user.email, email));
+
+    return {
+      errors: {},
+      redirectTo: `/sign-up/verify-email?email=${encodeURIComponent(
+        email
+      )}&from=signup`,
+      message: "Signup successfull , Redirecting to verify email....",
+      success: true,
+    };
   } catch (error) {
     if (error instanceof APIError) {
       switch (error.status) {
@@ -97,7 +110,4 @@ export async function SignUp(prevState: FormState, formData: FormData) {
     }
     throw error;
   }
-  redirect(
-    `/sign-up/verify-email?email=${encodeURIComponent(email)}?from=signup`
-  );
 }

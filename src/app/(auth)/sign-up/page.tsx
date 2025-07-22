@@ -7,6 +7,7 @@ import { FormState, SignUp } from "../../../../server/actions/signup";
 import Link from "next/link";
 import Logo from "@/components/ui/Logo";
 import { Progress } from "@/components/ui/progress";
+import { useRouter } from "next/navigation";
 
 export default function SignUpPage() {
   // we are setting initial state so the first time running the backend will not return values undefined or errors.
@@ -20,6 +21,8 @@ export default function SignUpPage() {
     initialState
   );
   const [progress, setProgress] = useState(0)
+
+  const router = useRouter()
 
   useEffect(() => {
     let interval: NodeJS.Timeout;
@@ -43,6 +46,13 @@ export default function SignUpPage() {
 
     return () => clearInterval(interval);
   }, [isPending]);
+
+
+  useEffect(() => {
+    if (state.success && state.message) {
+      router.push(state.redirectTo as string)
+    }
+  })
 
   useEffect(() => {
     if (state.message) {
@@ -99,12 +109,12 @@ export default function SignUpPage() {
           action={formAction}
           className="h-screen flex flex-col justify-center w-[550px] p-15 text-black"
         >
-           {progress > 0 && (
-        <Progress
-          value={progress}
-          className="h-1 transition-all duration-300 ease-linear [&>div]:bg-blue-600"
-        />
-      )}
+          {progress > 0 && (
+            <Progress
+              value={progress}
+              className="h-1 transition-all duration-300 ease-linear [&>div]:bg-blue-600"
+            />
+          )}
           <h2 className="text-3xl font-bold mb-3 text-left">
             Get Started Now
           </h2>
@@ -157,7 +167,6 @@ export default function SignUpPage() {
             Email
           </label>
           <input
-            defaultValue="email@gmail.com"
             autoComplete="off"
             type="email"
             name="email"
@@ -257,7 +266,7 @@ export default function SignUpPage() {
               Sign in
             </Link>
           </p>
-          <Logo/>
+          <Logo />
         </form>
       </div>
     </div>
