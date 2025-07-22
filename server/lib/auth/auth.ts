@@ -1,8 +1,10 @@
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { db } from "../../../lib/db";
+import { user as userTable } from "../../../lib/db/schema";
 import { sendEmail } from "../send-email";
 import { nextCookies } from "better-auth/next-js";
+import { eq } from "drizzle-orm";
 
 export const auth = betterAuth({
   database: drizzleAdapter(db, {
@@ -24,17 +26,23 @@ export const auth = betterAuth({
     autoSignInAfterVerification: true,
     sendVerificationEmail: async ({ user, url, token }, request) => {
       const finalUrl = new URL(url);
+      const [userRecord] = await db
+        .select()
+        .from(userTable)
+        .where(eq(userTable.id, user.id));
 
       finalUrl.searchParams.set(
         "callbackURL",
-        `${process.env.BETTER_AUTH_URL}/sign-up/onboarding`
+        `${process.env.BETTER_AUTH_URL}/sign-up/onboarding/${userRecord.role}`
       );
+
       await sendEmail({
         to: user.email,
         subject: "Verify your email",
         html: `A request from your side was made for email verification. <br>Click on the link to verify your email ${finalUrl} <br> If it was not you , You can safely ignore this email.`,
       });
     },
+    expiresIn: 3600,
   },
   account: {
     accountLinking: {

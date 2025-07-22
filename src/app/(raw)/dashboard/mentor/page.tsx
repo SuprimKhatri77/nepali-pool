@@ -21,11 +21,11 @@ export default async function Mentor() {
     const [userRecord] = await db.select().from(user).where(eq(user.id, session.user.id))
 
     if (!userRecord.emailVerified) {
-        return redirect(`sign-up/verify-email?email=${encodeURIComponent(session.user.email)}`)
+        return redirect(`/sign-up/verify-email?email=${encodeURIComponent(session.user.email)}`)
     }
 
     if (userRecord.role === "none") {
-        return redirect("/select-role")
+        return redirect(`/select-role?email=${encodeURIComponent(userRecord.email)}`)
     }
 
     if (userRecord.role === "student") {
@@ -41,5 +41,5 @@ export default async function Mentor() {
         return <MentorPage />
     }
 
-    return redirect("/select-role")
+    return redirect(`/select-role?email=${encodeURIComponent(session.user.email)}`)
 }

@@ -24,7 +24,7 @@ export default async function Student() {
     }
 
     if (userRecord.role === "none") {
-        return redirect("/select-role")
+        return redirect(`/select-role?email=${encodeURIComponent(userRecord.email)}`)
     }
 
     if (userRecord.role === "admin") {
@@ -40,6 +40,6 @@ export default async function Student() {
         return <StudentPage />
     }
 
-    return redirect("/select-role")
+    return redirect(`/select-role?email=${encodeURIComponent(session.user.email)}`)
 
 }
