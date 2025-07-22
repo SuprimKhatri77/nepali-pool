@@ -46,8 +46,17 @@ export function LoginForm({ className, ...props }: React.ComponentProps<"div">) 
             <div className="flex flex-col gap-6">
               <div className="grid gap-3">
                 <Label htmlFor="email">Email</Label>
-                <Input id="email" type="email" name="email" placeholder="m@example.com" required />
                 {state.errors?.email && <p className="text-red-400 text-sm">{state.errors.email[0]}</p>}
+                <Input
+                  id="email"
+                  type="email"
+                  name="email"
+                  placeholder="Enter your email address"
+                  required
+                />
+                {state.errors?.email && (
+                  <p className="text-red-400 text-sm">{state.errors.email[0]}</p>
+                )}
               </div>
               <div className="grid gap-3">
                 <div className="flex items-center">
@@ -58,6 +67,10 @@ export function LoginForm({ className, ...props }: React.ComponentProps<"div">) 
                 </div>
                 <Input id="password" type="password" name="password" required />
                 {state.errors?.password && <p className="text-red-400 text-sm">{state.errors?.password[0]}</p>}
+                <Input id="password" type="password" name="password" placeholder="Enter your Password" required />
+                {state.errors?.password && (
+                  <p className="text-red-400 text-sm">{state.errors?.password[0]}</p>
+                )}
               </div>
               <div className="flex flex-col gap-3">
                 <Button type="submit" className="w-full" disabled={isPending}>
