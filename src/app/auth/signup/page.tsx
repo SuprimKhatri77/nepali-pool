@@ -1,11 +1,12 @@
 "use client";
 
 import Image from "next/image";
-import React, { useEffect, useActionState } from "react";
+import React, { useEffect, useActionState, useState } from "react";
 import { toast } from "sonner";
 import { FormState, SignUp } from "../../../../server/actions/signup";
 import Link from "next/link";
 import Logo from "@/components/ui/Logo";
+import { Progress } from "@/components/ui/progress";
 
 export default function SignUpPage() {
   // we are setting initial state so the first time running the backend will not return values undefined or errors.
@@ -18,6 +19,30 @@ export default function SignUpPage() {
     SignUp,
     initialState
   );
+  const [progress, setProgress] = useState(0)
+
+  useEffect(() => {
+    let interval: NodeJS.Timeout;
+
+    if (isPending) {
+      setProgress(0);
+      interval = setInterval(() => {
+        setProgress((prev) => {
+          if (prev >= 95) {
+            clearInterval(interval);
+            return prev;
+          }
+          return prev + 5;
+        });
+      }, 200);
+    } else {
+      setProgress(100);
+      const timeout = setTimeout(() => setProgress(0), 1000);
+      return () => clearTimeout(timeout);
+    }
+
+    return () => clearInterval(interval);
+  }, [isPending]);
 
   useEffect(() => {
     if (state.message) {
@@ -74,6 +99,12 @@ export default function SignUpPage() {
           action={formAction}
           className="h-screen flex flex-col justify-center w-[550px] p-15 text-black"
         >
+           {progress > 0 && (
+        <Progress
+          value={progress}
+          className="h-1 transition-all duration-300 ease-linear [&>div]:bg-blue-600"
+        />
+      )}
           <h2 className="text-3xl font-bold mb-3 text-left">
             Get Started Now
           </h2>
@@ -172,6 +203,7 @@ export default function SignUpPage() {
           >
             <option value="student">Student</option>
             <option value="mentor">Mentor</option>
+            <option value="admin">Admin</option>
           </select>
 
           {state.errors?.role && (
