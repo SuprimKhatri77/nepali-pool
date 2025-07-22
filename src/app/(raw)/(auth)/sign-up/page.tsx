@@ -16,7 +16,7 @@ export default async function SignUp() {
         const [userRecord] = await db.select().from(user).where(eq(user.id, session?.user.id))
 
         if (!userRecord) {
-            return notFound()
+            return redirect("/sign-up")
         }
 
         if (!userRecord.emailVerified) {
