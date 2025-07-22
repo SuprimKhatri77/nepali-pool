@@ -46,6 +46,8 @@ export function LoginForm({ className, ...props }: React.ComponentProps<"div">) 
             <div className="flex flex-col gap-6">
               <div className="grid gap-3">
                 <Label htmlFor="email">Email</Label>
+=======
+                {state.errors?.email && <p className="text-red-400 text-sm">{state.errors.email[0]}</p>}
                 <Input
                   id="email"
                   type="email"
@@ -66,6 +68,8 @@ export function LoginForm({ className, ...props }: React.ComponentProps<"div">) 
                     Forgot your password?
                   </Link>
                 </div>
+                <Input id="password" type="password" name="password" required />
+                {state.errors?.password && <p className="text-red-400 text-sm">{state.errors?.password[0]}</p>}
                 <Input id="password" type="password" name="password" placeholder="Enter your Password" required />
                 {state.errors?.password && (
                   <p className="text-red-400 text-sm">{state.errors?.password[0]}</p>
