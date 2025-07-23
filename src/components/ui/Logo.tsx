@@ -2,7 +2,7 @@ import Image from "next/image";
 
 const Logo = () => {
   return (
-    <div className="relative group w-full flex flex-wrap justify-center items-center gap-1 pt-2">
+    <div data-aos="zoom-in-up" data-aos-duration="1100" className="relative group w-full flex flex-wrap justify-center items-center gap-1 pt-2">
       <div className="relative w-[30%] h-auto">
         <div className="absolute top-4 left-0 w-full h-[1px] bg-black"></div>
       </div>

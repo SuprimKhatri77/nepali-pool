@@ -6,6 +6,8 @@ import { toast } from "sonner";
 import { FormState, SignUp } from "../../../../server/actions/signup";
 import Link from "next/link";
 import Logo from "@/components/ui/Logo";
+import Aos from 'aos';
+
 
 export default function SignUpPage() {
   // we are setting initial state so the first time running the backend will not return values undefined or errors.
@@ -56,10 +58,17 @@ export default function SignUpPage() {
     }
   }, [state.message]);
 
+
+  useEffect(() => {
+    Aos.init({duration:'something'});
+  }, []);
+
   return (
     <div className="flex h-screen w-full flex-row animate-in fade-in duration-400 items-center overflow-hidden">
       <div className="hidden  lg:max-w-1/2 lg:block w-full">
-        <Image
+        <Image 
+          data-aos="zoom-in"
+          data-aos-duration="1000"
           priority
           src="/signup.png"
           alt="signup"
@@ -74,11 +83,11 @@ export default function SignUpPage() {
           action={formAction}
           className="h-screen flex flex-col justify-center w-[550px] p-15 text-black"
         >
-          <h2 className="text-3xl font-bold mb-3 text-left">
+          <h2 data-aos="fade-up" data-aos-duration="500" className="text-3xl sm:text-2xl font-bold mb-3 text-left">
             Get Started Now
           </h2>
 
-          <div className="flex items-center gap-10">
+          <div data-aos="fade-up" data-aos-duration="600" className="flex items-center gap-10">
             <div id="firstname" className="flex flex-col gap-1">
               <label htmlFor="firstname" className="block font-medium">
                 First Name
@@ -122,10 +131,11 @@ export default function SignUpPage() {
             </p>
           )}
 
-          <label htmlFor="email" className="block font-medium">
+          <label data-aos="fade-up" data-aos-duration="600" htmlFor="email" className="block font-medium">
             Email
           </label>
           <input
+            data-aos="fade-up" data-aos-duration="600"
             defaultValue="email@gmail.com"
             autoComplete="off"
             type="email"
@@ -141,10 +151,11 @@ export default function SignUpPage() {
             <p className="text-red-600 text-sm mb-1">{state.errors.email[0]}</p>
           )}
 
-          <label htmlFor="password" className="block font-medium">
+          <label data-aos="fade-up" data-aos-duration="700" htmlFor="password" className="block font-medium">
             Password
           </label>
           <input
+            data-aos="fade-up" data-aos-duration="700"
             autoComplete="off"
             type="password"
             name="password"
@@ -160,18 +171,19 @@ export default function SignUpPage() {
             </p>
           )}
 
-          <label htmlFor="role" className="block font-medium">
+          <label data-aos="fade-up" data-aos-duration="800" htmlFor="role" className="block font-medium">
             Role
           </label>
           <select
+            data-aos="fade-up" data-aos-duration="800"
             name="role"
             defaultValue="student"
             className="max-w-[440px] w-full p-2 outline-none mb-3 rounded border border-[#333446]
             focus:border-blue-500 focus:ring-2 focus:ring-blue-300 
-             transition duration-200"
+             transition duration-200 overflow-hidden"
           >
-            <option value="student">Student</option>
-            <option value="mentor">Mentor</option>
+            <option className="overflow-hidden" value="student">Student</option>
+            <option className="overflow-hidden" value="mentor">Mentor</option>
           </select>
 
           {state.errors?.role && (
@@ -179,6 +191,7 @@ export default function SignUpPage() {
           )}
 
           <button
+            data-aos="fade-up" data-aos-duration="900"
             type="submit"
             disabled={isPending}
             className="max-w-[440px] cursor-pointer w-full py-2 px-5 outline-none 
@@ -217,7 +230,7 @@ export default function SignUpPage() {
             )}
           </button>
 
-          <p className="mt-3 text-center text-sm font-semibold">
+          <p data-aos="fade-up" data-aos-duration="1000" className="mt-3 text-center text-sm font-semibold">
             Have an account ?&nbsp;<Link
               href="/auth/login"
               className="text-[#0F3DDE] hover:underline font-medium"

@@ -6,6 +6,8 @@ import { useActionState, useEffect } from "react";
 import { FormState, SignIn } from "../../../../server/actions/signin";
 import { toast } from "sonner";
 import Logo from "@/components/ui/Logo";
+import gsap from 'gsap';
+import { useRef, useLayoutEffect } from 'react';
 
 export default function LoginPage() {
   const initialState: FormState = {
@@ -42,12 +44,43 @@ export default function LoginPage() {
     }
   }, [state.message])
 
+  // Refs for animation targets
+  const formRef = useRef(null);
+  const logoRef = useRef(null);
+  const imageRef = useRef(null);
 
+  // Animate on mount
+  useLayoutEffect(() => {
+    const ctx = gsap.context(() => {
+      gsap.from(formRef.current, {
+        y: 60,
+        opacity: 0,
+        duration: 1,
+        ease: "power3.out",
+      });
 
+      gsap.from(logoRef.current, {
+        scale: 0.5,
+        opacity: 0,
+        duration: 1,
+        delay: 0.4,
+        ease: "elastic.out(1, 0.4)",
+      });
+
+      gsap.from(imageRef.current, {
+        x: 100,
+        opacity: 0,
+        duration: 1,
+        delay: 0.3,
+        ease: "power3.out",
+      });
+    });
+    return () => ctx.revert(); 
+  }, []);
 
 
   return (
-    <div className="w-full flex md:flex-row sm:flex-col flex-col-reverse gap-4 lg:gap-8 animate-in fade-in duration-400  justify-center items-center p-8">
+    <div ref={formRef} className="w-full flex md:flex-row sm:flex-col flex-col-reverse gap-4 lg:gap-8 animate-in fade-in duration-400  justify-center items-center p-8">
 
 
       <div className="max-w-[500px] w-full flex items-center justify-center bg-white rounded-sm shadow-2xl">
