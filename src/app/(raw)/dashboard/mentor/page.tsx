@@ -2,7 +2,7 @@ import { headers } from "next/headers"
 import { auth } from "../../../../../server/lib/auth/auth"
 import { redirect } from "next/navigation"
 import { db } from "../../../../../lib/db"
-import { user } from "../../../../../lib/db/schema"
+import { mentorProfile, studentProfile, user } from "../../../../../lib/db/schema"
 import { eq } from "drizzle-orm"
 import MentorPage from "@/components/Mentor"
 
@@ -19,6 +19,9 @@ export default async function Mentor() {
     }
 
     const [userRecord] = await db.select().from(user).where(eq(user.id, session.user.id))
+    const [mentorProfileRecord] = await db.select().from(mentorProfile).where(eq(mentorProfile.userId, userRecord.id))
+    const [studentProfileRecord] = await db.select().from(studentProfile).where(eq(studentProfile.userId, userRecord.id))
+
 
     if (!userRecord.emailVerified) {
         return redirect(`/sign-up/verify-email?email=${encodeURIComponent(session.user.email)}`)
@@ -29,6 +32,9 @@ export default async function Mentor() {
     }
 
     if (userRecord.role === "student") {
+        if (!studentProfile) {
+            return redirect(`/sign-up/onboarding/student`)
+        }
         return redirect("/dashboard/student")
     }
 
@@ -37,9 +43,20 @@ export default async function Mentor() {
     }
 
     if (userRecord.role === "mentor") {
-
+        if (!mentorProfileRecord) {
+            return redirect("/sign-up/onboarding/mentor")
+        }
+        if (mentorProfileRecord.verifiedStatus === "pending") {
+            return redirect("/waitlist")
+        }
+        if (mentorProfileRecord.verifiedStatus === "rejected") {
+            return redirect("/rejected")
+        }
         return <MentorPage />
     }
+
+
+
 
     return redirect(`/select-role?email=${encodeURIComponent(session.user.email)}`)
 }

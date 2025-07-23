@@ -1,74 +1,40 @@
-"use client"
+import MentorOnboardingForm from "@/components/OnboardingMentorForm";
+import { auth } from "../../../../../../../server/lib/auth/auth";
+import { headers } from "next/headers";
+import { redirect } from "next/navigation";
+import { db } from "../../../../../../../lib/db";
+import { mentorProfile, user } from "../../../../../../../lib/db/schema";
+import { eq } from "drizzle-orm";
 
-import type React from "react"
+export default async function OnboardingMentor() {
+    const session = await auth.api.getSession({
+        headers: await headers()
+    })
 
-import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import Link from "next/link"
-import { Textarea } from "@/components/ui/textarea"
+    if (!session) {
+        return redirect("/login")
+    }
 
+    const [userRecord] = await db.select().from(user).where(eq(user.id, session.user.id))
+    if (!userRecord) {
+        return redirect("/sign-up")
+    }
 
+    if (!userRecord.emailVerified) {
+        return redirect(`/sign-up/verify-email?email=${encodeURIComponent(userRecord.email)}`)
+    }
 
-type MentorOnboardingFormProps = {
-    className?: string;
-};
+    if (userRecord.role === "none") {
+        return redirect("/select-role")
+    }
+    if (userRecord.role === "student") {
+        return redirect("/sign-up/onboarding/student")
+    }
 
-export default function MentorOnboardingForm({ className, ...props }: MentorOnboardingFormProps) {
+    const [mentorProfileRecord] = await db.select().from(mentorProfile).where(eq(mentorProfile.userId, session.user.id))
+    if (mentorProfileRecord) {
+        return redirect("/dashboard/mentor")
+    }
 
-
-    return (
-        <div className={cn("flex flex-col gap-6 py-5 max-w-[700px] mx-auto  justify-center min-h-screen", className)} {...props}>
-            <Card>
-                <CardHeader>
-                    <CardTitle>Mentor Onboarding Form</CardTitle>
-                    <CardDescription>Please fill all the form fields and help us verify if you are a valid candidate or not.</CardDescription>
-                </CardHeader>
-                <CardContent>
-                    <form action="">
-                        <div className="flex flex-col gap-6">
-                            <div className="grid gap-3">
-                                <Label htmlFor="country">Country</Label>
-                                <Input type="text" id="country" name="country" placeholder="eg: Nepal" required />
-                            </div>
-                            <div className="grid gap-3">
-                                <Label htmlFor="city">City</Label>
-                                <Input type="text" id="city" name="city" placeholder="eg: Kathmandu" required />
-                            </div>
-                            <div className="grid gap-3">
-                                <div className="flex items-center">
-                                    <Label htmlFor="zipCode">Zip Code</Label>
-
-                                </div>
-                                <Input id="zipCode" type="text" name="zipCode" placeholder="eg: 3211" required />
-                            </div>
-                            <div className="grid gap-3">
-                                <div className="flex items-center">
-                                    <Label htmlFor="phoneNumber">Phone Number</Label>
-
-                                </div>
-                                <Input id="phoneNumber" type="tel" name="phoneNumber" placeholder="eg: 1234567890" required />
-                            </div>
-                            <div className="grid gap-3">
-                                <div className="flex items-center">
-                                    <Label htmlFor="sex">Sex</Label>
-
-                                </div>
-                                <Input id="sex" type="text" name="sex" placeholder="eg: 1234567890" required />
-                            </div>
-                            <div className="flex flex-col gap-3">
-                                <Button type="submit" className="w-full">
-                                    Submit
-                                </Button>
-
-                            </div>
-                        </div>
-
-                    </form>
-                </CardContent>
-            </Card>
-        </div>
-    )
+    return <MentorOnboardingForm currentUserId={userRecord.id} />
 }

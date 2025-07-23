@@ -4,8 +4,9 @@ import { redirect } from "next/navigation"
 import { db } from "../../../../lib/db"
 import { user } from "../../../../lib/db/schema"
 import { eq } from "drizzle-orm"
+import AdminPage from "@/components/AdminPage"
 
-export default async function AdminPage() {
+export default async function Page() {
     const session = await auth.api.getSession({
         headers: await headers()
     })
@@ -25,7 +26,6 @@ export default async function AdminPage() {
     }
 
 
-    return (
-        <div>Who let you come here dwag? You sure don't look like an admin though! Whatever !!!</div>
-    )
+    return <AdminPage />
+
 }

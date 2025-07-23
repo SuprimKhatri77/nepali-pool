@@ -30,7 +30,7 @@ export default async function VerifyEmailPage({ searchParams }: PageProps) {
             } else if (userRecord.role === "admin") {
                 return redirect("/admin")
             } else if (userRecord.role === "none") {
-                return redirect(`/select-role?email=${encodeURIComponent(userRecord.email)}`)
+                return redirect(`/select-role`)
             }
         }
 
