@@ -14,15 +14,37 @@ export default function VerifyEmail() {
   const router = useRouter();
   const email = params.get("email") as string;
   const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const [emailSendCount, setEmailSendCount] = useState(0);
 
   const isValidEmail = emailPattern.test(email);
   const [cooldown, setCooldown] = useState(0);
   const [message, setMessage] = useState(
     "A verification link has been sent to your email."
   );
-    //below the valid email check the useEffect don't work since, it needds to be render in all components of the page
-    useEffect(()=>{
-      let timer: NodeJS.Timeout;
+  //below the valid email check the useEffect don't work since, it needds to be render in all components of the page
+  useEffect(() => {
+    const firstSent = localStorage.getItem("firstEmailSentAt");
+    const lastSent = localStorage.getItem("lastEmailSentAt");
+    const count = localStorage.getItem("count");
+    const now = Date.now();
+    if (firstSent && now - parseInt(firstSent) > 24 * 60 * 60 * 1000) {
+      localStorage.removeItem("firstSent");
+      localStorage.removeItem("lastSent");
+      localStorage.removeItem("count");
+      setEmailSendCount(0);
+    } else {
+      setEmailSendCount(count ? parseInt(count) : 0);
+    }
+
+    if (lastSent) {
+      const diff = Math.floor((now - parseInt(lastSent)) / 1000);
+      const remaining = 60 - diff;
+      if (remaining > 0) setCooldown(remaining);
+    }
+  }, []);
+
+  useEffect(() => {
+    let timer: NodeJS.Timeout;
 
     if (cooldown > 0) {
       timer = setTimeout(() => {
@@ -31,7 +53,7 @@ export default function VerifyEmail() {
     }
 
     return () => clearTimeout(timer);
-    }, [cooldown])
+  }, [cooldown]);
 
   if (!isValidEmail) {
     return (
@@ -45,12 +67,23 @@ export default function VerifyEmail() {
   }
 
   const handleClick = async () => {
-    if (cooldown > 0) return;
-    if (!email) {
-      toast.error("Email not found. Please try logging in again.");
-      router.push("/login");
+    const now = Date.now();
+
+    if (emailSendCount === 0) {
+      localStorage.setItem("firstEmailSentAt", now.toString());
+    }
+
+    if (emailSendCount >= 5) {
+      toast.error(
+        "You have reached the maximum number of email sends. Please try again later."
+      );
+      setMessage(
+        "You have reached the maximum number of email sends. Please try again later."
+      );
       return;
     }
+    if (cooldown > 0) return;
+   
 
     try {
       await authClient.sendVerificationEmail({
@@ -59,11 +92,14 @@ export default function VerifyEmail() {
       });
       toast.success("Verification email sent!");
       setMessage("Verification email sent! Please check your inbox.");
+      const newcount = emailSendCount + 1;
+      setEmailSendCount(newcount);
+      localStorage.setItem("count", newcount.toString());
+      localStorage.setItem("lastEmailSentAt", now.toString());
       setCooldown(60);
     } catch (error) {
       toast.error("Failed to send verification email. Please try again.");
       console.log(error);
-      console.log(message);
     }
   };
 
@@ -118,13 +154,26 @@ export default function VerifyEmail() {
             onClick={handleClick}
             disabled={cooldown > 0}
             className={`rounded-xs w-full  hover:scale-105  py-2 px-4 font-bold cursor-pointer duration-500 
-              ${cooldown > 0 ? 'bg-gray-400 cursor-not-allowed' : 'bg-[#4ED7F1] hover:scale-105'}
+              ${
+                cooldown > 0 || emailSendCount >= 5
+                  ? "bg-gray-400 cursor-not-allowed"
+                  : "bg-[#4ED7F1] hover:scale-105"
+              }
               `}
           >
             Resend Link
           </button>
-          {cooldown > 0 && (
-              <p className="text-center mt-1">Resend Link in <span className="font-bold">{cooldown}</span> Seconds</p>
+          {cooldown > 0 && emailSendCount < 5 && (
+            <p className="text-center mt-1">
+              Resend Link in <span className="font-bold">{cooldown}</span>{" "}
+              Seconds
+            </p>
+          )}
+          {emailSendCount >= 5 && (
+            <p className="text-center mt-1">
+              You have reached the maximum number of email sends. Please try
+              again later.
+            </p>
           )}
         </div>
         <p className="p-4 text-center mt-2 ">
