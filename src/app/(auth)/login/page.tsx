@@ -47,7 +47,7 @@ export default function LoginPage() {
 
 
   return (
-    <div className="w-full flex md:flex-row sm:flex-col flex-col-reverse gap-4 lg:gap-8 animate-in fade-in duration-400  justify-center items-center p-8">
+    <div className="w-full  flex md:flex-row sm:flex-col flex-col-reverse gap-4 lg:gap-8 animate-in fade-in duration-400  justify-center items-center p-8">
 
 
       <div className="max-w-[500px] w-full flex items-center justify-center bg-white rounded-sm shadow-2xl">
@@ -92,11 +92,7 @@ export default function LoginPage() {
             placeholder="Enter your password"
             required
           />
-          {state.errors?.password && (
-            <p className="text-red-600 text-sm mb-1">
-              {state.errors.password[0]}
-            </p>
-          )}
+         
 
           <div id="forget" className="flex items-center justify-end sm:justify-between mb-2 p-2">
 
@@ -111,6 +107,11 @@ export default function LoginPage() {
               Forgot Password?
             </Link>
           </div>
+           {state.errors?.password && (
+            <p className="text-red-600 text-sm mb-1">
+              {state.errors.password[0]}
+            </p>
+          )}
 
           <button
             type="submit"
@@ -152,7 +153,7 @@ export default function LoginPage() {
 
           <p className="mt-3 text-center text-sm sm:font-medium">
             {`Don't have an account?`}&nbsp;<Link
-              href="/auth/signup"
+              href="/sign-up"
               className="text-[#0F3DDE] hover:underline font-medium"
             >
               Sign up

@@ -92,27 +92,27 @@ export default function SignUpPage() {
   }, [state.message]);
 
   return (
-    <div className="flex h-screen w-full flex-row animate-in fade-in duration-400 items-center overflow-hidden">
-      <div className="hidden  lg:max-w-1/2 lg:block w-full">
+    <div className="flex h-screen w-full flex-row animate-in  fade-in duration-400 items-center overflow-hidden">
+      <div className="hidden  lg:max-w-1/2 md:block w-full p-8 rounded-2xl overflow-hidden">
         <Image
           priority
           src="/signup.png"
           alt="signup"
           width={960}
           height={700}
-          className="object-cover"
+          className="object-cover rounded-2xl"
         />
       </div>
 
-      <div className="lg:max-w-1/2 bg-[#FBFBFB] w-full flex items-center justify-center">
+      <div className="lg:max-w-1/2  w-full flex items-center   justify-center">
         <form
           action={formAction}
-          className="h-screen flex flex-col justify-center w-[550px] p-15 text-black"
+          className=" flex flex-col justify-center w-[550px] items-center p-3 rounded-xl shadow-lg border border-gray-200 bg-gray-100 text-black"
         >
           {progress > 0 && (
             <Progress
               value={progress}
-              className="h-1 transition-all duration-300 ease-linear [&>div]:bg-blue-600"
+              className="h-1 transition-all duration-300 ease-linear [&>div]:bg-blue-600 max-w-[440px] w-full"
             />
           )}
           <h2 className="text-3xl font-bold mb-3 text-left">
@@ -130,7 +130,7 @@ export default function SignUpPage() {
                 name="firstname"
                 required
                 className="max-w-[440px] w-full p-2 outline-none mb-2 rounded border border-[#333446]
-  focus:border-blue-500 focus:ring-2  focus:ring-blue-300 
+  focus:border-blue-500 focus:ring-2  focus:ring-blue-500 placeholder:text-[#1F406B]
              transition duration-200"
                 placeholder="first name"
               />
@@ -146,12 +146,14 @@ export default function SignUpPage() {
                 name="lastname"
                 required
                 className="max-w-[440px] w-full p-2 outline-none mb-2 rounded border border-[#333446]
-  focus:border-blue-500 focus:ring-2 focus:ring-blue-300 
+  focus:border-blue-500 focus:ring-2 focus:ring-blue-500 placeholder:text-[#1F406B]
              transition duration-200"
                 placeholder="last name"
               />
             </div>
           </div>
+            <div className="errors flex items-start max-w-[440px] w-full">
+
           {state.errors?.firstname && (
             <p className="text-red-600 text-sm mb-1">
               {state.errors.firstname[0]}
@@ -162,8 +164,10 @@ export default function SignUpPage() {
               {state.errors.lastname[0]}
             </p>
           )}
-
-          <label htmlFor="email" className="block font-medium">
+            </div>
+           
+           <div className="flex flex-col gap-1 w-full max-w-[440px]">
+                 <label htmlFor="email" className="block font-medium">
             Email
           </label>
           <input
@@ -171,17 +175,20 @@ export default function SignUpPage() {
             type="email"
             name="email"
             className="max-w-[440px] w-full p-2 outline-none mb-2 rounded border border-[#333446]
-            focus:border-blue-500 focus:ring-2 focus:ring-blue-300 
+            focus:border-blue-500 focus:ring-2 focus:ring-blue-500 placeholder:text-[#1F406B]
              transition duration-200
             "
             placeholder="Enter your email"
             required
           />
+           </div>
+         
           {state.errors?.email && (
             <p className="text-red-600 text-sm mb-1">{state.errors.email[0]}</p>
           )}
 
-          <label htmlFor="password" className="block font-medium">
+          <div className="flex flex-col gap-1 w-full max-w-[440px]">
+               <label htmlFor="password" className="block font-medium">
             Password
           </label>
           <input
@@ -189,41 +196,47 @@ export default function SignUpPage() {
             type="password"
             name="password"
             className="max-w-[440px] w-full p-2 outline-none mb-2 rounded border border-[#333446]
-            focus:border-blue-500 focus:ring-2 focus:ring-blue-300 
+            focus:border-blue-500 focus:ring-2 focus:ring-blue-500 placeholder:text-[#1F406B]
              transition duration-200"
             placeholder="Enter your password"
             required
           />
+          </div>
           {state.errors?.password && (
             <p className="text-red-600 text-sm mb-1">
               {state.errors.password[0]}
             </p>
           )}
-
+        
+           <div className="flex flex-col gap-1 w-full max-w-[440px]">
+            
           <label htmlFor="role" className="block font-medium">
             Role
           </label>
           <select
             name="role"
             defaultValue="student"
-            className="max-w-[440px] w-full p-2 outline-none mb-3 rounded border border-[#333446]
-            focus:border-blue-500 focus:ring-2 focus:ring-blue-300 
+            className="max-w-[440px] w-full p-2 outline-none mb-3  rounded border border-[#333446]
+            focus:border-blue-500 focus:ring-2 focus:ring-blue-500 placeholder:text-[#1F406B]
              transition duration-200"
-          >
+          > 
+            
             <option value="student">Student</option>
             <option value="mentor">Mentor</option>
-            <option value="admin">Admin</option>
           </select>
+           </div>
 
-          {state.errors?.role && (
+         <div className="errors flex items-start max-w-[440px] w-full mb-1">
+            {state.errors?.role && (
             <p className="text-red-600 text-sm mb-1">{state.errors.role[0]}</p>
           )}
+         </div>
 
           <button
             type="submit"
             disabled={isPending}
             className="max-w-[440px] cursor-pointer w-full py-2 px-5 outline-none 
-              bg-gradient-to-r from-[#5C6CF2] to-[#4ED7F1] 
+              bg-gradient-to-r bg-[#4ED7F1]
               hover:scale-102
               transition-all duration-300 ease-in-out rounded font-bold
               flex items-center justify-center gap-2 
@@ -260,7 +273,7 @@ export default function SignUpPage() {
 
           <p className="mt-3 text-center text-sm font-semibold">
             Have an account ?&nbsp;<Link
-              href="/auth/login"
+              href="/login"
               className="text-[#0F3DDE] hover:underline font-medium"
             >
               Sign in
