@@ -1,6 +1,6 @@
 "use client";
 
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
@@ -11,7 +11,6 @@ import { motion } from "framer-motion";
 
 export default function VerifyEmail() {
   const params = useSearchParams();
-  const router = useRouter();
   const email = params.get("email") as string;
   const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   const [emailSendCount, setEmailSendCount] = useState(0);
@@ -62,6 +61,7 @@ export default function VerifyEmail() {
         <p className="text-center text-xl font-medium ">
           Please try with a valid email
         </p>
+        {message}
       </div>
     );
   }
