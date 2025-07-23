@@ -47,7 +47,7 @@ export default function LoginPage() {
 
 
   return (
-    <div className="w-full  flex md:flex-row sm:flex-col flex-col-reverse gap-4 lg:gap-8 animate-in fade-in duration-400  justify-center items-center p-8">
+    <div className="signup-form w-full  flex md:flex-row sm:flex-col flex-col-reverse gap-4 lg:gap-8 animate-in fade-in duration-400  justify-center items-center p-8">
 
 
       <div className="max-w-[500px] w-full flex items-center justify-center bg-white rounded-sm shadow-2xl">
