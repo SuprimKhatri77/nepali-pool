@@ -37,4 +37,5 @@ export default async function OnboardingMentor() {
     }
 
     return <MentorOnboardingForm currentUserId={userRecord.id} />
+
 }

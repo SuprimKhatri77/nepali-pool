@@ -3,7 +3,6 @@
 import z from "zod";
 import { auth } from "../lib/auth/auth";
 import { APIError } from "better-auth/api";
-import { redirect } from "next/navigation";
 import { db } from "../../lib/db";
 import { user } from "../../lib/db/schema";
 import { eq } from "drizzle-orm";
