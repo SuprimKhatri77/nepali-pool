@@ -6,72 +6,95 @@ import { useState } from "react"
 import { toast } from "sonner"
 import { authClient } from "../../../../../server/lib/auth/auth-client"
 import Logo from "@/components/ui/Logo"
+import Image from "next/image"
+import { motion } from "framer-motion"
 
 export default function VerifyEmail() {
-    const params = useSearchParams()
-    const router = useRouter()
-    const email = params.get("email") as string
-    const emailPattern=/^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const params = useSearchParams()
+  const router = useRouter()
+  const email = params.get("email") as string
+  const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-    const isValidEmail=emailPattern.test(email)
-    const [message, setMessage] = useState("A verification link has been sent to your email.")
-    
-    if(!isValidEmail){
-      return (
-        <div className="flex items-center justify-center flex-col">
-            <p className="text-2xl font-bold my-4 text-center">Invalid email</p>
-            <p className="text-center text-xl font-medium ">Please try with a valid email</p>
-        </div>
-      )
-    }
+  const isValidEmail = emailPattern.test(email)
+  const [message, setMessage] = useState("A verification link has been sent to your email.")
 
-    const handleClick = async () => {
-        if (!email) {
-            toast.error("Email not found. Please try logging in again.")
-            router.push("/login")
-            return
-        }
-
-        
-        try {
-            await authClient.sendVerificationEmail({
-                email,
-                callbackURL: "/sign-up/onboarding",
-            })
-            toast.success("Verification email sent!")
-            setMessage("Verification email sent! Please check your inbox.")
-        } 
-        catch (error) {
-            toast.error("Failed to send verification email. Please try again.")
-            console.log(error)
-            console.log(message)
-        } 
-      
-    }
-
-   
-
+  if (!isValidEmail) {
     return (
-        <div className="flex flex-col items-center justify-center">
+      <div className="flex items-center justify-center flex-col">
+        <p className="text-2xl font-bold my-4 text-center">Invalid email</p>
+        <p className="text-center text-xl font-medium ">Please try with a valid email</p>
+      </div>
+    )
+  }
 
-          <div className="message-container bg-white  p-4 max-w-[600px]">
-              <Logo />
-              <h1 className="text-2xl font-bold my-4 text-center">Verifying your email</h1>
-              <div className="px-8">
-                <p className="">You are almost there! We sent email to <span className="font-bold">{email}</span></p>
-              <p className="mb-1">Just click the link in the email to complete your sign up.</p>
-              <p className="mb-4">If you don&apos;t see it in your inbox, check your spam folder.</p>
-              </div>
-                
-                <div className="px-4">
-
-              <button onClick={handleClick} className="w-full bg-[#4ED7F1] hover:scale-105  py-2 px-4 font-bold cursor-pointer">Resend Link</button>
-                </div>
-                <p className="text-center mt-2 ">Need help? <Link href="/contact" className="hover:underline">Contact Us</Link> </p>
+  const handleClick = async () => {
+    if (!email) {
+      toast.error("Email not found. Please try logging in again.")
+      router.push("/login")
+      return
+    }
 
 
-          </div>
-           
+    try {
+      await authClient.sendVerificationEmail({
+        email,
+        callbackURL: "/sign-up/onboarding",
+      })
+      toast.success("Verification email sent!")
+      setMessage("Verification email sent! Please check your inbox.")
+    }
+    catch (error) {
+      toast.error("Failed to send verification email. Please try again.")
+      console.log(error)
+      console.log(message)
+    }
+
+  }
+
+
+
+  return (
+    <div className="flex flex-col items-center justify-center">
+
+      <div className="rounded-xl message-container bg-white item p-4 max-w-[600px]">
+        <Logo />
+        <Image className="m-auto" src="/gmail.png" width={125} height={40} alt="gmail" />
+        <motion.div
+          initial={{ y: 0 }}
+          animate={{ y: [0, -15, 5, 0]
+           }}
+          transition={{
+            duration: 1,
+            repeat: Infinity,
+            repeatDelay: 1,
+            ease: "easeInOut"
+          }}
+        >
+          <Image
+          className="m-auto"
+            src="/verify.png"
+            alt="Verify"
+            width={50}
+            height={50}
+          />
+        </motion.div>
+
+        <h1 className="text-2xl font-bold my-4 text-center text-[#4C585B]">Verifying your email</h1>
+        <div className="px-8 flex flex-col justify-center items-center">
+          <p className="text-sm font-medium text-[#4C585B] p-1 mb-2">You are almost there! We sent email to <span className="text-[#4C585B] text-sm font-bold">{email}</span></p>
+          <p className="text-sm">Just click the link in the email to complete your sign up.</p>
+          <p className="text-sm mb-4">If you don&apos;t see it in your inbox, check your spam folder.</p>
         </div>
-    )
+
+        <div className="px-4">
+
+          <button onClick={handleClick} className="rounded-xs w-full bg-[#4ED7F1] hover:scale-105  py-2 px-4 font-bold cursor-pointer duration-500">Resend Link</button>
+        </div>
+        <p className="p-4 text-center mt-2 ">Need help? <Link href="/contact" className="hover:underline text-blue-700">Contact Us</Link> </p>
+
+
+      </div>
+
+    </div>
+  )
 }
