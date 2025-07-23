@@ -81,9 +81,9 @@ export default function VerifyEmail() {
 
         <h1 className="text-2xl font-bold my-4 text-center text-[#4C585B]">Verifying your email</h1>
         <div className="px-8 flex flex-col justify-center items-center">
-          <p className="text-sm font-medium text-[#4C585B] p-1 mb-2">You are almost there! We sent email to <span className="text-[#4C585B] text-sm font-bold">{email}</span></p>
-          <p className="text-sm">Just click the link in the email to complete your sign up.</p>
-          <p className="text-sm mb-4">If you don&apos;t see it in your inbox, check your spam folder.</p>
+          <p className="text-sm font-medium text-[#4C585B] p-1 text-center mb-2">You are almost there! We sent email to <span className="text-[#4C585B] text-sm font-bold">{email}</span></p>
+          <p className="text-sm text-center">Just click the link in the email to complete your sign up.</p>
+          <p className="text-sm mb-4 text-center">If you don&apos;t see it in your inbox, check your spam folder.</p>
         </div>
 
         <div className="px-4">
