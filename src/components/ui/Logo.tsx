@@ -11,7 +11,7 @@ const Logo = () => {
         alt="signup"
         width={70}
         height={80}
-        className="transition duration-700 ease-in-out"
+        className="transition duration-700 ease-in-out {}"
       />
       <div className="relative w-[30%] h-auto">
         <div className="absolute top-4 right-0 w-full h-[1px] bg-black"></div>

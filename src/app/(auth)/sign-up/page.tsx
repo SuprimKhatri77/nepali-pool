@@ -114,7 +114,7 @@ export default function SignUpPage() {
               className="h-1 transition-all duration-300 ease-linear [&>div]:bg-blue-600 max-w-[440px] w-full"
             />
           )}
-          <h2 className="text-3xl font-bold mb-3 text-left">
+          <h2 className="text-3xl text-[#4C585B] font-bold mb-3 text-left">
             Get Started Now
           </h2>
 
