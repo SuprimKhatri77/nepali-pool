@@ -13,7 +13,7 @@ export const auth = betterAuth({
   emailAndPassword: {
     enabled: true,
     autoSignIn: true,
-    requireEmailVerification: true,
+    requireEmailVerification: false,
     sendResetPassword: async ({ user, url, token }, request) => {
       await sendEmail({
         to: user.email,
@@ -24,6 +24,7 @@ export const auth = betterAuth({
   },
   emailVerification: {
     autoSignInAfterVerification: true,
+    sendOnSignUp: false,
     sendVerificationEmail: async ({ user, url, token }, request) => {
       const finalUrl = new URL(url);
       const [userRecord] = await db
@@ -33,7 +34,13 @@ export const auth = betterAuth({
 
       finalUrl.searchParams.set(
         "callbackURL",
-        `${process.env.BETTER_AUTH_URL}/sign-up/onboarding/${userRecord.role}`
+        `${process.env.BETTER_AUTH_URL}/${
+          userRecord.role !== "none"
+            ? userRecord.role === "admin"
+              ? `/admin`
+              : `/sign-up/onboarding/${userRecord.role}`
+            : "/select-role"
+        }`
       );
 
       await sendEmail({

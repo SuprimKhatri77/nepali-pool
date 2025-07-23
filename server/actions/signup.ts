@@ -85,9 +85,15 @@ export async function SignUp(prevState: FormState, formData: FormData) {
       .set({
         role: isAdmin
           ? "admin"
-          : (normalizedRole as "none" | "student" | "mentor"),
+          : (normalizedRole as "student" | "none" | "mentor"),
       })
       .where(eq(user.email, email));
+
+    await auth.api.sendVerificationEmail({
+      body: {
+        email,
+      },
+    });
 
     return {
       errors: {},

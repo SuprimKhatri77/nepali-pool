@@ -1,4 +1,4 @@
-import { relations } from "drizzle-orm";
+import { InferInsertModel, InferSelectModel, relations } from "drizzle-orm";
 import {
   pgTable,
   text,
@@ -11,6 +11,7 @@ import {
 
 export const roleEnum = pgEnum("role", ["none", "student", "mentor", "admin"]);
 export const paymentEnum = pgEnum("payment", ["unpaid", "paid"]);
+export const statusEnum = pgEnum("status", ["pending", "accepted", "rejected"]);
 
 export const user = pgTable("user", {
   id: text("id").primaryKey(),
@@ -78,24 +79,74 @@ export const studentProfile = pgTable("student_profile", {
     .references(() => user.id)
     .notNull()
     .primaryKey(),
-  name: varchar("name", { length: 100 }).notNull(),
-  role: roleEnum("role").default("none"),
   bio: text("bio"),
   paymentStatus: paymentEnum("payment_status").default("unpaid"),
+  imageUrl: text("image_url").default(
+    "https://vbteadl6m3.ufs.sh/f/DDJ5nPL6Yp1sHfAviE2zasoidYb10Mu7JGNQFZWgVmCrRHPE"
+  ),
+  favoriteDestination: text("favorite_destination").array(),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
-export const userProfileRelation = relations(user, ({ one }) => ({
+export const mentorProfile = pgTable("mentor_profile", {
+  userId: text("user_id")
+    .references(() => user.id)
+    .notNull()
+    .primaryKey(),
+  country: varchar("country", { length: 255 }),
+  city: varchar("city", { length: 255 }),
+  zipCode: varchar("zip_code", { length: 255 }),
+  phoneNumber: varchar("phone_number", { length: 100 }),
+  nationality: varchar("nationality", { length: 255 }),
+  sex: varchar("sex", { length: 255 }),
+  resume: text("resume"),
+  citizenshipPhotoUrl: text("citizenship_photo_url"),
+  imageUrl: text("image_url").default(
+    "https://vbteadl6m3.ufs.sh/f/DDJ5nPL6Yp1sHfAviE2zasoidYb10Mu7JGNQFZWgVmCrRHPE"
+  ),
+  verifiedStatus: statusEnum("verified_status").default("pending"),
+  createdAt: timestamp().defaultNow(),
+  updatedAt: timestamp().defaultNow(),
+});
+
+export const userStudentProfileRelation = relations(user, ({ one }) => ({
   studentProfile: one(studentProfile, {
     fields: [user.id],
     references: [studentProfile.userId],
   }),
 }));
 
-export const profileUserRelation = relations(studentProfile, ({ one }) => ({
-  user: one(user, {
-    fields: [studentProfile.userId],
-    references: [user.id],
+export const studentProfileUserRelation = relations(
+  studentProfile,
+  ({ one }) => ({
+    user: one(user, {
+      fields: [studentProfile.userId],
+      references: [user.id],
+    }),
+  })
+);
+
+export const userMentorProfileRelation = relations(user, ({ one }) => ({
+  mentorProfile: one(mentorProfile, {
+    fields: [user.id],
+    references: [mentorProfile.userId],
   }),
 }));
+
+export const mentorProfileUserRelation = relations(
+  mentorProfile,
+  ({ one }) => ({
+    user: one(user, {
+      fields: [mentorProfile.userId],
+      references: [user.id],
+    }),
+  })
+);
+
+export type StudentProfileSelectType = InferSelectModel<typeof studentProfile>;
+export type StudentProfileInsertType = InferInsertModel<typeof studentProfile>;
+export type MentorProfileSelectType = InferSelectModel<typeof mentorProfile>;
+export type MentorProfileInsertType = InferInsertModel<typeof mentorProfile>;
+export type UserSelectType = InferSelectModel<typeof user>;
+export type UserInsertType = InferInsertModel<typeof user>;
