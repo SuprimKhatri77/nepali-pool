@@ -16,6 +16,7 @@ export type FormState = {
   message?: string;
   success?: boolean;
   timestamp?: number;
+  redirectTo?: string;
 };
 
 export async function SignIn(prevState: FormState, formData: FormData) {
@@ -41,12 +42,45 @@ export async function SignIn(prevState: FormState, formData: FormData) {
   const { email, password } = validateFields.data;
 
   try {
+    const [userRecord] = await db
+      .select()
+      .from(user)
+      .where(eq(user.email, email));
+
+    if (!userRecord) {
+      return {
+        success: false,
+        message: "Invalid email or password",
+        errors: {
+          email: ["Invalid email or password"],
+        },
+        timestamp: Date.now(),
+      };
+    }
+
+    if (!userRecord.emailVerified) {
+      return {
+        redirectTo: `/sign-up/verify-email?email=${encodeURIComponent(email)}`,
+        timestamp: Date.now(),
+      };
+    }
+
     await auth.api.signInEmail({
       body: {
         email,
         password,
       },
     });
+
+    if (userRecord.role === "student") {
+      return redirect("/dashboard/student");
+    } else if (userRecord.role === "mentor") {
+      return redirect("/dashboard/mentor");
+    } else if (userRecord.role === "admin") {
+      return redirect("/admin");
+    } else {
+      return redirect("/select-role");
+    }
   } catch (error) {
     if (error instanceof APIError) {
       switch (error.status) {
@@ -62,9 +96,9 @@ export async function SignIn(prevState: FormState, formData: FormData) {
         case "BAD_REQUEST":
           return {
             success: false,
-            message: "Invalid email",
+            message: "Invalid email or password",
             errors: {
-              email: ["Invalid email"],
+              email: ["Invalid email or password"],
             },
             timestamp: Date.now(),
           };
@@ -78,26 +112,5 @@ export async function SignIn(prevState: FormState, formData: FormData) {
       }
     }
     throw error;
-  }
-
-  const [userRecord] = await db
-    .select()
-    .from(user)
-    .where(eq(user.email, email));
-
-  if (!userRecord) {
-    return {
-      success: false,
-      message: "User not found after login",
-    };
-  }
-  if (userRecord?.role === "student") {
-    return redirect("/dashboard/student");
-  } else if (userRecord?.role === "mentor") {
-    return redirect("/dashboard/mentor");
-  } else if (userRecord?.role === "admin") {
-    return redirect("/admin");
-  } else {
-    return redirect("/select-role");
   }
 }

@@ -15,6 +15,7 @@ import Link from 'next/link'
 import { FormState, SignUp } from '../../server/actions/signup'
 import { useActionState, useEffect, useState } from 'react'
 import { toast } from 'sonner'
+import { useRouter } from 'next/navigation'
 
 
 
@@ -26,6 +27,17 @@ export default function SignUpPage() {
 
     const [state, formAction, isPending] = useActionState<FormState, FormData>(SignUp, initialState)
     const [role, setRole] = useState("")
+    const router = useRouter()
+
+
+    useEffect(() => {
+        if (state.redirectTo && typeof state.redirectTo === "string") {
+            toast(state.message)
+            setTimeout(() => {
+                router.replace(state.redirectTo as string)
+            }, 1500);
+        }
+    })
 
     useEffect(() => {
         if (state.message) {
@@ -185,6 +197,7 @@ export default function SignUpPage() {
                                 <SelectContent id='role'>
                                     <SelectItem value="student">Student</SelectItem>
                                     <SelectItem value="mentor">Mentor</SelectItem>
+                                    <SelectItem value="admin">Admin</SelectItem>
                                 </SelectContent>
                             </Select>
                             <input type="hidden" name="role" value={role} required />

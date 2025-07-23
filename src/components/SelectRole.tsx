@@ -10,12 +10,12 @@ import {
 import { Label } from "@/components/ui/label"
 import { useActionState, useEffect, useState } from "react"
 import { Button } from "@/components/ui/button"
-import { FormState, UpdateUserRole } from "../../../../server/actions/updateRole"
+import { FormState, UpdateUserRole } from "../../server/actions/updateRole"
 import { toast } from "sonner"
 import { useRouter } from "next/navigation"
 
 
-export default function SelectRole() {
+export default function SelectRolePage() {
     const initialState: FormState = {
         errors: {}
     }
@@ -72,3 +72,5 @@ export default function SelectRole() {
         </form>
     )
 }
+
+

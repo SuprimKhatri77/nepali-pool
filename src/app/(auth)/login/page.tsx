@@ -98,7 +98,6 @@ export default function LoginPage() {
             Email
           </label>
           <input
-            defaultValue="email@gmail.com"
             autoComplete="off"
             type="email"
             name="email"

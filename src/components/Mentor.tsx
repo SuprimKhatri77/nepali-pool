@@ -1,27 +1,14 @@
 "use client"
 
 import { Button } from "@/components/ui/button";
-import { authClient } from "../../../../../server/lib/auth/auth-client";
+import { authClient } from "../../server/lib/auth/auth-client";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import { deleteUserFromDB } from "../../server/actions/deleteUserFromDB";
 
-export default function StudentPage() {
+export default function MentorPage() {
     const [click, setClick] = useState(false)
     const router = useRouter()
-
-    const { data: session } = authClient.useSession()
-
-    useEffect(() => {
-        if (session === null) {
-            return router.push("/login")
-        }
-
-        if (session && !session?.user.emailVerified) {
-            return router.push(`/sign-up/verify-email?email=${encodeURIComponent(session?.user.email)}`)
-        }
-    }, [session, router])
-
-
 
     const handleClick = async () => {
         setClick(true)
@@ -34,10 +21,15 @@ export default function StudentPage() {
         })
         setClick(false)
     }
+
+    const deleteUser = async () => {
+        await deleteUserFromDB()
+    }
     return (
         <div className="flex flex-col gap-4 min-h-screen items-center justify-center">
-            Sup student!
+            Sup mentor!
             <Button onClick={handleClick} disabled={click}>Logout</Button>
+            <Button onClick={deleteUser} disabled={click}>Delete User</Button>
         </div>
     )
 }
