@@ -56,7 +56,6 @@ export default function SignUpPage() {
 
   useEffect(() => {
     if (state.message) {
-      console.log("State message:", state.message);
       if (state.message === "Validation Failed") {
         toast.error(
           <div

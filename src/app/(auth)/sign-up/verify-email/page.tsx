@@ -1,77 +1,95 @@
-"use client"
+"use client";
 
-import { useRouter, useSearchParams } from "next/navigation"
-import Link from "next/link"
-import { useState } from "react"
-import { toast } from "sonner"
-import { authClient } from "../../../../../server/lib/auth/auth-client"
-import Logo from "@/components/ui/Logo"
-import Image from "next/image"
-import { motion } from "framer-motion"
+import { useRouter, useSearchParams } from "next/navigation";
+import Link from "next/link";
+import { useEffect, useState } from "react";
+import { toast } from "sonner";
+import { authClient } from "../../../../../server/lib/auth/auth-client";
+import Logo from "@/components/ui/Logo";
+import Image from "next/image";
+import { motion } from "framer-motion";
 
 export default function VerifyEmail() {
-  const params = useSearchParams()
-  const router = useRouter()
-  const email = params.get("email") as string
+  const params = useSearchParams();
+  const router = useRouter();
+  const email = params.get("email") as string;
   const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-  const isValidEmail = emailPattern.test(email)
-  const [message, setMessage] = useState("A verification link has been sent to your email.")
+  const isValidEmail = emailPattern.test(email);
+  const [cooldown, setCooldown] = useState(0);
+  const [message, setMessage] = useState(
+    "A verification link has been sent to your email."
+  );
+    //below the valid email check the useEffect don't work since, it needds to be render in all components of the page
+    useEffect(()=>{
+      let timer: NodeJS.Timeout;
+
+    if (cooldown > 0) {
+      timer = setTimeout(() => {
+        setCooldown((prev) => prev - 1);
+      }, 1000);
+    }
+
+    return () => clearTimeout(timer);
+    }, [cooldown])
 
   if (!isValidEmail) {
     return (
       <div className="flex items-center justify-center flex-col">
         <p className="text-2xl font-bold my-4 text-center">Invalid email</p>
-        <p className="text-center text-xl font-medium ">Please try with a valid email</p>
+        <p className="text-center text-xl font-medium ">
+          Please try with a valid email
+        </p>
       </div>
-    )
+    );
   }
 
   const handleClick = async () => {
+    if (cooldown > 0) return;
     if (!email) {
-      toast.error("Email not found. Please try logging in again.")
-      router.push("/login")
-      return
+      toast.error("Email not found. Please try logging in again.");
+      router.push("/login");
+      return;
     }
-
 
     try {
       await authClient.sendVerificationEmail({
         email,
         callbackURL: "/sign-up/onboarding",
-      })
-      toast.success("Verification email sent!")
-      setMessage("Verification email sent! Please check your inbox.")
+      });
+      toast.success("Verification email sent!");
+      setMessage("Verification email sent! Please check your inbox.");
+      setCooldown(60);
+    } catch (error) {
+      toast.error("Failed to send verification email. Please try again.");
+      console.log(error);
+      console.log(message);
     }
-    catch (error) {
-      toast.error("Failed to send verification email. Please try again.")
-      console.log(error)
-      console.log(message)
-    }
-
-  }
-
-
+  };
 
   return (
     <div className="flex flex-col items-center justify-center">
-
       <div className="rounded-xl message-container bg-white item p-4 max-w-[600px]">
         <Logo />
-        <Image className="m-auto" src="/gmail.png" width={125} height={40} alt="gmail" />
+        <Image
+          className="m-auto"
+          src="/gmail.png"
+          width={125}
+          height={40}
+          alt="gmail"
+        />
         <motion.div
           initial={{ y: 0 }}
-          animate={{ y: [0, -15, 5, 0]
-           }}
+          animate={{ y: [0, -15, 5, 0] }}
           transition={{
             duration: 1,
             repeat: Infinity,
             repeatDelay: 1,
-            ease: "easeInOut"
+            ease: "easeInOut",
           }}
         >
           <Image
-          className="m-auto"
+            className="m-auto"
             src="/verify.png"
             alt="Verify"
             width={50}
@@ -79,22 +97,43 @@ export default function VerifyEmail() {
           />
         </motion.div>
 
-        <h1 className="text-2xl font-bold my-4 text-center text-[#4C585B]">Verifying your email</h1>
+        <h1 className="text-2xl font-bold my-4 text-center text-[#4C585B]">
+          Verifying your email
+        </h1>
         <div className="px-8 flex flex-col justify-center items-center">
-          <p className="text-sm font-medium text-[#4C585B] p-1 text-center mb-2">You are almost there! We sent email to <span className="text-[#4C585B] text-sm font-bold">{email}</span></p>
-          <p className="text-sm text-center">Just click the link in the email to complete your sign up.</p>
-          <p className="text-sm mb-4 text-center">If you don&apos;t see it in your inbox, check your spam folder.</p>
+          <p className="text-sm font-medium text-[#4C585B] p-1 text-center mb-2">
+            You are almost there! We sent email to{" "}
+            <span className="text-[#4C585B] text-sm font-bold">{email}</span>
+          </p>
+          <p className="text-sm text-center">
+            Just click the link in the email to complete your sign up.
+          </p>
+          <p className="text-sm mb-4 text-center">
+            If you don&apos;t see it in your inbox, check your spam folder.
+          </p>
         </div>
 
         <div className="px-4">
-
-          <button onClick={handleClick} className="rounded-xs w-full bg-[#4ED7F1] hover:scale-105  py-2 px-4 font-bold cursor-pointer duration-500">Resend Link</button>
+          <button
+            onClick={handleClick}
+            disabled={cooldown > 0}
+            className={`rounded-xs w-full  hover:scale-105  py-2 px-4 font-bold cursor-pointer duration-500 
+              ${cooldown > 0 ? 'bg-gray-400 cursor-not-allowed' : 'bg-[#4ED7F1] hover:scale-105'}
+              `}
+          >
+            Resend Link
+          </button>
+          {cooldown > 0 && (
+              <p className="text-center mt-1">Resend Link in <span className="font-bold">{cooldown}</span> Seconds</p>
+          )}
         </div>
-        <p className="p-4 text-center mt-2 ">Need help? <Link href="/contact" className="hover:underline text-blue-700">Contact Us</Link> </p>
-
-
+        <p className="p-4 text-center mt-2 ">
+          Need help?{" "}
+          <Link href="/contact" className="hover:underline text-blue-700">
+            Contact Us
+          </Link>{" "}
+        </p>
       </div>
-
     </div>
-  )
+  );
 }
