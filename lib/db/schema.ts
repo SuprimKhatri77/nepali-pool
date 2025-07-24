@@ -94,6 +94,7 @@ export const mentorProfile = pgTable("mentor_profile", {
     .references(() => user.id)
     .notNull()
     .primaryKey(),
+  bio: text("bio"),
   country: varchar("country", { length: 255 }),
   city: varchar("city", { length: 255 }),
   zipCode: varchar("zip_code", { length: 255 }),
