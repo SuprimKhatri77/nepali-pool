@@ -20,9 +20,9 @@ export default function MentorOnboardingForm() {
     fileInputRef.current?.click();
   };
   return (
-    <div id="form-container" className="bg-gray-200 max-w-[600px] lg:max-w-[1000px] w-full p-4 m-4">
+    <div id="form-container" className="rounded-sm text-[#0f172a] bg-linear-to-b from-[#FBFBFB] via-[#DEDEDE] to-[#B0AEAE] max-w-[600px] lg:max-w-[1000px] w-full p-4 m-4">
       <Logo />
-      <h1 className="text-3xl font-medium my-2 text-center lg:text-left sm:pl-14">Onboarding</h1>
+      <h1 className="text-3xl font-medium my-2 text-center lg:text-left md:pl-0 lg:pl-12 ">Onboarding</h1>
       <form action="" className="flex lg:flex-row flex-col-reverse gap-8 justify-center">
         <div id="left-column" className="flex flex-col gap-4">
           <div>
@@ -120,7 +120,7 @@ export default function MentorOnboardingForm() {
         </div>
         <div
           id="right-column"
-          className="bg-gradient-to-l from-[#D9D9D9] via-[#A6A6A6] to-[#737373] p-4"
+          className="rounded-sm bg-gradient-135 p-4 border-[3px] border-[#ACACAC]"
         >
           <div id="image-container" className="flex justify-center">
             <button
@@ -181,11 +181,10 @@ export default function MentorOnboardingForm() {
             </div>
           </div>
         </div>
+        
       </form>
       <div id="footer-container" className="flex justify-center flex-col items-center mt-8">
-         <button className="bg-[#4ED7F1] w-1/2 font-bold py-2 px-4  text-base cursor-pointer rounded">
-            Submit
-         </button>
+         
             <p className="mt-4">Already have an account?&nbsp;<Link href="/login" className="font-medium hover:underline">Login</Link></p>
       </div>
     </div>
