@@ -10,6 +10,10 @@
         "@radix-ui/react-select": "^2.2.5",
         "@radix-ui/react-separator": "^1.1.7",
         "@radix-ui/react-slot": "^1.2.3",
+<<<<<<< HEAD
+=======
+        "@uploadthing/react": "^7.3.2",
+>>>>>>> b8f25bc5e8fea961555e8171f5af890ef7d29053
         "better-auth": "^1.2.12",
         "class-variance-authority": "^0.7.1",
         "clsx": "^2.1.1",
