@@ -1,17 +1,22 @@
 "use client";
-import { useRef, useState } from "react";
+import { useActionState, useEffect, useRef, useState } from "react";
 import Logo from "../ui/Logo";
 import Image from "next/image";
 import Link from "next/link";
+import { OnboardingMentor, FormState  } from "../../../server/actions/onboardingMentor";
+import { toast } from "sonner";
 
-export default function MentorOnboardingForm() {
+export default function MentorOnboardingForm({currentUserId}:{readonly currentUserId:string}) {
+  const initialState: FormState = {
+    errors: {},
+  }
+  const [state,formAction, isPending]=useActionState<FormState,FormData>(OnboardingMentor,initialState)
   const [preview, setPreview] = useState("/profile.png"); // default image
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   const handleProfileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = !e.target.files ? null : e.target.files[0];
     if (file) {
-      console.log(file);
       setPreview(URL.createObjectURL(file));
     }
   };
@@ -19,11 +24,18 @@ export default function MentorOnboardingForm() {
   const handleProfileImageClick = () => {
     fileInputRef.current?.click();
   };
+
+  useEffect(() => {
+    if(state.message){
+      toast(state.message)
+    }
+  },[state.message])
   return (
     <div id="form-container" className="rounded-sm text-[#0f172a] bg-gray-200 max-w-[600px] lg:max-w-[1000px] w-full p-4 m-4">
       <Logo />
       <h1 className="text-3xl font-medium my-2 text-center lg:text-left md:pl-0 lg:pl-12 ">Onboarding</h1>
-      <form action="" className="flex flex-col gap-8 justify-center">
+      <form action={formAction} className="flex flex-col gap-8 justify-center">
+        <input type="text"  defaultValue={currentUserId} className="hidden" name="userId"/>
         <div id="inputs-container" className="flex lg:flex-row flex-col-reverse gap-8 justify-center">
           <div id="left-column" className="flex flex-col gap-4">
             <div>
@@ -199,7 +211,9 @@ export default function MentorOnboardingForm() {
         </div>
 
         <div className="flex justify-center flex-col items-center mt-8">
-          <button type="submit" className="bg-[#4ed7f1] hover:bg-[#46a9bd] transition duration-200 py-2 px-4 rounded w-1/2 font-medium text-base cursor-pointer">Submit</button>
+          <button disabled={isPending} type="submit" className="bg-[#4ed7f1] hover:bg-[#46a9bd] transition duration-200 py-2 px-4 rounded w-1/2 font-medium text-base cursor-pointer">
+          {isPending ? "Submitting..." : "Submit"}
+          </button>
           <p className="mt-4">Already have an account?&nbsp;<Link href="/login" className="font-medium hover:underline">Login</Link></p>
         </div>
       </form>

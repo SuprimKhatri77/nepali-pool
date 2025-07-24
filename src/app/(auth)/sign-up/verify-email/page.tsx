@@ -1,6 +1,6 @@
 "use client";
 
-import { useSearchParams } from "next/navigation";
+import { redirect, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
@@ -8,6 +8,9 @@ import { authClient } from "../../../../../server/lib/auth/auth-client";
 import Logo from "@/components/ui/Logo";
 import Image from "next/image";
 import { motion } from "framer-motion";
+import { db } from "../../../../../lib/db";
+import { mentorProfile, studentProfile, user } from "../../../../../lib/db/schema";
+import { eq } from "drizzle-orm";
 
 export default function VerifyEmail() {
   const params = useSearchParams();
@@ -53,6 +56,40 @@ export default function VerifyEmail() {
 
     return () => clearTimeout(timer);
   }, [cooldown]);
+
+   useEffect(()=>{
+     const  checkEmail= async ()=> {
+      try{
+        const [userRecord]= await db.select().from(user).where(eq(user.email, email))
+        const [mentorProfileRecord] = await db.select().from(mentorProfile).where(eq(mentorProfile.userId, userRecord.id))
+        const [studentProfileRecord] = await db.select().from(studentProfile).where(eq(studentProfile.userId, userRecord.id))
+        if(!userRecord){
+          return redirect("/sign-up")
+        }
+        if(userRecord.emailVerified){
+          if(userRecord.role === "none"){
+            return redirect("/select-role")
+          }
+          if(userRecord.role === "admin"){
+            return redirect("/admin")
+          }
+          if(userRecord.role === "mentor"){
+            if(!mentorProfileRecord){
+              return redirect("/sign-up/onboarding/mentor")
+            }
+          }
+          if(userRecord.role === "student"){
+            if(!studentProfileRecord){
+              return redirect("/sign-up/onboarding/student")
+            }
+          }
+        }
+      }catch(error){
+        console.log(error)
+      }
+     }
+     checkEmail()
+  },[])
 
   if (!isValidEmail) {
     return (
@@ -102,6 +139,8 @@ export default function VerifyEmail() {
       console.log(error);
     }
   };
+
+ 
 
   return (
     <div className="flex flex-col items-center justify-center">
