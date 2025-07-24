@@ -20,7 +20,7 @@ export default function MentorOnboardingForm() {
     fileInputRef.current?.click();
   };
   return (
-    <div id="form-container" className="rounded-sm text-[#0f172a] bg-linear-to-b from-[#FBFBFB] via-[#DEDEDE] to-[#B0AEAE] max-w-[600px] lg:max-w-[1000px] w-full p-4 m-4">
+    <div id="form-container" className="rounded-sm text-[#0f172a] bg-gray-200 max-w-[600px] lg:max-w-[1000px] w-full p-4 m-4">
       <Logo />
       <h1 className="text-3xl font-medium my-2 text-center lg:text-left md:pl-0 lg:pl-12 ">Onboarding</h1>
       <form action="" className="flex flex-col gap-8 justify-center">
@@ -35,7 +35,9 @@ export default function MentorOnboardingForm() {
                 name="country"
                 id="country"
                 placeholder="eg: Japan"
-                className="border border-[#333446]  p-2 w-full"
+                className=" p-2 outline-none mb-3  rounded border border-[#333446]
+            focus:border-blue-500 focus:ring-2 focus:ring-blue-500 placeholder:text-[#1F406B]
+             transition duration-200 w-full"
               />
             </div>
             <div>
@@ -47,7 +49,9 @@ export default function MentorOnboardingForm() {
                 name="nationality"
                 id="nationality"
                 placeholder="eg: Nepali"
-                className="border border-[#333446]  p-2 w-full"
+                className=" p-2 outline-none mb-3  rounded border border-[#333446]
+            focus:border-blue-500 focus:ring-2 focus:ring-blue-500 placeholder:text-[#1F406B]
+             transition duration-200 w-full"
               />
             </div>
             <div id="city-zip-container" className="flex md:flex-row flex-col gap-4 w-full">
@@ -60,7 +64,9 @@ export default function MentorOnboardingForm() {
                   name="city"
                   id="city"
                   placeholder="eg: Kathmandu"
-                  className="border border-[#333446]  p-2 "
+                  className=" p-2 outline-none mb-3  rounded border border-[#333446]
+            focus:border-blue-500 focus:ring-2 focus:ring-blue-500 placeholder:text-[#1F406B]
+             transition duration-200"
                 />
               </div>
               <div id="zip-container" className="flex flex-col">
@@ -72,7 +78,9 @@ export default function MentorOnboardingForm() {
                   name="zip"
                   id="zip"
                   placeholder="eg: 44600"
-                  className="border border-[#333446]  p-2 "
+                  className=" p-2 outline-none mb-3  rounded border border-[#333446]
+            focus:border-blue-500 focus:ring-2 focus:ring-blue-500 placeholder:text-[#1F406B]
+             transition duration-200"
                 />
               </div>
             </div>
@@ -85,7 +93,9 @@ export default function MentorOnboardingForm() {
                 name="phonenumber"
                 id="phonenumber"
                 placeholder="eg: 9800000000"
-                className="border border-[#5D5D5D]  p-2 w-full"
+                className=" p-2 outline-none mb-3  rounded border border-[#333446]
+            focus:border-blue-500 focus:ring-2 focus:ring-blue-500 placeholder:text-[#1F406B]
+             transition duration-200 w-full"
               />
             </div>
             <div id="gender">
@@ -165,7 +175,9 @@ export default function MentorOnboardingForm() {
                   type="file"
                   name="citizensip"
                   id="citizensip"
-                  className="border border-blue-500  p-2 w-full"
+                  className=" w-full  p-2 outline-none mb-3  rounded border border-[#333446]
+            focus:border-blue-500 focus:ring-2 focus:ring-blue-500 placeholder:text-[#1F406B]
+             transition duration-200"
                 />
               </div>
               <div className="flex flex-col">
@@ -177,7 +189,9 @@ export default function MentorOnboardingForm() {
                   maxLength={200}
                   minLength={50}
                   placeholder="Write about yourself"
-                  className="border border-[#5D5D5D]  p-2 w-full max-h-[200px] min-h-[100px] h-full"
+                  className=" p-2 outline-none mb-3  rounded border border-[#333446]
+            focus:border-blue-500 focus:ring-2 focus:ring-blue-500 placeholder:text-[#1F406B]
+             transition duration-200 w-full max-h-[200px] min-h-[100px] h-full"
                 ></textarea>
               </div>
             </div>
@@ -185,7 +199,7 @@ export default function MentorOnboardingForm() {
         </div>
 
         <div className="flex justify-center flex-col items-center mt-8">
-          <button type="submit" className="bg-[#4ed7f1]  py-2 px-4 rounded w-1/2 font-medium text-base cursor-pointer">Submit</button>
+          <button type="submit" className="bg-[#4ed7f1] hover:bg-[#46a9bd] transition duration-200 py-2 px-4 rounded w-1/2 font-medium text-base cursor-pointer">Submit</button>
           <p className="mt-4">Already have an account?&nbsp;<Link href="/login" className="font-medium hover:underline">Login</Link></p>
         </div>
       </form>
