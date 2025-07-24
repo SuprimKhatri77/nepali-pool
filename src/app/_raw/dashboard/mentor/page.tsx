@@ -33,7 +33,7 @@ export default async function Mentor() {
     }
 
     if (userRecord.role === "student") {
-        if (!studentProfile) {
+        if (!studentProfileRecord) {
             return redirect(`/sign-up/onboarding/student`)
         }
         return redirect("/dashboard/student")
