@@ -12,6 +12,7 @@ import { useActionState, useEffect, useState } from "react"
 import { FormState, OnboardingMentor } from "../../server/actions/onboardingMentor"
 import { toast } from "sonner"
 import { useRouter } from "next/navigation"
+import { Textarea } from "./ui/textarea"
 
 
 
@@ -22,6 +23,7 @@ type MentorOnboardingFormProps = {
 
 export default function MentorOnboardingForm({ className, currentUserId, ...props }: MentorOnboardingFormProps) {
     const [citizenshipPhotoUrl, setCitizenshipPhotoUrl] = useState<string>("")
+    const [profilePhotoUrl, setProfilePhotoUrl] = useState<string>("")
     const [resumePhotoUrl, setResumePhotoUrl] = useState<string>("")
     const router = useRouter()
 
@@ -56,6 +58,20 @@ export default function MentorOnboardingForm({ className, currentUserId, ...prop
                     <form action={formAction}>
                         <div className="flex flex-col gap-6">
                             <div className="grid gap-3">
+                                <div className="flex items-center">
+                                    <Label htmlFor="profilePhotoUrl">Profile Picture: </Label>
+
+                                </div>
+                                <CustomProfileUploader
+                                    currentImage={profilePhotoUrl}
+                                    onUploadComplete={(url: string) => setProfilePhotoUrl(url)} imageUploadName="Upload Your Photo" />
+                                <Input type="hidden" name="imageUrl" value={profilePhotoUrl} required />
+                            </div>
+                            <div className="grid gap-3">
+                                <Label htmlFor="bio">Bio: </Label>
+                                <Textarea defaultValue="I want to be a mentor!" id="bio" name="bio" required />
+                            </div>
+                            <div className="grid gap-3">
                                 <Label htmlFor="country">Country</Label>
                                 <Input defaultValue="Nepal" type="text" id="country" name="country" placeholder="eg: Nepal" required />
                             </div>
@@ -81,6 +97,7 @@ export default function MentorOnboardingForm({ className, currentUserId, ...prop
                                 </div>
                                 <Input inputMode="numeric" defaultValue="1234567890" id="phoneNumber" type="text" name="phoneNumber" placeholder="eg: 1234567890" required />
                             </div>
+
                             <div className="grid gap-3">
                                 <div className="flex items-center">
                                     <Label htmlFor="sex">Sex</Label>
@@ -108,8 +125,9 @@ export default function MentorOnboardingForm({ className, currentUserId, ...prop
                                     onUploadComplete={(url: string) => setCitizenshipPhotoUrl(url)} imageUploadName="Upload Citizenship Photo" />
                                 <Input type="hidden" name="citizenshipPhotoUrl" value={citizenshipPhotoUrl} required />
                             </div>
+
                             <div className="flex flex-col gap-3">
-                                <Button type="submit" disabled={isPending || !resumePhotoUrl || !citizenshipPhotoUrl} className="w-full">
+                                <Button type="submit" disabled={isPending || !resumePhotoUrl || !citizenshipPhotoUrl || !profilePhotoUrl} className="w-full">
                                     {isPending ? "Submitting....." : "Submit"}
                                 </Button>
 

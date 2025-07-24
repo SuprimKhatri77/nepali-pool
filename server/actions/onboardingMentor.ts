@@ -20,6 +20,8 @@ export type FormState = {
     citizenshipPhotoUrl?: string[];
     currentUserId?: string[];
     nationality?: string[];
+    bio?: string[];
+    imageUrl?: string[];
   };
   message?: string;
   success?: boolean;
@@ -55,6 +57,8 @@ export async function OnboardingMentor(
     citizenshipPhotoUrl: z.string().nonempty("Citizenship photo is required"),
     nationality: z.string().nonempty("nationality is required"),
     currentUserId: z.string().nonempty(),
+    imageUrl: z.string().nonempty(),
+    bio: z.string().nonempty(),
   });
 
   const validateFields = onboardingMentorData.safeParse({
@@ -67,6 +71,8 @@ export async function OnboardingMentor(
     citizenshipPhotoUrl: formData.get("citizenshipPhotoUrl") as string,
     currentUserId: formData.get("currentUserId") as string,
     nationality: formData.get("nationality") as string,
+    imageUrl: formData.get("imageUrl") as string,
+    bio: formData.get("bio") as string,
   });
 
   if (!validateFields.success) {
@@ -87,6 +93,8 @@ export async function OnboardingMentor(
     nationality,
     phoneNumber,
     zipCode,
+    imageUrl,
+    bio,
   } = validateFields.data;
 
   try {
@@ -111,6 +119,8 @@ export async function OnboardingMentor(
       phoneNumber,
       resume,
       zipCode,
+      bio,
+      imageUrl,
       userId: currentUserId,
       createdAt: new Date(),
       updatedAt: new Date(),
