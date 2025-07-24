@@ -23,8 +23,9 @@ export default function MentorOnboardingForm() {
     <div id="form-container" className="rounded-sm text-[#0f172a] bg-linear-to-b from-[#FBFBFB] via-[#DEDEDE] to-[#B0AEAE] max-w-[600px] lg:max-w-[1000px] w-full p-4 m-4">
       <Logo />
       <h1 className="text-3xl font-medium my-2 text-center lg:text-left md:pl-0 lg:pl-12 ">Onboarding</h1>
-      <form action="" className="flex lg:flex-row flex-col-reverse gap-8 justify-center">
-        <div id="left-column" className="flex flex-col gap-4">
+      <form action="" className="flex flex-col gap-8 justify-center">
+       <div id="inputs-container" className="flex  gap-8 justify-center">
+         <div id="left-column" className="flex flex-col gap-4">
           <div>
             <label htmlFor="country" className="font-medium text-base">
               Current Country:
@@ -176,17 +177,18 @@ export default function MentorOnboardingForm() {
                 maxLength={200}
                 minLength={50}
                 placeholder="Write about yourself"
-                className="border border-[#5D5D5D]  p-2 w-full"
+                className="border border-[#5D5D5D]  p-2 w-full max-h-[200px] min-h-[100px] h-full"
               ></textarea>
             </div>
           </div>
         </div>
+       </div>
         
-      </form>
       <div id="footer-container" className="flex justify-center flex-col items-center mt-8">
-         
+            <button type="submit" className="bg-[#4ed7f1]  py-2 px-4 rounded w-1/2 font-medium text-base cursor-pointer">Submit</button>
             <p className="mt-4">Already have an account?&nbsp;<Link href="/login" className="font-medium hover:underline">Login</Link></p>
       </div>
+      </form>
     </div>
   );
 }
