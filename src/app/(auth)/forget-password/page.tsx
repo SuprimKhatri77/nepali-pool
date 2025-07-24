@@ -51,7 +51,7 @@ export default function ForgetPassword() {
               required
             />
           </div>
-          <p className="text-[#4C585B] font-medium py-2">we have sent reset link on your email,
+          <p className="text-[#4C585B] font-medium text-center text-sm py-2">we have sent reset link on your email,
             check it if you don’t see it, you can check spam folder.</p>
         </div>
 
