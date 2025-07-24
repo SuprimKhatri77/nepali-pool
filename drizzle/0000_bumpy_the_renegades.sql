@@ -1,5 +1,6 @@
 CREATE TYPE "public"."payment" AS ENUM('unpaid', 'paid');--> statement-breakpoint
 CREATE TYPE "public"."role" AS ENUM('none', 'student', 'mentor', 'admin');--> statement-breakpoint
+CREATE TYPE "public"."status" AS ENUM('pending', 'accepted', 'rejected');--> statement-breakpoint
 CREATE TABLE "account" (
 	"id" text PRIMARY KEY NOT NULL,
 	"account_id" text NOT NULL,
@@ -16,6 +17,22 @@ CREATE TABLE "account" (
 	"updated_at" timestamp NOT NULL
 );
 --> statement-breakpoint
+CREATE TABLE "mentor_profile" (
+	"user_id" text PRIMARY KEY NOT NULL,
+	"country" varchar(255),
+	"city" varchar(255),
+	"zip_code" varchar(255),
+	"phone_number" varchar(100),
+	"nationality" varchar(255),
+	"sex" varchar(255),
+	"resume" text,
+	"citizenship_photo_url" text,
+	"image_url" text DEFAULT 'https://vbteadl6m3.ufs.sh/f/DDJ5nPL6Yp1sHfAviE2zasoidYb10Mu7JGNQFZWgVmCrRHPE',
+	"verified_status" "status" DEFAULT 'pending',
+	"createdAt" timestamp DEFAULT now(),
+	"updatedAt" timestamp DEFAULT now()
+);
+--> statement-breakpoint
 CREATE TABLE "session" (
 	"id" text PRIMARY KEY NOT NULL,
 	"expires_at" timestamp NOT NULL,
@@ -30,10 +47,10 @@ CREATE TABLE "session" (
 --> statement-breakpoint
 CREATE TABLE "student_profile" (
 	"user_id" text PRIMARY KEY NOT NULL,
-	"name" varchar(100) NOT NULL,
-	"role" "role" DEFAULT 'none',
 	"bio" text,
 	"payment_status" "payment" DEFAULT 'unpaid',
+	"image_url" text DEFAULT 'https://vbteadl6m3.ufs.sh/f/DDJ5nPL6Yp1sHfAviE2zasoidYb10Mu7JGNQFZWgVmCrRHPE',
+	"favorite_destination" text[],
 	"created_at" timestamp DEFAULT now(),
 	"updated_at" timestamp DEFAULT now()
 );
@@ -60,5 +77,6 @@ CREATE TABLE "verification" (
 );
 --> statement-breakpoint
 ALTER TABLE "account" ADD CONSTRAINT "account_user_id_user_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."user"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "mentor_profile" ADD CONSTRAINT "mentor_profile_user_id_user_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."user"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "session" ADD CONSTRAINT "session_user_id_user_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."user"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "student_profile" ADD CONSTRAINT "student_profile_user_id_user_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."user"("id") ON DELETE no action ON UPDATE no action;

@@ -20,7 +20,7 @@ export default async function Student() {
     )
 
     if (!userRecord.emailVerified) {
-        return redirect(`sign-up/verify-email?email=${encodeURIComponent(session.user.email)}`)
+        return redirect(`/sign-up/verify-email?email=${encodeURIComponent(session.user.email)}`)
     }
 
     if (userRecord.role === "none") {

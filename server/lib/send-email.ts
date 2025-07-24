@@ -23,6 +23,7 @@ export async function sendEmail({
     from: process.env.EMAIL_FROM,
     to,
     subject,
+    text,
     html,
   });
 }
