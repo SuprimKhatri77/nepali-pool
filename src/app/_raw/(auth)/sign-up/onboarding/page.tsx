@@ -1,7 +1,54 @@
-export default function Onboarding() {
-    return (
-        <div>
-            <h1>Here based on role you will fill a onboarding form!</h1>
-        </div>
-    )
+import { headers } from "next/headers";
+import { auth } from "../../../../../../server/lib/auth/auth";
+import { redirect } from "next/navigation";
+import { db } from "../../../../../../lib/db";
+import { mentorProfile, studentProfile, user } from "../../../../../../lib/db/schema";
+import { eq } from "drizzle-orm";
+
+export default async function Onboarding() {
+    const session = await auth.api.getSession({
+        headers: await headers()
+    })
+
+    if (!session) {
+        return redirect("/login")
+    }
+
+    const [userRecord] = await db.select().from(user).where(eq(user.id, session.user.id))
+    if (!userRecord) {
+        return redirect("/sign-up")
+    }
+
+    if (!userRecord.emailVerified) {
+        return redirect(`/sign-up/verify-email?email=${encodeURIComponent(userRecord.email)}`)
+    }
+    if (userRecord.role === "none") {
+        return redirect("/select-role")
+    }
+
+    const [mentorProfileRecord] = await db.select().from(mentorProfile).where(eq(mentorProfile.userId, userRecord.id))
+    if (userRecord.role === "mentor") {
+        if (!mentorProfileRecord) {
+            return redirect("/sign-up/onboarding/mentor")
+        }
+        if (mentorProfileRecord.verifiedStatus === "pending") {
+            return redirect("/waitlist")
+        }
+        if (mentorProfileRecord.verifiedStatus === "rejected") {
+            return redirect("/rejected")
+        }
+        return redirect("/dashboard/mentor")
+    }
+
+    const [studentProfileRecord] = await db.select().from(studentProfile).where(eq(studentProfile.userId, userRecord.id))
+    if (userRecord.role === "student") {
+        if (!studentProfileRecord) {
+
+            return redirect("/sign-up/onboarding/student")
+        }
+        return redirect("/dashboard/student")
+    }
+
+
+
 }
