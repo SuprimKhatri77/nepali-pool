@@ -76,7 +76,7 @@ export const verification = pgTable("verification", {
 
 export const studentProfile = pgTable("student_profile", {
   userId: text("user_id")
-    .references(() => user.id)
+    .references(() => user.id, { onDelete: "cascade" })
     .notNull()
     .primaryKey(),
   bio: text("bio"),
@@ -91,7 +91,7 @@ export const studentProfile = pgTable("student_profile", {
 
 export const mentorProfile = pgTable("mentor_profile", {
   userId: text("user_id")
-    .references(() => user.id)
+    .references(() => user.id, { onDelete: "cascade" })
     .notNull()
     .primaryKey(),
   bio: text("bio"),
