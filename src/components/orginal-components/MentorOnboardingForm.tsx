@@ -1,0 +1,193 @@
+"use client";
+import { useRef, useState } from "react";
+import Logo from "../ui/Logo";
+import Image from "next/image";
+import Link from "next/link";
+
+export default function MentorOnboardingForm() {
+  const [preview, setPreview] = useState("/profile.png"); // default image
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+
+  const handleProfileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = !e.target.files ? null : e.target.files[0];
+    if (file) {
+      console.log(file);
+      setPreview(URL.createObjectURL(file));
+    }
+  };
+
+  const handleProfileImageClick = () => {
+    fileInputRef.current?.click();
+  };
+  return (
+    <div id="form-container" className="bg-gray-200 max-w-[600px] lg:max-w-[1000px] w-full p-4 m-4">
+      <Logo />
+      <h1 className="text-3xl font-medium my-2 text-center lg:text-left sm:pl-14">Onboarding</h1>
+      <form action="" className="flex lg:flex-row flex-col-reverse gap-8 justify-center">
+        <div id="left-column" className="flex flex-col gap-4">
+          <div>
+            <label htmlFor="country" className="font-medium text-base">
+              Current Country:
+            </label>
+            <input
+              type="text"
+              name="country"
+              id="country"
+              placeholder="eg: Japan"
+              className="border border-[#333446]  p-2 w-full"
+            />
+          </div>
+          <div>
+            <label htmlFor="nationality" className="font-medium text-base">
+              Nationality:
+            </label>
+            <input
+              type="text"
+              name="nationality"
+              id="nationality"
+              placeholder="eg: Nepali"
+              className="border border-[#333446]  p-2 w-full"
+            />
+          </div>
+          <div id="city-zip-container" className="flex md:flex-row flex-col gap-4 w-full">
+            <div id="city-container" className="flex flex-col">
+              <label htmlFor="city" className="font-medium text-base">
+                City:
+              </label>
+              <input
+                type="text"
+                name="city"
+                id="city"
+                placeholder="eg: Kathmandu"
+                className="border border-[#333446]  p-2 "
+              />
+            </div>
+            <div id="zip-container" className="flex flex-col">
+              <label htmlFor="zip" className="font-medium text-base">
+                Zip Code:
+              </label>
+              <input
+                type="text"
+                name="zip"
+                id="zip"
+                placeholder="eg: 44600"
+                className="border border-[#333446]  p-2 "
+              />
+            </div>
+          </div>
+          <div>
+            <label htmlFor="phonenumber" className="font-medium text-base">
+              Phone Number
+            </label>
+            <input
+              type="tel"
+              name="phonenumber"
+              id="phonenumber"
+              placeholder="eg: 9800000000"
+              className="border border-[#5D5D5D]  p-2 w-full"
+            />
+          </div>
+          <div id="gender">
+            <label htmlFor="gender" className="font-medium text-base">
+              Gender:
+            </label>
+            <div className="flex gap-2 items-center justify-center">
+              <div className="flex items-center gap-2">
+                <input type="radio" name="gender" id="male" value="male" />
+                <label htmlFor="male">Male</label>
+              </div>
+              <div className="flex items-center gap-2">
+                <input type="radio" name="gender" id="female" value="female" />
+                <label htmlFor="female">Female</label>
+              </div>
+              <div className="flex items-center gap-2">
+                <input type="radio" name="gender" id="other" value="other" />
+                <label htmlFor="other">Other</label>
+              </div>
+            </div>
+          </div>
+          <div>
+            <label htmlFor="resume" className="font-medium text-base">
+              Resume:
+            </label>
+            <input
+              type="file"
+              name="resume"
+              id="resume"
+              className="border border-blue-500  p-2 w-full"
+            />
+          </div>
+        </div>
+        <div
+          id="right-column"
+          className="bg-gradient-to-l from-[#D9D9D9] via-[#A6A6A6] to-[#737373] p-4"
+        >
+          <div id="image-container" className="flex justify-center">
+            <button
+              id="photo-section"
+              type="button"
+              className="relative flex items-center justify-center focus:outline-none"
+              onClick={handleProfileImageClick}
+            >
+              {/* Circular image container */}
+              <div className="w-28 h-28 rounded-full overflow-hidden">
+                <Image
+                  src={preview}
+                  alt="profile"
+                  width={112}
+                  height={112}
+                  className="object-cover w-full h-full"
+                />
+              </div>
+
+              {/* + icon overlay */}
+              <div className="absolute bottom-1 right-1 bg-blue-600 cursor-pointer rounded-full w-6 h-6 flex items-center justify-center border-2 border-white text-white text-sm shadow-md">
+                +
+              </div>
+
+              <input
+                ref={fileInputRef}
+                onChange={handleProfileChange}
+                type="file"
+                accept="image/*"
+                className="hidden"
+              />
+            </button>
+          </div>
+
+          <div id="input-section-right">
+            <div>
+              <label htmlFor="citizensip" className="font-medium text-base">
+                Citizensip:
+              </label>
+              <input
+                type="file"
+                name="citizensip"
+                id="citizensip"
+                className="border border-blue-500  p-2 w-full"
+              />
+            </div>
+            <div className="flex flex-col">
+              <label htmlFor="bio" className="font-medium text-base">
+                Bio:
+              </label>
+              <textarea
+                id="bio"
+                maxLength={200}
+                minLength={50}
+                placeholder="Write about yourself"
+                className="border border-[#5D5D5D]  p-2 w-full"
+              ></textarea>
+            </div>
+          </div>
+        </div>
+      </form>
+      <div id="footer-container" className="flex justify-center flex-col items-center mt-8">
+         <button className="bg-[#4ED7F1] w-1/2 font-bold py-2 px-4  text-base cursor-pointer rounded">
+            Submit
+         </button>
+            <p className="mt-4">Already have an account?&nbsp;<Link href="/login" className="font-medium hover:underline">Login</Link></p>
+      </div>
+    </div>
+  );
+}

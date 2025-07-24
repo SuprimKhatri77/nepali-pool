@@ -1,5 +1,6 @@
-import MentorOnboardingForm from "@/components/OnboardingMentorForm"    
+import MentorOnboardingForm from "@/components/orginal-components/MentorOnboardingForm";
 
 export  default function onboardingMentorPage(){
-    return <MentorOnboardingForm  currentUserId="123"/> 
+  return  <MentorOnboardingForm />
+   
 }
