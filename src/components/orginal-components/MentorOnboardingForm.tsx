@@ -24,7 +24,7 @@ export default function MentorOnboardingForm() {
       <Logo />
       <h1 className="text-3xl font-medium my-2 text-center lg:text-left md:pl-0 lg:pl-12 ">Onboarding</h1>
       <form action="" className="flex flex-col gap-8 justify-center">
-       <div id="inputs-container" className="flex  gap-8 justify-center">
+       <div id="inputs-container" className="flex lg:flex-row flex-col-reverse gap-8 justify-center">
          <div id="left-column" className="flex flex-col gap-4">
           <div>
             <label htmlFor="country" className="font-medium text-base">
