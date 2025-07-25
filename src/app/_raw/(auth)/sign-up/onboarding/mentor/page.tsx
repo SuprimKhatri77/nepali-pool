@@ -33,6 +33,12 @@ export default async function OnboardingMentor() {
 
     const [mentorProfileRecord] = await db.select().from(mentorProfile).where(eq(mentorProfile.userId, session.user.id))
     if (mentorProfileRecord) {
+        if (mentorProfileRecord.verifiedStatus === "pending") {
+            return redirect("/waitlist")
+        }
+        if (mentorProfileRecord.verifiedStatus === "rejected") {
+            return redirect("/rejected")
+        }
         return redirect("/dashboard/mentor")
     }
 

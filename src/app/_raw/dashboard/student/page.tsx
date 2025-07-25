@@ -3,7 +3,7 @@ import { auth } from "../../../../../server/lib/auth/auth";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { db } from "../../../../../lib/db";
-import { user } from "../../../../../lib/db/schema";
+import { mentorProfile, studentProfile, user } from "../../../../../lib/db/schema";
 import { eq } from "drizzle-orm";
 
 export default async function Student() {
@@ -32,12 +32,27 @@ export default async function Student() {
     }
 
     if (userRecord.role === "mentor") {
+        const [mentorProfileRecord] = await db.select().from(mentorProfile).where(eq(mentorProfile.userId, userRecord.id))
+        if (!mentorProfileRecord) {
+            return redirect("/sign-up/onboarding/student")
+        }
         return redirect("/dashboard/mentor")
     }
 
     if (userRecord.role === "student") {
+        const [studentProfileRecord] = await db.select().from(studentProfile).where(eq(studentProfile.userId, userRecord.id))
+        if (!studentProfileRecord) {
+            return redirect("/sign-up/onboarding/student")
+        }
 
-        return <StudentPage />
+        const mentorProfiles = await db.query.mentorProfile.findMany({
+            with: {
+                user: true
+            }
+        })
+        const macthingMentors = mentorProfiles.filter((prof) => studentProfileRecord.favoriteDestination?.includes(prof.country!))
+
+        return <StudentPage matchingMentors={macthingMentors} />
     }
 
     return redirect(`/select-role?email=${encodeURIComponent(session.user.email)}`)
