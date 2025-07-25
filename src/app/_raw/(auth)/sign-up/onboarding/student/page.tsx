@@ -1,52 +1,66 @@
-"use client"
 
-import type React from "react"
+import StudentOnboardingForm from "@/components/StudentOnboardingForm";
+import { auth } from "../../../../../../../server/lib/auth/auth";
+import { headers } from "next/headers";
+import { redirect } from "next/navigation";
+import { db } from "../../../../../../../lib/db";
+import { mentorProfile, studentProfile, user } from "../../../../../../../lib/db/schema";
+import { eq } from "drizzle-orm";
 
-import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import Link from "next/link"
-import { Textarea } from "@/components/ui/textarea"
+export default async function Page() {
+
+    const session = await auth.api.getSession({
+        headers: await headers()
+    })
 
 
-export default function StudentOnboardingForm({ className, ...props }: React.ComponentProps<"div">) {
+    if (!session) {
+        return redirect("/login")
+    }
+
+    const [userRecord] = await db.select().from(user).where(eq(user.id, session.user.id))
+
+    if (!userRecord) {
+        return redirect("/sign-up")
+    }
+
+    if (!userRecord.emailVerified) {
+        return redirect(`/sign-up/verify-email?email=${encodeURIComponent(userRecord.email)}`)
+    }
+
+    if (!userRecord.role || userRecord.role === "none") {
+        return redirect("/select-role")
+    }
 
 
-    return (
-        <div className={cn("flex flex-col gap-6 max-w-[700px] mx-auto  justify-center min-h-screen", className)} {...props}>
-            <Card>
-                <CardHeader>
-                    <CardTitle>Student Onboarding Form</CardTitle>
-                    <CardDescription>Please fill all the form fields and help us personalize the dashboard for you.</CardDescription>
-                </CardHeader>
-                <CardContent>
-                    <form action="">
-                        <div className="flex flex-col gap-6">
-                            <div className="grid gap-3">
-                                <Label htmlFor="bio">Bio</Label>
-                                <Textarea id="bio" name="bio" required />
-                            </div>
-                            <div className="grid gap-3">
-                                <div className="flex items-center">
-                                    <Label htmlFor="favoriteDestination">Favorite Destinations</Label>
+    if (userRecord.role === "mentor") {
+        const [mentorProfileRecord] = await db.select().from(mentorProfile).where(eq(mentorProfile.userId, userRecord.id))
 
-                                </div>
-                                <Input id="favoriteDestination" type="text" name="favoriteDestination" placeholder="eg: denmark,portugal" required />
-                            </div>
-                            <div className="flex flex-col gap-3">
-                                <Button type="submit" className="w-full">
-                                    Submit
-                                </Button>
+        if (!mentorProfileRecord) {
+            return redirect("/sign-up/onboarding/mentor")
+        }
 
-                            </div>
-                        </div>
+        if (mentorProfileRecord.verifiedStatus === "pending") {
+            return redirect("/waitlist")
+        }
 
-                    </form>
-                </CardContent>
-            </Card>
-        </div>
-    )
+        if (mentorProfileRecord.verifiedStatus === "rejected") {
+            return redirect("/rejected")
+        }
+
+
+        return redirect("/dashboard/mentor")
+    }
+
+    const [studentProfileRecord] = await db.select().from(studentProfile).where(eq(studentProfile.userId, userRecord.id))
+
+    if (studentProfileRecord) {
+        return redirect("/dashboard/student")
+    }
+
+
+
+    return <StudentOnboardingForm currentUserId={userRecord.id} />
 }
 
+                  

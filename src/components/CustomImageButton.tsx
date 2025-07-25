@@ -8,7 +8,7 @@ import { ImageIcon } from "lucide-react";
 interface Props {
     currentImage?: string;
     onUploadComplete: (url: string) => void;
-    imageUploadName: string;
+    imageUploadName?: string;
 }
 
 export default function CustomProfileUploader({ currentImage, onUploadComplete, imageUploadName }: Props) {
@@ -31,7 +31,7 @@ export default function CustomProfileUploader({ currentImage, onUploadComplete, 
 
     return (
         <div className="flex items-center gap-4">
-            {currentImage && (
+            {/* {currentImage && (
                 <div className="relative w-14 h-14">
                     <Image
                         src={currentImage}
@@ -40,18 +40,45 @@ export default function CustomProfileUploader({ currentImage, onUploadComplete, 
                         className="rounded-md object-cover border"
                     />
                 </div>
-            )}
+            )} */}
 
             <button
                 type="button"
-                className="bg-gray-50 shadow-xl hover:bg-gray-100 transition-all duration-300 text-black text-sm px-2 cursor-pointer rounded-md text-nowrap py-2"
+                className={`${imageUploadName === "Profile Picture" ? "" : "bg-gray-50 shadow-xl hover:bg-gray-100 "}transition-all duration-300 text-black text-sm px-2 cursor-pointer rounded-md text-nowrap py-2`}
                 onClick={() => inputRef.current?.click()}
                 disabled={isUploading}
             >
                 {isUploading ? "Uploading..." : (
                     <div className="flex items-center gap-1">
-                        {imageUploadName}
-                        <ImageIcon />
+
+                        {imageUploadName === "Profile Picture" ? (
+                            !currentImage ? (
+
+                                <Image src="https://vbteadl6m3.ufs.sh/f/DDJ5nPL6Yp1sHfAviE2zasoidYb10Mu7JGNQFZWgVmCrRHPE"
+                                    alt="Profile Picture"
+                                    width={200}
+                                    height={200}
+                                    className="rounded-full"
+                                >
+                                </Image>
+
+
+                            ) : (
+
+                                <Image src={currentImage || "https://vbteadl6m3.ufs.sh/f/DDJ5nPL6Yp1sHfAviE2zasoidYb10Mu7JGNQFZWgVmCrRHPE"}
+                                    alt="Profile Picture"
+                                    width={200}
+                                    height={200}
+                                    className="rounded-full"
+                                >
+                                </Image>
+                            )
+                        ) : (
+                            <>
+                                {imageUploadName}
+                                <ImageIcon />
+                            </>
+                        )}
                     </div>
                 )}
             </button>
