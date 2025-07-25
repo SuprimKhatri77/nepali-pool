@@ -82,14 +82,9 @@ export default function MentorOnboardingForm({
     }
   }, [state.message]);
   return (
-    <div
-      id="form-container"
-      className="shadow-2xl rounded-sm text-[#0f172a] bg-gray-200 max-w-[600px] lg:max-w-[1000px] w-full p-4 m-4"
-    >
+    <div id="form-container" className="border-blue-400 border-4 shadow-2xl rounded-sm text-[#0f172a] bg-gray-200 max-w-[600px] lg:max-w-[1000px] w-full p-4 m-4">
       <Logo />
-      <h1 className="text-3xl text-shadow-md font-medium my-2 text-center lg:text-left md:pl-0 lg:pl-12 ">
-        Onboarding
-      </h1>
+      <h1 className="text-3xl text-shadow-md font-medium my-2 text-center lg:text-left md:pl-0 lg:pl-9 ">Onboarding</h1>
       <form action={formAction} className="flex flex-col gap-8 justify-center">
         <input
           type="text"
@@ -114,8 +109,8 @@ export default function MentorOnboardingForm({
                 name="country"
                 id="country"
                 placeholder="eg: Japan"
-                className="shadow-xl p-2 outline-none mb-3  rounded border border-[#333446]
-            focus:border-blue-500 focus:ring-2 focus:ring-blue-500 placeholder:text-[#1F406B]
+                className="shadow-sm p-2 outline-none mb-3  rounded border border-[#cecece]
+            focus:border-blue-500 focus:ring-2 focus:ring-blue-500 placeholder:text-[#9ca3af]
              transition duration-200 w-full"
               />
             </div>
@@ -131,14 +126,14 @@ export default function MentorOnboardingForm({
                 name="nationality"
                 id="nationality"
                 placeholder="eg: Nepali"
-                className="shadow-xl p-2 outline-none mb-3  rounded border border-[#333446]
-            focus:border-blue-500 focus:ring-2 focus:ring-blue-500 placeholder:text-[#1F406B]
+                className="shadow-md p-2 outline-none mb-3  rounded border border-[#cecece]
+            focus:border-blue-500 focus:ring-2 focus:ring-blue-500 placeholder:text-[#9ca3af]
              transition duration-200 w-full"
               />
             </div>
             <div
               id="city-zip-container"
-              className="flex md:flex-row flex-col gap-4 w-full"
+              className="flex md:flex-row flex-col justify-between gap-4 w-full"
             >
               <div id="city-container" className="flex flex-col">
                 <label
@@ -152,8 +147,8 @@ export default function MentorOnboardingForm({
                   name="city"
                   id="city"
                   placeholder="eg: Kathmandu"
-                  className="shadow-xl p-2 outline-none mb-3  rounded border border-[#333446]
-            focus:border-blue-500 focus:ring-2 focus:ring-blue-500 placeholder:text-[#1F406B]
+                  className="shadow-md p-2 outline-none mb-3  rounded border border-[#cecece]
+            focus:border-blue-500 focus:ring-2 focus:ring-blue-500 placeholder:text-[#9ca3af]
              transition duration-200"
                 />
               </div>
@@ -169,8 +164,8 @@ export default function MentorOnboardingForm({
                   name="zip"
                   id="zip"
                   placeholder="eg: 44600"
-                  className="shadow-xl p-2 outline-none mb-3  rounded border border-[#333446]
-            focus:border-blue-500 focus:ring-2 focus:ring-blue-500 placeholder:text-[#1F406B]
+                  className="shadow-md p-2 outline-none mb-3  rounded border border-[#cecece]
+            focus:border-blue-500 focus:ring-2 focus:ring-blue-500 placeholder:text-[#9ca3af]
              transition duration-200"
                 />
               </div>
@@ -187,8 +182,8 @@ export default function MentorOnboardingForm({
                 name="phonenumber"
                 id="phonenumber"
                 placeholder="eg: 9800000000"
-                className="shadow-xl p-2 outline-none mb-3  rounded border border-[#333446]
-            focus:border-blue-500 focus:ring-2 focus:ring-blue-500 placeholder:text-[#1F406B]
+                className="shadow-md p-2 outline-none mb-3  rounded border border-[#cecece]
+            focus:border-blue-500 focus:ring-2 focus:ring-blue-500 placeholder:text-[#9ca3af]
              transition duration-200 w-full"
               />
             </div>
@@ -237,10 +232,10 @@ export default function MentorOnboardingForm({
                 type="file"
                 name="resume"
                 id="resume"
-                className="shadow-xl border border-blue-500  p-2 w-full"
+                className="shadow-md border border-blue-500  p-2 w-full"
               />
             </div>
-            <div className="w-52 h-52 shadow-xl overflow-hidden mx-auto">
+            <div className="w-52 h-52 shadow-md overflow-hidden mx-auto">
               <Image
                 src={resumeImage}
                 alt="profile"
@@ -252,7 +247,7 @@ export default function MentorOnboardingForm({
           </div>
           <div
             id="right-column"
-            className="shadow-2xl rounded-sm bg-gradient-135 p-4 border-[3px] border-[#ACACAC]"
+            className="shadow-2xl rounded-sm bg-gradient-135 p-4 border-5 border-[#ACACAC]"
           >
             <div id="image-container" className="flex justify-center">
               <button
@@ -262,7 +257,7 @@ export default function MentorOnboardingForm({
                 onClick={handleProfileImageClick}
               >
                 {/* Circular image container */}
-                <div className="w-28 h-28 rounded-full shadow-xl overflow-hidden">
+                <div className="w-28 h-28 rounded-full shadow-md overflow-hidden">
                   <Image
                     src={profileImage}
                     alt="profile"
@@ -301,12 +296,12 @@ export default function MentorOnboardingForm({
                   type="file"
                   name="citizenship"
                   id="citizensip"
-                  className="shadow-xl w-full  p-2 outline-none mb-3  rounded border border-[#333446]
+                  className="shadow-md w-full  p-2 outline-none mb-3  rounded border border-[#cecece]
             focus:border-blue-500 focus:ring-2 focus:ring-blue-500 placeholder:text-[#1F406B]
              transition duration-200"
                 />
 
-                <div className="w-52 h-52 shadow-xl overflow-hidden mx-auto">
+                <div className="w-52 h-52 shadow-md overflow-hidden mx-auto">
                   <Image
                     src={citizensipImage}
                     alt="profile"
@@ -328,8 +323,8 @@ export default function MentorOnboardingForm({
                   maxLength={200}
                   minLength={50}
                   placeholder="Write about yourself"
-                  className="shadow-xl p-2 outline-none mb-3  rounded border border-[#333446]
-            focus:border-blue-500 focus:ring-2 focus:ring-blue-500 placeholder:text-[#1F406B]
+                  className="shadow-md p-2 outline-none mb-3  rounded border border-[#cecece]
+            focus:border-blue-500 focus:ring-2 focus:ring-blue-500 placeholder:text-[#6b717a]
              transition duration-200 w-full max-h-[200px] min-h-[100px] h-full"
                 ></textarea>
               </div>
@@ -338,19 +333,10 @@ export default function MentorOnboardingForm({
         </div>
 
         <div className="flex justify-center flex-col items-center mt-8">
-          <button
-            disabled={isPending}
-            type="submit"
-            className="shadow-xl bg-[#4ed7f1] hover:bg-[#46a9bd] transition duration-200 py-2 px-4 rounded w-1/2 font-medium text-base cursor-pointer"
-          >
-            {isPending ? "Submitting..." : "Submit"}
+          <button disabled={isPending} type="submit" className="shadow-md bg-[#4ed7f1] hover:scale-105 transition duration-200 py-2 px-4 rounded w-1/2 font-medium text-base cursor-pointer">
+          {isPending ? "Submitting..." : "Submit"}
           </button>
-          <p className="text-shadow-md mt-4">
-            Already have an account?&nbsp;
-            <Link href="/login" className="font-medium hover:underline">
-              Login
-            </Link>
-          </p>
+          <p className="text-shadow-md mt-4">Already have an account?&nbsp;<Link href="/login" className="font-medium text-blue-500 hover:underline">Login</Link></p>
         </div>
       </form>
     </div>
