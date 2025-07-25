@@ -1,3 +1,4 @@
+
 import StudentOnboardingForm from "@/components/StudentOnboardingForm";
 import { auth } from "../../../../../../../server/lib/auth/auth";
 import { headers } from "next/headers";
@@ -61,3 +62,5 @@ export default async function Page() {
 
     return <StudentOnboardingForm currentUserId={userRecord.id} />
 }
+
+                  

@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button"
 import SignOutButton from "@/components/SignOutButton"
 
 export default async function Page() {
+
     const session = await auth.api.getSession({
         headers: await headers()
     })
@@ -52,5 +53,6 @@ export default async function Page() {
 
 
     return <AdminPage mentorProfileWithUser={mentorProfileWithUser} />
+
 
 }
