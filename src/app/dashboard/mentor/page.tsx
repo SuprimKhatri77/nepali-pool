@@ -40,12 +40,12 @@ export default async function MentorDashboard() {
         if(!mentorProfileRecord){
             return redirect("/sign-up/onboarding/mentor")
         }
-        if(mentorProfileRecord.verifiedStatus == "pending"){
-            return redirect("/waitlist")
-        }
-         if (mentorProfileRecord.verifiedStatus === "rejected") {
-            return redirect("/rejected")
-        }
+        // if(mentorProfileRecord.verifiedStatus == "pending"){
+        //     return redirect("/waitlist")
+        // }
+        //  if (mentorProfileRecord.verifiedStatus === "rejected") {
+        //     return redirect("/rejected")
+        // }
        
     }
     return (

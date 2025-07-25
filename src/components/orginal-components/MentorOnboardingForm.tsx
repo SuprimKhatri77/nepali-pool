@@ -9,9 +9,9 @@ import {
 } from "../../../server/actions/onboardingMentor";
 import { toast } from "sonner";
 import { useUploadThing } from "@/utils/uploadthing";
-export default function MentorOnboardingForm({
-  currentUserId,
-}: {
+import { useRouter } from "next/navigation";
+export default function MentorOnboardingForm({}: // currentUserId,
+{
   readonly currentUserId: string;
 }) {
   const initialState: FormState = {
@@ -22,9 +22,10 @@ export default function MentorOnboardingForm({
     initialState
   );
   const { startUpload } = useUploadThing("imageUploader");
+  const router = useRouter();
 
   const [profileImage, setProfileImage] = useState("/profile.png");
-  const [citizensipImage, setCitizensipImage] = useState("/images.jpg");
+  const [citizenshipImage, setcitizenshipImage] = useState("/images.jpg");
   const [resumeImage, setResumeImage] = useState("/sample.jpg");
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
@@ -33,8 +34,8 @@ export default function MentorOnboardingForm({
     const field = e.target.name;
 
     if (!file) {
-      if (field === "citizenship") {
-        setCitizensipImage("/signup.png");
+      if (field === "citizenshipPhotoUrl") {
+        setcitizenshipImage("/signup.png");
       } else if (field === "resume") {
         setResumeImage("/signin.png");
       } else {
@@ -45,10 +46,10 @@ export default function MentorOnboardingForm({
 
     const localPreviewURL = URL.createObjectURL(file);
 
-    if (field === "profile") {
+    if (field === "imageUrl") {
       setProfileImage(localPreviewURL);
-    } else if (field === "citizenship") {
-      setCitizensipImage(localPreviewURL);
+    } else if (field === "citizenshipPhotoUrl") {
+      setcitizenshipImage(localPreviewURL);
     } else if (field === "resume") {
       setResumeImage(localPreviewURL);
     }
@@ -57,12 +58,11 @@ export default function MentorOnboardingForm({
       if (uploaded?.[0]?.ufsUrl) {
         const hostedURL = uploaded[0].ufsUrl;
         if (hostedURL) {
-          if (field === "profile") {
+          if (field === "imageUrl") {
             setProfileImage(hostedURL);
           }
-          if (field === "citizenship") {
-
-            setCitizensipImage(hostedURL);
+          if (field === "citizenshipPhotoUrl") {
+            setcitizenshipImage(hostedURL);
           }
           if (field === "resume") {
             setResumeImage(hostedURL);
@@ -77,18 +77,35 @@ export default function MentorOnboardingForm({
   };
 
   useEffect(() => {
+    console.log("profileImage", profileImage);
+    console.log("citizenshipImage", citizenshipImage);
+    console.log("resumeImage", resumeImage);
+  }, [profileImage, citizenshipImage, resumeImage]);
+
+  useEffect(() => {
+    if (state.redirectTo) {
+      router.replace(state.redirectTo);
+    }
     if (state.message) {
       toast(state.message);
     }
-  }, [state.message]);
+    if (state.errors) {
+      console.log(state.errors.zipcode?.[0]);
+    }
+  }, [router, state.redirectTo, state.message, state.errors]);
   return (
-    <div id="form-container" className="border-blue-400 border-4 shadow-2xl rounded-sm text-[#0f172a] bg-gray-200 max-w-[600px] lg:max-w-[1000px] w-full p-4 m-4">
+    <div
+      id="form-container"
+      className="border-blue-400 border-4 shadow-2xl rounded-sm text-[#0f172a] bg-gray-200 max-w-[600px] lg:max-w-[1000px] w-full p-4 m-4"
+    >
       <Logo />
-      <h1 className="text-3xl text-shadow-md font-medium my-2 text-center lg:text-left md:pl-0 lg:pl-9 ">Onboarding</h1>
+      <h1 className="text-3xl text-shadow-md font-medium my-2 text-center lg:text-left md:pl-0 lg:pl-9 ">
+        Onboarding
+      </h1>
       <form action={formAction} className="flex flex-col gap-8 justify-center">
         <input
           type="text"
-          defaultValue={currentUserId}
+          // defaultValue={currentUserId}
           className="hidden"
           name="userId"
         />
@@ -113,6 +130,9 @@ export default function MentorOnboardingForm({
             focus:border-blue-500 focus:ring-2 focus:ring-blue-500 placeholder:text-[#9ca3af]
              transition duration-200 w-full"
               />
+              {state.errors?.country && (
+                <span className="text-red-500">{state.errors.country[0]}</span>
+              )}
             </div>
             <div>
               <label
@@ -130,6 +150,11 @@ export default function MentorOnboardingForm({
             focus:border-blue-500 focus:ring-2 focus:ring-blue-500 placeholder:text-[#9ca3af]
              transition duration-200 w-full"
               />
+              {state.errors?.nationality && (
+                <span className="text-red-500">
+                  {state.errors.nationality[0]}
+                </span>
+              )}
             </div>
             <div
               id="city-zip-container"
@@ -151,6 +176,9 @@ export default function MentorOnboardingForm({
             focus:border-blue-500 focus:ring-2 focus:ring-blue-500 placeholder:text-[#9ca3af]
              transition duration-200"
                 />
+                {state.errors?.city && (
+                  <span className="text-red-500">{state.errors.city[0]}</span>
+                )}
               </div>
               <div id="zip-container" className="flex flex-col">
                 <label
@@ -161,13 +189,18 @@ export default function MentorOnboardingForm({
                 </label>
                 <input
                   type="text"
-                  name="zip"
+                  name="zipcode"
                   id="zip"
                   placeholder="eg: 44600"
                   className="shadow-md p-2 outline-none mb-3  rounded border border-[#cecece]
             focus:border-blue-500 focus:ring-2 focus:ring-blue-500 placeholder:text-[#9ca3af]
              transition duration-200"
                 />
+                {state.errors?.zipcode && (
+                  <span className="text-red-500">
+                    {state.errors.zipcode[0]}
+                  </span>
+                )}
               </div>
             </div>
             <div>
@@ -179,13 +212,18 @@ export default function MentorOnboardingForm({
               </label>
               <input
                 type="tel"
-                name="phonenumber"
+                name="phoneNumber"
                 id="phonenumber"
                 placeholder="eg: 9800000000"
                 className="shadow-md p-2 outline-none mb-3  rounded border border-[#cecece]
             focus:border-blue-500 focus:ring-2 focus:ring-blue-500 placeholder:text-[#9ca3af]
              transition duration-200 w-full"
               />
+              {state.errors?.phoneNumber && (
+                <span className="text-red-500">
+                  {state.errors.phoneNumber[0]}
+                </span>
+              )}
             </div>
             <div id="gender">
               <label
@@ -196,29 +234,27 @@ export default function MentorOnboardingForm({
               </label>
               <div className="flex gap-2 items-center justify-center">
                 <div className="flex items-center gap-2">
-                  <input type="radio" name="gender" id="male" value="male" />
+                  <input type="radio" name="sex" id="male" value="male" />
                   <label htmlFor="male" className="text-shadow-2xs">
                     Male
                   </label>
                 </div>
                 <div className="flex items-center gap-2">
-                  <input
-                    type="radio"
-                    name="gender"
-                    id="female"
-                    value="female"
-                  />
+                  <input type="radio" name="sex" id="female" value="female" />
                   <label htmlFor="female" className="text-shadow-2xs">
                     Female
                   </label>
                 </div>
                 <div className="flex items-center gap-2">
-                  <input type="radio" name="gender" id="other" value="other" />
+                  <input type="radio" name="sex" id="other" value="other" />
                   <label htmlFor="other" className="text-shadow-2xs">
                     Other
                   </label>
                 </div>
               </div>
+              {state.errors?.sex && (
+                <span className="text-red-500">{state.errors.sex[0]}</span>
+              )}
             </div>
             <div>
               <label
@@ -235,12 +271,12 @@ export default function MentorOnboardingForm({
                 className="shadow-md border border-blue-500  p-2 w-full"
               />
             </div>
-            <div className="w-100 h-65 shadow-md rounded-sm overflow-hidden mx-auto">
+            <div className="w-100 h-auto shadow-md rounded-sm overflow-hidden mx-auto">
               <Image
                 src={resumeImage}
                 alt="profile"
                 width={208}
-                height={208}
+                height={400}
                 className="object-cover w-full h-full"
               />
             </div>
@@ -273,7 +309,7 @@ export default function MentorOnboardingForm({
                 </div>
 
                 <input
-                  name="profile"
+                  name="imageUrl"
                   ref={fileInputRef}
                   onChange={handleImageChange}
                   type="file"
@@ -292,9 +328,9 @@ export default function MentorOnboardingForm({
                   Citizenship:
                 </label>
                 <input
+                  name="citizenshipPhotoUrl"
                   onChange={handleImageChange}
                   type="file"
-                  name="citizenship"
                   id="citizensip"
                   className="shadow-md w-full  p-2 outline-none mb-3  rounded border border-[#cecece]
             focus:border-blue-500 focus:ring-2 focus:ring-blue-500 placeholder:text-[#1F406B]
@@ -303,7 +339,7 @@ export default function MentorOnboardingForm({
 
                 <div className="w-100 h-65 shadow-md rounded-sm overflow-hidden mx-auto">
                   <Image
-                    src={citizensipImage}
+                    src={citizenshipImage}
                     alt="Citizenship card"
                     width={208}
                     height={208}
@@ -320,6 +356,7 @@ export default function MentorOnboardingForm({
                 </label>
                 <textarea
                   id="bio"
+                  name="bio"
                   maxLength={200}
                   minLength={50}
                   placeholder="Write about yourself"
@@ -333,10 +370,31 @@ export default function MentorOnboardingForm({
         </div>
 
         <div className="flex justify-center flex-col items-center mt-8">
-          <button disabled={isPending} type="submit" className="shadow-md bg-[#4ed7f1] hover:scale-105 transition duration-200 py-2 px-4 rounded w-1/2 font-medium text-base cursor-pointer">
-          {isPending ? "Submitting..." : "Submit"}
+          <button
+            disabled={isPending}
+            type="submit"
+            className={`
+            ${
+              isPending ||
+              !profileImage.startsWith("https://vbteadl6m3.ufs.sh/f/") ||
+              !citizenshipImage.startsWith("https://vbteadl6m3.ufs.sh/f/") ||
+              !resumeImage.startsWith("https://vbteadl6m3.ufs.sh/f/")
+                ? "opacity-50 cursor-not-allowed"
+                : ""
+            } 
+            shadow-md bg-[#4ed7f1] hover:scale-105 transition duration-200 py-2 px-4 rounded w-1/2 font-medium text-base cursor-pointer`}
+          >
+            {isPending ? "Submitting..." : "Submit"}
           </button>
-          <p className="text-shadow-md mt-4">Already have an account?&nbsp;<Link href="/login" className="font-medium text-blue-500 hover:underline">Login</Link></p>
+          <p className="text-shadow-md mt-4">
+            Already have an account?&nbsp;
+            <Link
+              href="/login"
+              className="font-medium text-blue-500 hover:underline"
+            >
+              Login
+            </Link>
+          </p>
         </div>
       </form>
     </div>
