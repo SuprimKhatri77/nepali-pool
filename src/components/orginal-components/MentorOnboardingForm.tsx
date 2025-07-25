@@ -3,21 +3,72 @@ import { useActionState, useEffect, useRef, useState } from "react";
 import Logo from "../ui/Logo";
 import Image from "next/image";
 import Link from "next/link";
-import { OnboardingMentor, FormState  } from "../../../server/actions/onboardingMentor";
+import {
+  OnboardingMentor,
+  FormState,
+} from "../../../server/actions/onboardingMentor";
 import { toast } from "sonner";
-
-export default function MentorOnboardingForm({currentUserId}:{readonly currentUserId:string}) {
+import { useUploadThing } from "@/utils/uploadthing";
+export default function MentorOnboardingForm({
+  currentUserId,
+}: {
+  readonly currentUserId: string;
+}) {
   const initialState: FormState = {
     errors: {},
-  }
-  const [state,formAction, isPending]=useActionState<FormState,FormData>(OnboardingMentor,initialState)
-  const [preview, setPreview] = useState("/profile.png"); // default image
+  };
+  const [state, formAction, isPending] = useActionState<FormState, FormData>(
+    OnboardingMentor,
+    initialState
+  );
+  const { startUpload } = useUploadThing("imageUploader");
+
+  const [profileImage, setProfileImage] = useState("/profile.png");
+  const [citizensipImage, setCitizensipImage] = useState("/signup.png");
+  const [resumeImage, setResumeImage] = useState("/sign-in.png");
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
-  const handleProfileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = !e.target.files ? null : e.target.files[0];
+    const field = e.target.name;
+
+    if (!file) {
+      if (field === "citizenship") {
+        setCitizensipImage("/signup.png");
+      } else if (field === "resume") {
+        setResumeImage("/signin.png");
+      } else {
+        setProfileImage("/profile.png");
+      }
+      return;
+    }
+
+    const localPreviewURL = URL.createObjectURL(file);
+
+    if (field === "profile") {
+      setProfileImage(localPreviewURL);
+    } else if (field === "citizenship") {
+      setCitizensipImage(localPreviewURL);
+    } else if (field === "resume") {
+      setResumeImage(localPreviewURL);
+    }
     if (file) {
-      setPreview(URL.createObjectURL(file));
+      const uploaded = await startUpload([file]);
+      if (uploaded?.[0]?.ufsUrl) {
+        const hostedURL = uploaded[0].ufsUrl;
+        if (hostedURL) {
+          if (field === "profile") {
+            setProfileImage(hostedURL);
+          }
+          if (field === "citizenship") {
+
+            setCitizensipImage(hostedURL);
+          }
+          if (field === "resume") {
+            setResumeImage(hostedURL);
+          }
+        }
+      }
     }
   };
 
@@ -26,20 +77,36 @@ export default function MentorOnboardingForm({currentUserId}:{readonly currentUs
   };
 
   useEffect(() => {
-    if(state.message){
-      toast(state.message)
+    if (state.message) {
+      toast(state.message);
     }
-  },[state.message])
+  }, [state.message]);
   return (
-    <div id="form-container" className="shadow-2xl rounded-sm text-[#0f172a] bg-gray-200 max-w-[600px] lg:max-w-[1000px] w-full p-4 m-4">
+    <div
+      id="form-container"
+      className="shadow-2xl rounded-sm text-[#0f172a] bg-gray-200 max-w-[600px] lg:max-w-[1000px] w-full p-4 m-4"
+    >
       <Logo />
-      <h1 className="text-3xl text-shadow-md font-medium my-2 text-center lg:text-left md:pl-0 lg:pl-12 ">Onboarding</h1>
+      <h1 className="text-3xl text-shadow-md font-medium my-2 text-center lg:text-left md:pl-0 lg:pl-12 ">
+        Onboarding
+      </h1>
       <form action={formAction} className="flex flex-col gap-8 justify-center">
-        <input type="text"  defaultValue={currentUserId} className="hidden" name="userId"/>
-        <div id="inputs-container" className="flex lg:flex-row flex-col-reverse gap-8 justify-center">
+        <input
+          type="text"
+          defaultValue={currentUserId}
+          className="hidden"
+          name="userId"
+        />
+        <div
+          id="inputs-container"
+          className="flex lg:flex-row flex-col-reverse gap-8 justify-center"
+        >
           <div id="left-column" className="flex flex-col gap-4">
             <div>
-              <label htmlFor="country" className="font-medium text-shadow-sm text-base">
+              <label
+                htmlFor="country"
+                className="font-medium text-shadow-sm text-base"
+              >
                 Current Country:
               </label>
               <input
@@ -53,7 +120,10 @@ export default function MentorOnboardingForm({currentUserId}:{readonly currentUs
               />
             </div>
             <div>
-              <label htmlFor="nationality" className="text-shadow-sm font-medium text-base">
+              <label
+                htmlFor="nationality"
+                className="text-shadow-sm font-medium text-base"
+              >
                 Nationality:
               </label>
               <input
@@ -66,9 +136,15 @@ export default function MentorOnboardingForm({currentUserId}:{readonly currentUs
              transition duration-200 w-full"
               />
             </div>
-            <div id="city-zip-container" className="flex md:flex-row flex-col gap-4 w-full">
+            <div
+              id="city-zip-container"
+              className="flex md:flex-row flex-col gap-4 w-full"
+            >
               <div id="city-container" className="flex flex-col">
-                <label htmlFor="city" className="text-shadow-sm font-medium text-base">
+                <label
+                  htmlFor="city"
+                  className="text-shadow-sm font-medium text-base"
+                >
                   City:
                 </label>
                 <input
@@ -82,7 +158,10 @@ export default function MentorOnboardingForm({currentUserId}:{readonly currentUs
                 />
               </div>
               <div id="zip-container" className="flex flex-col">
-                <label htmlFor="zip" className="text-shadow-sm font-medium text-base">
+                <label
+                  htmlFor="zip"
+                  className="text-shadow-sm font-medium text-base"
+                >
                   Zip Code:
                 </label>
                 <input
@@ -97,7 +176,10 @@ export default function MentorOnboardingForm({currentUserId}:{readonly currentUs
               </div>
             </div>
             <div>
-              <label htmlFor="phonenumber" className="text-shadow-sm font-medium text-base">
+              <label
+                htmlFor="phonenumber"
+                className="text-shadow-sm font-medium text-base"
+              >
                 Phone Number
               </label>
               <input
@@ -111,33 +193,60 @@ export default function MentorOnboardingForm({currentUserId}:{readonly currentUs
               />
             </div>
             <div id="gender">
-              <label htmlFor="gender" className="text-shadow-sm font-medium text-base">
+              <label
+                htmlFor="gender"
+                className="text-shadow-sm font-medium text-base"
+              >
                 Gender:
               </label>
               <div className="flex gap-2 items-center justify-center">
                 <div className="flex items-center gap-2">
                   <input type="radio" name="gender" id="male" value="male" />
-                  <label htmlFor="male" className="text-shadow-2xs">Male</label>
+                  <label htmlFor="male" className="text-shadow-2xs">
+                    Male
+                  </label>
                 </div>
                 <div className="flex items-center gap-2">
-                  <input type="radio" name="gender" id="female" value="female" />
-                  <label htmlFor="female" className="text-shadow-2xs">Female</label>
+                  <input
+                    type="radio"
+                    name="gender"
+                    id="female"
+                    value="female"
+                  />
+                  <label htmlFor="female" className="text-shadow-2xs">
+                    Female
+                  </label>
                 </div>
                 <div className="flex items-center gap-2">
                   <input type="radio" name="gender" id="other" value="other" />
-                  <label htmlFor="other" className="text-shadow-2xs">Other</label>
+                  <label htmlFor="other" className="text-shadow-2xs">
+                    Other
+                  </label>
                 </div>
               </div>
             </div>
             <div>
-              <label htmlFor="resume" className="text-shadow-sm font-medium text-base">
+              <label
+                htmlFor="resume"
+                className="text-shadow-sm font-medium text-base"
+              >
                 Resume:
               </label>
               <input
+                onChange={handleImageChange}
                 type="file"
                 name="resume"
                 id="resume"
                 className="shadow-xl border border-blue-500  p-2 w-full"
+              />
+            </div>
+            <div className="w-52 h-52 shadow-xl overflow-hidden mx-auto">
+              <Image
+                src={resumeImage}
+                alt="profile"
+                width={208}
+                height={208}
+                className="object-cover w-full h-full"
               />
             </div>
           </div>
@@ -155,7 +264,7 @@ export default function MentorOnboardingForm({currentUserId}:{readonly currentUs
                 {/* Circular image container */}
                 <div className="w-28 h-28 rounded-full shadow-xl overflow-hidden">
                   <Image
-                    src={preview}
+                    src={profileImage}
                     alt="profile"
                     width={112}
                     height={112}
@@ -169,8 +278,9 @@ export default function MentorOnboardingForm({currentUserId}:{readonly currentUs
                 </div>
 
                 <input
+                  name="profile"
                   ref={fileInputRef}
-                  onChange={handleProfileChange}
+                  onChange={handleImageChange}
                   type="file"
                   accept="image/*"
                   className="hidden"
@@ -180,20 +290,37 @@ export default function MentorOnboardingForm({currentUserId}:{readonly currentUs
 
             <div id="input-section-right">
               <div>
-                <label htmlFor="citizensip" className="text-shadow-sm font-medium text-base">
+                <label
+                  htmlFor="citizenship"
+                  className="text-shadow-sm font-medium text-base"
+                >
                   Citizenship:
                 </label>
                 <input
+                  onChange={handleImageChange}
                   type="file"
-                  name="citizensip"
+                  name="citizenship"
                   id="citizensip"
                   className="shadow-xl w-full  p-2 outline-none mb-3  rounded border border-[#333446]
             focus:border-blue-500 focus:ring-2 focus:ring-blue-500 placeholder:text-[#1F406B]
              transition duration-200"
                 />
+
+                <div className="w-52 h-52 shadow-xl overflow-hidden mx-auto">
+                  <Image
+                    src={citizensipImage}
+                    alt="profile"
+                    width={208}
+                    height={208}
+                    className="object-cover w-full h-full"
+                  />
+                </div>
               </div>
               <div className="flex flex-col">
-                <label htmlFor="bio" className="text-shadow-sm font-medium text-base">
+                <label
+                  htmlFor="bio"
+                  className="text-shadow-sm font-medium text-base"
+                >
                   Bio:
                 </label>
                 <textarea
@@ -211,10 +338,19 @@ export default function MentorOnboardingForm({currentUserId}:{readonly currentUs
         </div>
 
         <div className="flex justify-center flex-col items-center mt-8">
-          <button disabled={isPending} type="submit" className="shadow-xl bg-[#4ed7f1] hover:bg-[#46a9bd] transition duration-200 py-2 px-4 rounded w-1/2 font-medium text-base cursor-pointer">
-          {isPending ? "Submitting..." : "Submit"}
+          <button
+            disabled={isPending}
+            type="submit"
+            className="shadow-xl bg-[#4ed7f1] hover:bg-[#46a9bd] transition duration-200 py-2 px-4 rounded w-1/2 font-medium text-base cursor-pointer"
+          >
+            {isPending ? "Submitting..." : "Submit"}
           </button>
-          <p className="text-shadow-md mt-4">Already have an account?&nbsp;<Link href="/login" className="font-medium hover:underline">Login</Link></p>
+          <p className="text-shadow-md mt-4">
+            Already have an account?&nbsp;
+            <Link href="/login" className="font-medium hover:underline">
+              Login
+            </Link>
+          </p>
         </div>
       </form>
     </div>
