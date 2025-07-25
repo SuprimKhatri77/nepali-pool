@@ -273,6 +273,7 @@ export default function MentorOnboardingForm({}: // currentUserId,
             </div>
             <div className="w-100 h-auto shadow-md rounded-sm overflow-hidden mx-auto">
               <Image
+                unoptimized
                 src={resumeImage}
                 alt="profile"
                 width={208}
@@ -295,6 +296,7 @@ export default function MentorOnboardingForm({}: // currentUserId,
                 {/* Circular image container */}
                 <div className="w-28 h-28 rounded-full shadow-md overflow-hidden">
                   <Image
+                    unoptimized
                     src={profileImage}
                     alt="profile"
                     width={112}
@@ -302,8 +304,7 @@ export default function MentorOnboardingForm({}: // currentUserId,
                     className="object-cover w-full h-full"
                   />
                 </div>
-
-                {/* + icon overlay */}
+                 {/* + button */}
                 <div className="absolute bottom-1 right-1 bg-blue-600 cursor-pointer rounded-full w-6 h-6 flex items-center justify-center border-2 border-white text-white text-sm shadow-md">
                   +
                 </div>
@@ -339,6 +340,7 @@ export default function MentorOnboardingForm({}: // currentUserId,
 
                 <div className="w-100 h-65 shadow-md rounded-sm overflow-hidden mx-auto">
                   <Image
+                    unoptimized
                     src={citizenshipImage}
                     alt="Citizenship card"
                     width={208}
@@ -375,10 +377,12 @@ export default function MentorOnboardingForm({}: // currentUserId,
             type="submit"
             className={`
             ${
-              isPending ||
+              isPending 
+                ||
               !profileImage.startsWith("https://vbteadl6m3.ufs.sh/f/") ||
               !citizenshipImage.startsWith("https://vbteadl6m3.ufs.sh/f/") ||
-              !resumeImage.startsWith("https://vbteadl6m3.ufs.sh/f/")
+              !resumeImage.startsWith("https://vbteadl6m3.ufs.sh/f/") 
+               
                 ? "opacity-50 cursor-not-allowed"
                 : ""
             } 
