@@ -8,12 +8,14 @@ import {
   FormState,
 } from "../../../server/actions/onboardingMentor";
 import { toast } from "sonner";
-import { useUploadThing } from "@/utils/uploadthing";
 import { useRouter } from "next/navigation";
-export default function MentorOnboardingForm({}: // currentUserId,
-{
-  readonly currentUserId: string;
-}) {
+import CustomProfileUploader from "./CustomImageButton";
+
+
+export default function MentorOnboardingForm({ currentUserId }:
+  {
+    currentUserId: string;
+  }) {
   const initialState: FormState = {
     errors: {},
   };
@@ -21,66 +23,12 @@ export default function MentorOnboardingForm({}: // currentUserId,
     OnboardingMentor,
     initialState
   );
-  const { startUpload } = useUploadThing("imageUploader");
   const router = useRouter();
 
-  const [profileImage, setProfileImage] = useState("/profile.png");
-  const [citizenshipImage, setcitizenshipImage] = useState("/images.jpg");
-  const [resumeImage, setResumeImage] = useState("/sample.jpg");
-  const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const [profileImage, setProfileImage] = useState("");
+  const [citizenshipImage, setcitizenshipImage] = useState("");
+  const [resumeImage, setResumeImage] = useState("");
 
-  const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = !e.target.files ? null : e.target.files[0];
-    const field = e.target.name;
-
-    if (!file) {
-      if (field === "citizenshipPhotoUrl") {
-        setcitizenshipImage("/signup.png");
-      } else if (field === "resume") {
-        setResumeImage("/signin.png");
-      } else {
-        setProfileImage("/profile.png");
-      }
-      return;
-    }
-
-    const localPreviewURL = URL.createObjectURL(file);
-
-    if (field === "imageUrl") {
-      setProfileImage(localPreviewURL);
-    } else if (field === "citizenshipPhotoUrl") {
-      setcitizenshipImage(localPreviewURL);
-    } else if (field === "resume") {
-      setResumeImage(localPreviewURL);
-    }
-    if (file) {
-      const uploaded = await startUpload([file]);
-      if (uploaded?.[0]?.ufsUrl) {
-        const hostedURL = uploaded[0].ufsUrl;
-        if (hostedURL) {
-          if (field === "imageUrl") {
-            setProfileImage(hostedURL);
-          }
-          if (field === "citizenshipPhotoUrl") {
-            setcitizenshipImage(hostedURL);
-          }
-          if (field === "resume") {
-            setResumeImage(hostedURL);
-          }
-        }
-      }
-    }
-  };
-
-  const handleProfileImageClick = () => {
-    fileInputRef.current?.click();
-  };
-
-  useEffect(() => {
-    console.log("profileImage", profileImage);
-    console.log("citizenshipImage", citizenshipImage);
-    console.log("resumeImage", resumeImage);
-  }, [profileImage, citizenshipImage, resumeImage]);
 
   useEffect(() => {
     if (state.redirectTo) {
@@ -90,7 +38,7 @@ export default function MentorOnboardingForm({}: // currentUserId,
       toast(state.message);
     }
     if (state.errors) {
-      console.log(state.errors.zipcode?.[0]);
+      console.log(state.errors.zipCode?.[0]);
     }
   }, [router, state.redirectTo, state.message, state.errors]);
   return (
@@ -104,10 +52,10 @@ export default function MentorOnboardingForm({}: // currentUserId,
       </h1>
       <form action={formAction} className="flex flex-col gap-8 justify-center">
         <input
-          type="text"
-          // defaultValue={currentUserId}
+          type="hidden"
+          value={currentUserId}
           className="hidden"
-          name="userId"
+          name="currentUserId"
         />
         <div
           id="inputs-container"
@@ -189,16 +137,16 @@ export default function MentorOnboardingForm({}: // currentUserId,
                 </label>
                 <input
                   type="text"
-                  name="zipcode"
+                  name="zipCode"
                   id="zip"
                   placeholder="eg: 44600"
                   className="shadow-md p-2 outline-none mb-3  rounded border border-[#cecece]
             focus:border-blue-500 focus:ring-2 focus:ring-blue-500 placeholder:text-[#9ca3af]
              transition duration-200"
                 />
-                {state.errors?.zipcode && (
+                {state.errors?.zipCode && (
                   <span className="text-red-500">
-                    {state.errors.zipcode[0]}
+                    {state.errors.zipCode[0]}
                   </span>
                 )}
               </div>
@@ -211,7 +159,7 @@ export default function MentorOnboardingForm({}: // currentUserId,
                 Phone Number
               </label>
               <input
-                type="tel"
+                type="text"
                 name="phoneNumber"
                 id="phonenumber"
                 placeholder="eg: 9800000000"
@@ -263,61 +211,39 @@ export default function MentorOnboardingForm({}: // currentUserId,
               >
                 Resume:
               </label>
-              <input
-                onChange={handleImageChange}
-                type="file"
-                name="resume"
-                id="resume"
-                className="shadow-md border border-blue-500  p-2 w-full"
-              />
+
+              <CustomProfileUploader imageUploadName="Resume Image" onUploadComplete={(url: string) => setResumeImage(url)} />
+              <input type="hidden" name="resume" value={resumeImage} />
             </div>
+
             <div className="w-100 h-auto shadow-md rounded-sm overflow-hidden mx-auto">
-              <Image
-                unoptimized
-                src={resumeImage}
-                alt="profile"
-                width={208}
-                height={400}
-                className="object-cover w-full h-full"
-              />
+              {resumeImage && (
+                <Image
+                  unoptimized
+                  src={resumeImage}
+                  alt="profile"
+                  width={208}
+                  height={400}
+                  className="object-cover w-full h-full"
+                />
+              )}
             </div>
           </div>
           <div
             id="right-column"
-            className="shadow-2xl rounded-sm bg-gradient-135 p-4 border-4 lg:max-h-[620px] border-[#ACACAC]"
+            className="shadow-2xl rounded-sm bg-gradient-135 p-4 border-4 lg:max-h-[720px] border-[#ACACAC]"
           >
             <div id="image-container" className="flex justify-center">
-              <button
+              <div
                 id="photo-section"
-                type="button"
                 className="relative flex items-center justify-center focus:outline-none"
-                onClick={handleProfileImageClick}
               >
-                {/* Circular image container */}
-                <div className="w-28 h-28 rounded-full shadow-md overflow-hidden">
-                  <Image
-                    unoptimized
-                    src={profileImage}
-                    alt="profile"
-                    width={112}
-                    height={112}
-                    className="object-cover w-full h-full"
-                  />
-                </div>
-                 {/* + button */}
-                <div className="absolute bottom-1 right-1 bg-blue-600 cursor-pointer rounded-full w-6 h-6 flex items-center justify-center border-2 border-white text-white text-sm shadow-md">
-                  +
-                </div>
 
-                <input
-                  name="imageUrl"
-                  ref={fileInputRef}
-                  onChange={handleImageChange}
-                  type="file"
-                  accept="image/*"
-                  className="hidden"
-                />
-              </button>
+
+                <CustomProfileUploader onUploadComplete={(url: string) => setProfileImage(url)} imageUploadName="Profile Image" currentImage={profileImage} />
+                <input type="hidden" name="imageUrl" value={profileImage} />
+
+              </div>
             </div>
 
             <div id="input-section-right">
@@ -328,25 +254,23 @@ export default function MentorOnboardingForm({}: // currentUserId,
                 >
                   Citizenship:
                 </label>
-                <input
-                  name="citizenshipPhotoUrl"
-                  onChange={handleImageChange}
-                  type="file"
-                  id="citizensip"
-                  className="shadow-md w-full  p-2 outline-none mb-3  rounded border border-[#cecece]
-            focus:border-blue-500 focus:ring-2 focus:ring-blue-500 placeholder:text-[#1F406B]
-             transition duration-200"
-                />
+
+                <CustomProfileUploader imageUploadName="Citizenship Image" onUploadComplete={(url: string) => setcitizenshipImage(url)} />
+                <input type="hidden" name="citizenshipPhotoUrl" value={citizenshipImage} />
+
+
 
                 <div className="w-100 h-65 shadow-md rounded-sm overflow-hidden mx-auto">
-                  <Image
-                    unoptimized
-                    src={citizenshipImage}
-                    alt="Citizenship card"
-                    width={208}
-                    height={208}
-                    className="object-fit w-full h-full"
-                  />
+                  {citizenshipImage && (
+                    <Image
+                      unoptimized
+                      src={citizenshipImage}
+                      alt="Citizenship card"
+                      width={208}
+                      height={208}
+                      className="object-fit w-full h-full"
+                    />
+                  )}
                 </div>
               </div>
               <div className="flex flex-col">
@@ -376,16 +300,15 @@ export default function MentorOnboardingForm({}: // currentUserId,
             disabled={isPending}
             type="submit"
             className={`
-            ${
-              isPending 
+            ${isPending
                 ||
-              !profileImage.startsWith("https://vbteadl6m3.ufs.sh/f/") ||
-              !citizenshipImage.startsWith("https://vbteadl6m3.ufs.sh/f/") ||
-              !resumeImage.startsWith("https://vbteadl6m3.ufs.sh/f/") 
-               
+                !profileImage.startsWith("https://vbteadl6m3.ufs.sh/f/") ||
+                !citizenshipImage.startsWith("https://vbteadl6m3.ufs.sh/f/") ||
+                !resumeImage.startsWith("https://vbteadl6m3.ufs.sh/f/")
+
                 ? "opacity-50 cursor-not-allowed"
                 : ""
-            } 
+              } 
             shadow-md bg-[#4ed7f1] hover:scale-105 transition duration-200 py-2 px-4 rounded w-1/2 font-medium text-base cursor-pointer`}
           >
             {isPending ? "Submitting..." : "Submit"}

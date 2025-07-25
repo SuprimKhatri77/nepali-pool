@@ -13,7 +13,7 @@ export type FormState = {
   errors?: {
     country?: string[];
     city?: string[];
-    zipcode?: string[];
+    zipCode?: string[];
     phoneNumber?: string[];
     sex?: string[];
     resume?: string[];
@@ -42,6 +42,7 @@ export async function OnboardingMentor(
       redirectTo: "/login",
     };
   }
+  // console.log("FormData: ", formData);
 
   const onboardingMentorData = z.object({
     country: z.string().min(1, "Country is required").nonempty(),
