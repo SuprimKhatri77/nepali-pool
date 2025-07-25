@@ -24,8 +24,8 @@ export default function MentorOnboardingForm({
   const { startUpload } = useUploadThing("imageUploader");
 
   const [profileImage, setProfileImage] = useState("/profile.png");
-  const [citizensipImage, setCitizensipImage] = useState("/signup.png");
-  const [resumeImage, setResumeImage] = useState("/sign-in.png");
+  const [citizensipImage, setCitizensipImage] = useState("/images.jpg");
+  const [resumeImage, setResumeImage] = useState("/sample.jpg");
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -235,7 +235,7 @@ export default function MentorOnboardingForm({
                 className="shadow-md border border-blue-500  p-2 w-full"
               />
             </div>
-            <div className="w-52 h-52 shadow-md overflow-hidden mx-auto">
+            <div className="w-100 h-65 shadow-md rounded-sm overflow-hidden mx-auto">
               <Image
                 src={resumeImage}
                 alt="profile"
@@ -247,7 +247,7 @@ export default function MentorOnboardingForm({
           </div>
           <div
             id="right-column"
-            className="shadow-2xl rounded-sm bg-gradient-135 p-4 border-5 border-[#ACACAC]"
+            className="shadow-2xl rounded-sm bg-gradient-135 p-4 border-4 lg:max-h-[620px] border-[#ACACAC]"
           >
             <div id="image-container" className="flex justify-center">
               <button
@@ -301,13 +301,13 @@ export default function MentorOnboardingForm({
              transition duration-200"
                 />
 
-                <div className="w-52 h-52 shadow-md overflow-hidden mx-auto">
+                <div className="w-100 h-65 shadow-md rounded-sm overflow-hidden mx-auto">
                   <Image
                     src={citizensipImage}
-                    alt="profile"
+                    alt="Citizenship card"
                     width={208}
                     height={208}
-                    className="object-cover w-full h-full"
+                    className="object-fit w-full h-full"
                   />
                 </div>
               </div>
