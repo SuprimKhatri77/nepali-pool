@@ -5,7 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Eye, EyeOff } from "lucide-react"
-import { useRouter } from "next/navigation"
+import { useRouter, useSearchParams } from "next/navigation"
 import { useState } from "react"
 import { authClient } from "../../server/lib/auth/auth-client"
 import { toast } from "sonner"
@@ -16,6 +16,13 @@ export default function ResetPassword({ token }: { token: string }) {
     const [inputType, setInputType] = useState<string>("password")
     const [confirmNewPassword, setConfirmNewPassword] = useState<string>("")
     const router = useRouter()
+    const params = useSearchParams()
+
+    const tokenFromParams = params.get("token") as string;
+
+    if (tokenFromParams !== token) {
+        router.replace("/login/forgot-password?error=invalid_token")
+    }
 
     const handleClick = async () => {
         if (!newPassword || !confirmNewPassword) {
