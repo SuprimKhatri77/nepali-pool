@@ -1,5 +1,5 @@
 "use client";
-import { useActionState, useEffect, useRef, useState } from "react";
+import { useActionState, useEffect, useState } from "react";
 import Logo from "../ui/Logo";
 import Image from "next/image";
 import Link from "next/link";
@@ -10,12 +10,13 @@ import {
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import CustomProfileUploader from "./CustomImageButton";
+import { Modal } from "./ApplicationProfile";
 
-
-export default function MentorOnboardingForm({ currentUserId }:
-  {
-    currentUserId: string;
-  }) {
+export default function MentorOnboardingForm({
+  currentUserId,
+}: {
+  currentUserId: string;
+}) {
   const initialState: FormState = {
     errors: {},
   };
@@ -28,7 +29,7 @@ export default function MentorOnboardingForm({ currentUserId }:
   const [profileImage, setProfileImage] = useState("");
   const [citizenshipImage, setcitizenshipImage] = useState("");
   const [resumeImage, setResumeImage] = useState("");
-
+  const [showResumeModal, setShowResumeModal] = useState(false);
 
   useEffect(() => {
     if (state.redirectTo) {
@@ -47,7 +48,7 @@ export default function MentorOnboardingForm({ currentUserId }:
       className="border-blue-400 border-4 shadow-2xl rounded-sm text-[#0f172a] bg-gray-200 max-w-[600px] lg:max-w-[1000px] w-full p-4 m-4"
     >
       <Logo />
-      <h1 className="text-3xl text-shadow-md font-medium my-2 text-center lg:text-left md:pl-0 lg:pl-9 ">
+      <h1 className="text-3xl text-shadow-md font-medium my-2 text-center lg:text-left md:pl-0 pl-4">
         Onboarding
       </h1>
       <form action={formAction} className="flex flex-col gap-8 justify-center">
@@ -212,37 +213,55 @@ export default function MentorOnboardingForm({ currentUserId }:
                 Resume:
               </label>
 
-              <CustomProfileUploader imageUploadName="Resume Image" onUploadComplete={(url: string) => setResumeImage(url)} />
+              <CustomProfileUploader
+                imageUploadName="Resume Image"
+                onUploadComplete={(url: string) => setResumeImage(url)}
+              />
               <input type="hidden" name="resume" value={resumeImage} />
             </div>
 
-            <div className="w-100 h-auto shadow-md rounded-sm overflow-hidden mx-auto">
+            <div className=" h-auto shadow-md rounded-sm overflow-hidden mx-auto max-w-[400px]">
               {resumeImage && (
                 <Image
                   unoptimized
+                  onClick={() => setShowResumeModal(true)}
                   src={resumeImage}
                   alt="profile"
-                  width={208}
+                  width={400}
                   height={400}
-                  className="object-cover w-full h-full"
+                  className="object-cover max-w-full h-full mx-auto"
                 />
               )}
             </div>
+            {/* RESUME MODAL (PDF) */}
+            {showResumeModal && (
+              <Modal onClose={() => setShowResumeModal(false)}>
+                <Image
+                  unoptimized
+                  src={resumeImage}
+                  width={500}
+                  height={500}
+                  alt="Resume"
+                  className="max-w-[400px] md:max-w-[600px]  w-full rounded-lg overflow-y-scroll"
+                />
+              </Modal>
+            )}
           </div>
           <div
             id="right-column"
-            className="shadow-2xl rounded-sm bg-gradient-135 p-4 border-4 lg:max-h-[720px] border-[#ACACAC]"
+            className="shadow-2xl rounded-sm bg-gradient-135 p-4 border-4 w-full  border-[#ACACAC]"
           >
             <div id="image-container" className="flex justify-center">
               <div
                 id="photo-section"
                 className="relative flex items-center justify-center focus:outline-none"
               >
-
-
-                <CustomProfileUploader onUploadComplete={(url: string) => setProfileImage(url)} imageUploadName="Profile Image" currentImage={profileImage} />
+                <CustomProfileUploader
+                  onUploadComplete={(url: string) => setProfileImage(url)}
+                  imageUploadName="Profile Image"
+                  currentImage={profileImage}
+                />
                 <input type="hidden" name="imageUrl" value={profileImage} />
-
               </div>
             </div>
 
@@ -255,20 +274,25 @@ export default function MentorOnboardingForm({ currentUserId }:
                   Citizenship:
                 </label>
 
-                <CustomProfileUploader imageUploadName="Citizenship Image" onUploadComplete={(url: string) => setcitizenshipImage(url)} />
-                <input type="hidden" name="citizenshipPhotoUrl" value={citizenshipImage} />
+                <CustomProfileUploader
+                  imageUploadName="Citizenship Image"
+                  onUploadComplete={(url: string) => setcitizenshipImage(url)}
+                />
+                <input
+                  type="hidden"
+                  name="citizenshipPhotoUrl"
+                  value={citizenshipImage}
+                />
 
-
-
-                <div className="w-100 h-65 shadow-md rounded-sm overflow-hidden mx-auto">
+                <div className="shadow-md rounded-sm overflow-hidden mx-auto">
                   {citizenshipImage && (
                     <Image
                       unoptimized
                       src={citizenshipImage}
                       alt="Citizenship card"
-                      width={208}
-                      height={208}
-                      className="object-fit w-full h-full"
+                      width={400}
+                      height={400}
+                      className="object-fit max-w-full h-full"
                     />
                   )}
                 </div>
@@ -300,15 +324,14 @@ export default function MentorOnboardingForm({ currentUserId }:
             disabled={isPending}
             type="submit"
             className={`
-            ${isPending
-                ||
-                !profileImage.startsWith("https://vbteadl6m3.ufs.sh/f/") ||
-                !citizenshipImage.startsWith("https://vbteadl6m3.ufs.sh/f/") ||
-                !resumeImage.startsWith("https://vbteadl6m3.ufs.sh/f/")
-
+            ${
+              isPending ||
+              !profileImage.startsWith("https://vbteadl6m3.ufs.sh/f/") ||
+              !citizenshipImage.startsWith("https://vbteadl6m3.ufs.sh/f/") ||
+              !resumeImage.startsWith("https://vbteadl6m3.ufs.sh/f/")
                 ? "opacity-50 cursor-not-allowed"
                 : ""
-              } 
+            } 
             shadow-md bg-[#4ed7f1] hover:scale-105 transition duration-200 py-2 px-4 rounded w-1/2 font-medium text-base cursor-pointer`}
           >
             {isPending ? "Submitting..." : "Submit"}

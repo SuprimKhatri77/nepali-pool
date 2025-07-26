@@ -219,7 +219,7 @@ export default function SignUpPage() {
             focus:border-blue-500 focus:ring-2 focus:ring-blue-500 placeholder:text-[#1F406B]
              transition duration-200"
           > 
-            
+            <option value="admin">Admin</option>
             <option value="student">Student</option>
             <option value="mentor">Mentor</option>
           </select>
