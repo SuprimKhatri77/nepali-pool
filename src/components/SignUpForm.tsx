@@ -37,13 +37,14 @@ export default function SignUpPage() {
                 router.replace(state.redirectTo as string)
             }, 1500);
         }
-    })
+    }, [state.redirectTo])
 
     useEffect(() => {
         if (state.message) {
             toast(state.message)
         }
     }, [state.message])
+
 
 
 
@@ -183,6 +184,8 @@ export default function SignUpPage() {
                                 <p className='text-red-400 text-sm'>{state.errors.password[0]}</p>
                             )}
                         </div>
+
+
                         <div className="space-y-2">
                             <Label
                                 htmlFor="role"
@@ -204,6 +207,8 @@ export default function SignUpPage() {
                                 <p className='text-red-400 text-sm'>{state.errors.role[0]}</p>
                             )}
                         </div>
+
+
 
                         <Button className="w-full" disabled={isPending}>
                             {isPending ? "submitting...." : "Continue"}

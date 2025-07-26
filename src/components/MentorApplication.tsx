@@ -195,7 +195,7 @@ export default function ({ mentorProfileRecordWithUser }: { mentorProfileRecordW
                                     <form action={formActionReject}>
                                         <input type="hidden" name="applicationId" value={mentorProfileRecordWithUser.userId} />
 
-                                        <Button type="submit" disabled={isPendingReject} variant="destructive" className="w-full" size="lg">
+                                        <Button type="submit" disabled={isPendingReject || mentorProfileRecordWithUser.verifiedStatus === "rejected"} variant="destructive" className="w-full" size="lg">
                                             {
                                                 isPendingReject ? "Rejecting" : (
                                                     <>

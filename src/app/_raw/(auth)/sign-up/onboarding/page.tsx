@@ -1,6 +1,6 @@
 import { headers } from "next/headers";
 import { auth } from "../../../../../../server/lib/auth/auth";
-import { redirect } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { db } from "../../../../../../lib/db";
 import { mentorProfile, studentProfile, user } from "../../../../../../lib/db/schema";
 import { eq } from "drizzle-orm";
@@ -49,6 +49,8 @@ export default async function Onboarding() {
         return redirect("/dashboard/student")
     }
 
+
+    return notFound()
 
 
 }

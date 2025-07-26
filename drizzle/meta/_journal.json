@@ -15,6 +15,13 @@
       "when": 1753334742208,
       "tag": "0001_luxuriant_riptide",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1753512834634,
+      "tag": "0002_salty_nuke",
+      "breakpoints": true
     }
   ]
 }

@@ -1,4 +1,3 @@
-
 import StudentOnboardingForm from "@/components/StudentOnboardingForm";
 import { auth } from "../../../../../../../server/lib/auth/auth";
 import { headers } from "next/headers";
@@ -32,6 +31,10 @@ export default async function Page() {
         return redirect("/select-role")
     }
 
+    if (userRecord.role === "admin") {
+        return redirect("/admin/dashboard")
+    }
+
 
     if (userRecord.role === "mentor") {
         const [mentorProfileRecord] = await db.select().from(mentorProfile).where(eq(mentorProfile.userId, userRecord.id))
@@ -62,5 +65,3 @@ export default async function Page() {
 
     return <StudentOnboardingForm currentUserId={userRecord.id} />
 }
-
-                  

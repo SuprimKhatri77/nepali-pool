@@ -5,6 +5,10 @@ import { user as userTable } from "../../../lib/db/schema";
 import { sendEmail } from "../send-email";
 import { nextCookies } from "better-auth/next-js";
 import { eq } from "drizzle-orm";
+import { Resend } from "resend";
+import EmailVerification from "@/components/VerifyEmailMessage";
+
+const resend = new Resend(process.env.RESEND_API_KEY as string);
 
 export const auth = betterAuth({
   database: drizzleAdapter(db, {
@@ -45,10 +49,19 @@ export const auth = betterAuth({
         }`
       );
 
+      // Resend config for production
+
+      // await resend.emails.send({
+      //   from: "nepalipool77@gmail.com",
+      //   to: user.email,
+      //   subject: "Verify your email",
+      //   react: EmailVerification({ name: user.name, url: String(finalUrl) }),
+      // });
+
       await sendEmail({
         to: user.email,
-        subject: "Verify your email",
-        html: `A request from your side was made for email verification. <br>Click on the link to verify your email ${finalUrl} <br> If it was not you , You can safely ignore this email.`,
+        subject: "Reset Password",
+        html: `A request from your side was made for email verification. <br>Click on the link to verify your email ${finalUrl} <br> If it was not you , You can safely ignore this email. This link will expire in 1 hour`,
       });
     },
     expiresIn: 3600,

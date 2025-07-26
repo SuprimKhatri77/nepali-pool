@@ -26,19 +26,14 @@ export default function SelectRolePage() {
     useEffect(() => {
         let timeout: any;
         if (state.success) {
-            toast(state.message)
+            timeout = setTimeout(() => {
+
+                toast(state.message)
+            }, 1200)
 
             timeout = setTimeout(() => {
-                if (role === "student") {
-
-                    router.push("/dashboard/student")
-                } else if (role === "mentor") {
-
-                    router.push("/dashboard/mentor")
-                } else {
-                    toast("select a valid role!")
-                }
-            }, 2500);
+                router.replace(state.redirectTo as string)
+            }, 2000);
         }
 
         return () => clearTimeout(timeout)
@@ -63,6 +58,9 @@ export default function SelectRolePage() {
                         <SelectItem value="mentor">Mentor</SelectItem>
                     </SelectContent>
                 </Select>
+                {state.errors?.role && (
+                    <p className="text-sm text-red-400">{state.errors.role[0]}</p>
+                )}
                 <input type="hidden" name="role" value={role} required />
 
             </div>

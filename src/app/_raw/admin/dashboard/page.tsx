@@ -1,23 +1,20 @@
-import SignUpPage from "@/components/SignUpForm";
-import { auth } from "../../../../../server/lib/auth/auth";
-import { headers } from "next/headers";
-import { db } from "../../../../../lib/db";
-import { mentorProfile, studentProfile, user } from "../../../../../lib/db/schema";
-import { eq } from "drizzle-orm";
-import { notFound, redirect } from "next/navigation";
+import { headers } from "next/headers"
+import { auth } from "../../../../../server/lib/auth/auth"
+import { redirect } from "next/navigation"
+import { db } from "../../../../../lib/db"
+import { mentorProfile, studentProfile, user } from "../../../../../lib/db/schema"
+import { eq } from "drizzle-orm"
+import AdminPage from "@/components/AdminPage"
 
-export default async function SignUp() {
+export default async function AdminDashboardPage() {
     const session = await auth.api.getSession({
-
         headers: await headers()
     })
 
     if (!session) {
-        return <SignUpPage />
+        return redirect("/login")
     }
-
     const [userRecord] = await db.select().from(user).where(eq(user.id, session.user.id))
-
     if (!userRecord) {
         return redirect("/sign-up")
     }
@@ -26,13 +23,8 @@ export default async function SignUp() {
         return redirect(`/sign-up/verify-email?email=${encodeURIComponent(userRecord.email)}`)
     }
 
-
-    if (!userRecord.role || userRecord.role === "none") {
+    if (userRecord.role === "none") {
         return redirect("/select-role")
-    }
-
-    if (userRecord.role === "admin") {
-        return redirect("/admin/dashboard")
     }
 
 
@@ -43,12 +35,13 @@ export default async function SignUp() {
         }
         return redirect("/dashboard/student")
     }
-
     if (userRecord.role === "mentor") {
+
         const [mentorProfileRecord] = await db.select().from(mentorProfile).where(eq(mentorProfile.userId, userRecord.id))
         if (!mentorProfileRecord) {
             return redirect("/sign-up/onboarding/mentor")
         }
+
         if (mentorProfileRecord.verifiedStatus === "pending") {
             return redirect("/waitlist")
         }
@@ -59,8 +52,7 @@ export default async function SignUp() {
     }
 
 
-    return notFound()
 
-
+    return <AdminPage />
 
 }
