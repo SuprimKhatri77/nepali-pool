@@ -3,6 +3,7 @@ import { auth } from "../../../../../server/lib/auth/auth"
 import { redirect } from "next/navigation"
 import { db } from "../../../../../lib/db"
 import { mentorProfile, studentProfile, user } from "../../../../../lib/db/schema"
+import { user } from "../../../../../lib/db/schema"
 import { eq } from "drizzle-orm"
 import MentorPage from "@/components/Mentor"
 
@@ -58,5 +59,8 @@ export default async function Mentor() {
 
 
 
-    return redirect(`/select-role?email=${encodeURIComponent(session.user.email)}`)
+
+        return <MentorPage />
+    }
+
 }
