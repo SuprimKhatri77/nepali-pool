@@ -2,8 +2,8 @@ import { headers } from "next/headers"
 import { auth } from "../../../../../../server/lib/auth/auth"
 import { db } from "../../../../../../lib/db"
 import { eq } from "drizzle-orm"
-import { user } from "../../../../../../lib/db/schema"
-import { redirect } from "next/navigation"
+import { mentorProfile, studentProfile, user } from "../../../../../../lib/db/schema"
+import { notFound, redirect } from "next/navigation"
 import VerifyEmail from "@/components/VerifyEmail"
 
 interface PageProps {
@@ -15,43 +15,52 @@ export default async function VerifyEmailPage({ searchParams }: PageProps) {
         headers: await headers(),
     })
 
-    if (session) {
-        const [userRecord] = await db.select().from(user).where(eq(user.id, session.user.id))
+    if (!session) {
+        return redirect("/login")
+    }
 
-        if (!userRecord) {
-            return redirect("/login")
-        }
+    const [userRecord] = await db.select().from(user).where(eq(user.id, session.user.id))
 
-        if (userRecord.emailVerified) {
-            if (userRecord.role === "student") {
-                return redirect("/dashboard/student")
-            } else if (userRecord.role === "mentor") {
-                return redirect("/dashboard/mentor")
-            } else if (userRecord.role === "admin") {
-                return redirect("/admin")
-            } else if (userRecord.role === "none") {
-                return redirect(`/select-role`)
-            }
-        }
+    if (!userRecord) {
+        return redirect("/login")
+    }
 
+    if (!userRecord.emailVerified) {
         return <VerifyEmail />
     }
 
-    const emailFromUrl = await searchParams
-
-    if (!emailFromUrl.email) {
-        return redirect("/login")
+    if (!userRecord.role || userRecord.role === "none") {
+        return redirect("/select-role")
     }
 
-    const [userRecord] = await db.select().from(user).where(eq(user.email, emailFromUrl.email))
-
-    if (!userRecord) {
-        return redirect("/sign-up")
+    if (userRecord.role === "admin") {
+        return redirect("/admin/dashboard")
     }
 
-    if (userRecord.emailVerified) {
-        return redirect("/login")
+    if (userRecord.role === "student") {
+        const [studentProfileRecord] = await db.select().from(studentProfile).where(eq(studentProfile.userId, userRecord.id))
+        if (!studentProfileRecord) {
+            return redirect("/sign-up/onboarding/student")
+        }
+        return redirect("/dashboard/student")
     }
 
-    return <VerifyEmail />
+    if (userRecord.role === "mentor") {
+        const [mentorProfileRecord] = await db.select().from(mentorProfile).where(eq(mentorProfile.userId, userRecord.id))
+        if (!mentorProfileRecord) {
+            return redirect("/sign-up/onboarding/mentor")
+        }
+        if (mentorProfileRecord.verifiedStatus === "pending") {
+            return redirect("/wailtist")
+        }
+        if (mentorProfileRecord.verifiedStatus === "rejected") {
+            return redirect("/rejected")
+        }
+        return redirect("/dashboard/mentor")
+    }
+
+
+    return notFound()
+
+
 }

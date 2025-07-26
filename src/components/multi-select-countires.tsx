@@ -3,7 +3,7 @@
 import type React from "react"
 import { useState, useRef, useEffect } from "react"
 import { X, ChevronDown, Search } from "lucide-react"
-import { cn } from "@/lib/utils"
+import { cn } from "@/components/lib/utils"
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"

@@ -3,7 +3,7 @@ import { auth } from "../../../../../../../server/lib/auth/auth";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { db } from "../../../../../../../lib/db";
-import { mentorProfile, user } from "../../../../../../../lib/db/schema";
+import { mentorProfile, studentProfile, user } from "../../../../../../../lib/db/schema";
 import { eq } from "drizzle-orm";
 
 export default async function OnboardingMentor() {
@@ -24,11 +24,20 @@ export default async function OnboardingMentor() {
         return redirect(`/sign-up/verify-email?email=${encodeURIComponent(userRecord.email)}`)
     }
 
-    if (userRecord.role === "none") {
+    if (!userRecord.role || userRecord.role === "none") {
         return redirect("/select-role")
     }
+
+    if (userRecord.role === "admin") {
+        return redirect("/admin/dashboard")
+    }
+
     if (userRecord.role === "student") {
-        return redirect("/sign-up/onboarding/student")
+        const [studentProfileRecord] = await db.select().from(studentProfile).where(eq(studentProfile.userId, userRecord.id))
+        if (!studentProfileRecord) {
+            return redirect("/sign-up/onboading/student")
+        }
+        return redirect("/dashboard/student")
     }
 
     const [mentorProfileRecord] = await db.select().from(mentorProfile).where(eq(mentorProfile.userId, session.user.id))

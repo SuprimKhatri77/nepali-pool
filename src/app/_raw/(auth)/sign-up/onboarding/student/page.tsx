@@ -31,6 +31,10 @@ export default async function Page() {
         return redirect("/select-role")
     }
 
+    if (userRecord.role === "admin") {
+        return redirect("/admin/dashboard")
+    }
+
 
     if (userRecord.role === "mentor") {
         const [mentorProfileRecord] = await db.select().from(mentorProfile).where(eq(mentorProfile.userId, userRecord.id))

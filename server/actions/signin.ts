@@ -5,7 +5,7 @@ import { auth } from "../lib/auth/auth";
 import { APIError } from "better-auth/api";
 import { db } from "../../lib/db";
 import { eq } from "drizzle-orm";
-import { user } from "../../lib/db/schema";
+import { mentorProfile, studentProfile, user } from "../../lib/db/schema";
 import { redirect } from "next/navigation";
 
 export type FormState = {
@@ -57,6 +57,12 @@ export async function SignIn(prevState: FormState, formData: FormData) {
         timestamp: Date.now(),
       };
     }
+    await auth.api.signInEmail({
+      body: {
+        email,
+        password,
+      },
+    });
 
     if (!userRecord.emailVerified) {
       return {
@@ -65,16 +71,31 @@ export async function SignIn(prevState: FormState, formData: FormData) {
       };
     }
 
-    await auth.api.signInEmail({
-      body: {
-        email,
-        password,
-      },
-    });
-
     if (userRecord.role === "student") {
+      const [studentProfileRecord] = await db
+        .select()
+        .from(studentProfile)
+        .where(eq(studentProfile.userId, userRecord.id));
+
+      if (!studentProfileRecord) {
+        return redirect("/sign-up/onboarding/student");
+      }
+
       return redirect("/dashboard/student");
     } else if (userRecord.role === "mentor") {
+      const [mentorProfileRecord] = await db
+        .select()
+        .from(mentorProfile)
+        .where(eq(mentorProfile.userId, userRecord.id));
+      if (!mentorProfileRecord) {
+        return redirect("/sign-up/onboarding/mentor");
+      }
+      if (mentorProfileRecord.verifiedStatus === "pending") {
+        return redirect("/waitlist");
+      }
+      if (mentorProfileRecord.verifiedStatus === "rejected") {
+        return redirect("/rejected");
+      }
       return redirect("/dashboard/mentor");
     } else if (userRecord.role === "admin") {
       return redirect("/admin");

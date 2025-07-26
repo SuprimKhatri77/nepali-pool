@@ -1,23 +1,21 @@
-import SignUpPage from "@/components/SignUpForm";
-import { auth } from "../../../../../server/lib/auth/auth";
-import { headers } from "next/headers";
-import { db } from "../../../../../lib/db";
-import { mentorProfile, studentProfile, user } from "../../../../../lib/db/schema";
-import { eq } from "drizzle-orm";
-import { notFound, redirect } from "next/navigation";
+import { headers } from "next/headers"
+import { auth } from "../../../../../server/lib/auth/auth"
+import { redirect } from "next/navigation"
+import { db } from "../../../../../lib/db"
+import { mentorProfile, studentProfile, user } from "../../../../../lib/db/schema"
+import { eq } from "drizzle-orm"
+import SignOutButton from "@/components/SignOutButton"
+import MentorApplications from "@/components/MentorApplications"
 
-export default async function SignUp() {
+export default async function Page() {
     const session = await auth.api.getSession({
-
         headers: await headers()
     })
 
     if (!session) {
-        return <SignUpPage />
+        return redirect("/login")
     }
-
     const [userRecord] = await db.select().from(user).where(eq(user.id, session.user.id))
-
     if (!userRecord) {
         return redirect("/sign-up")
     }
@@ -26,13 +24,8 @@ export default async function SignUp() {
         return redirect(`/sign-up/verify-email?email=${encodeURIComponent(userRecord.email)}`)
     }
 
-
-    if (!userRecord.role || userRecord.role === "none") {
+    if (userRecord.role === "none") {
         return redirect("/select-role")
-    }
-
-    if (userRecord.role === "admin") {
-        return redirect("/admin/dashboard")
     }
 
 
@@ -43,12 +36,12 @@ export default async function SignUp() {
         }
         return redirect("/dashboard/student")
     }
-
     if (userRecord.role === "mentor") {
         const [mentorProfileRecord] = await db.select().from(mentorProfile).where(eq(mentorProfile.userId, userRecord.id))
         if (!mentorProfileRecord) {
             return redirect("/sign-up/onboarding/mentor")
         }
+
         if (mentorProfileRecord.verifiedStatus === "pending") {
             return redirect("/waitlist")
         }
@@ -59,8 +52,27 @@ export default async function SignUp() {
     }
 
 
-    return notFound()
+    const mentorProfileWithUser = await db.query.mentorProfile.findMany({
+        where: (fields, { ne }) => ne(fields.verifiedStatus, "accepted"),
+        with: {
+            user: true
+        }
+    })
 
 
+
+    if (mentorProfileWithUser.length === 0) {
+        return (
+            <div className="flex flex-col min-h-screen justify-center items-center gap-4 max-w-2xl mx-auto">
+                <div>Who let you come here dwag? You sure don't look like an admin though! Whatever !!!</div>
+                <SignOutButton />
+                <p>No pending request for mentor applications!</p>
+            </div>
+        )
+    }
+
+
+
+    return <MentorApplications mentorProfileWithUser={mentorProfileWithUser} />
 
 }
