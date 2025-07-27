@@ -8,26 +8,25 @@ import MentorApplications from "@/components/orginal-components/MentorApplicatio
 
 export default async function Mentor() {
 
-    // const session= await auth.api.getSession({
-    //     headers: await headers()
-    // })
+  // const session= await auth.api.getSession({
+  //     headers: await headers()
+  // })
 
-    // if(!session){
-    //     return redirect("/login")
-    // }
+  // if(!session){
+  //     return redirect("/login")
+  // }
 
-    // const [userRecord]= await db.select().from(user).where(eq(user.id, session.user.id))
+  // const [userRecord]= await db.select().from(user).where(eq(user.id, session.user.id))
 
-    // if(!userRecord){
-    //     return redirect("/sign-up")
-    // }
+  // if(!userRecord){
+  //     return redirect("/sign-up")
+  // }
 
-    const mentorProfileWithUser = await db.query.mentorProfile.findMany({
-        where: (fields, { ne }) => ne(fields.verifiedStatus, "accepted"),
+  const mentorProfileWithUser = await db.query.mentorProfile.findMany({
     with: {
       user: true,
     },
-    })
-    console.log(mentorProfileWithUser)
-    return <MentorApplications mentorProfileWithUser={mentorProfileWithUser}/>
+  })
+  console.log(mentorProfileWithUser)
+  return <MentorApplications mentorProfileWithUser={mentorProfileWithUser} />
 }
