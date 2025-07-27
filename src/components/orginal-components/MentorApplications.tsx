@@ -41,7 +41,7 @@ export default function MentorApplications({ mentorProfileWithUser }: any) {
 
       <div
         id="card-container"
-        className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-x-28 gap-y-6  py-6 px-12 bg-[#06367A] min-h-[600px]"
+        className="rounded-2xl grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-x-28 gap-y-6  py-6 px-12 bg-[#06367A] min-h-[600px]"
       >
         {filteredMentors.map((mentor: any) => {
           const colors: Record<string, string> = {
@@ -65,7 +65,7 @@ export default function MentorApplications({ mentorProfileWithUser }: any) {
                   alt="Profile"
                   width={100}
                   height={100}
-                  className="w-28 h-28 bg-gradient-to-r from-indigo-400 to-purple-400 rounded-full flex items-center justify-center text-white text-2xl font-bold shadow-md"
+                  className="w-28 object-cover h-28 bg-gradient-to-r from-indigo-400 to-purple-400 rounded-full flex items-center justify-center text-white text-2xl font-bold shadow-md"
                 />
               </div>
 
