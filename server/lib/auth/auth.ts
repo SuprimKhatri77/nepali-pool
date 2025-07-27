@@ -8,7 +8,7 @@ import { eq } from "drizzle-orm";
 import { Resend } from "resend";
 import EmailVerification from "@/components/VerifyEmailMessage";
 
-const resend = new Resend(process.env.RESEND_API_KEY as string);
+// const resend = new Resend(process.env.RESEND_API_KEY as string);
 
 export const auth = betterAuth({
   database: drizzleAdapter(db, {
