@@ -1,10 +1,17 @@
 "use client";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 export default function MentorApplications({ mentorProfileWithUser }: any) {
   const [filteredMentor, setFilteredMentor] = useState("all");
+  const router=useRouter();
+
+  const handleClick = (status: string)=>{
+    setFilteredMentor(status);
+    router.push(`?status=${status}`);
+  }
 
   const filteredMentors = mentorProfileWithUser.filter((mentor: any) => {
     if (filteredMentor === "all") return true;
@@ -30,7 +37,7 @@ export default function MentorApplications({ mentorProfileWithUser }: any) {
           return (
             <button
               key={status}
-              onClick={() => setFilteredMentor(status)}
+              onClick={ () => handleClick(status)}
               className={`px-4 py-2 rounded-lg text-white ${colors[status]}`}
             >
               {status.charAt(0).toUpperCase() + status.slice(1)}
@@ -92,6 +99,8 @@ export default function MentorApplications({ mentorProfileWithUser }: any) {
                   <span className={` font-medium text-sm`}>
                     {mentor.verifiedStatus === "rejected"
                       ? "Rejected"
+                      : mentor.verifiedStatus === "accepted"
+                      ? "Accepted"
                       : "Pending"}
                   </span>
                 </p>

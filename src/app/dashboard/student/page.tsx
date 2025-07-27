@@ -4,6 +4,7 @@ import { redirect } from "next/navigation"
 import { db } from "../../../../lib/db"
 import { studentProfile, user } from "../../../../lib/db/schema"
 import { eq } from "drizzle-orm"
+import StudentProfile from "@/components/orginal-components/StudentProfile"
 
 export default async function StudentDashboard() {
     const session = await auth.api.getSession({
@@ -38,9 +39,5 @@ export default async function StudentDashboard() {
 
 
 
-    return (
-        <div>
-            <h1>student Dashboard</h1>
-        </div>
-    )
+    return <StudentProfile />
 }

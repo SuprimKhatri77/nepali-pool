@@ -22,12 +22,11 @@ export default async function Mentor() {
     //     return redirect("/sign-up")
     // }
 
-    const mentorProfileWithUser = await db.query.mentorProfile.findMany({
-        where: (fields, { ne }) => ne(fields.verifiedStatus, "accepted"),
+   const mentorProfileWithUser = await db.query.mentorProfile.findMany({
     with: {
       user: true,
     },
-    })
+  })
     console.log(mentorProfileWithUser)
     return <MentorApplications mentorProfileWithUser={mentorProfileWithUser}/>
 }

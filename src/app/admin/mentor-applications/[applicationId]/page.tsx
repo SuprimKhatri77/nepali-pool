@@ -13,5 +13,6 @@ export default async function MentorProfile({params,}: {params: Promise<{applica
            user: true,
        },
    })
+   console.log(mentorProfileRecordWithUser)
     return <ApplicationProfile mentorProfileRecordWithUser={mentorProfileRecordWithUser}/>
 }

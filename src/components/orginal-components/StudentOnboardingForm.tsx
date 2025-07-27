@@ -7,8 +7,13 @@ import Logo from "../ui/Logo";
 import { toast } from "sonner";
 import Link from "next/link";
 import CustomProfileUploader from "./CustomImageButton";
+import { useRouter } from "next/router";
 
-export default function StudentOnboardingForm() {
+export default function StudentOnboardingForm({
+  currentUserId,
+}: {
+  currentUserId: string;
+}) {
   const initialState = {
     errors: {},
   };
@@ -20,10 +25,14 @@ export default function StudentOnboardingForm() {
 
   const [countries, setCountries] = useState<string[]>([]);
   const [input, setInput] = useState("");
+  const router= useRouter()
+  console.log("currentUserId", currentUserId);
 
   const addCountry = () => {
-    const removeUnspecialChars=input.replace(/[^a-zA-Z0-9]/g, ' ').trim();
-    const correctedInput=removeUnspecialChars.charAt(0).toUpperCase();
+    const removeUnspecialChars = input.replace(/[^a-zA-Z]/g, " ").trim();
+    const correctedInput =
+      removeUnspecialChars.charAt(0).toUpperCase() +
+      removeUnspecialChars.slice(1).toLowerCase();
     const trimmed = correctedInput.trim();
     if (trimmed && !countries.includes(trimmed)) {
       setCountries([...countries, trimmed]);
@@ -43,10 +52,15 @@ export default function StudentOnboardingForm() {
   };
 
   useEffect(() => {
-    if (state.message) {
+    if (state.message && state.success) {
       toast(state.message);
+      router.replace(state.redirectTo as string)
     }
-  }, [state.message]);
+    if(state.message && !state.success){
+      toast.error(state.message)
+      router.replace(state.redirectTo as string)
+    }
+  }, [state,router]);
   return (
     <div
       id="form-container"
@@ -57,18 +71,18 @@ export default function StudentOnboardingForm() {
         Onboarding
       </h1>
       <form action={formAction} className="flex flex-col gap-8 justify-center">
-        {/* <input
+        <input
           type="hidden"
           value={currentUserId}
           className="hidden"
-          name="currentUserId"
-        /> */}
+          name="userId"
+        />
         <div
           id="inputs-container"
           className="flex lg:flex-row flex-col-reverse gap-8 justify-center"
         >
           <div id="left-column" className="flex flex-col gap-4">
-            <div>
+            {/* <div>
               <label
                 htmlFor="country"
                 className="font-medium text-shadow-sm text-base"
@@ -84,13 +98,13 @@ export default function StudentOnboardingForm() {
             focus:border-blue-500 focus:ring-2 focus:ring-blue-500 placeholder:text-[#9ca3af]
              transition duration-200 w-full"
               />
-            </div>
+            </div> */}
 
             <div
               id="city-district-container"
               className="flex md:flex-row flex-col justify-between gap-4 w-full"
             >
-              <div id="city-container" className="flex flex-col">
+              {/* <div id="city-container" className="flex flex-col">
                 <label
                   htmlFor="city"
                   className="text-shadow-sm font-medium text-base"
@@ -106,7 +120,7 @@ export default function StudentOnboardingForm() {
             focus:border-blue-500 focus:ring-2 focus:ring-blue-500 placeholder:text-[#9ca3af]
              transition duration-200"
                 />
-              </div>
+              </div> */}
               <div id="district-container" className="flex flex-col">
                 <label
                   htmlFor="district"
@@ -180,7 +194,7 @@ export default function StudentOnboardingForm() {
               <input
                 type="text"
                 id="favDestination"
-                name="favDestination"
+                name="favoriteDestination"
                 placeholder="Type a country and press Enter"
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
@@ -222,7 +236,9 @@ export default function StudentOnboardingForm() {
                   imageUploadName="Profile Image"
                   currentImage={profileImage}
                 />
-                <p className={`text-base font-medium ${profileImage ? "hidden" : ""}`}>
+                <p
+                  className={`text-base font-medium ${profileImage ? "hidden" : ""}`}
+                >
                   Click on the image to upload
                 </p>
                 <input type="hidden" name="imageUrl" value={profileImage} />
