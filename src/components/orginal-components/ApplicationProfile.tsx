@@ -1,20 +1,40 @@
 "use client";
-import { useState } from "react";
+import { useActionState, useEffect, useState } from "react";
 import Image from "next/image";
 import { CheckCircle, XCircle, X } from "lucide-react";
+import { AcceptMentorApplication, FormState, RejectMentorApplication } from "../../../server/actions/mentorApplication";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 export default function ApplicationProfile({ mentorProfileRecordWithUser }: any) {
   const mentor = mentorProfileRecordWithUser;
-
+  const initialState={
+    errors:{},
+  }
+  
+  const [acceptState, FormActionAccept, isPendingAccept]=useActionState<FormState,FormData>(AcceptMentorApplication,initialState)
+  const [rejectState, FormActionReject, isPendingReject]=useActionState<FormState,FormData>(RejectMentorApplication,initialState)
   const [showImageModal, setShowImageModal] = useState(false);
   const [showResumeModal, setShowResumeModal] = useState(false);
   const [showCitizenshipModal, setShowCitizenshipModal] = useState(false);
+  const router= useRouter()
 
   const statusColors: Record<string, string> = {
     accepted: "bg-green-100 text-green-700",
     pending: "bg-yellow-100 text-yellow-700",
     rejected: "bg-red-100 text-red-700",
   };
+  
+  useEffect(() => {
+    if(acceptState.success && acceptState.message){
+      toast.success(acceptState.message);
+      router.replace(acceptState.redirectTo as string)
+    }
+    if(rejectState.message && rejectState.success){
+      toast.success(rejectState.message);
+      router.replace(rejectState.redirectTo as string)
+    }
+  },[router,acceptState, rejectState])
 
   return (
     <div className="min-h-screen bg-gray-100 flex justify-center p-8">
@@ -71,13 +91,28 @@ export default function ApplicationProfile({ mentorProfileRecordWithUser }: any)
         </div>
 
         {/* ACTION BUTTONS */}
-        <div className="border-t bg-white p-6 flex justify-end gap-4">
-          <button className="flex items-center gap-2 px-5 py-2 bg-red-500 text-white font-medium rounded-lg hover:bg-red-600 transition shadow">
-            <XCircle size={20} /> Reject
+            <div className="border-t bg-white p-6 flex justify-end gap-4">
+          <form action={FormActionReject}>
+            <input type="hidden" name="applicationId" value={mentor.user?.id} className="hidden" />
+          <button
+            disabled={mentor.verifiedStatus === "rejected"} 
+           
+           className={`flex items-center gap-2 px-5 py-2 bg-red-500 text-white font-medium rounded-lg hover:bg-red-600 transition shadow
+            ${ mentor.verifiedStatus === "rejected" ? "opacity-50 cursor-not-allowed" : ""}
+            `}>
+            <XCircle size={20} /> { isPendingReject ? "Rejecting..." : "Reject"}
           </button>
-          <button className="flex items-center gap-2 px-5 py-2 bg-green-500 text-white font-medium rounded-lg hover:bg-green-600 transition shadow">
-            <CheckCircle size={20} /> Accept
+          </form>
+         <form action={FormActionAccept}>
+           <input type="hidden" name="applicationId" value={mentor.user?.id} className="hidden" />
+           <button 
+            disabled={mentor.verifiedStatus === "accepted"} 
+            className={`flex items-center gap-2 px-5 py-2 bg-green-500 text-white font-medium rounded-lg hover:bg-green-600 transition shadow
+             ${ mentor.verifiedStatus === "accepted" ? "opacity-50 cursor-not-allowed" : ""}
+            `}>
+            <CheckCircle size={20} />{ isPendingAccept ? "Accepting..." : "Accept"}
           </button>
+         </form>
         </div>
       </div>
 
