@@ -13,6 +13,7 @@ import { FormState, OnboardingMentor } from "../../server/actions/onboardingMent
 import { toast } from "sonner"
 import { useRouter } from "next/navigation"
 import { Textarea } from "./ui/textarea"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select"
 
 
 
@@ -26,6 +27,7 @@ export default function MentorOnboardingForm({ className, currentUserId, ...prop
     const [profilePhotoUrl, setProfilePhotoUrl] = useState<string>("")
     const [resumePhotoUrl, setResumePhotoUrl] = useState<string>("")
     const router = useRouter()
+    const [gender, setGender] = useState<string>("")
 
     const initialState: FormState = {
         errors: {},
@@ -66,10 +68,16 @@ export default function MentorOnboardingForm({ className, currentUserId, ...prop
                                     currentImage={profilePhotoUrl}
                                     onUploadComplete={(url: string) => setProfilePhotoUrl(url)} imageUploadName="Upload Your Photo" />
                                 <Input type="hidden" name="imageUrl" value={profilePhotoUrl} required />
+                                {state.errors?.imageUrl && (
+                                    <p className="text-red-400 text-sm">{state.errors.imageUrl[0]}</p>
+                                )}
                             </div>
                             <div className="grid gap-3">
                                 <Label htmlFor="bio">Bio: </Label>
                                 <Textarea defaultValue="I want to be a mentor!" id="bio" name="bio" required />
+                                {state.errors?.bio && (
+                                    <p className="text-red-400 text-sm">{state.errors.bio[0]}</p>
+                                )}
                             </div>
                             <div className="grid gap-3">
                                 <Label htmlFor="country">Country</Label>
@@ -78,10 +86,16 @@ export default function MentorOnboardingForm({ className, currentUserId, ...prop
                             <div className="grid gap-3">
                                 <Label htmlFor="nationality">Nationality</Label>
                                 <Input defaultValue="Nepalese" type="text" id="nationality" name="nationality" placeholder="eg: Nepalese" required />
+                                {state.errors?.nationality && (
+                                    <p className="text-red-400 text-sm">{state.errors.nationality[0]}</p>
+                                )}
                             </div>
                             <div className="grid gap-3">
                                 <Label htmlFor="city">City</Label>
                                 <Input defaultValue="Kathmandu" type="text" id="city" name="city" placeholder="eg: Kathmandu" required />
+                                {state.errors?.city && (
+                                    <p className="text-red-400 text-sm">{state.errors.city[0]}</p>
+                                )}
                             </div>
                             <div className="grid gap-3">
                                 <div className="flex items-center">
@@ -89,6 +103,9 @@ export default function MentorOnboardingForm({ className, currentUserId, ...prop
 
                                 </div>
                                 <Input defaultValue="3211" id="zipCode" type="text" name="zipCode" placeholder="eg: 3211" required />
+                                {state.errors?.zipcode && (
+                                    <p className="text-red-400 text-sm">{state.errors.zipcode[0]}</p>
+                                )}
                             </div>
                             <div className="grid gap-3">
                                 <div className="flex items-center">
@@ -96,14 +113,25 @@ export default function MentorOnboardingForm({ className, currentUserId, ...prop
 
                                 </div>
                                 <Input inputMode="numeric" defaultValue="1234567890" id="phoneNumber" type="text" name="phoneNumber" placeholder="eg: 1234567890" required />
+                                {state.errors?.phoneNumber && (
+                                    <p className="text-red-400 text-sm">{state.errors.phoneNumber[0]}</p>
+                                )}
                             </div>
 
                             <div className="grid gap-3">
-                                <div className="flex items-center">
-                                    <Label htmlFor="sex">Sex</Label>
-
-                                </div>
-                                <Input defaultValue="male" id="sex" type="text" name="sex" placeholder="eg: male" required />
+                                <Label htmlFor="sex">Gender</Label>
+                                <Select name="sex" onValueChange={(value) => setGender(value)} value={gender}>
+                                    <SelectTrigger className="w-full">
+                                        <SelectValue placeholder="select one" />
+                                    </SelectTrigger>
+                                    <SelectContent id='gender'>
+                                        <SelectItem value="male">Male</SelectItem>
+                                        <SelectItem value="female">Female</SelectItem>
+                                        <SelectItem value="other">Other</SelectItem>
+                                    </SelectContent>
+                                </Select>
+                                {state.errors?.sex && <p className="text-sm text-destructive">{state.errors.sex[0]}</p>}
+                                <input type="hidden" name="sex" value={gender} />
                             </div>
                             <div className="grid gap-3">
                                 <div className="flex items-center">
@@ -127,7 +155,7 @@ export default function MentorOnboardingForm({ className, currentUserId, ...prop
                             </div>
 
                             <div className="flex flex-col gap-3">
-                                <Button type="submit" disabled={isPending || !resumePhotoUrl || !citizenshipPhotoUrl || !profilePhotoUrl} className="w-full">
+                                <Button type="submit" disabled={isPending || !resumePhotoUrl || !citizenshipPhotoUrl || !profilePhotoUrl || !gender} className="w-full">
                                     {isPending ? "Submitting....." : "Submit"}
                                 </Button>
 
@@ -138,6 +166,6 @@ export default function MentorOnboardingForm({ className, currentUserId, ...prop
                     </form>
                 </CardContent>
             </Card>
-        </div>
+        </div >
     )
 }
