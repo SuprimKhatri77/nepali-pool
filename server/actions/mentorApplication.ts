@@ -59,7 +59,7 @@ export async function AcceptMentorApplication(
       erros: {},
       message: "Application Accepted!",
       success: true,
-      redirectTo: `/mentor-applications/${applicationId}`,
+      redirectTo: `/admin/mentor-applications`,
     };
   } catch (error) {
     console.error("Error: ", error);
@@ -117,7 +117,7 @@ export async function RejectMentorApplication(
       erros: {},
       message: "Application Rejected!",
       success: true,
-      redirectTo: "/admin",
+      redirectTo: "/admin/mentor-applications",
     };
   } catch (error) {
     console.error("Error: ", error);
