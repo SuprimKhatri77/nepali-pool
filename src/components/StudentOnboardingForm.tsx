@@ -11,6 +11,8 @@ import MultiSelectCountries from "./multi-select-countires"
 import studentOnboarding, { type FormState } from "../../server/actions/onboardingStudent"
 import { toast } from "sonner"
 import { useRouter } from "next/navigation"
+import { Input } from "./ui/input"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select"
 
 type StudentOnboardingFormType = {
     className?: string
@@ -25,6 +27,7 @@ export default function StudentOnboardingForm({ className, currentUserId, ...pro
     const [profilePicture, setProfilePicture] = useState<string>("")
     const [selectedCountries, setSelectedCountries] = useState<string[]>([])
     const countries = getNames()
+    const [gender, setGender] = useState<string>("")
     const [state, formAction, isPending] = useActionState<FormState, FormData>(studentOnboarding, initialState)
     const router = useRouter()
 
@@ -65,6 +68,31 @@ export default function StudentOnboardingForm({ className, currentUserId, ...pro
                                 <Textarea id="bio" name="bio" placeholder="Tell us about yourself..." required />
                                 {state.errors?.bio && <p className="text-sm text-destructive">{state.errors.bio[0]}</p>}
                             </div>
+                            <div className="grid gap-3">
+                                <Label htmlFor="district">District</Label>
+                                <Input type="text" id="district" name="district" placeholder="eg: Rupandehi" required />
+                                {state.errors?.district && <p className="text-sm text-destructive">{state.errors.district[0]}</p>}
+                            </div>
+                            <div className="grid gap-3">
+                                <Label htmlFor="phone">Phone Number</Label>
+                                <Input type="text" id="phone" name="phoneNumber" placeholder="eg: 9800000000" required />
+                                {state.errors?.phoneNumber && <p className="text-sm text-destructive">{state.errors.phoneNumber[0]}</p>}
+                            </div>
+                            <div className="grid gap-3">
+                                <Label htmlFor="sex">Gender</Label>
+                                <Select onValueChange={(value) => setGender(value)} value={gender}>
+                                    <SelectTrigger className="w-full">
+                                        <SelectValue placeholder="eg: male" />
+                                    </SelectTrigger>
+                                    <SelectContent id='gender'>
+                                        <SelectItem value="male">Male</SelectItem>
+                                        <SelectItem value="female">Female</SelectItem>
+                                        <SelectItem value="other">Other</SelectItem>
+                                    </SelectContent>
+                                </Select>
+                                {state.errors?.sex && <p className="text-sm text-destructive">{state.errors.sex[0]}</p>}
+                                <input type="hidden" name="sex" value={gender} />
+                            </div>
 
                             <div className="grid gap-3">
                                 <Label>Favorite Destinations</Label>
@@ -94,6 +122,6 @@ export default function StudentOnboardingForm({ className, currentUserId, ...pro
                     </form>
                 </CardContent>
             </Card>
-        </div>
+        </div >
     )
 }

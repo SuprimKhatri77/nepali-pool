@@ -28,6 +28,12 @@ export type FormState = {
   redirectTo?: string;
 };
 
+const sexEnum = z
+  .enum(["male", "female", "other"])
+  .refine((value) => ["male", "female", "other"].includes(value), {
+    message: "Gender must be male, female or other",
+  });
+
 export async function OnboardingMentor(
   prevState: FormState,
   formData: FormData
@@ -45,18 +51,32 @@ export async function OnboardingMentor(
   // console.log("FormData: ", formData);
 
   const onboardingMentorData = z.object({
-    country: z.string().min(1, "Country is required").nonempty(),
-    city: z.string().min(1, "City is required").nonempty(),
-    zipCode: z.string().nonempty("Zip code is required").regex(/^\d+$/),
+    country: z
+      .string()
+      .min(1, "Country is required")
+      .nonempty()
+      .regex(/^[A-Za-z]+$/, "Only alphabets A-Z or a-z are allowed"),
+    city: z
+      .string()
+      .min(1, "City is required")
+      .nonempty()
+      .regex(/^[A-Za-z]+$/, "Only alphabets A-Z or a-z are allowed"),
+    zipCode: z
+      .string()
+      .nonempty("Zip code is required")
+      .regex(/^\d+$/, "Zipcode must contain only digits"),
     phoneNumber: z
       .string()
       .min(10, "Phone number must be more than or equal to 10 digits.")
       .max(20, "Phone number cannot exceed more than 20 digits.")
       .regex(/^\d+$/, "Phone number must contain only digits"),
-    sex: z.string().min(1, "sex is required").nonempty(),
+    sex: sexEnum,
     resume: z.string().nonempty("Resume photo is required"),
     citizenshipPhotoUrl: z.string().nonempty("Citizenship photo is required"),
-    nationality: z.string().nonempty("nationality is required"),
+    nationality: z
+      .string()
+      .nonempty("nationality is required")
+      .regex(/^[A-Za-z]+$/, "Only alphabets A-Z or a-z are allowed"),
     currentUserId: z.string().nonempty(),
     imageUrl: z.string().nonempty(),
     bio: z.string().nonempty(),
@@ -112,11 +132,11 @@ export async function OnboardingMentor(
       };
     }
     await db.insert(mentorProfile).values({
-      nationality,
-      country,
+      nationality: nationality.toLowerCase(),
+      country: country.toLowerCase(),
       citizenshipPhotoUrl,
       sex,
-      city,
+      city: city.toLowerCase(),
       phoneNumber,
       resume,
       zipCode,
