@@ -60,7 +60,7 @@ export const auth = betterAuth({
 
       await sendEmail({
         to: user.email,
-        subject: "Reset Password",
+        subject: "Verify Your Email",
         html: `A request from your side was made for email verification. <br>Click on the link to verify your email ${finalUrl} <br> If it was not you , You can safely ignore this email. This link will expire in 1 hour`,
       });
     },

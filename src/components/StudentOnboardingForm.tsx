@@ -41,7 +41,7 @@ export default function StudentOnboardingForm({ className, currentUserId, ...pro
     }, [state.success, router])
 
     return (
-        <div className={cn("flex flex-col gap-6 max-w-[700px] mx-auto justify-center min-h-screen", className)} {...props}>
+        <div className={cn("flex flex-col gap-6 max-w-[700px] mx-auto justify-center min-h-screen py-7", className)} {...props}>
             <Card>
                 <CardHeader>
                     <CardTitle>Student Onboarding Form</CardTitle>
@@ -72,6 +72,11 @@ export default function StudentOnboardingForm({ className, currentUserId, ...pro
                                 <Label htmlFor="district">District</Label>
                                 <Input type="text" id="district" name="district" placeholder="eg: Rupandehi" required />
                                 {state.errors?.district && <p className="text-sm text-destructive">{state.errors.district[0]}</p>}
+                            </div>
+                            <div className="grid gap-3">
+                                <Label htmlFor="city">City</Label>
+                                <Input type="text" id="city" name="city" placeholder="eg: Butwal" required />
+                                {state.errors?.city && <p className="text-sm text-destructive">{state.errors.city[0]}</p>}
                             </div>
                             <div className="grid gap-3">
                                 <Label htmlFor="phone">Phone Number</Label>
