@@ -57,39 +57,7 @@ export default function VerifyEmail() {
     return () => clearTimeout(timer);
   }, [cooldown]);
 
-   useEffect(()=>{
-     const  checkEmail= async ()=> {
-      try{
-        const [userRecord]= await db.select().from(user).where(eq(user.email, email))
-        const [mentorProfileRecord] = await db.select().from(mentorProfile).where(eq(mentorProfile.userId, userRecord.id))
-        const [studentProfileRecord] = await db.select().from(studentProfile).where(eq(studentProfile.userId, userRecord.id))
-        if(!userRecord){
-          return redirect("/sign-up")
-        }
-        if(userRecord.emailVerified){
-          if(userRecord.role === "none"){
-            return redirect("/select-role")
-          }
-          if(userRecord.role === "admin"){
-            return redirect("/admin")
-          }
-          if(userRecord.role === "mentor"){
-            if(!mentorProfileRecord){
-              return redirect("/sign-up/onboarding/mentor")
-            }
-          }
-          if(userRecord.role === "student"){
-            if(!studentProfileRecord){
-              return redirect("/sign-up/onboarding/student")
-            }
-          }
-        }
-      }catch(error){
-        console.log(error)
-      }
-     }
-     checkEmail()
-  },[])
+
 
   if (!isValidEmail) {
     return (
@@ -120,7 +88,7 @@ export default function VerifyEmail() {
       return;
     }
     if (cooldown > 0) return;
-   
+
 
     try {
       await authClient.sendVerificationEmail({
@@ -140,7 +108,7 @@ export default function VerifyEmail() {
     }
   };
 
- 
+
 
   return (
     <div className="flex flex-col items-center justify-center">
@@ -193,10 +161,9 @@ export default function VerifyEmail() {
             onClick={handleClick}
             disabled={cooldown > 0}
             className={`rounded-xs w-full  hover:scale-105  py-2 px-4 font-bold cursor-pointer duration-500 
-              ${
-                cooldown > 0 || emailSendCount >= 5
-                  ? "bg-gray-400 cursor-not-allowed"
-                  : "bg-[#4ED7F1] hover:scale-105"
+              ${cooldown > 0 || emailSendCount >= 5
+                ? "bg-gray-400 cursor-not-allowed"
+                : "bg-[#4ED7F1] hover:scale-105"
               }
               `}
           >
