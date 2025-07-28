@@ -137,6 +137,10 @@ export default function StudentOnboardingForm({
             focus:border-blue-500 focus:ring-2 focus:ring-blue-500 placeholder:text-[#9ca3af]
              transition duration-200"
                 />
+                {
+                  state.errors?.district && (
+                    <p className="text-red-500 text-sm">{state.errors.district[0]}</p>
+                  )               }
               </div>
             </div>
             <div>
@@ -155,6 +159,10 @@ export default function StudentOnboardingForm({
             focus:border-blue-500 focus:ring-2 focus:ring-blue-500 placeholder:text-[#9ca3af]
              transition duration-200 w-full"
               />
+              {
+                  state.errors?.phoneNumber && (
+                    <p className="text-red-500 text-sm">{state.errors.?.phoneNumber[0]}</p>
+                  )               }
             </div>
             <div id="gender">
               <label
@@ -183,6 +191,10 @@ export default function StudentOnboardingForm({
                   </label>
                 </div>
               </div>
+              {
+                  state.errors?.sex && (
+                    <p className="text-red-500 text-sm">{state.errors.sex[0]}</p>
+                  )               }
             </div>
             <div id="fav-destination" className="w-full">
               <label
@@ -220,6 +232,10 @@ export default function StudentOnboardingForm({
                   </div>
                 ))}
               </div>
+              {
+                  state.errors?.favoriteDestination && (
+                    <p className="text-red-500 text-sm">{state.errors?.favoriteDestination[0]}</p>
+                  )               }
             </div>
           </div>
           <div
@@ -243,6 +259,10 @@ export default function StudentOnboardingForm({
                 </p>
                 <input type="hidden" name="imageUrl" value={profileImage} />
               </div>
+              {
+                  state.errors?.imageUrl && (
+                    <p className="text-red-500 text-sm">{state.errors?.imageUrl[0]}</p>
+                  )               }
             </div>
 
             <div id="input-section-right">
@@ -263,6 +283,10 @@ export default function StudentOnboardingForm({
             focus:border-blue-500 focus:ring-2 focus:ring-blue-500 placeholder:text-[#6b717a]
              transition duration-200 w-full max-h-[200px] min-h-[100px] h-full"
                 ></textarea>
+                {
+                    state.errors?.bio && (
+                      <p className="text-red-500 text-sm">{state.errors?.bio[0]}</p>
+                    )               }
               </div>
             </div>
           </div>

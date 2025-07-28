@@ -35,9 +35,14 @@ export default async function StudentDashboard() {
         }
     }
     
+    const studentProfileRecordWithUser= await db.query.studentProfile.findFirst({
+        with: {
+            user: true
+        },
+        where: eq(studentProfile.userId, userRecord.id)
+    })
 
+      console.log(studentProfileRecordWithUser)
 
-
-
-    return <StudentProfile />
+    return <StudentProfile studentProfileRecordWithUser={studentProfileRecordWithUser}/>
 }
