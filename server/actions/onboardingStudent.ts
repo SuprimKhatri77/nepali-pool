@@ -15,6 +15,7 @@ export type FormState = {
     district?: string[];
     phoneNumber?: string[];
     sex?: string[];
+    city?: string[];
   };
   message?: string;
   success?: boolean;
@@ -49,24 +50,29 @@ export default async function studentOnboarding(
     .filter(Boolean)
     .map((destination) => destination.toLowerCase());
 
-  // console.log("Favorite destinations from getAll():", favoriteDestinations);
-
   const onboardingData = z.object({
     imageUrl: z.string().nonempty("Image cannot be empty"),
     bio: z.string().min(1).nonempty("Bio is required"),
     favoriteDestination: z
       .array(z.string())
       .min(1, "Select at least one destination")
-      .max(5, "You can select up to 5 destinations"),
+      .max(5, "You can select up to 5 destinations")
+      .nonempty("At least one destination is required"),
     phoneNumber: z
       .string()
       .min(10, "Phone number must be more than or equal to 10 digits.")
       .max(20, "Phone number cannot exceed more than 20 digits.")
-      .regex(/^\d+$/, "Phone number must contain only digits"),
+      .regex(/^\d+$/, "Phone number must contain only digits")
+      .nonempty("Phone number is required."),
     district: z
       .string()
-      .regex(/^[A-Za-z]+$/, "District name must contain alphabets only."),
+      .regex(/^[A-Za-z]+$/, "District name must contain alphabets only.")
+      .nonempty("District name is required."),
     sex: sexEnum,
+    city: z
+      .string()
+      .regex(/^[A-Za-z]+$/, "City name must contain alphabets only.")
+      .nonempty("City name is required."),
   });
 
   const validateFields = onboardingData.safeParse({
@@ -76,6 +82,7 @@ export default async function studentOnboarding(
     sex: formData.get("sex") as string,
     district: formData.get("district") as string,
     phoneNumber: formData.get("phoneNumber") as string,
+    city: formData.get("city") as string,
   });
 
   if (!validateFields.success) {
@@ -86,7 +93,8 @@ export default async function studentOnboarding(
     };
   }
 
-  const { bio, imageUrl, district, sex, phoneNumber } = validateFields.data;
+  const { bio, imageUrl, district, sex, phoneNumber, city } =
+    validateFields.data;
 
   try {
     await db.insert(studentProfile).values({
@@ -94,9 +102,10 @@ export default async function studentOnboarding(
       imageUrl,
       favoriteDestination: lowerCaseFavoriteDestinations,
       bio,
-      sex,
+      sex: sex,
       phoneNumber,
-      district,
+      district: district.toLowerCase(),
+      city: city.toLowerCase(),
       createdAt: new Date(),
       updatedAt: new Date(),
     } satisfies StudentProfileInsertType);

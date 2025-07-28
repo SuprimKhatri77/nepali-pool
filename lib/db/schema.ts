@@ -7,6 +7,8 @@ import {
   integer,
   varchar,
   pgEnum,
+  uuid,
+  uniqueIndex,
 } from "drizzle-orm/pg-core";
 
 export const roleEnum = pgEnum("role", ["none", "student", "mentor", "admin"]);
@@ -84,6 +86,7 @@ export const studentProfile = pgTable("student_profile", {
   district: varchar("district", { length: 30 }),
   phoneNumber: varchar("phone_number", { length: 30 }),
   sex: sexEnum("sex"),
+  city: varchar("city", { length: 30 }),
   paymentStatus: paymentEnum("payment_status").default("unpaid"),
   imageUrl: text("image_url").default(
     "https://vbteadl6m3.ufs.sh/f/DDJ5nPL6Yp1sHfAviE2zasoidYb10Mu7JGNQFZWgVmCrRHPE"
@@ -114,6 +117,23 @@ export const mentorProfile = pgTable("mentor_profile", {
   createdAt: timestamp().defaultNow(),
   updatedAt: timestamp().defaultNow(),
 });
+
+export const favorite = pgTable(
+  "favorite",
+  {
+    id: uuid().defaultRandom().primaryKey().notNull(),
+    studentId: text("student_id").references(() => studentProfile.userId, {
+      onDelete: "cascade",
+    }),
+    mentorId: text("mentor_id").references(() => mentorProfile.userId, {
+      onDelete: "cascade",
+    }),
+    createdAt: timestamp("created_at").defaultNow(),
+  },
+  (table) => [
+    uniqueIndex("unique_student_mentor").on(table.studentId, table.mentorId),
+  ]
+);
 
 export const userStudentProfileRelation = relations(user, ({ one }) => ({
   studentProfile: one(studentProfile, {
@@ -155,3 +175,5 @@ export type MentorProfileSelectType = InferSelectModel<typeof mentorProfile>;
 export type MentorProfileInsertType = InferInsertModel<typeof mentorProfile>;
 export type UserSelectType = InferSelectModel<typeof user>;
 export type UserInsertType = InferInsertModel<typeof user>;
+export type FavoriteSelectType = InferSelectModel<typeof favorite>;
+export type FavoriteInsertType = InferInsertModel<typeof favorite>;
