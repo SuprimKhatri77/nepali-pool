@@ -18,6 +18,13 @@ export type FormState = {
   message?: string;
   success?: boolean;
   redirectTo?: string;
+  inputs?: {
+    firstname?: string;
+    lastname?: string;
+    email?: string;
+    password?: string;
+    role?: string;
+  };
 };
 
 const roleEnum = z
@@ -58,10 +65,12 @@ export async function SignUp(prevState: FormState, formData: FormData) {
   });
 
   if (!validateFields.success) {
+    const inputs = Object.fromEntries(formData.entries());
     return {
       errors: validateFields.error.flatten().fieldErrors,
       message: "Validation Failed",
       success: false,
+      inputs,
     };
   }
 
@@ -97,9 +106,7 @@ export async function SignUp(prevState: FormState, formData: FormData) {
 
     return {
       errors: {},
-      redirectTo: `/sign-up/verify-email?email=${encodeURIComponent(
-        email
-      )}&from=signup`,
+      redirectTo: `/sign-up/verify-email?from=signup`,
       message: "Signup successfull , Redirecting to verify email....",
       success: true,
     };

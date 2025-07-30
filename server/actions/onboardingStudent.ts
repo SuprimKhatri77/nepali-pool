@@ -20,6 +20,15 @@ export type FormState = {
   message?: string;
   success?: boolean;
   redirectTo?: string;
+  inputs?: {
+    imageUrl?: string;
+    bio?: string;
+    favoriteDestination?: string;
+    district?: string;
+    phoneNumber?: string;
+    sex?: string;
+    city?: string;
+  };
 };
 
 const sexEnum = z
@@ -90,6 +99,7 @@ export default async function studentOnboarding(
       errors: validateFields.error.flatten().fieldErrors,
       message: "Error validating!",
       success: false,
+      inputs: Object.fromEntries(formData.entries()),
     };
   }
 

@@ -18,13 +18,13 @@ export const auth = betterAuth({
     enabled: true,
     autoSignIn: true,
     requireEmailVerification: false,
-    resetPasswordTokenExpiresIn: 600,
+    resetPasswordTokenExpiresIn: 300,
     sendResetPassword: async ({ user, url, token }, request) => {
       await sendEmail({
         to: user.email,
         subject: "Reset Password",
         html: `A reset password request was made from your side. <br> Click on the link to reset password ${url} <br> If it was not you, You can safely ignore this email.
-              The link will expire in 10minutes.`,
+              The link will expire in 5minutes.`,
       });
     },
   },
@@ -69,6 +69,30 @@ export const auth = betterAuth({
   account: {
     accountLinking: {
       enabled: true,
+    },
+  },
+  advanced: {
+    ipAddress: {
+      ipAddressHeaders: ["cf-connecting-ip"],
+    },
+  },
+  rateLimit: {
+    enabled: true,
+    storage: "database",
+    modelName: "rateLimit",
+    customRules: {
+      "/sign-in/verify-email": {
+        window: 86400,
+        max: 3,
+      },
+      "/login/forgot-password": {
+        window: 86400,
+        max: 3,
+      },
+      "/login/forgot-password/reset-password": {
+        window: 86400,
+        max: 3,
+      },
     },
   },
   plugins: [nextCookies()],

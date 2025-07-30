@@ -20,5 +20,10 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/dashboard:path", "/admin", "/select-role"],
+  matcher: [
+    "/dashboard:path",
+    "/admin",
+    "/select-role",
+    "/sign-up/verify-email",
+  ],
 };

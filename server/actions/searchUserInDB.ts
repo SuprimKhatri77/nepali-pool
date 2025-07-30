@@ -11,6 +11,7 @@ export type FormState = {
   };
   message?: string;
   success?: boolean;
+  timestamp?: Date;
 };
 
 export async function searchUserInDB(prevState: FormState, formData: FormData) {
@@ -44,6 +45,7 @@ export async function searchUserInDB(prevState: FormState, formData: FormData) {
         },
         message: "Email not found!",
         success: false,
+        timestamp: new Date(),
       };
     }
     return {
