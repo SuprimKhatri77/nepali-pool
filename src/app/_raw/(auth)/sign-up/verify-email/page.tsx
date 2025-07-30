@@ -26,7 +26,8 @@ export default async function VerifyEmailPage({ searchParams }: PageProps) {
     }
 
     if (!userRecord.emailVerified) {
-        return <VerifyEmail />
+
+        return <VerifyEmail email={userRecord.email} />
     }
 
     if (!userRecord.role || userRecord.role === "none") {

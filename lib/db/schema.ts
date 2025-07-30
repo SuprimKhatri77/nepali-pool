@@ -9,6 +9,7 @@ import {
   pgEnum,
   uuid,
   uniqueIndex,
+  bigint,
 } from "drizzle-orm/pg-core";
 
 export const roleEnum = pgEnum("role", ["none", "student", "mentor", "admin"]);
@@ -75,6 +76,13 @@ export const verification = pgTable("verification", {
   updatedAt: timestamp("updated_at").$defaultFn(
     () => /* @__PURE__ */ new Date()
   ),
+});
+
+export const rateLimit = pgTable("rate_limit", {
+  id: text("id").primaryKey(),
+  key: text("key"),
+  count: integer("count"),
+  lastRequest: bigint("last_request", { mode: "number" }),
 });
 
 export const studentProfile = pgTable("student_profile", {
@@ -168,6 +176,17 @@ export const mentorProfileUserRelation = relations(
     }),
   })
 );
+
+export const favoriteRelations = relations(favorite, ({ one }) => ({
+  mentor: one(mentorProfile, {
+    fields: [favorite.mentorId],
+    references: [mentorProfile.userId],
+  }),
+  student: one(studentProfile, {
+    fields: [favorite.studentId],
+    references: [studentProfile.userId],
+  }),
+}));
 
 export type StudentProfileSelectType = InferSelectModel<typeof studentProfile>;
 export type StudentProfileInsertType = InferInsertModel<typeof studentProfile>;
