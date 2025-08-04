@@ -62,6 +62,7 @@ export default async function Student() {
     }
 
     const mentorProfiles = await db.query.mentorProfile.findMany({
+      where: (fields, { eq }) => eq(mentorProfile.verifiedStatus, "accepted"),
       with: {
         user: true,
       },

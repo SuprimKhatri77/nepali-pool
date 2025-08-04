@@ -19,6 +19,7 @@ import {
 import Image from "next/image";
 import { addToFavorite, FormState } from "../../server/actions/addToFavorite";
 import { Star } from "lucide-react";
+import { removeFavorite } from "../../server/actions/removeFavorite";
 
 type MentorProfileWithUser = MentorProfileSelectType & {
   user: UserSelectType;
@@ -41,7 +42,6 @@ export default function StudentPage({
 }) {
   const [click, setClick] = useState(false);
   const router = useRouter();
-  const [loadingMentorId, setLoadingMentorId] = useState<string | null>("");
   const [isFavoritesShown, setIsFavoriteShown] = useState<boolean>(false);
 
   const initialFavorites = favoriteMentor
@@ -72,6 +72,22 @@ export default function StudentPage({
         await addToFavorite(initialState, formData);
       } catch (error) {
         console.error("Failed to add to favorite: ", error);
+      }
+    });
+  };
+
+  const handleRemoveFavorite = async (mentorId: string) => {
+    // console.log("clicked on remove favorite");
+    startTransition(async () => {
+      setOptimisticFavorites(mentorId);
+      try {
+        const formData = new FormData();
+        formData.append("mentorId", mentorId);
+        formData.append("studentId", studentRecordWithUser.userId);
+        const initialState: FormState = { errors: {} } as FormState;
+        await removeFavorite(initialState, formData);
+      } catch (error) {
+        console.error("Failed to remove to favorite: ", error);
       }
     });
   };
@@ -127,20 +143,29 @@ export default function StudentPage({
                         <p className="max-w-[200px]">Bio: {mentor.bio}</p>
                         <p>Country: {mentor.country}</p>
                         <div>
-                          <Button
-                            type="submit"
-                            variant="ghost"
-                            onClick={() => handleClick(mentor.userId)}
-                            className="hover:bg-gray-200 cursor-pointer"
-                          >
-                            <Star
-                              className={
-                                isFavorited(mentor.userId)
-                                  ? "text-yellow-400 fill-yellow-400"
-                                  : "text-muted-foregrounds"
-                              }
-                            />
-                          </Button>
+                          {isFavorited(mentor.userId) ? (
+                            <>
+                              <Button
+                                type="submit"
+                                variant="ghost"
+                                onClick={() =>
+                                  handleRemoveFavorite(mentor.userId)
+                                }
+                                className="hover:bg-gray-200 cursor-pointer"
+                              >
+                                <Star className="text-yellow-400 fill-yellow-400" />
+                              </Button>
+                            </>
+                          ) : (
+                            <Button
+                              type="submit"
+                              variant="ghost"
+                              onClick={() => handleClick(mentor.userId)}
+                              className="hover:bg-gray-200 cursor-pointer"
+                            >
+                              <Star className="text-muted-foregrounds" />
+                            </Button>
+                          )}
                           <input
                             type="hidden"
                             name="mentorId"
