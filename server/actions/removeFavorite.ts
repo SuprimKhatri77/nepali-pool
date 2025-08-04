@@ -3,6 +3,7 @@
 import { and, eq } from "drizzle-orm";
 import { db } from "../../lib/db";
 import { favorite } from "../../lib/db/schema";
+import { revalidatePath } from "next/cache";
 
 export type FormState = {
   errors?: {
@@ -17,7 +18,7 @@ export async function removeFavorite(prevState: FormState, formData: FormData) {
   const studentId = formData.get("studentId") as string;
   const mentorId = formData.get("mentorId") as string;
 
-  if (!studentId || mentorId) {
+  if (!studentId || !mentorId) {
     return {
       message: "Error removing favorite, Please try again!",
       success: false,
@@ -30,6 +31,7 @@ export async function removeFavorite(prevState: FormState, formData: FormData) {
       .where(
         and(eq(favorite.studentId, studentId), eq(favorite.mentorId, mentorId))
       );
+    revalidatePath("/dashboard/student");
     return {
       message: "Added to favorite successfully!",
       success: true,

@@ -31,6 +31,7 @@ export async function addToFavorite(prevState: FormState, formData: FormData) {
       mentorId,
       createdAt: new Date(),
     } satisfies FavoriteInsertType);
+    revalidatePath("/dashboard/student");
     return {
       message: "Mentor added to favorite successfully!",
       success: true,
