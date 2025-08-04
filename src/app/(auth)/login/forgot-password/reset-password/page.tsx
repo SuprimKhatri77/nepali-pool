@@ -2,57 +2,54 @@
 import Logo from "@/components/ui/Logo";
 import Link from "next/link";
 import Image from "next/image";
-import { useSearchParams,useRouter } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
 import { authClient } from "../../../../../../server/lib/auth/auth-client";
 
-
 export default function ResetPassword() {
-    const [isPending, setIsPending] = useState<boolean>(false)
-    const [passwordObj, setPasswordObj]=useState({
-        newPassword: "",
-        confirmNewPassword: "",
-    })
-    const router=useRouter()
-    const token = useSearchParams().get("token")
-    if(!token) {
-        return (
-            <div>Not authorized</div>
-        )
+  const [isPending, setIsPending] = useState<boolean>(false);
+  const [passwordObj, setPasswordObj] = useState({
+    newPassword: "",
+    confirmNewPassword: "",
+  });
+  const router = useRouter();
+  const token = useSearchParams().get("token");
+  if (!token) {
+    return <div>Not authorized</div>;
+  }
+
+  const handleResetPassword = async () => {
+    setIsPending(true);
+    if (passwordObj.newPassword === passwordObj.confirmNewPassword) {
+      const { error } = await authClient.resetPassword({
+        newPassword: passwordObj.newPassword,
+        token: token,
+      });
+      if (error) {
+        toast.error(error.message);
+      }
+      toast.success("Password changed successfully, redirecting to login.....");
+      setTimeout(() => {
+        router.push("/login");
+      }, 1500);
     }
 
- const handleResetPassword = async () =>{
-    setIsPending(true)
-    if(passwordObj.newPassword === passwordObj.confirmNewPassword) {
-        const {  error } = await authClient.resetPassword({
-            newPassword: passwordObj.newPassword,
-            token: token,
-        })
-        if(error) {
-            toast.error(error.message)
-        }
-        toast.success("Password changed successfully, redirecting to login.....")
-        setTimeout(() => {
-            router.push("/login")
-        }, 1500);
-    }
+    setIsPending(false);
+  };
 
-    setIsPending(false)
- }
-
-    return (
-      <div className="flex flex-col items-center justify-center ">
+  return (
+    <div className="flex flex-col items-center justify-center ">
       <div className="rounded-xl message-container bg-white item  p-8 max-w-[500px]">
         <Logo />
-      
-          <Image
-            className="m-auto mt-3"
-            src="/reset.png"
-            alt="reset"
-            width={50}
-            height={50}
-          />
+
+        <Image
+          className="m-auto mt-3"
+          src="/reset.png"
+          alt="reset"
+          width={50}
+          height={50}
+        />
 
         <form action="" className="max-w-[650px] w-full">
           <h1 className="text-3xl px-8 font-medium text-[#4C585B] my-4 text-left ">
@@ -60,11 +57,16 @@ export default function ResetPassword() {
           </h1>
           <div className="px-8 flex flex-col">
             <div className="flex flex-col gap-1 w-full max-w-[500px] mt-2">
-                <label htmlFor="newPassword">New Password</label>
+              <label htmlFor="newPassword">New Password</label>
 
               <input
                 value={passwordObj.newPassword}
-                onChange={(e) => setPasswordObj({...passwordObj, newPassword: e.target.value})}
+                onChange={(e) =>
+                  setPasswordObj({
+                    ...passwordObj,
+                    newPassword: e.target.value,
+                  })
+                }
                 id="newPassword"
                 autoComplete="off"
                 type="password"
@@ -78,11 +80,15 @@ export default function ResetPassword() {
               />
             </div>
             <div className="flex flex-col gap-1 w-full max-w-[500px] mt-2">
-                <label htmlFor="confirmNewPassword"> Confirm Password</label>
+              <label htmlFor="confirmNewPassword"> Confirm Password</label>
               <input
                 value={passwordObj.confirmNewPassword}
-                onChange={(e) => setPasswordObj({...passwordObj, confirmNewPassword: e.target.value})}
-
+                onChange={(e) =>
+                  setPasswordObj({
+                    ...passwordObj,
+                    confirmNewPassword: e.target.value,
+                  })
+                }
                 id="confirmNewPassword"
                 autoComplete="off"
                 type="password"
@@ -95,9 +101,13 @@ export default function ResetPassword() {
                 required
               />
             </div>
-              {passwordObj.newPassword !== passwordObj.confirmNewPassword && <p className="text-red-500">Passwords do not match</p>}
-              
-            <p className="text-[#1F406B] my-3">Create a strong password to secure your account!</p>
+            {passwordObj.newPassword !== passwordObj.confirmNewPassword && (
+              <p className="text-red-500">Passwords do not match</p>
+            )}
+
+            <p className="text-[#1F406B] my-3">
+              Create a strong password to secure your account!
+            </p>
           </div>
 
           <div className="px-4 flex justify-center ">
@@ -124,5 +134,5 @@ export default function ResetPassword() {
         </p>
       </div>
     </div>
-    );
+  );
 }
