@@ -1,0 +1,97 @@
+export default function WhyTrustUs() {
+  return (
+    <section className="bg-white text-black max-w-[90%] w-full px-8 shadow-md mx-auto min-h-screen my-8 py-8 flex flex-col md:flex-row gap-4">
+      <div id="1" className="md:w-1/2">
+        <h1 className="text-4xl font-medium text-center py-4">Why Trust Us?</h1>
+        <hr className="border-2 border-yellow-400 w-12 mx-auto" />
+        <div id="content" className="text-base xl:text-xl font-medium my-6">
+          {/* repeat trusting content 4times */}
+          <div className="flex gap-4 mt-4">
+            <p>Tick</p>
+            <p>
+              Affordable mentorship by real Nepali students Get guidance from
+              those who&apos;ve successfully navigated the process
+            </p>
+          </div>
+          <div className="flex gap-4 mt-4">
+            <p>Tick</p>
+            <p>
+              Affordable mentorship by real Nepali students Get guidance from
+              those who&apos;ve successfully navigated the process
+            </p>
+          </div>
+          <div className="flex gap-4 mt-4">
+            <p>Tick</p>
+            <p>
+              Affordable mentorship by real Nepali students Get guidance from
+              those who&apos;ve successfully navigated the process
+            </p>
+          </div>
+          <div className="flex gap-4 mt-4">
+            <p>Tick</p>
+            <p>
+              Affordable mentorship by real Nepali students Get guidance from
+              those who&apos;ve successfully navigated the process
+            </p>
+          </div>
+          <div className="flex gap-4 mt-4">
+            <p>Tick</p>
+            <p>
+              Affordable mentorship by real Nepali students Get guidance from
+              those who&apos;ve successfully navigated the process
+            </p>
+          </div>
+        </div>
+      </div>
+      <div id="2" className="md:w-1/2">
+        <h3 className="text-3xl font-medium text-center py-4">Testiomonials</h3>
+        <hr className="border-2 border-yellow-400 w-12 mx-auto" />
+        {/* repeat testimonial card 4times */}
+        <div
+          id="testimonial-card"
+          className="flex items-center flex-col mt-3 bg-gradient-to-l from-[#D9D9D9] via-[#69439D] to-[#15023B] from-0% via-0% to-100% rounded-[8px]  px-4 py-8"
+        >
+          <div
+            id="image-name"
+            className="flex items-center justify-around gap-6"
+          >
+            <p className="w-12 h-12 rounded-full bg-black"></p>
+            <p className="text-white">
+              Name: <span>Roshan Pokharel</span>
+            </p>
+          </div>
+          <div id="review" className="sm:px-0 px-2 mt-3">
+            <p className="text-[#d8d8d8]">
+              I was skeptical at first, but the mentorship program turned out to
+              be a game-changer. The guidance and support I received were
+              invaluable, and I&apos;m grateful for the opportunity to learn
+              from someone who&apos;s been there.
+            </p>
+          </div>
+        </div>
+        <div
+          id="testimonial-card"
+          className="flex items-center flex-col mt-3 bg-gradient-to-l from-[#D9D9D9] via-[#69439D] to-[#15023B] from-0% via-0% to-100% rounded-[8px]  px-4 py-8"
+        >
+          <div
+            id="image-name"
+            className="flex items-center justify-around gap-6"
+          >
+            <p className="w-12 h-12 rounded-full bg-black"></p>
+            <p className="text-white">
+              Name: <span>Roshan Pokharel</span>
+            </p>
+          </div>
+          <div id="review" className="sm:px-0 px-2 mt-3">
+            <p className="text-[#d8d8d8]">
+              I was skeptical at first, but the mentorship program turned out to
+              be a game-changer. The guidance and support I received were
+              invaluable, and I&apos;m grateful for the opportunity to learn
+              from someone who&apos;s been there.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
