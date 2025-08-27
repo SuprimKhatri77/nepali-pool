@@ -4,6 +4,7 @@ import { eq } from "drizzle-orm";
 import { db } from "../../lib/db";
 import { user } from "../../lib/db/schema";
 import z from "zod";
+import { checkAndUpdateRateLimit } from "./checkAndUpdateRateLimit";
 
 export type FormState = {
   errors?: {
@@ -37,6 +38,16 @@ export async function searchUserInDB(prevState: FormState, formData: FormData) {
   const { email } = validateField.data;
 
   try {
+    const isAllowed = await checkAndUpdateRateLimit(
+      `reset-password-link:${email.toLowerCase()}`
+    );
+    if (!isAllowed) {
+      return {
+        success: false,
+        message: "Too many requests,Please try again later!",
+      };
+    }
+
     const data = await db.select().from(user).where(eq(user.email, email));
     if (data.length === 0) {
       return {

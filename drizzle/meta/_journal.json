@@ -50,6 +50,13 @@
       "when": 1753775568942,
       "tag": "0006_right_orphan",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1756131112533,
+      "tag": "0007_melted_earthquake",
+      "breakpoints": true
     }
   ]
 }

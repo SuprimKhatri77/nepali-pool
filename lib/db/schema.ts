@@ -11,6 +11,7 @@ import {
   uniqueIndex,
   bigint,
 } from "drizzle-orm/pg-core";
+import { School } from "lucide-react";
 
 export const roleEnum = pgEnum("role", ["none", "student", "mentor", "admin"]);
 export const paymentEnum = pgEnum("payment", ["unpaid", "paid"]);
@@ -143,6 +144,22 @@ export const favorite = pgTable(
   ]
 );
 
+export const school = pgTable("school", {
+  id: uuid("id").primaryKey().notNull().defaultRandom(),
+  name: text("name"),
+  address: text("address"),
+  city: text("city"),
+  prefecture: text("prefecture"),
+  websiteUrl: text("website_url"),
+  email: text("email"),
+  imageUrl: text("image_url"),
+  supportInternationalStudents: boolean(
+    "support_international_students"
+  ).default(true),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
 export const userStudentProfileRelation = relations(user, ({ one }) => ({
   studentProfile: one(studentProfile, {
     fields: [user.id],
@@ -196,3 +213,5 @@ export type UserSelectType = InferSelectModel<typeof user>;
 export type UserInsertType = InferInsertModel<typeof user>;
 export type FavoriteSelectType = InferSelectModel<typeof favorite>;
 export type FavoriteInsertType = InferInsertModel<typeof favorite>;
+export type SchoolInsertType = InferInsertModel<typeof school>;
+export type SchoolSelectType = InferSelectModel<typeof school>;
