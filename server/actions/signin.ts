@@ -17,6 +17,10 @@ export type FormState = {
   success?: boolean;
   timestamp?: number;
   redirectTo?: string;
+  inputs?: {
+    email?: string;
+    password?: string;
+  };
 };
 
 export async function SignIn(prevState: FormState, formData: FormData) {
@@ -36,6 +40,7 @@ export async function SignIn(prevState: FormState, formData: FormData) {
       message: "Failed to login.",
       success: false,
       timestamp: Date.now(),
+      inpus: Object.fromEntries(formData.entries()),
     };
   }
 
@@ -50,9 +55,9 @@ export async function SignIn(prevState: FormState, formData: FormData) {
     if (!userRecord) {
       return {
         success: false,
-        message: "Invalid email or password",
+        message: "User doesn't exist",
         errors: {
-          email: ["Invalid email or password"],
+          email: ["User doesn't exist"],
         },
         timestamp: Date.now(),
       };
@@ -66,7 +71,7 @@ export async function SignIn(prevState: FormState, formData: FormData) {
 
     if (!userRecord.emailVerified) {
       return {
-        redirectTo: `/sign-up/verify-email?email=${encodeURIComponent(email)}`,
+        redirectTo: `/sign-up/verify-email`,
         timestamp: Date.now(),
       };
     }

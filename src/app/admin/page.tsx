@@ -35,24 +35,6 @@ export default async function Admin() {
     );
   }
 
-  const mentorProfileWithUser = await db.query.mentorProfile.findMany({
-    where: (fields, { ne }) => ne(fields.verifiedStatus, "accepted"),
-    with: {
-      user: true,
-    },
-  });
 
-  if (mentorProfileWithUser.length === 0) {
-    return (
-      <div className="flex flex-col min-h-screen justify-center items-center gap-4 max-w-2xl mx-auto">
-        <div>
-          Who let you come here dwag? You sure don&apos;t look like an admin though!
-          Whatever !!!
-        </div>
-        <SignOutButton />
-        <p>No pending request for mentor applications!</p>
-      </div>
-    );
-  }
   return <AdminDashboard />
 }

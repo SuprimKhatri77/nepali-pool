@@ -1,27 +1,23 @@
-import { headers } from "next/headers";
+import AddSchool from "@/components/AddSchool";
 import { auth } from "../../../../../server/lib/auth/auth";
+import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { db } from "../../../../../lib/db";
+import { eq } from "drizzle-orm";
 import {
   mentorProfile,
   studentProfile,
   user,
 } from "../../../../../lib/db/schema";
-import { eq } from "drizzle-orm";
-import AdminPage from "@/components/AdminPage";
 
-export const metadata = {
-  title: "Admin | Nepali Pool",
-};
-
-export default async function AdminDashboardPage() {
+export default async function Page() {
   const session = await auth.api.getSession({
     headers: await headers(),
   });
-
   if (!session) {
     return redirect("/login");
   }
+
   const [userRecord] = await db
     .select()
     .from(user)
@@ -31,12 +27,9 @@ export default async function AdminDashboardPage() {
   }
 
   if (!userRecord.emailVerified) {
-    return redirect(
-      `/sign-up/verify-email?email=${encodeURIComponent(userRecord.email)}`
-    );
+    return redirect("/sign-up/verify-email");
   }
-
-  if (userRecord.role === "none") {
+  if (!userRecord.role || userRecord.role === "none") {
     return redirect("/select-role");
   }
 
@@ -58,7 +51,6 @@ export default async function AdminDashboardPage() {
     if (!mentorProfileRecord) {
       return redirect("/sign-up/onboarding/mentor");
     }
-
     if (mentorProfileRecord.verifiedStatus === "pending") {
       return redirect("/waitlist");
     }
@@ -68,5 +60,5 @@ export default async function AdminDashboardPage() {
     return redirect("/dashboard/mentor");
   }
 
-  return <AdminPage />;
+  return <AddSchool currentUserId={userRecord.id} />;
 }

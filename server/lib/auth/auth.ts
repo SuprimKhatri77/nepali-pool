@@ -7,6 +7,12 @@ import { nextCookies } from "better-auth/next-js";
 import { eq } from "drizzle-orm";
 import { Resend } from "resend";
 import EmailVerification from "@/components/VerifyEmailMessage";
+import stripe from "@better-auth/stripe";
+import Stripe from "stripe";
+
+// const stripeClient = new Stripe(process.env.STRIPE_SECRET_KEY!, {
+//   apiVersion: "2025-07-30.basil",
+// });
 
 // const resend = new Resend(process.env.RESEND_API_KEY as string);
 
@@ -18,13 +24,16 @@ export const auth = betterAuth({
     enabled: true,
     autoSignIn: true,
     requireEmailVerification: false,
-    resetPasswordTokenExpiresIn: 600,
+    resetPasswordTokenExpiresIn: 300,
     sendResetPassword: async ({ user, url, token }, request) => {
       await sendEmail({
         to: user.email,
         subject: "Reset Password",
-        html: `A reset password request was made from your side. <br> Click on the link to reset password ${url} <br> If it was not you, You can safely ignore this email.
-              The link will expire in 10minutes.`,
+
+        html: `A reset password request was made from your side. <br> 
+               Click on the link to reset password ${url} <br> 
+               If it was not you, You can safely ignore this email.
+               The link will expire in 5 minutes.`,
       });
     },
   },
@@ -49,19 +58,14 @@ export const auth = betterAuth({
         }`
       );
 
-      // Resend config for production
-
-      // await resend.emails.send({
-      //   from: "nepalipool77@gmail.com",
-      //   to: user.email,
-      //   subject: "Verify your email",
-      //   react: EmailVerification({ name: user.name, url: String(finalUrl) }),
-      // });
-
       await sendEmail({
         to: user.email,
-        subject: "Reset Password",
-        html: `A request from your side was made for email verification. <br>Click on the link to verify your email ${finalUrl} <br> If it was not you , You can safely ignore this email. This link will expire in 1 hour`,
+        subject: "Verify Your Email",
+
+        html: `A request from your side was made for email verification. <br>
+               Click on the link to verify your email ${finalUrl} <br> 
+               If it was not you, You can safely ignore this email. 
+               This link will expire in 1 hour`,
       });
     },
     expiresIn: 3600,
@@ -71,5 +75,18 @@ export const auth = betterAuth({
       enabled: true,
     },
   },
-  plugins: [nextCookies()],
+  advanced: {
+    ipAddress: {
+      ipAddressHeaders: ["cf-connecting-ip", "x-forwarded-for"],
+    },
+  },
+
+  plugins: [
+    nextCookies(),
+    // stripe({
+    //   stripeClient,
+    //   stripeWebhookSecret: process.env.STRIPE_WEBHOOK_SECRET!,
+    //   createCustomerOnSignUp: true,
+    // }),
+  ],
 });
