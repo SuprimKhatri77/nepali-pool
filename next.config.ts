@@ -8,6 +8,10 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "vbteadl6m3.ufs.sh",
       },
+      {
+        protocol:"https",
+        hostname:"t4.ftcdn.net"
+      }
     ],
   },
 };
