@@ -29,7 +29,10 @@ export async function checkAndUpdateRateLimit(key: string) {
   const record = rateLimitRecord[0];
   const lastRequest = record.lastRequest ?? 0;
   const count = record.count ?? 0;
+<<<<<<< HEAD
 
+=======
+>>>>>>> main
   const elapsed = (now - lastRequest) / 1000;
 
   if (elapsed > windowSeconds) {

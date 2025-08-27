@@ -9,7 +9,9 @@ import {
   pgEnum,
   uuid,
   uniqueIndex,
+  bigint,
 } from "drizzle-orm/pg-core";
+import { School } from "lucide-react";
 
 export const roleEnum = pgEnum("role", ["none", "student", "mentor", "admin"]);
 export const paymentEnum = pgEnum("payment", ["unpaid", "paid"]);
@@ -77,6 +79,13 @@ export const verification = pgTable("verification", {
   ),
 });
 
+export const rateLimit = pgTable("rate_limit", {
+  id: text("id").primaryKey(),
+  key: text("key"),
+  count: integer("count"),
+  lastRequest: bigint("last_request", { mode: "number" }),
+});
+
 export const studentProfile = pgTable("student_profile", {
   userId: text("user_id")
     .references(() => user.id, { onDelete: "cascade" })
@@ -135,6 +144,22 @@ export const favorite = pgTable(
   ]
 );
 
+export const school = pgTable("school", {
+  id: uuid("id").primaryKey().notNull().defaultRandom(),
+  name: text("name"),
+  address: text("address"),
+  city: text("city"),
+  prefecture: text("prefecture"),
+  websiteUrl: text("website_url"),
+  email: text("email"),
+  imageUrl: text("image_url"),
+  supportInternationalStudents: boolean(
+    "support_international_students"
+  ).default(true),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
 export const userStudentProfileRelation = relations(user, ({ one }) => ({
   studentProfile: one(studentProfile, {
     fields: [user.id],
@@ -169,6 +194,17 @@ export const mentorProfileUserRelation = relations(
   })
 );
 
+export const favoriteRelations = relations(favorite, ({ one }) => ({
+  mentor: one(mentorProfile, {
+    fields: [favorite.mentorId],
+    references: [mentorProfile.userId],
+  }),
+  student: one(studentProfile, {
+    fields: [favorite.studentId],
+    references: [studentProfile.userId],
+  }),
+}));
+
 export type StudentProfileSelectType = InferSelectModel<typeof studentProfile>;
 export type StudentProfileInsertType = InferInsertModel<typeof studentProfile>;
 export type MentorProfileSelectType = InferSelectModel<typeof mentorProfile>;
@@ -178,3 +214,5 @@ export type UserInsertType = InferInsertModel<typeof user>;
 export type FavoriteSelectType = InferSelectModel<typeof favorite>;
 export type FavoriteInsertType = InferInsertModel<typeof favorite>;
 
+export type SchoolInsertType = InferInsertModel<typeof school>;
+export type SchoolSelectType = InferSelectModel<typeof school>;

@@ -8,9 +8,16 @@ export async function sendResetPasswordLink(email: string) {
     const allowed = await checkAndUpdateRateLimit(
       `reset-password-link:${email.toLowerCase()}`
     );
+<<<<<<< HEAD
     if (!allowed) {
       return {
         messgae: "Too many reset password request. Please try again later!",
+=======
+
+    if (!allowed) {
+      return {
+        message: "Too many reset password requests. Please try again later!", // Fixed typo: "messgae" -> "message"
+>>>>>>> main
         success: false,
       };
     }
@@ -21,6 +28,10 @@ export async function sendResetPasswordLink(email: string) {
         redirectTo: "/login/forgot-password/reset-password",
       },
     });
+<<<<<<< HEAD
+=======
+
+>>>>>>> main
     return {
       message: "A reset password link has been sent to your email!",
       success: true,
