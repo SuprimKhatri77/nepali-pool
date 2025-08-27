@@ -13,6 +13,7 @@ import {
 import { toast } from "sonner";
 import { useSearchParams } from "next/navigation";
 import { sendResetPasswordLink } from "../../../../../../server/actions/sendResetPasswordLink";
+import { checkAndUpdateRateLimit } from "../../../../../../server/actions/checkAndUpdateRateLimit";
 
 export default function ForgotPasswordPage() {
   const initialState: FormState = {
@@ -24,6 +25,7 @@ export default function ForgotPasswordPage() {
     initialState
   );
   const [email, setEmail] = useState<string>("");
+  const [disableButton, setDisableButton] = useState<boolean>(false);
   const params = useSearchParams();
   const error = params.get("error") as string;
 
@@ -35,6 +37,7 @@ export default function ForgotPasswordPage() {
       }, 300);
     }
     if (!state.success && state.message) {
+      setDisableButton(true);
       toast(state.message);
     }
   }, [state.message, state.success, state.timestamp]);
@@ -128,7 +131,7 @@ export default function ForgotPasswordPage() {
                 <Button
                   className="w-full"
                   type="submit"
-                  disabled={isPending}
+                  disabled={isPending || disableButton}
                   onClick={handleClick}
                 >
                   {isPending ? "Sending..." : "Send Reset Link"}

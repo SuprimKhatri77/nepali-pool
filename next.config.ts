@@ -8,6 +8,7 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "vbteadl6m3.ufs.sh",
       },
+      { protocol: "https", hostname: "logo.clearbit.com" },
     ],
   },
 };
