@@ -1,8 +1,8 @@
 import Image from "next/image";
 export default function Hero() {
   return (
-    <section className="bg-transparent h-auto mb-10 flex flex-col justify-start  items-center sm:pt-auto pt-12">
-      <h1 className="text-shadow-xs text-2xl sm:text-4xl md:text-[40px] font-semibold sm:font-bold pb-8 sm:text-left text-center">
+    <section className="bg-transparent h-auto mb-10 flex flex-col justify-start  items-center sm:pt-auto pt-10">
+      <h1 className="text-shadow-xs text-2xl sm:text-4xl md:text-[40px] font-semibold sm:font-bold pb-5 sm:text-left text-center">
         Your Trusted Mentor to Study in <br className="hidden sm:block" />
         <div className="w-full md:w-[500px] text-shadow-xs sm:mx-auto text-center">
           <span className="text-[#b31f1f] text-shadow-xs">JAPAN</span> from{" "}
@@ -10,7 +10,7 @@ export default function Hero() {
         </div>
       </h1>
       <div className="m-5 h-36 hidden sm:block">
-        <Image src="/hero.png"
+        <Image src="/hero.svg"
           alt="hero secton image"
           height={230}
           width={800}
@@ -22,11 +22,11 @@ export default function Hero() {
       </div>
       <div className="max-w-[500px] w-full mx-auto text-center mt-6">
         <h2 className="text-3xl sm:text-5xl font-bold text-[#e92424]">START</h2>
-        <div className="cta flex justify-around text-base sm:text-xl font-semibold gap-4 sm:gap-10 mt-3">
+        <div className="cta flex justify-around text-base sm:text-xl font-semibold gap-4 sm:gap-10 mt-2">
           <button className="m-5 bg-[#FACC15] rounded-[10px] py-2 px-4 cursor-pointer shadow-xs">
             As a Mentor
           </button>
-          <button className="m-5 bg-[#3a86ff] rounded-[10px] text-white py-2 px-4 cursor-pointer shadow-xs">
+          <button className="m-5 bg-[#3a86ff] rounded-[10px] text-white py-2 px-2 cursor-pointer shadow-xs">
             As a Student
           </button>
         </div>
