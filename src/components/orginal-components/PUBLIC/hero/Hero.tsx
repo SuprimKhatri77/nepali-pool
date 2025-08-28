@@ -16,11 +16,11 @@ export default function Hero() {
           width={800}
         />
       </div>
-      <div className="text-sm m-10 yellow-box rounded-[8px] bg-gradient-to-b p-3 px-5 shadow-xl from-[#F0B100] via-[#ffe08c] to-[#FFD357] max-w-80 w-full stroke-white stroke-2 text-[#1F1777] ">
+      <div className="text-sm m-5 yellow-box rounded-[8px] bg-gradient-to-b p-3 px-5 shadow-xl from-[#F0B100] via-[#ffe08c] to-[#FFD357] max-w-80 w-full stroke-white stroke-2 text-[#1F1777] ">
         Helping Nepali students choose the right college, city, and future —
         with expert guidance from someone who&apos;s been there.
       </div>
-      <div className="max-w-[500px] w-full mx-auto text-center mt-6">
+      <div className="max-w-[500px] w-full mx-auto text-center mt-1">
         <h2 className="text-3xl sm:text-5xl font-bold text-[#e92424]">START</h2>
         <div className="cta flex justify-around text-base sm:text-xl font-semibold gap-4 sm:gap-10 mt-2">
           <button className="m-5 bg-[#FACC15] rounded-[10px] py-2 px-4 cursor-pointer shadow-xs">
