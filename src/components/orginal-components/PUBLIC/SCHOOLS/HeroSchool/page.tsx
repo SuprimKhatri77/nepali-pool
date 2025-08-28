@@ -8,13 +8,12 @@ export default function HeroSchool() {
           <span className="text-[#e92424]">Nepal</span>
         </div>
       </h1>
-      2
       <div className="h-36 hidden sm:block relative">
         Image here!
-        <hr className="border-2 border-yellow-400 w-[612px] absolute right-[290px] top-24 rotate-90" />
-        <hr className="border-2 border-yellow-400 w-[612px] absolute right-[275px] top-24 rotate-90" />
-        <hr className="border-2 border-yellow-400 w-[1112px] absolute  top-8 rotate-[25deg] -right-[480px]" />
-        <hr className="border-2 border-yellow-400 w-[1112px] absolute  top-6 rotate-[25deg] -right-[520px]" />
+        <hr className="border-1 border-white-400 w-[612px] absolute right-[290px] top-24 rotate-90" />
+        <hr className="border-1 border-white-400 w-[612px] absolute right-[275px] top-24 rotate-90" />
+        <hr className="border-1 border-white-400 w-[1112px] absolute  top-8 rotate-[25deg] -right-[480px]" />
+        <hr className="border-1 border-white-400 w-[1112px] absolute  top-6 rotate-[25deg] -right-[520px]" />
       </div>
       <div className="  text-center mt-6">
         <div
