@@ -2,7 +2,7 @@ export default function Pricing() {
   return (
     <section
       id="pricing"
-      className="bg-white text-black max-w-[90%] w-full px-8 shadow-md mx-auto min-h-screen my-8 py-8 "
+      className="bg-white text-black max-w-[90%] w-full px-8 shadow-md mx-auto my-8 py-8"
     >
       <h1 className="text-4xl font-medium text-center">Pricing</h1>
       <div
