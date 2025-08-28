@@ -2,7 +2,7 @@ import React from "react";
 
 export default function SubscribeNewsLetter() {
   return (
-    <section className="rounded-md mb-4 flex md:flex-row flex-col justify-around items-center bg-gradient-to-r py-6 px-6 from-[#413BA1] via-[#3A489D] to-[#384E9B] from-0% via-69% to-100% stroke-white stroke-2 text-[#1F1777]   lg:mx-auto max-w-[1200px] w-full">
+    <section className="rounded-md mb-4 flex md:flex-row flex-col justify-around items-center bg-gradient-to-r py-6 px-6 from-[#413BA1] via-[#3A489D] to-[#384E9B] from-0% via-69% to-100% stroke-white stroke-2 text-[#1F1777]  mx-9 lg:mx-auto max-w-[1200px]">
       <div className="text-[#f5f5f5] w-full md:w-1/2">
         <h1 className="text-xl font-medium mb-3">
           Subscribe to our newsletter
