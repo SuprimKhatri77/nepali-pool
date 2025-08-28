@@ -8,7 +8,7 @@ export default function Header({ Login }: { readonly Login: boolean }) {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <header className="bg-white lg:rounded-md flex justify-between items-center text-black shadow-md pb-4 pt-3 px-6 lg:px-10 relative">
+    <header className="bg-white lg:rounded-md flex justify-between items-center text-black shadow-md pb-3 pt-2 px-6 lg:px-10 relative">
       {/* Logo */}
       <div id="div1">
         <Image
@@ -16,7 +16,7 @@ export default function Header({ Login }: { readonly Login: boolean }) {
           alt="logo"
           width={138}
           height={138}
-          className="w-20 h-12"
+          className="w-20 h-18"
         />
       </div>
 
