@@ -4,7 +4,7 @@ import React from "react";
 
 export default function Footer() {
   return (
-    <footer className="bg-white py-12 gap-8 shadow-md mt-4">
+    <footer className="lg:rounded-md bg-white py-12 gap-8 shadow-md mt-4">
       <div className="flex lg:flex-row flex-col px-8">
         <div
           id="logoLinks"

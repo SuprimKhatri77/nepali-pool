@@ -6,7 +6,7 @@ import WhyTrustUs from "@/components/orginal-components/PUBLIC/WhyTrustUs/page";
 
 export default function HomePage() {
   return (
-    <main className="bg-gradient-to-l from-0% from-[#BEDFFF] via-52% via-[#DEE9FF] to-100% to-[#bedfff] mb-4">
+    <main className="bg-transparent min-h-screen mx-auto mb-4">
       <Hero />
       <HowItWorks />
       <Pricing />

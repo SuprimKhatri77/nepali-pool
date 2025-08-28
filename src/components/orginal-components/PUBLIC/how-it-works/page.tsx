@@ -3,7 +3,7 @@ import HowItWorksCard from "../reusableComponents/HITWCARD";
 
 export default function HowItWorks() {
   return (
-    <section className="bg-white text-black max-w-[90%] w-full px-8 shadow-md mx-auto min-h-screen pb-8 mb-8">
+    <section className="bg-white  rounded-md text-black max-w-[90%] w-full px-8 shadow-md mx-auto min-h-screen pb-8 mb-8">
       <h1 className="text-3xl sm:text-4xl font-medium text-center py-4">
         How It Works
       </h1>

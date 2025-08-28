@@ -8,7 +8,7 @@ export default function Header({ Login }: { readonly Login: boolean }) {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <header className="flex justify-between items-center text-black shadow-md pb-3 pt-2 px-6 lg:px-10 relative">
+    <header className="bg-white lg:rounded-md flex justify-between items-center text-black shadow-md pb-4 pt-3 px-6 lg:px-10 relative">
       {/* Logo */}
       <div id="div1">
         <Image
@@ -22,7 +22,7 @@ export default function Header({ Login }: { readonly Login: boolean }) {
 
       {/* Desktop Menu */}
       <nav className="hidden sm:flex items-center mt-1">
-        <ul className="flex gap-8 text-xl">
+        <ul className="flex gap-8 text-base">
           {["Home", "School", "Mentor", "Guides"].map((item) => (
             <li key={item} className="relative group">
               <Link
@@ -82,7 +82,7 @@ export default function Header({ Login }: { readonly Login: boolean }) {
             <Link
               key={item}
               href="/public/home"
-              className="text-xl font-medium"
+              className="text-sm font-medium"
               onClick={() => setIsOpen(false)}
             >
               {item}

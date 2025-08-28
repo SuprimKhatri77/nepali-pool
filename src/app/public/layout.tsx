@@ -7,10 +7,10 @@ export default async function PublicLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <>
+    <div className="w-full">
       <ServerHeader />
-      <div>{children}</div>
+      <main className="w-full mx-auto">{children}</main>
       <Footer />
-    </>
+    </div>
   );
 }

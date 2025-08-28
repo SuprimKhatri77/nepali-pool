@@ -1,41 +1,43 @@
+import Image from "next/image"
+
 export default function WhyTrustUs() {
   return (
-    <section className="bg-white text-black max-w-[90%] w-full px-8 shadow-md mx-auto min-h-screen my-8 py-8 flex flex-col md:flex-row gap-4">
+    <section className="rounded-md bg-white text-black max-w-[90%] w-full px-8 shadow-md mx-auto min-h-screen my-8 py-8 flex flex-col md:flex-row gap-4">
       <div id="1" className="md:w-1/2">
         <h1 className="text-4xl font-medium text-center py-4">Why Trust Us?</h1>
         <hr className="border-2 border-yellow-400 w-12 mx-auto" />
         <div id="content" className="text-base xl:text-xl font-medium my-6">
           {/* repeat trusting content 4times */}
-          <div className="flex gap-4 mt-4">
-            <p>Tick</p>
+          <div className="flex justify-center items-center gap-4 mt-4">
+            <Image src="/tick.png" height={40} width={40} alt="tick" />
             <p>
               Affordable mentorship by real Nepali students Get guidance from
               those who&apos;ve successfully navigated the process
             </p>
           </div>
-          <div className="flex gap-4 mt-4">
-            <p>Tick</p>
+          <div className="flex justify-center items-center gap-4 mt-4">
+            <Image src="/tick.png" height={0} width={40} alt="tick" />
             <p>
               Affordable mentorship by real Nepali students Get guidance from
               those who&apos;ve successfully navigated the process
             </p>
           </div>
-          <div className="flex gap-4 mt-4">
-            <p>Tick</p>
+          <div className="flex justify-center items-center gap-4 mt-4">
+            <Image src="/tick.png" height={40} width={40} alt="tick" />
             <p>
               Affordable mentorship by real Nepali students Get guidance from
               those who&apos;ve successfully navigated the process
             </p>
           </div>
-          <div className="flex gap-4 mt-4">
-            <p>Tick</p>
+          <div className="flex justify-center items-center gap-4 mt-4">
+            <Image src="/tick.png" height={40} width={40} alt="tick" />
             <p>
               Affordable mentorship by real Nepali students Get guidance from
               those who&apos;ve successfully navigated the process
             </p>
           </div>
-          <div className="flex gap-4 mt-4">
-            <p>Tick</p>
+          <div className="flex justify-center items-center gap-4 mt-4">
+            <Image src="/tick.png" height={40} width={40} alt="tick" />
             <p>
               Affordable mentorship by real Nepali students Get guidance from
               those who&apos;ve successfully navigated the process
