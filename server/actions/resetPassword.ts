@@ -5,7 +5,7 @@ import { auth } from "../lib/auth/auth";
 import { checkAndUpdateRateLimit } from "./checkAndUpdateRateLimit";
 import { headers } from "next/headers";
 import { db } from "../../lib/db";
-import { user } from "../../auth-schema";
+import { user } from "../../lib/db/schema";
 import { eq } from "drizzle-orm";
 
 export async function resetPassword(newPassword: string, token: string) {
