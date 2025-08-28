@@ -1,4 +1,4 @@
-import Image from "next/image"
+import Image from "next/image";
 
 export default function WhyTrustUs() {
   return (
@@ -10,35 +10,35 @@ export default function WhyTrustUs() {
           {/* repeat trusting content 4times */}
           <div className="flex justify-center items-center gap-4 mt-4">
             <Image src="/tick.png" height={40} width={40} alt="tick" />
-            <p className="text-lg text-black/80">
+            <p className="text-sm sm:text-base md:text-lg text-black/80">
               Affordable mentorship by real Nepali students Get guidance from
               those who&apos;ve successfully navigated the process
             </p>
           </div>
           <div className="flex justify-center items-center gap-4 mt-4">
             <Image src="/tick.png" height={0} width={40} alt="tick" />
-            <p className="text-lg text-black/80">
+            <p className="text-sm sm:text-base md:text-lg text-black/80">
               Affordable mentorship by real Nepali students Get guidance from
               those who&apos;ve successfully navigated the process
             </p>
           </div>
           <div className="flex justify-center items-center gap-4 mt-4">
             <Image src="/tick.png" height={40} width={40} alt="tick" />
-            <p className="text-lg text-black/80">
+            <p className="text-sm sm:text-base md:text-lg text-black/80">
               Affordable mentorship by real Nepali students Get guidance from
               those who&apos;ve successfully navigated the process
             </p>
           </div>
           <div className="flex justify-center items-center gap-4 mt-4">
             <Image src="/tick.png" height={40} width={40} alt="tick" />
-            <p className="text-lg text-black/80">
+            <p className="text-sm sm:text-base md:text-lg text-black/80">
               Affordable mentorship by real Nepali students Get guidance from
               those who&apos;ve successfully navigated the process
             </p>
           </div>
           <div className="flex justify-center items-center gap-4 mt-4">
             <Image src="/tick.png" height={40} width={40} alt="tick" />
-            <p className="text-lg text-black/80">
+            <p className="text-sm sm:text-base md:text-lg text-black/80">
               Affordable mentorship by real Nepali students Get guidance from
               those who&apos;ve successfully navigated the process
             </p>

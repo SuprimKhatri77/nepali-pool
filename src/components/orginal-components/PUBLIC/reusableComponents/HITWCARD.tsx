@@ -11,8 +11,8 @@ export default function HowItWorksCard({
   readonly img: string;
 }) {
   return (
-    <div className="max-w-[320px] min-h-[350px] shadow-md w-full bg-gradient-to-b from-[#D9D9D9] via-[#706FA3] to-[#1e1a4d] from-0% via-0% to-100% rounded-[8px]  py-4 px-1">
-      <div id="icon" className="m-10 flex items-center justify-center">
+    <div className="max-w-[270px] min-h-[310px] shadow-md w-full bg-gradient-to-b from-[#D9D9D9] via-[#706FA3] to-[#1e1a4d] from-0% via-0% to-100% rounded-[8px]  py-4 px-1">
+      <div id="icon" className="m-5 flex items-center justify-center">
         <Image src={img} alt="how it works img" height={80} width={80} />
       </div>
       <div id="content" className="text-[#C2CDFF] p-5">

@@ -8,7 +8,7 @@ export default function Header({ Login }: { readonly Login: boolean }) {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <header className="bg-white lg:rounded-md flex justify-between items-center text-black shadow-md pb-3 pt-2 px-6 lg:px-10 relative">
+    <header className="bg-white lg:rounded-md flex justify-between items-center text-black shadow-md  px-6 lg:px-10 relative">
       {/* Logo */}
       <div id="div1">
         <Image
@@ -23,10 +23,10 @@ export default function Header({ Login }: { readonly Login: boolean }) {
       {/* Desktop Menu */}
       <nav className="hidden sm:flex items-center mt-1">
         <ul className="flex gap-8 text-base">
-          {["Home", "School", "Mentor", "Guides"].map((item) => (
+          {["Home", "Schools", "Mentors", "Guides"].map((item) => (
             <li key={item} className="relative group">
               <Link
-                href="/public/home"
+                href={`/public/${item.toLowerCase()}`}
                 className="after:block after:h-[2px] after:bg-black after:w-0 after:transition-all after:duration-300 group-hover:after:w-full"
               >
                 {item}

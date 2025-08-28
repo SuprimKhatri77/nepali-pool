@@ -10,15 +10,9 @@ export default function Footer() {
           id="logoLinks"
           className="flex flex-col items-center justify-center max-w-[300px] w-full mx-auto"
         >
-          <Image
-            src="/logo.png"
-            alt="logo"
-            width={274}
-            height={168}
-            className="w-32 h-20"
-          ></Image>
-          <p className="text-sm text-gray-600 mt-2 h-0.5 bg-amber-300 w-16"></p>
-          <div className="mt-3">
+          <Image src="/logo.png" alt="logo" width={138} height={158}></Image>
+          <p className="text-sm text-gray-600 mt-1 h-0.5 bg-amber-300 w-16"></p>
+          <div>
             <h3 className="font-semibold text-base sm:text-xl">Social Links</h3>
             <ul>
               <li>

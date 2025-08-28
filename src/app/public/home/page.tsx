@@ -10,7 +10,7 @@ export default function HomePage() {
     <main className="bg-transparent min-h-screen mx-auto mb-4">
       <Hero />
       <HowItWorks />
-      <TrustedBy/>
+      <TrustedBy />
       <WhyTrustUs />
       <Pricing />
       <SubscribeNewsLetter />

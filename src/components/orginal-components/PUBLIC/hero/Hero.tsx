@@ -10,13 +10,14 @@ export default function Hero() {
         </div>
       </h1>
       <div className="m-5 h-36 hidden sm:block">
-        <Image src="/hero.svg"
+        <Image
+          src="/hero.svg"
           alt="hero secton image"
           height={230}
           width={800}
         />
       </div>
-      <div className="text-sm m-5 yellow-box rounded-[8px] bg-gradient-to-b p-3 px-5 shadow-xl from-[#F0B100] via-[#ffe08c] to-[#FFD357] max-w-80 w-full stroke-white stroke-2 text-[#1F1777] ">
+      <div className="text-sm m-5 yellow-box rounded-[8px] bg-gradient-to-b p-3 px-5 shadow-xl from-[#F0B100]  to-[#fad366] max-w-80 w-full stroke-white stroke-2 text-[#1F1777] ">
         Helping Nepali students choose the right college, city, and future —
         with expert guidance from someone who&apos;s been there.
       </div>

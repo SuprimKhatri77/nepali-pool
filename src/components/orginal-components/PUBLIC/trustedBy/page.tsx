@@ -7,11 +7,11 @@ export default function TrustedBy() {
         Trusted By
       </h1>
       <hr className="w-30 h-1 bg-gradient-to-r from-[#ffffff] via-[#D83A0A] to-[#ffffff] mx-auto" />
-      <div id="container" className="mt-3 flex gap-6 flex-wrap justify-center">
+      <div id="container" className="mt-3 flex gap-16 flex-wrap justify-center">
         {/* load cards here! */}
         <TrustedByCard img="/school.svg" Header="School" Count={20} />
         <TrustedByCard img="/partner.svg" Header="Partner With" Count={20} />
-        <TrustedByCard img="/student.svg"Header="Students" Count={20} />
+        <TrustedByCard img="/student.svg" Header="Students" Count={20} />
         <TrustedByCard img="/mentor.svg" Header="Mentor" Count={20} />
       </div>
     </section>

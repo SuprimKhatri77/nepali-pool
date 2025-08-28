@@ -9,7 +9,9 @@ export default async function PublicLayout({
   return (
     <div className="w-full">
       <ServerHeader />
-      <main className="w-full mx-auto">{children}</main>
+      <main className="w-full mx-auto border border-x-[#4473a3]">
+        {children}
+      </main>
       <Footer />
     </div>
   );
