@@ -1,8 +1,12 @@
-"use client";
-import { useParams } from "next/navigation";
+import SpecificSchoolDetailServer from "@/components/orginal-components/PUBLIC/SCHOOLS/SPECIFICSCHOOL/page";
 
-export default function SpecificSchoolView() {
-  const params = useParams();
-  const { schoolId } = params;
-  return <div>SpecificSchoolView {schoolId}</div>;
+export default async function SpecificSchoolView({
+  params,
+}: {
+  readonly params: {
+    readonly schoolId: string;
+  };
+}) {
+  const { schoolId } = await params;
+  return <SpecificSchoolDetailServer Id={schoolId} />;
 }

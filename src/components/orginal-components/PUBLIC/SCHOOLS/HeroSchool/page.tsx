@@ -18,7 +18,7 @@ export default function HeroSchool() {
       <div className="  text-center mt-6">
         <div
           id="search"
-          className="flex justify-between gap-6 max-w-[500px] w-full mx-auto mt-6"
+          className="flex justify-between gap-6 max-w-[500px] w-full mx-auto mt-6 px-4"
         >
           <input
             type="text"
@@ -29,17 +29,17 @@ export default function HeroSchool() {
             Filter
           </button>
         </div>
-        <div className="cta flex justify-around text-white text-base sm:text-xl font-semibold gap-4 sm:gap-10 mt-3">
-          <button className="w-[270px] h-[45px] mt-4 bg-gradient-to-r from-[#61050B] to-[#C30009]  rounded-[10px] py-2 px-4 cursor-pointer">
+        <div className="cta flex flex-wrap justify-around text-white text-base sm:text-xl font-semibold gap-4 sm:gap-10 mt-3">
+          <button className="w-[100px] sm:w-[270px] h-[45px] mt-4 bg-gradient-to-r from-[#61050B] to-[#C30009]  rounded-[10px] py-2 px-4 cursor-pointer">
             Country
           </button>
-          <button className="w-[270px] h-[45px] mt-4 bg-gradient-to-r from-[#2F0D68] to-[#7F22FE] rounded-[10px]  py-2 px-4 cursor-pointer">
+          <button className="w-[100px] sm:w-[270px] h-[45px] mt-4 bg-gradient-to-r from-[#2F0D68] to-[#7F22FE] rounded-[10px]  py-2 px-4 cursor-pointer">
             City
           </button>
-          <button className="w-[270px] h-[45px] mt-4 bg-gradient-to-r from-[#861043] to-[#F6339A] rounded-[10px] py-2 px-4 cursor-pointer">
+          <button className="w-[140px] sm:w-[270px] h-[45px] mt-4 bg-gradient-to-r from-[#861043] to-[#F6339A] rounded-[10px] py-2 px-4 cursor-pointer">
             Price
           </button>
-          <button className="w-[270px] h-[45px] mt-4 bg-gradient-to-r from-[#3C0366] to-[#9810FA] rounded-[10px] py-2 px-4 cursor-pointer">
+          <button className="w-[140px] sm:w-[270px] h-[45px] mt-4 bg-gradient-to-r from-[#3C0366] to-[#9810FA] rounded-[10px] py-2 px-4 cursor-pointer">
             Top Rated
           </button>
         </div>

@@ -1,6 +1,6 @@
 "use client";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import React from "react";
 type SchoolCardProps = {
   id: string;
@@ -18,8 +18,16 @@ export default function SchoolCard({
   supportsInternationalStudents,
 }: readonly SchoolCardProps) {
   const router = useRouter();
+  const pathname = usePathname();
   const handleClick = (id: string) => {
-    router.push(`/public/schools/${id}`);
+    const schoolPathRegex = /^\/public\/schools\/[a-f0-9-]+$/i;
+
+    if (schoolPathRegex.test(pathname)) {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+    setTimeout(() => {
+      router.push(`/public/schools/${id}`);
+    }, 400); // wait for scroll animation
   };
   return (
     <div
