@@ -1,22 +1,22 @@
 import Image from "next/image";
 
-export default function HeroSchool() {
+export default function HeroMentors() {
   return (
-    <section className="h-screen flex flex-col justify-start  items-center  sm:pt-auto pt-8">
-      <h1 className="text-3xl  md:text-[46px] font-semibold sm:font-bold pb-2 sm:text-left text-center">
-        Your Trusted Schools to Study in <br className="hidden sm:block" />
+    <section className="min-h-screen flex flex-col justify-start  items-center  sm:pt-auto pt-8">
+      <h1 className="text-3xl  xl:text-[46px] font-semibold sm:font-bold pb-2 sm:text-left text-center">
+        Your Trusted Mentors to Study in <br className="hidden sm:block" />
         <div className="w-full md:w-[500px] sm:mx-auto text-center">
           <span className="text-[#b31f1f]">JAPAN</span> from{" "}
           <span className="text-[#e92424]">Nepal</span>
         </div>
       </h1>
       <Image
-        src={"/allSchoolPage/school-building-modern.svg"}
+        src={"/mentorListPage/hero.svg"}
         alt="hero secton image"
         height={260}
         width={511}
         className="sm:px-0 px-4 mb-0 mt-2
-        "
+            "
       />
       <div className="text-center mt-3 sm:mt-1">
         <div

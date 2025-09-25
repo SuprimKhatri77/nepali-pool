@@ -16,7 +16,7 @@ export default function SchoolCard({
   city,
   imageUrl,
   supportsInternationalStudents,
-}: readonly SchoolCardProps) {
+}: SchoolCardProps) {
   const router = useRouter();
   const pathname = usePathname();
   const handleClick = (id: string) => {
