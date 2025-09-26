@@ -1,10 +1,13 @@
+import Image from "next/image";
 import GuideParaCard from "./guidesParaCard/GuideParaCard";
 
 export default function page() {
   return (
     <div className="p-10 mx-auto bg-white flex flex-col justify-center items-center">
       <h1 className="text-3xl font-bold pb-5">School Admission Requirements</h1>
-      <p>Selecting the right school is crucial and should be based on factors like teaching style, course offerings, and location. After completing the school application and submitting all required documents, the school applies for a Certificate of Eligibility (COE) on the student’s behalf, which typically takes 2-3 months to process. Once the COE is granted, the student can then apply for a student visa at the nearest Japanese embassy or consulate, providing the COE, a valid passport, and other necessary documents.</p>
+      <Image src="/guides/guide3.png" alt="School Admission Requirements image" width={990} height={497} />
+
+      <p className="pt-5">Selecting the right school is crucial and should be based on factors like teaching style, course offerings, and location. After completing the school application and submitting all required documents, the school applies for a Certificate of Eligibility (COE) on the student’s behalf, which typically takes 2-3 months to process. Once the COE is granted, the student can then apply for a student visa at the nearest Japanese embassy or consulate, providing the COE, a valid passport, and other necessary documents.</p>
       <div>
         <GuideParaCard step={1} title="Application Submission" isLast={false} description="Start with filling out the school’s application form thoroughly. Then, submit all necessary documents as previously mentioned, which encompass academic certificates, transcripts, photographs, and any other required paperwork. This step is crucial for a successful application process." />
         <GuideParaCard step={2} title="Document Review and Submission" isLast={false} description="After receiving your documents, our team and school will review them. If additional information is required or corrections are needed, we will guide you through this process." />
