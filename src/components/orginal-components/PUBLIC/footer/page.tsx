@@ -4,7 +4,7 @@ import React from "react";
 
 export default function Footer() {
   return (
-    <footer className="lg:rounded-md bg-white py-12 gap-8 shadow-md mt-4">
+    <footer className="lg:rounded-md bg-white py-5 gap-8 shadow-md mt-4">
       <div className="flex lg:flex-row flex-col px-8">
         <div
           id="logoLinks"
@@ -124,7 +124,7 @@ export default function Footer() {
       <div>
         <hr className="mt-4 border border-[#E92424] opacity-60" />
         <p className="text-sm text-center mt-4 font-medium">
-          Copyright © 2023 VisaHelp. All rights reserved.
+          Copyright © 2025 VisaHelp. All rights reserved.
         </p>
       </div>
     </footer>
