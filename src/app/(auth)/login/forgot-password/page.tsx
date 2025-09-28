@@ -13,6 +13,7 @@ import { toast } from "sonner";
 import { authClient } from "../../../../../server/lib/auth/auth-client";
 
 export default function ForgetPassword() {
+  // forgot-password
   const initialState: FormState = {
     errors: {},
   };
