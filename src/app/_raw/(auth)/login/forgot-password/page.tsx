@@ -5,15 +5,13 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import Link from "next/link";
 import { useActionState, useEffect, useState } from "react";
-import { authClient } from "../../../../../../server/lib/auth/auth-client";
 import {
   FormState,
   searchUserInDB,
-} from "../../../../../../server/actions/searchUserInDB";
+} from "../../../../../../server/actions/search-user/searchUserInDB";
 import { toast } from "sonner";
 import { useSearchParams } from "next/navigation";
-import { sendResetPasswordLink } from "../../../../../../server/actions/sendResetPasswordLink";
-import { checkAndUpdateRateLimit } from "../../../../../../server/actions/checkAndUpdateRateLimit";
+import { sendResetPasswordLink } from "../../../../../../server/actions/reset-password/sendResetPasswordLink";
 
 export default function ForgotPasswordPage() {
   const initialState: FormState = {

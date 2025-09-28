@@ -17,6 +17,11 @@ export default function AdminPage() {
       <Button asChild>
         <Link href="/admin/add-school">Add school</Link>
       </Button>
+      <Button asChild>
+        <Link href="/admin/video-call-applications?status=pending">
+          Video Call
+        </Link>
+      </Button>
     </div>
   );
 }

@@ -7,19 +7,16 @@ import { nextCookies } from "better-auth/next-js";
 import { eq } from "drizzle-orm";
 import { Resend } from "resend";
 import EmailVerification from "@/components/VerifyEmailMessage";
-import stripe from "@better-auth/stripe";
-import Stripe from "stripe";
-
-// const stripeClient = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-//   apiVersion: "2025-07-30.basil",
-// });
+import * as schema from "../../../lib/db/schema";
 
 const resend = new Resend(process.env.RESEND_API_KEY as string);
 
 export const auth = betterAuth({
   database: drizzleAdapter(db, {
     provider: "pg",
+    schema,
   }),
+  secret: process.env.BETTER_AUTH_SECRET,
   emailAndPassword: {
     enabled: true,
     autoSignIn: true,
@@ -79,12 +76,5 @@ export const auth = betterAuth({
     },
   },
 
-  plugins: [
-    nextCookies(),
-    // stripe({
-    //   stripeClient,
-    //   stripeWebhookSecret: process.env.STRIPE_WEBHOOK_SECRET!,
-    //   createCustomerOnSignUp: true,
-    // }),
-  ],
+  plugins: [nextCookies()],
 });

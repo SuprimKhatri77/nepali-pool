@@ -9,18 +9,16 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import { useActionState, useEffect, useState } from "react";
+import { useActionState, useEffect } from "react";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { Input } from "./ui/input";
 
-import { type FormState, addSchool } from "../../server/actions/addSchool";
-
-type AddSchoolType = {
-  className?: string;
-  currentUserId: string;
-};
+import {
+  type FormState,
+  addSchool,
+} from "../../server/actions/add-school/addSchool";
+import { AddSchoolType } from "../../types/all-types";
 
 export default function AddSchool({
   className,

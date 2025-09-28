@@ -16,7 +16,7 @@ import { getNames } from "country-list";
 import MultiSelectCountries from "./multi-select-countires";
 import studentOnboarding, {
   type FormState,
-} from "../../server/actions/onboardingStudent";
+} from "../../server/actions/onboarding/onboardingStudent";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { Input } from "./ui/input";
@@ -27,11 +27,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "./ui/select";
-
-type StudentOnboardingFormType = {
-  className?: string;
-  currentUserId: string;
-};
+import { StudentOnboardingFormType } from "../../types/all-types";
 
 export default function StudentOnboardingForm({
   className,

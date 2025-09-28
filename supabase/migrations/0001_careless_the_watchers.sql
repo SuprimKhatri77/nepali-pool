@@ -1,0 +1,1 @@
+CREATE TYPE "public"."chat_status" AS ENUM('active', 'expired');

@@ -1,4 +1,9 @@
-import { InferInsertModel, InferSelectModel, relations } from "drizzle-orm";
+import {
+  InferInsertModel,
+  InferSelectModel,
+  One,
+  relations,
+} from "drizzle-orm";
 import {
   pgTable,
   text,
@@ -10,12 +15,17 @@ import {
   uuid,
   uniqueIndex,
   bigint,
+  index,
 } from "drizzle-orm/pg-core";
-import { School } from "lucide-react";
+import { eq } from "drizzle-orm";
 
 export const roleEnum = pgEnum("role", ["none", "student", "mentor", "admin"]);
-export const paymentEnum = pgEnum("payment", ["unpaid", "paid"]);
-export const statusEnum = pgEnum("status", ["pending", "accepted", "rejected"]);
+
+export const mentorVerifiedStatusEnum = pgEnum("mentor_verified_status", [
+  "pending",
+  "accepted",
+  "rejected",
+]);
 export const sexEnum = pgEnum("sex", ["male", "female", "other"]);
 
 export const user = pgTable("user", {
@@ -96,7 +106,6 @@ export const studentProfile = pgTable("student_profile", {
   phoneNumber: varchar("phone_number", { length: 30 }),
   sex: sexEnum("sex"),
   city: varchar("city", { length: 30 }),
-  paymentStatus: paymentEnum("payment_status").default("unpaid"),
   imageUrl: text("image_url").default(
     "https://vbteadl6m3.ufs.sh/f/DDJ5nPL6Yp1sHfAviE2zasoidYb10Mu7JGNQFZWgVmCrRHPE"
   ),
@@ -104,6 +113,170 @@ export const studentProfile = pgTable("student_profile", {
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });
+
+export const paymentTypeEnum = pgEnum("payment_type", [
+  "chat_subscription",
+  "video_call",
+]);
+
+export const paymentStatusEnum = pgEnum("payment_status", [
+  "pending",
+  "paid",
+  "failed",
+]);
+
+export const payment = pgTable("payment", {
+  id: uuid().defaultRandom().primaryKey(),
+  userId: text("user_id")
+    .references(() => user.id, { onDelete: "cascade" })
+    .notNull(),
+  type: paymentTypeEnum("type").notNull(),
+  amount: integer("amount").notNull(),
+  currency: varchar("currency", { length: 20 }).default("USD"),
+  status: paymentStatusEnum("status").default("pending"),
+  stripePaymentId: text("stripe_payment_id"),
+  stripeSubscriptionId: text("stripe_subscription_id"),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+export const subscriptionStatusEnum = pgEnum("subscription_status", [
+  "active",
+  "expired",
+  "cancelled",
+]);
+export const chatSubscription = pgTable(
+  "chat_subscription",
+  {
+    id: uuid().defaultRandom().primaryKey().notNull(),
+    studentId: text("student_id")
+      .references(() => studentProfile.userId, { onDelete: "cascade" })
+      .notNull(),
+    mentorId: text("mentor_id")
+      .references(() => mentorProfile.userId, { onDelete: "cascade" })
+      .notNull(),
+    paymentId: uuid("payment_id")
+      .references(() => payment.id, { onDelete: "cascade" })
+      .notNull(),
+    startDate: timestamp("start_date").notNull(),
+    endDate: timestamp("end_date").notNull(),
+    status: subscriptionStatusEnum("status").default("active"),
+    createdAt: timestamp("created_at").defaultNow(),
+    updatedAt: timestamp("updated_at").defaultNow(),
+  },
+  (table) => [
+    uniqueIndex("unique_active_chat").on(
+      table.studentId,
+      table.mentorId,
+      table.status
+    ),
+    index("idx_sub_student").on(table.studentId),
+    index("idx_sub_mentor").on(table.mentorId),
+  ]
+);
+
+export const videoCallStatusEnum = pgEnum("video_call_status", [
+  "pending",
+  "scheduled",
+  "completed",
+  "cancelled",
+]);
+
+export const videoCall = pgTable(
+  "video_call",
+  {
+    id: uuid().primaryKey().defaultRandom().notNull(),
+    studentId: text("student_id")
+      .references(() => studentProfile.userId, { onDelete: "cascade" })
+      .notNull(),
+    mentorId: text("mentor_id")
+      .references(() => mentorProfile.userId, { onDelete: "cascade" })
+      .notNull(),
+    scheduledTime: timestamp("scheduled_time"),
+    paymentId: uuid("payment_id").references(() => payment.id, {
+      onDelete: "cascade",
+    }),
+    startUrl: text("start_url"),
+    joinUrl: text("join_url"),
+    status: videoCallStatusEnum("status").default("pending"),
+    zoomMeetingId: text("zoom_meeting_id"),
+    createdAt: timestamp("created_at").defaultNow(),
+    updatedAt: timestamp("updated_at").defaultNow(),
+  },
+  (table) => [
+    index("idx_video_student").on(table.studentId),
+    index("idx_video_mentor").on(table.mentorId),
+    index("idx_video_scheduledTime").on(table.scheduledTime),
+  ]
+);
+
+export const videoCallRelations = relations(videoCall, ({ one, many }) => ({
+  studentProfile: one(studentProfile, {
+    fields: [videoCall.studentId],
+    references: [studentProfile.userId],
+  }),
+  mentorProfile: one(mentorProfile, {
+    fields: [videoCall.mentorId],
+    references: [mentorProfile.userId],
+  }),
+  preferredTime: one(preferredTime, {
+    fields: [videoCall.id],
+    references: [preferredTime.videoId],
+  }),
+  preferredTimeLog: many(preferredTimeLog),
+}));
+
+export const preferredTimeStatusEnum = pgEnum("preferred_time_status", [
+  "pending",
+  "accepted",
+  "rejected",
+]);
+
+export const preferredTime = pgTable(
+  "preferred_time",
+  {
+    id: uuid().defaultRandom().primaryKey().notNull(),
+    videoId: uuid("video_id").references(() => videoCall.id, {
+      onDelete: "cascade",
+    }),
+    studentPreferredTime: timestamp("student_preferred_time", {
+      withTimezone: true,
+    }),
+    mentorPreferredTime: timestamp("mentor_preferred_time", {
+      withTimezone: true,
+    }),
+    status: preferredTimeStatusEnum("status").default("pending"),
+    createdAt: timestamp("created_at").defaultNow(),
+    updatedAt: timestamp("updated_at").defaultNow(),
+  },
+  (table) => [uniqueIndex("unique_video_id").on(table.videoId)]
+);
+
+export const preferredTimeRelations = relations(preferredTime, ({ one }) => ({
+  videoCall: one(videoCall, {
+    fields: [preferredTime.videoId],
+    references: [videoCall.id],
+  }),
+}));
+
+export const suggestedByEnum = pgEnum("suggestedBy", ["student", "mentor"]);
+
+export const preferredTimeLog = pgTable("preferred_time_log", {
+  id: uuid("id").primaryKey().notNull().defaultRandom(),
+  videoId: uuid("video_id").references(() => videoCall.id),
+  suggestedBy: suggestedByEnum("suggested_by").notNull(),
+  suggestedTime: timestamp("suggested_time", { withTimezone: true }).notNull(),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const preferredTimeLogRelations = relations(
+  preferredTimeLog,
+  ({ one }) => ({
+    videoCall: one(videoCall, {
+      fields: [preferredTimeLog.videoId],
+      references: [videoCall.id],
+    }),
+  })
+);
 
 export const mentorProfile = pgTable("mentor_profile", {
   userId: text("user_id")
@@ -122,7 +295,8 @@ export const mentorProfile = pgTable("mentor_profile", {
   imageUrl: text("image_url").default(
     "https://vbteadl6m3.ufs.sh/f/DDJ5nPL6Yp1sHfAviE2zasoidYb10Mu7JGNQFZWgVmCrRHPE"
   ),
-  verifiedStatus: statusEnum("verified_status").default("pending"),
+  verifiedStatus:
+    mentorVerifiedStatusEnum("verified_status").default("pending"),
   createdAt: timestamp().defaultNow(),
   updatedAt: timestamp().defaultNow(),
 });
@@ -160,6 +334,49 @@ export const school = pgTable("school", {
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
+export const chatStatusEnum = pgEnum("chat_status", ["active", "expired"]);
+
+export const chats = pgTable(
+  "chats",
+  {
+    id: uuid("id").primaryKey().defaultRandom().notNull(),
+    studentId: text("student_id").references(() => studentProfile.userId, {
+      onDelete: "cascade",
+    }),
+    mentorId: text("mentor_id").references(() => mentorProfile.userId, {
+      onDelete: "cascade",
+    }),
+    status: chatStatusEnum("status").default("active"),
+    createdAt: timestamp("created_at").defaultNow(),
+    lastMessageAt: timestamp("lastMessageAt").defaultNow(),
+  },
+  (table) => [
+    index("idx_chats_student").on(table.studentId),
+    index("idx_chats_mentor").on(table.mentorId),
+    index("idx_chats_lastMessage").on(table.lastMessageAt),
+  ]
+);
+
+export const messages = pgTable(
+  "messages",
+  {
+    id: uuid("id").defaultRandom().primaryKey().notNull(),
+    senderId: text("sender_id").references(() => user.id, {
+      onDelete: "cascade",
+    }),
+    chatId: uuid("chat_id").references(() => chats.id, { onDelete: "cascade" }),
+    message: text("message"),
+    isEdited: boolean("is_edited").default(false),
+    attachmentUrl: text("attachment_url"),
+    updatedAt: timestamp("updated_at").defaultNow(),
+    createdAt: timestamp("created_at").defaultNow(),
+    deletedAt: timestamp("deleted_at"),
+  },
+  (table) => [
+    index("index_chat_id_created_at").on(table.chatId, table.createdAt),
+  ]
+);
+
 export const userStudentProfileRelation = relations(user, ({ one }) => ({
   studentProfile: one(studentProfile, {
     fields: [user.id],
@@ -176,6 +393,12 @@ export const studentProfileUserRelation = relations(
     }),
   })
 );
+export const studentVideoCallRelation = relations(
+  studentProfile,
+  ({ many }) => ({
+    videoCall: many(videoCall),
+  })
+);
 
 export const userMentorProfileRelation = relations(user, ({ one }) => ({
   mentorProfile: one(mentorProfile, {
@@ -186,7 +409,7 @@ export const userMentorProfileRelation = relations(user, ({ one }) => ({
 
 export const mentorProfileUserRelation = relations(
   mentorProfile,
-  ({ one }) => ({
+  ({ one, many }) => ({
     user: one(user, {
       fields: [mentorProfile.userId],
       references: [user.id],
@@ -215,3 +438,8 @@ export type FavoriteSelectType = InferSelectModel<typeof favorite>;
 export type FavoriteInsertType = InferInsertModel<typeof favorite>;
 export type SchoolInsertType = InferInsertModel<typeof school>;
 export type SchoolSelectType = InferSelectModel<typeof school>;
+export type ChatSubscriptionSelectType = InferSelectModel<
+  typeof chatSubscription
+>;
+export type VideoCallSelectType = InferSelectModel<typeof videoCall>;
+export type PreferredTimeSelectType = InferSelectModel<typeof preferredTime>;

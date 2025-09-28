@@ -4,12 +4,17 @@ import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { db } from "../../../../../lib/db";
 import {
+  chatSubscription,
+  ChatSubscriptionSelectType,
   favorite,
   mentorProfile,
+  preferredTime,
   studentProfile,
   user,
+  videoCall,
 } from "../../../../../lib/db/schema";
-import { eq } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
+import { StudentProfileWithUser } from "../../../../../types/all-types";
 
 export default async function Student() {
   const session = await auth.api.getSession({
@@ -32,9 +37,7 @@ export default async function Student() {
   }
 
   if (userRecord.role === "none") {
-    return redirect(
-      `/select-role?email=${encodeURIComponent(userRecord.email)}`
-    );
+    return redirect(`/select-role`);
   }
 
   if (userRecord.role === "admin") {
@@ -72,12 +75,18 @@ export default async function Student() {
       studentProfileRecord.favoriteDestination?.includes(prof.country!)
     );
 
-    const studentRecordWithUser = await db.query.studentProfile.findFirst({
+    const studentRecordWithUser = (await db.query.studentProfile.findFirst({
       where: (fields, { eq }) => eq(studentProfile.userId, userRecord.id),
       with: {
         user: true,
+        videoCall: {
+          with: {
+            preferredTime: true,
+          },
+        },
       },
-    });
+    })) as StudentProfileWithUser | null;
+    // console.log("Student with User: ", studentRecordWithUser);
 
     if (!studentRecordWithUser) {
       return redirect("/login");
@@ -99,11 +108,29 @@ export default async function Student() {
       return [];
     }
 
+    const studentChatSubscriptions: ChatSubscriptionSelectType[] =
+      await db.query.chatSubscription.findMany({
+        where: (fields, { eq }) =>
+          eq(chatSubscription.studentId, studentRecordWithUser.userId),
+      });
+
+    const videoCallRecord = await db.query.videoCall.findMany({
+      where: (field, { eq }) => eq(videoCall.studentId, userRecord.id),
+      with: {
+        preferredTime: true,
+      },
+    });
+
+    if (videoCallRecord.length === 0) {
+      return [];
+    }
+
     return (
       <StudentPage
         matchingMentors={macthingMentors}
         studentRecordWithUser={studentRecordWithUser}
         favoriteMentor={favoriteMentor}
+        chatSubscriptions={studentChatSubscriptions}
       />
     );
   }

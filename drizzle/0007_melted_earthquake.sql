@@ -1,4 +1,4 @@
-CREATE TABLE "scholl" (
+CREATE TABLE "schol" (
 	"id" text PRIMARY KEY NOT NULL,
 	"name" text,
 	"address" text,

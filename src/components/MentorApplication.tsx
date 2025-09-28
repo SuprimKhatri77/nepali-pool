@@ -15,25 +15,21 @@ import { Badge } from "./ui/badge";
 import { Separator } from "./ui/separator";
 import { ClickableImage } from "./ClickableImage";
 import { Button } from "./ui/button";
-import { MentorProfileSelectType, UserSelectType } from "../../lib/db/schema";
 import {
   AcceptMentorApplication,
   FormState,
   RejectMentorApplication,
-} from "../../server/actions/mentorApplication";
-import { useActionState, useEffect, useState } from "react";
+} from "../../server/actions/mentor-application/mentorApplication";
+import { useActionState, useEffect } from "react";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-
-type MentorProfileWithUserType = MentorProfileSelectType & {
-  user: UserSelectType;
-};
+import { MentorProfileWithUser } from "../../types/all-types";
 
 export default function ({
   mentorProfileRecordWithUser,
 }: {
-  mentorProfileRecordWithUser: MentorProfileWithUserType;
+  mentorProfileRecordWithUser: MentorProfileWithUser;
 }) {
   const initialState: FormState = {
     errros: {},

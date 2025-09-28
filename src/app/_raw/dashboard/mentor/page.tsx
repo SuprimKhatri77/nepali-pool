@@ -24,6 +24,9 @@ export default async function Mentor() {
     .select()
     .from(user)
     .where(eq(user.id, session.user.id));
+  if (!userRecord) {
+    return redirect("/sign-up");
+  }
   const [mentorProfileRecord] = await db
     .select()
     .from(mentorProfile)
@@ -34,15 +37,11 @@ export default async function Mentor() {
     .where(eq(studentProfile.userId, userRecord.id));
 
   if (!userRecord.emailVerified) {
-    return redirect(
-      `/sign-up/verify-email?email=${encodeURIComponent(session.user.email)}`
-    );
+    return redirect(`/sign-up/verify-email`);
   }
 
-  if (userRecord.role === "none") {
-    return redirect(
-      `/select-role?email=${encodeURIComponent(userRecord.email)}`
-    );
+  if (userRecord.role === "none" || !userRecord.role) {
+    return redirect(`/select-role`);
   }
 
   if (userRecord.role === "student") {
@@ -69,5 +68,5 @@ export default async function Mentor() {
     return <MentorPage />;
   }
 
-  return <MentorPage />;
+  return redirect("/login");
 }
