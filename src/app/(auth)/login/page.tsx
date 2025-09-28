@@ -12,9 +12,11 @@ export default function LoginPage() {
     errors: {},
     message: "",
     success: false,
-  }
-  const [state, formAction, isPending] = useActionState<FormState, FormData>(SignIn, initialState)
-
+  };
+  const [state, formAction, isPending] = useActionState<FormState, FormData>(
+    SignIn,
+    initialState
+  );
 
   useEffect(() => {
     if (state.message) {
@@ -34,32 +36,25 @@ export default function LoginPage() {
             </button>
           </div>
         );
-      }
-      else {
-        toast.success(state.message)
-
+      } else {
+        toast.success(state.message);
       }
     }
-  }, [state.message])
+  }, [state.message]);
 
-
-
-
-
+  // error handle
+  //
   return (
     <div className="signup-form w-full  flex md:flex-row sm:flex-col flex-col-reverse gap-4 lg:gap-8 animate-in fade-in duration-400  justify-center items-center p-8">
-
-
       <div className="max-w-[500px] w-full flex items-center justify-center bg-white rounded-sm shadow-2xl">
         <form
           action={formAction}
           className="w-[90%] pr-4 pl-4 pt-7 pb-7 mb-2 text-black  rounded-[13px]"
         >
-          <h2 className="text-2xl font-bold mb-2 text-left">
-            Welcome Back!
-          </h2>
-          <p className="text-xs text-left mb-5 font-medium">Enter your credentials to access your account</p>
-
+          <h2 className="text-2xl font-bold mb-2 text-left">Welcome Back!</h2>
+          <p className="text-xs text-left mb-5 font-medium">
+            Enter your credentials to access your account
+          </p>
 
           <label htmlFor="email" className="block font-medium">
             Email
@@ -92,10 +87,11 @@ export default function LoginPage() {
             placeholder="Enter your password"
             required
           />
-         
 
-          <div id="forget" className="flex items-center justify-end sm:justify-between mb-2 p-2">
-
+          <div
+            id="forget"
+            className="flex items-center justify-end sm:justify-between mb-2 p-2"
+          >
             <div className="hidden sm:flex  sm:items-center  gap-2">
               <input type="checkbox" name="remember" id="" />
               <p className="text-sm">Remember me</p>
@@ -107,7 +103,7 @@ export default function LoginPage() {
               Forgot Password?
             </Link>
           </div>
-           {state.errors?.password && (
+          {state.errors?.password && (
             <p className="text-red-600 text-sm mb-1">
               {state.errors.password[0]}
             </p>
@@ -152,7 +148,8 @@ export default function LoginPage() {
           </button>
 
           <p className="mt-3 text-center text-sm sm:font-medium">
-            {`Don't have an account?`}&nbsp;<Link
+            {`Don't have an account?`}&nbsp;
+            <Link
               href="/sign-up"
               className="text-[#0F3DDE] hover:underline font-medium"
             >
@@ -164,9 +161,15 @@ export default function LoginPage() {
       </div>
 
       <div className="lg:max-w-[618px] w-full lg:block hidden">
-        <Image className="shadow-2xl overflow-hidden rounded-2xl"
-          src="/sign-in.png" priority alt="signin" width={500} height={500} />
+        <Image
+          className="shadow-2xl overflow-hidden rounded-2xl"
+          src="/sign-in.png"
+          priority
+          alt="signin"
+          width={500}
+          height={500}
+        />
       </div>
     </div>
-  )
+  );
 }

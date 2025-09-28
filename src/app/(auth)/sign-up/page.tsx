@@ -10,7 +10,8 @@ import { Progress } from "@/components/ui/progress";
 import { useRouter } from "next/navigation";
 
 export default function SignUpPage() {
-  // we are setting initial state so the first time running the backend will not return values undefined or errors.
+  // error handle
+  // we are setting initial state so the fi rst time running the backend will not return values undefined or errors.
   const initialState: FormState = {
     errors: {},
     message: "",
@@ -20,9 +21,9 @@ export default function SignUpPage() {
     SignUp,
     initialState
   );
-  const [progress, setProgress] = useState(0)
+  const [progress, setProgress] = useState(0);
 
-  const router = useRouter()
+  const router = useRouter();
 
   useEffect(() => {
     let interval: NodeJS.Timeout;
@@ -47,12 +48,11 @@ export default function SignUpPage() {
     return () => clearInterval(interval);
   }, [isPending]);
 
-
   useEffect(() => {
     if (state.success && state.message) {
-      router.push(state.redirectTo as string)
+      router.push(state.redirectTo as string);
     }
-  })
+  });
 
   useEffect(() => {
     if (state.message) {
@@ -151,85 +151,85 @@ export default function SignUpPage() {
               />
             </div>
           </div>
-            <div className="errors flex items-start max-w-[440px] w-full">
+          <div className="errors flex items-start max-w-[440px] w-full">
+            {state.errors?.firstname && (
+              <p className="text-red-600 text-sm mb-1">
+                {state.errors.firstname[0]}
+              </p>
+            )}
+            {state.errors?.lastname && (
+              <p className="text-red-600 text-sm mb-1">
+                {state.errors.lastname[0]}
+              </p>
+            )}
+          </div>
 
-          {state.errors?.firstname && (
-            <p className="text-red-600 text-sm mb-1">
-              {state.errors.firstname[0]}
-            </p>
-          )}
-          {state.errors?.lastname && (
-            <p className="text-red-600 text-sm mb-1">
-              {state.errors.lastname[0]}
-            </p>
-          )}
-            </div>
-           
-           <div className="flex flex-col gap-1 w-full max-w-[440px]">
-                 <label htmlFor="email" className="block font-medium">
-            Email
-          </label>
-          <input
-            autoComplete="off"
-            type="email"
-            name="email"
-            className="max-w-[440px] w-full p-2 outline-none mb-2 rounded border border-[#333446]
+          <div className="flex flex-col gap-1 w-full max-w-[440px]">
+            <label htmlFor="email" className="block font-medium">
+              Email
+            </label>
+            <input
+              autoComplete="off"
+              type="email"
+              name="email"
+              className="max-w-[440px] w-full p-2 outline-none mb-2 rounded border border-[#333446]
             focus:border-blue-500 focus:ring-2 focus:ring-blue-500 placeholder:text-[#1F406B]
              transition duration-200
             "
-            placeholder="Enter your email"
-            required
-          />
-           </div>
-         
+              placeholder="Enter your email"
+              required
+            />
+          </div>
+
           {state.errors?.email && (
             <p className="text-red-600 text-sm mb-1">{state.errors.email[0]}</p>
           )}
 
           <div className="flex flex-col gap-1 w-full max-w-[440px]">
-               <label htmlFor="password" className="block font-medium">
-            Password
-          </label>
-          <input
-            autoComplete="off"
-            type="password"
-            name="password"
-            className="max-w-[440px] w-full p-2 outline-none mb-2 rounded border border-[#333446]
+            <label htmlFor="password" className="block font-medium">
+              Password
+            </label>
+            <input
+              autoComplete="off"
+              type="password"
+              name="password"
+              className="max-w-[440px] w-full p-2 outline-none mb-2 rounded border border-[#333446]
             focus:border-blue-500 focus:ring-2 focus:ring-blue-500 placeholder:text-[#1F406B]
              transition duration-200"
-            placeholder="Enter your password"
-            required
-          />
+              placeholder="Enter your password"
+              required
+            />
           </div>
           {state.errors?.password && (
             <p className="text-red-600 text-sm mb-1">
               {state.errors.password[0]}
             </p>
           )}
-        
-           <div className="flex flex-col gap-1 w-full max-w-[440px]">
-            
-          <label htmlFor="role" className="block font-medium">
-            Role
-          </label>
-          <select
-            name="role"
-            defaultValue="student"
-            className="max-w-[440px] w-full p-2 outline-none mb-3  rounded border border-[#333446]
+
+          <div className="flex flex-col gap-1 w-full max-w-[440px]">
+            <label htmlFor="role" className="block font-medium">
+              Role
+            </label>
+            <select
+              name="role"
+              defaultValue="student"
+              className="max-w-[440px] w-full p-2 outline-none mb-3  rounded border border-[#333446]
             focus:border-blue-500 focus:ring-2 focus:ring-blue-500 placeholder:text-[#1F406B]
              transition duration-200"
-          > 
-            <option value="admin">Admin</option>
-            <option value="student">Student</option>
-            <option value="mentor">Mentor</option>
-          </select>
-           </div>
+            >
+              <option value="admin">Admin</option>
+              <option value="student">Student</option>
+              <option value="mentor">Mentor</option>
+            </select>
+          </div>
 
-         <div className="errors flex items-start max-w-[440px] w-full mb-1">
+          <div className="errors flex items-start max-w-[440px] w-full mb-1">
             {state.errors?.role && (
-            <p className="text-red-600 text-sm mb-1">{state.errors.role[0]}</p>
-          )}
-         </div>
+              <p className="text-red-600 text-sm mb-1">
+                {state.errors.role[0]}
+              </p>
+            )}
+          </div>
 
           <button
             type="submit"
@@ -271,7 +271,8 @@ export default function SignUpPage() {
           </button>
 
           <p className="mt-3 text-center text-sm font-semibold">
-            Have an account ?&nbsp;<Link
+            Have an account ?&nbsp;
+            <Link
               href="/login"
               className="text-[#0F3DDE] hover:underline font-medium"
             >
