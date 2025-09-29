@@ -18,10 +18,7 @@ export default async function MentorDashboard() {
     .select()
     .from(user)
     .where(eq(user.id, session.user.id));
-  const [mentorProfileRecord] = await db
-    .select()
-    .from(mentorProfile)
-    .where(eq(mentorProfile.userId, userRecord.id));
+
   const [studentProfileRecord] = await db
     .select()
     .from(studentProfile)
