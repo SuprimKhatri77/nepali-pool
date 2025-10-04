@@ -131,6 +131,14 @@ export async function OnboardingMentor(
         redirectTo: "/sign-up",
       };
     }
+
+    await db
+      .update(user)
+      .set({
+        image: imageUrl,
+      })
+      .where(eq(user.id, userRecord.id));
+
     await db.insert(mentorProfile).values({
       nationality: nationality.toLowerCase(),
       country: country.toLowerCase(),

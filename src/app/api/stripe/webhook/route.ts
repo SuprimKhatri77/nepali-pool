@@ -6,8 +6,9 @@ import {
   payment,
   chatSubscription,
   videoCall,
+  chats,
 } from "../../../../../lib/db/schema";
-import { eq } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET!;
@@ -92,14 +93,27 @@ async function handleCheckoutSessionCompleted(
     const endDate = new Date();
     endDate.setMonth(endDate.getMonth() + 1);
 
-    await db.insert(chatSubscription).values({
-      studentId: userId,
-      mentorId,
-      paymentId: paymentRecord.id,
-      startDate,
-      endDate,
-      status: "active",
-    });
+    const [subscriptionRecord] = await db
+      .insert(chatSubscription)
+      .values({
+        studentId: userId,
+        mentorId,
+        paymentId: paymentRecord.id,
+        startDate,
+        endDate,
+        status: "active",
+      })
+      .returning();
+
+    await db
+      .insert(chats)
+      .values({
+        subscriptionId: subscriptionRecord.id,
+        studentId: userId,
+        mentorId,
+        status: "active",
+      })
+      .onConflictDoNothing();
   } else if (paymentType === "video_call" && mentorId) {
     await db.insert(videoCall).values({
       studentId: userId,
@@ -133,13 +147,28 @@ async function handleSubscriptionDeleted(subscription: Stripe.Subscription) {
     console.error("No payment found for subscription: ", subscription.id);
     return;
   }
-  await db
+  const [subscriptionRecord] = await db
     .update(chatSubscription)
     .set({
       status: "cancelled",
       updatedAt: new Date(),
     })
-    .where(eq(chatSubscription.paymentId, paymentRecord.id));
+    .where(eq(chatSubscription.paymentId, paymentRecord.id))
+    .returning();
+  if (!subscriptionRecord) return;
+
+  await db
+    .update(chats)
+    .set({
+      subscriptionId: subscriptionRecord.id,
+      status: "expired",
+    })
+    .where(
+      and(
+        eq(chats.studentId, subscriptionRecord.studentId),
+        eq(chats.mentorId, subscriptionRecord.mentorId)
+      )
+    );
 }
 
 async function handleCustomerSubscriptionUpdated(
@@ -171,16 +200,30 @@ async function handleCustomerSubscriptionUpdated(
     subscription.items.data[0].current_period_end * 1000
   );
 
-  await db
+  const [subscriptionRecord] = await db
     .update(chatSubscription)
     .set({
       status: newStatus,
       endDate,
       updatedAt: new Date(),
     })
-    .where(eq(chatSubscription.paymentId, paymentRecord.id));
+    .where(eq(chatSubscription.paymentId, paymentRecord.id))
+    .returning();
+
+  if (!subscriptionRecord) return;
 
   console.log(
     `Updated subscription ${subscription.id} to status: ${newStatus}, end date: ${endDate}`
   );
+  await db
+    .update(chats)
+    .set({
+      status: newStatus === "active" ? "active" : "expired",
+    })
+    .where(
+      and(
+        eq(chats.studentId, subscriptionRecord.studentId),
+        eq(chats.mentorId, subscriptionRecord.mentorId)
+      )
+    );
 }

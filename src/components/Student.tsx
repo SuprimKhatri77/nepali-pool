@@ -7,11 +7,6 @@ import { startTransition, useEffect, useOptimistic, useState } from "react";
 import type {
   ChatSubscriptionSelectType,
   FavoriteSelectType,
-  MentorProfileSelectType,
-  PreferredTimeSelectType,
-  StudentProfileSelectType,
-  UserSelectType,
-  VideoCallSelectType,
 } from "../../lib/db/schema";
 import Image from "next/image";
 import {
@@ -25,7 +20,7 @@ import Link from "next/link";
 import ScheduleCall from "./ScheduleCall";
 import { toast } from "sonner";
 import {
-  MentorProfileWithUser,
+  MentorProfileWithUserAndChat,
   StudentProfileWithUser,
 } from "../../types/all-types";
 
@@ -35,7 +30,7 @@ export default function StudentPage({
   favoriteMentor,
   chatSubscriptions,
 }: {
-  matchingMentors: MentorProfileWithUser[];
+  matchingMentors: MentorProfileWithUserAndChat[];
   studentRecordWithUser: StudentProfileWithUser;
   favoriteMentor: FavoriteSelectType[];
   chatSubscriptions: ChatSubscriptionSelectType[];
@@ -68,6 +63,17 @@ export default function StudentPage({
     );
   };
 
+  const getChatWithStudent = (mentorId: string) => {
+    for (const mentor of matchingMentors) {
+      const chat = mentor.chats.find(
+        (chat) =>
+          chat.studentId === studentRecordWithUser.userId &&
+          chat.mentorId === mentorId
+      );
+      if (chat) return chat;
+    }
+    return null;
+  };
   const [optimisticFavorites, setOptimisticFavorites] = useOptimistic(
     initialFavorites,
     (currentFavorite: string[], mentorId: string) => {
@@ -167,6 +173,7 @@ export default function StudentPage({
                     {matchingMentors.map((mentor) => {
                       const activeCall = isVideoCallUnlocked(mentor.userId);
                       const activeChat = isChatUnlocked(mentor.userId);
+                      const studentChat = getChatWithStudent(mentor.userId);
 
                       return (
                         <div
@@ -223,12 +230,16 @@ export default function StudentPage({
                           <div className="flex  gap-5 items-center">
                             {activeChat &&
                             new Date(activeChat.endDate) > new Date() ? (
-                              <Link
-                                href="/chat"
-                                className="bg-green-600 px-5 py-3 rounded-xl hover:bg-green-700 transition-all duration-300 ease-in-out text-white text-nowrap"
-                              >
-                                Chat with mentor
-                              </Link>
+                              studentChat ? (
+                                <Link
+                                  href={`/chats/${studentChat?.id}`}
+                                  className="bg-green-600 px-5 py-3 rounded-xl hover:bg-green-700 transition-all duration-300 ease-in-out text-white text-nowrap"
+                                >
+                                  Chat with mentor
+                                </Link>
+                              ) : (
+                                <Button disabled>Chat unavailable</Button>
+                              )
                             ) : (
                               <PaymentButton
                                 paymentType="chat_subscription"

@@ -1,4 +1,5 @@
 import {
+  ChatsSelectType,
   MentorProfileSelectType,
   PreferredTimeSelectType,
   StudentProfileSelectType,
@@ -68,4 +69,9 @@ export interface ClickableImageProps {
 export type AddSchoolType = {
   className?: string;
   currentUserId: string;
+};
+
+export type MentorProfileWithUserAndChat = MentorProfileSelectType & {
+  user: UserSelectType;
+  chats: ChatsSelectType[];
 };

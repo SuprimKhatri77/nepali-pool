@@ -31,9 +31,7 @@ export default async function Student() {
     .where(eq(user.id, session.user.id));
 
   if (!userRecord.emailVerified) {
-    return redirect(
-      `/sign-up/verify-email?email=${encodeURIComponent(session.user.email)}`
-    );
+    return redirect(`/sign-up/verify-email`);
   }
 
   if (userRecord.role === "none") {
@@ -68,6 +66,7 @@ export default async function Student() {
       where: (fields, { eq }) => eq(mentorProfile.verifiedStatus, "accepted"),
       with: {
         user: true,
+        chats: true,
       },
     });
 

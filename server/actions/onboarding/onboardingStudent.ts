@@ -4,8 +4,10 @@ import z from "zod";
 import { db } from "../../../lib/db";
 import {
   studentProfile,
+  user,
   type StudentProfileInsertType,
 } from "../../../lib/db/schema";
+import { eq } from "drizzle-orm";
 
 export type FormState = {
   errors?: {
@@ -107,6 +109,25 @@ export default async function studentOnboarding(
     validateFields.data;
 
   try {
+    const [userRecord] = await db
+      .select()
+      .from(user)
+      .where(eq(user.id, userId));
+    if (!userRecord) {
+      return {
+        errors: {},
+        message: "User not found!",
+        success: false,
+        redirectTo: "/sign-up",
+      };
+    }
+    await db
+      .update(user)
+      .set({
+        image: imageUrl,
+      })
+      .where(eq(user.id, userRecord.id));
+
     await db.insert(studentProfile).values({
       userId,
       imageUrl,

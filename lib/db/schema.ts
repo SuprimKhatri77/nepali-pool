@@ -340,12 +340,19 @@ export const chats = pgTable(
   "chats",
   {
     id: uuid("id").primaryKey().defaultRandom().notNull(),
-    studentId: text("student_id").references(() => studentProfile.userId, {
-      onDelete: "cascade",
-    }),
-    mentorId: text("mentor_id").references(() => mentorProfile.userId, {
-      onDelete: "cascade",
-    }),
+    subscriptionId: uuid("subscription_id")
+      .references(() => chatSubscription.id, { onDelete: "cascade" })
+      .notNull(),
+    studentId: text("student_id")
+      .references(() => studentProfile.userId, {
+        onDelete: "cascade",
+      })
+      .notNull(),
+    mentorId: text("mentor_id")
+      .references(() => mentorProfile.userId, {
+        onDelete: "cascade",
+      })
+      .notNull(),
     status: chatStatusEnum("status").default("active"),
     createdAt: timestamp("created_at").defaultNow(),
     lastMessageAt: timestamp("lastMessageAt").defaultNow(),
@@ -377,45 +384,59 @@ export const messages = pgTable(
   ]
 );
 
-export const userStudentProfileRelation = relations(user, ({ one }) => ({
+export const chatRelations = relations(chats, ({ one }) => ({
+  mentorProfile: one(mentorProfile, {
+    fields: [chats.mentorId],
+    references: [mentorProfile.userId],
+  }),
+  studentProfile: one(studentProfile, {
+    fields: [chats.studentId],
+    references: [studentProfile.userId],
+  }),
+  chatSubscription: one(chatSubscription, {
+    fields: [chats.subscriptionId],
+    references: [chatSubscription.id],
+  }),
+}));
+
+export const messageRelations = relations(messages, ({ one }) => ({
+  chats: one(chats, {
+    fields: [messages.chatId],
+    references: [chats.id],
+  }),
+  user: one(user, {
+    fields: [messages.senderId],
+    references: [user.id],
+  }),
+}));
+
+export const userRelations = relations(user, ({ one }) => ({
   studentProfile: one(studentProfile, {
     fields: [user.id],
     references: [studentProfile.userId],
   }),
-}));
-
-export const studentProfileUserRelation = relations(
-  studentProfile,
-  ({ one }) => ({
-    user: one(user, {
-      fields: [studentProfile.userId],
-      references: [user.id],
-    }),
-  })
-);
-export const studentVideoCallRelation = relations(
-  studentProfile,
-  ({ many }) => ({
-    videoCall: many(videoCall),
-  })
-);
-
-export const userMentorProfileRelation = relations(user, ({ one }) => ({
   mentorProfile: one(mentorProfile, {
     fields: [user.id],
     references: [mentorProfile.userId],
   }),
 }));
 
-export const mentorProfileUserRelation = relations(
-  mentorProfile,
-  ({ one, many }) => ({
-    user: one(user, {
-      fields: [mentorProfile.userId],
-      references: [user.id],
-    }),
-  })
-);
+export const studentRelations = relations(studentProfile, ({ one, many }) => ({
+  user: one(user, {
+    fields: [studentProfile.userId],
+    references: [user.id],
+  }),
+  chats: many(chats),
+  videoCall: many(videoCall),
+}));
+
+export const mentorRelations = relations(mentorProfile, ({ one, many }) => ({
+  user: one(user, {
+    fields: [mentorProfile.userId],
+    references: [user.id],
+  }),
+  chats: many(chats),
+}));
 
 export const favoriteRelations = relations(favorite, ({ one }) => ({
   mentor: one(mentorProfile, {
@@ -443,3 +464,7 @@ export type ChatSubscriptionSelectType = InferSelectModel<
 >;
 export type VideoCallSelectType = InferSelectModel<typeof videoCall>;
 export type PreferredTimeSelectType = InferSelectModel<typeof preferredTime>;
+export type ChatsSelectType = InferSelectModel<typeof chats>;
+export type ChatsInsertType = InferInsertModel<typeof chats>;
+export type MessageSelectType = InferSelectModel<typeof messages>;
+export type MessageInsertType = InferInsertModel<typeof messages>;
