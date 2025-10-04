@@ -6,20 +6,23 @@ import { messages } from "../../../lib/db/schema";
 export async function sendMessage(
   message: string,
   senderId: string,
-  chatId: string,
-  attachmentUrl?: string
+  chatId: string
 ) {
   if (!chatId || !senderId) {
     return;
   }
 
   try {
-    await db.insert(messages).values({
-      senderId,
-      chatId,
-      message,
-    });
-    return true;
+    const [result] = await db
+      .insert(messages)
+      .values({
+        senderId,
+        chatId,
+        message,
+      })
+      .returning({ id: messages.id });
+
+    return result.id ?? null;
   } catch (error) {
     console.error("Error sending message: ", error);
     return false;

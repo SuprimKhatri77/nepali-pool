@@ -23,6 +23,7 @@ export async function getMessages(chatId: string) {
             },
           },
         },
+        messageAttachments: true,
       },
     });
 

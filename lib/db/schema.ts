@@ -374,7 +374,6 @@ export const messages = pgTable(
     chatId: uuid("chat_id").references(() => chats.id, { onDelete: "cascade" }),
     message: text("message"),
     isEdited: boolean("is_edited").default(false),
-    attachmentUrl: text("attachment_url"),
     updatedAt: timestamp("updated_at").defaultNow(),
     createdAt: timestamp("created_at").defaultNow(),
     deletedAt: timestamp("deleted_at"),
@@ -382,6 +381,27 @@ export const messages = pgTable(
   (table) => [
     index("index_chat_id_created_at").on(table.chatId, table.createdAt),
   ]
+);
+
+export const messageAttachments = pgTable("message_attachments", {
+  id: uuid("id").primaryKey().defaultRandom().notNull(),
+  messageId: uuid("message_id").references(() => messages.id, {
+    onDelete: "cascade",
+  }),
+  url: text("url").notNull(),
+  type: text("type"),
+  name: text("name"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const messageAttachmentRelations = relations(
+  messageAttachments,
+  ({ one }) => ({
+    messages: one(messages, {
+      fields: [messageAttachments.messageId],
+      references: [messages.id],
+    }),
+  })
 );
 
 export const chatRelations = relations(chats, ({ one }) => ({
@@ -399,7 +419,7 @@ export const chatRelations = relations(chats, ({ one }) => ({
   }),
 }));
 
-export const messageRelations = relations(messages, ({ one }) => ({
+export const messageRelations = relations(messages, ({ one, many }) => ({
   chats: one(chats, {
     fields: [messages.chatId],
     references: [chats.id],
@@ -408,6 +428,7 @@ export const messageRelations = relations(messages, ({ one }) => ({
     fields: [messages.senderId],
     references: [user.id],
   }),
+  messageAttachments: many(messageAttachments),
 }));
 
 export const userRelations = relations(user, ({ one }) => ({
@@ -468,3 +489,9 @@ export type ChatsSelectType = InferSelectModel<typeof chats>;
 export type ChatsInsertType = InferInsertModel<typeof chats>;
 export type MessageSelectType = InferSelectModel<typeof messages>;
 export type MessageInsertType = InferInsertModel<typeof messages>;
+export type MessageAttachmentsSelectType = InferSelectModel<
+  typeof messageAttachments
+>;
+export type MessageAttachmentsInsertType = InferInsertModel<
+  typeof messageAttachments
+>;
