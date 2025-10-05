@@ -40,7 +40,7 @@ export function PaymentButton({
         window.location.href = data.url;
       } else {
         console.error("Failed to create checkout session:", data.error);
-        toast.error("Failed to create payment session. Please try again.");
+        toast.error(data.error);
       }
     } catch (error) {
       console.error("Payment error:", error);

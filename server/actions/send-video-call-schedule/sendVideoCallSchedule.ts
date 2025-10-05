@@ -83,7 +83,7 @@ export async function sendVideoCallSchedule(
       timesamp: new Date(),
     };
   }
-  console.log("Data: ", validateFields.data);
+  // console.log("Data: ", validateFields.data);
   const validated = validateFields.data;
   const [hours, minutes, seconds] = validated.time.split(":").map(Number);
   const combinedDate = new Date(validated.date);

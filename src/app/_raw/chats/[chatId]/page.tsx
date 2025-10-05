@@ -1,3 +1,4 @@
+// /chats/[chatId]/page.tsx
 import React from "react";
 import { db } from "../../../../../lib/db";
 import {
@@ -17,6 +18,7 @@ import Message from "@/components/Message";
 type ParamsType = {
   params: Promise<{ chatId: string }>;
 };
+
 function isUUID(id: string) {
   const uuidRegex =
     /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
@@ -25,41 +27,23 @@ function isUUID(id: string) {
 
 const page = async ({ params }: ParamsType) => {
   const { chatId } = await params;
+
   if (!chatId || !isUUID(chatId)) {
     return notFound();
   }
 
-  const messageRecord = await db.query.messages.findMany({
-    where: (fields, { eq }) => eq(messages.chatId, chatId),
-    with: {
-      chats: {
-        with: {
-          studentProfile: {
-            with: {
-              user: true,
-            },
-          },
-          mentorProfile: {
-            with: {
-              user: true,
-            },
-          },
-        },
-      },
-      user: true,
-    },
-  });
-
   const session = await auth.api.getSession({
     headers: await headers(),
   });
+
   if (!session) return redirect("/login");
+
   const [userRecord] = await db
     .select()
     .from(user)
     .where(eq(user.id, session.user.id));
-  if (!userRecord) return redirect("/sign-up");
 
+  if (!userRecord) return redirect("/sign-up");
   if (!userRecord.emailVerified) return redirect("/sign-up/verify-email");
   if (!userRecord.role || userRecord.role === "none")
     return redirect("/select-role");
@@ -71,7 +55,18 @@ const page = async ({ params }: ParamsType) => {
       mentorProfile: { with: { user: true } },
     },
   });
+
   if (!chatRecord) {
+    return notFound();
+  }
+
+  const isStudent = chatRecord.studentId === userRecord.id;
+  const isMentor = chatRecord.mentorId === userRecord.id;
+
+  if (!isStudent && !isMentor) {
+    console.warn(
+      `Unauthorized access attempt: User ${userRecord.id} tried to access chat ${chatId}`
+    );
     return notFound();
   }
 
@@ -80,7 +75,16 @@ const page = async ({ params }: ParamsType) => {
       .select()
       .from(studentProfile)
       .where(eq(studentProfile.userId, userRecord.id));
+
     if (!studentRecord) return redirect("/sign-up/onboarding/student");
+
+    if (chatRecord.studentId !== userRecord.id) {
+      console.warn(
+        `Student ${userRecord.id} tried to access chat ${chatId} they're not part of`
+      );
+      return notFound();
+    }
+
     return (
       <Message
         role="student"
@@ -96,10 +100,19 @@ const page = async ({ params }: ParamsType) => {
       .select()
       .from(mentorProfile)
       .where(eq(mentorProfile.userId, userRecord.id));
+
     if (!mentorRecord) return redirect("/sign-up/onboarding/mentor");
     if (mentorRecord.verifiedStatus === "pending") return redirect("/waitlist");
     if (mentorRecord.verifiedStatus === "rejected")
       return redirect("/rejected");
+
+    if (chatRecord.mentorId !== userRecord.id) {
+      console.warn(
+        `Mentor ${userRecord.id} tried to access chat ${chatId} they're not part of`
+      );
+      return notFound();
+    }
+
     return (
       <Message
         role="mentor"

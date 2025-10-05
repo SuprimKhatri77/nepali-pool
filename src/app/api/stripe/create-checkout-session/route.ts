@@ -25,6 +25,48 @@ export async function POST(request: NextRequest) {
         ? "http://localhost:3000"
         : "https://nepali-pool-raw.vercel.app");
 
+    if (paymentType === "chat_subscription") {
+      const [chatSubscriptionRecord] = await db
+        .select()
+        .from(chatSubscription)
+        .where(
+          and(
+            eq(chatSubscription.studentId, userId),
+            eq(chatSubscription.mentorId, mentorId)
+          )
+        );
+      if (chatSubscription && chatSubscriptionRecord.status === "active") {
+        return NextResponse.json(
+          {
+            error: "You already have an active subscription with this mentor.",
+          },
+          { status: 400 }
+        );
+      }
+    }
+
+    if (paymentType === "video_call") {
+      const [videoCallRecord] = await db
+        .select()
+        .from(videoCall)
+        .where(
+          and(eq(videoCall.mentorId, mentorId), eq(videoCall.studentId, userId))
+        );
+
+      if (
+        videoCallRecord &&
+        (videoCallRecord.status === "pending" ||
+          videoCallRecord.status === "scheduled")
+      ) {
+        return NextResponse.json(
+          {
+            error: `You already have a ${videoCallRecord.status} video call  with this mentor.`,
+          },
+          { status: 400 }
+        );
+      }
+    }
+
     let sessionConfig: Stripe.Checkout.SessionCreateParams;
 
     if (paymentType === "chat_subscription") {
@@ -89,47 +131,6 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // if (paymentType === "chat_subscription") {
-    //   const [chatSubscriptionRecord] = await db
-    //     .select()
-    //     .from(chatSubscription)
-    //     .where(
-    //       and(
-    //         eq(chatSubscription.studentId, userId),
-    //         eq(chatSubscription.mentorId, mentorId)
-    //       )
-    //     );
-    //   if (chatSubscription && chatSubscriptionRecord.status === "active") {
-    //     return NextResponse.json(
-    //       {
-    //         error: "You already have an active subscription with this mentor.",
-    //       },
-    //       { status: 400 }
-    //     );
-    //   }
-    // }
-
-    // if (paymentType === "video_call") {
-    //   const [videoCallRecord] = await db
-    //     .select()
-    //     .from(videoCall)
-    //     .where(
-    //       and(eq(videoCall.mentorId, mentorId), eq(videoCall.studentId, userId))
-    //     );
-
-    //   if (
-    //     videoCallRecord &&
-    //     (videoCallRecord.status === "pending" ||
-    //       videoCallRecord.status === "scheduled")
-    //   ) {
-    //     return NextResponse.json(
-    //       {
-    //         error: `You already have a ${videoCallRecord.status} video call  with this mentor.`,
-    //       },
-    //       { status: 400 }
-    //     );
-    //   }
-    // }
     const session = await stripe.checkout.sessions.create(sessionConfig);
 
     return NextResponse.json({ sessionId: session.id, url: session.url });
