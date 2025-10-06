@@ -35,7 +35,10 @@ export async function POST(request: NextRequest) {
             eq(chatSubscription.mentorId, mentorId)
           )
         );
-      if (chatSubscription && chatSubscriptionRecord.status === "active") {
+      if (
+        chatSubscriptionRecord &&
+        chatSubscriptionRecord.status === "active"
+      ) {
         return NextResponse.json(
           {
             error: "You already have an active subscription with this mentor.",

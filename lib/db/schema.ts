@@ -16,6 +16,7 @@ import {
   uniqueIndex,
   bigint,
   index,
+  primaryKey,
 } from "drizzle-orm/pg-core";
 import { eq } from "drizzle-orm";
 
@@ -164,14 +165,26 @@ export const chatSubscription = pgTable(
     updatedAt: timestamp("updated_at").defaultNow(),
   },
   (table) => [
-    uniqueIndex("unique_active_chat").on(
-      table.studentId,
-      table.mentorId,
-      table.status
-    ),
+    uniqueIndex("unique_chat").on(table.studentId, table.mentorId),
     index("idx_sub_student").on(table.studentId),
     index("idx_sub_mentor").on(table.mentorId),
   ]
+);
+
+export const chatSubscriptionPayment = pgTable(
+  "chat_subscription_payment",
+  {
+    subscriptionId: uuid("subscription_id")
+      .references(() => chatSubscription.id, { onDelete: "cascade" })
+      .notNull(),
+    paymentId: uuid("payment_id")
+      .references(() => payment.id, {
+        onDelete: "cascade",
+      })
+      .notNull(),
+    createdAt: timestamp("created_at").defaultNow(),
+  },
+  (table) => [primaryKey({ columns: [table.subscriptionId, table.paymentId] })]
 );
 
 export const videoCallStatusEnum = pgEnum("video_call_status", [
@@ -209,22 +222,6 @@ export const videoCall = pgTable(
   ]
 );
 
-export const videoCallRelations = relations(videoCall, ({ one, many }) => ({
-  studentProfile: one(studentProfile, {
-    fields: [videoCall.studentId],
-    references: [studentProfile.userId],
-  }),
-  mentorProfile: one(mentorProfile, {
-    fields: [videoCall.mentorId],
-    references: [mentorProfile.userId],
-  }),
-  preferredTime: one(preferredTime, {
-    fields: [videoCall.id],
-    references: [preferredTime.videoId],
-  }),
-  preferredTimeLog: many(preferredTimeLog),
-}));
-
 export const preferredTimeStatusEnum = pgEnum("preferred_time_status", [
   "pending",
   "accepted",
@@ -250,13 +247,6 @@ export const preferredTime = pgTable(
   },
   (table) => [uniqueIndex("unique_video_id").on(table.videoId)]
 );
-
-export const preferredTimeRelations = relations(preferredTime, ({ one }) => ({
-  videoCall: one(videoCall, {
-    fields: [preferredTime.videoId],
-    references: [videoCall.id],
-  }),
-}));
 
 export const suggestedByEnum = pgEnum("suggestedBy", ["student", "mentor"]);
 
@@ -358,6 +348,10 @@ export const chats = pgTable(
     lastMessageAt: timestamp("lastMessageAt").defaultNow(),
   },
   (table) => [
+    uniqueIndex("unique_student_mentor_chat").on(
+      table.studentId,
+      table.mentorId
+    ),
     index("idx_chats_student").on(table.studentId),
     index("idx_chats_mentor").on(table.mentorId),
     index("idx_chats_lastMessage").on(table.lastMessageAt),
@@ -393,6 +387,8 @@ export const messageAttachments = pgTable("message_attachments", {
   name: text("name"),
   createdAt: timestamp("created_at").defaultNow(),
 });
+
+// ==========RELATIONS===============
 
 export const messageAttachmentRelations = relations(
   messageAttachments,
@@ -467,6 +463,29 @@ export const favoriteRelations = relations(favorite, ({ one }) => ({
   student: one(studentProfile, {
     fields: [favorite.studentId],
     references: [studentProfile.userId],
+  }),
+}));
+
+export const videoCallRelations = relations(videoCall, ({ one, many }) => ({
+  studentProfile: one(studentProfile, {
+    fields: [videoCall.studentId],
+    references: [studentProfile.userId],
+  }),
+  mentorProfile: one(mentorProfile, {
+    fields: [videoCall.mentorId],
+    references: [mentorProfile.userId],
+  }),
+  preferredTime: one(preferredTime, {
+    fields: [videoCall.id],
+    references: [preferredTime.videoId],
+  }),
+  preferredTimeLog: many(preferredTimeLog),
+}));
+
+export const preferredTimeRelations = relations(preferredTime, ({ one }) => ({
+  videoCall: one(videoCall, {
+    fields: [preferredTime.videoId],
+    references: [videoCall.id],
   }),
 }));
 

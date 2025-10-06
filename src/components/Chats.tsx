@@ -91,68 +91,80 @@ const Chats = ({ role, currentUser }: Props) => {
                 <Skeleton className="h-8 w-full" />
               </div>
             ) : role === "student" ? (
-              chats.map((chat) => (
-                <SidebarMenuItem key={chat.id}>
-                  <SidebarMenuButton asChild>
-                    <Link
-                      href={`/chats/${chat.id}`}
-                      className="font-medium flex items-center gap-2"
-                    >
-                      <div className="relative w-8 h-8 rounded-full overflow-hidden flex-shrink-0">
-                        <Image
-                          src={chat.mentorProfile.imageUrl!}
-                          fill
-                          alt="profile picture"
-                          className="object-cover"
-                        />
-                      </div>
-                      <span className="capitalize font-medium truncate">
-                        {chat.mentorProfile.user.name}
-                      </span>
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))
-            ) : role === "mentor" ? (
-              chats.map((chat) => {
-                return (
+              chats.length > 0 ? (
+                chats.map((chat) => (
                   <SidebarMenuItem key={chat.id}>
                     <SidebarMenuButton asChild>
                       <Link
                         href={`/chats/${chat.id}`}
                         className="font-medium flex items-center gap-2"
                       >
-                        {chat.studentProfile && (
-                          <>
-                            {chat.studentProfile.imageUrl ? (
-                              <div className="relative w-8 h-8 rounded-full overflow-hidden flex-shrink-0">
-                                <Image
-                                  src={chat.studentProfile.imageUrl}
-                                  fill
-                                  alt="profile picture"
-                                  className="object-cover"
-                                />
-                              </div>
-                            ) : (
-                              <div className="relative w-8 h-8 rounded-full overflow-hidden flex-shrink-0">
-                                <Image
-                                  src="https://vbteadl6m3.ufs.sh/f/DDJ5nPL6Yp1sHfAviE2zasoidYb10Mu7JGNQFZWgVmCrRHPE"
-                                  fill
-                                  alt="profile picture"
-                                  className="object-cover"
-                                />
-                              </div>
-                            )}
-                            <span className="capitalize font-medium truncate">
-                              {chat.studentProfile.user.name}
-                            </span>
-                          </>
-                        )}
+                        <div className="relative w-8 h-8 rounded-full overflow-hidden flex-shrink-0">
+                          <Image
+                            src={chat.mentorProfile.imageUrl!}
+                            fill
+                            alt="profile picture"
+                            className="object-cover"
+                          />
+                        </div>
+                        <span className="capitalize font-medium truncate">
+                          {chat.mentorProfile.user.name}
+                        </span>
                       </Link>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
-                );
-              })
+                ))
+              ) : (
+                <div className="flex items-center justify-center">
+                  <h1 className="text-xl font-bold">No chats found!s</h1>
+                </div>
+              )
+            ) : role === "mentor" ? (
+              chats.length > 0 ? (
+                chats.map((chat) => {
+                  return (
+                    <SidebarMenuItem key={chat.id}>
+                      <SidebarMenuButton asChild>
+                        <Link
+                          href={`/chats/${chat.id}`}
+                          className="font-medium flex items-center gap-2"
+                        >
+                          {chat.studentProfile && (
+                            <>
+                              {chat.studentProfile.imageUrl ? (
+                                <div className="relative w-8 h-8 rounded-full overflow-hidden flex-shrink-0">
+                                  <Image
+                                    src={chat.studentProfile.imageUrl}
+                                    fill
+                                    alt="profile picture"
+                                    className="object-cover"
+                                  />
+                                </div>
+                              ) : (
+                                <div className="relative w-8 h-8 rounded-full overflow-hidden flex-shrink-0">
+                                  <Image
+                                    src="https://vbteadl6m3.ufs.sh/f/DDJ5nPL6Yp1sHfAviE2zasoidYb10Mu7JGNQFZWgVmCrRHPE"
+                                    fill
+                                    alt="profile picture"
+                                    className="object-cover"
+                                  />
+                                </div>
+                              )}
+                              <span className="capitalize font-medium truncate">
+                                {chat.studentProfile.user.name}
+                              </span>
+                            </>
+                          )}
+                        </Link>
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                  );
+                })
+              ) : (
+                <div className="flex items-center justify-center">
+                  <h1 className="text-xl font-bold">No chats found! </h1>
+                </div>
+              )
             ) : (
               <div className="px-4 py-2">
                 <h1 className="text-sm text-muted-foreground">No chat found</h1>

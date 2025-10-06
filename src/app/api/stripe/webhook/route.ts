@@ -7,8 +7,9 @@ import {
   chatSubscription,
   videoCall,
   chats,
+  chatSubscriptionPayment,
 } from "../../../../../lib/db/schema";
-import { and, eq } from "drizzle-orm";
+import { and, eq, or } from "drizzle-orm";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET!;
@@ -71,7 +72,7 @@ async function handleCheckoutSessionCompleted(
   const { paymentType, userId, mentorId } = session.metadata || {};
 
   if (!paymentType || !userId) {
-    console.error("Missing metadata in checkout session");
+    console.error("Missing metadata in checkout session", session.metadata);
     return;
   }
 
@@ -88,10 +89,77 @@ async function handleCheckoutSessionCompleted(
     })
     .returning();
 
+  console.log(
+    `Payment inserted: ${paymentRecord.id}, type: ${paymentType}, amount: ${paymentRecord.amount}`
+  );
+
   if (paymentType === "chat_subscription" && mentorId) {
     const startDate = new Date();
     const endDate = new Date();
     endDate.setMonth(endDate.getMonth() + 1);
+
+    const [exisitingSubscriptionRecord] = await db
+      .select()
+      .from(chatSubscription)
+      .where(
+        and(
+          eq(chatSubscription.studentId, userId),
+          eq(chatSubscription.mentorId, mentorId),
+          or(
+            eq(chatSubscription.status, "cancelled"),
+            eq(chatSubscription.status, "expired")
+          )
+        )
+      );
+
+    if (
+      exisitingSubscriptionRecord &&
+      (exisitingSubscriptionRecord.status === "expired" ||
+        exisitingSubscriptionRecord.status === "cancelled")
+    ) {
+      const [updatedSubscriptionRecord] = await db
+        .update(chatSubscription)
+        .set({
+          status: "active",
+          endDate,
+          updatedAt: new Date(),
+          startDate,
+        })
+        .where(
+          and(
+            eq(chatSubscription.studentId, userId),
+            eq(chatSubscription.mentorId, mentorId)
+          )
+        )
+        .returning();
+      console.log(
+        `Updating  subscription status  ${exisitingSubscriptionRecord.id} for student ${userId} and mentor ${mentorId}`
+      );
+
+      await db
+        .update(chats)
+        .set({
+          status: "active",
+        })
+        .where(
+          and(
+            eq(chats.studentId, userId),
+            eq(chats.mentorId, mentorId),
+            eq(chats.subscriptionId, updatedSubscriptionRecord.id)
+          )
+        );
+
+      console.log(
+        `Chat row updated for student ${userId} and mentor ${mentorId} with subscription ${exisitingSubscriptionRecord.id}`
+      );
+
+      await db.insert(chatSubscriptionPayment).values({
+        subscriptionId: exisitingSubscriptionRecord.id,
+        paymentId: paymentRecord.id,
+      });
+
+      return;
+    }
 
     const [subscriptionRecord] = await db
       .insert(chatSubscription)
@@ -103,7 +171,25 @@ async function handleCheckoutSessionCompleted(
         endDate,
         status: "active",
       })
+      .onConflictDoUpdate({
+        target: [chatSubscription.studentId, chatSubscription.mentorId],
+        set: {
+          status: "active",
+          startDate,
+          endDate,
+          paymentId: paymentRecord.id,
+        },
+      })
       .returning();
+
+    console.log(
+      `Creating new subscription ${subscriptionRecord.id} for student ${userId} and mentor ${mentorId}`
+    );
+
+    await db.insert(chatSubscriptionPayment).values({
+      subscriptionId: subscriptionRecord.id,
+      paymentId: paymentRecord.id,
+    });
 
     await db
       .insert(chats)
@@ -113,7 +199,13 @@ async function handleCheckoutSessionCompleted(
         mentorId,
         status: "active",
       })
-      .onConflictDoNothing();
+      .onConflictDoUpdate({
+        target: [chats.studentId, chats.mentorId],
+        set: { status: "active", subscriptionId: subscriptionRecord.id },
+      });
+    console.log(
+      `Chat row inserted for student ${userId} and mentor ${mentorId} with subscription ${subscriptionRecord.id}`
+    );
   } else if (paymentType === "video_call" && mentorId) {
     await db.insert(videoCall).values({
       studentId: userId,
@@ -121,6 +213,9 @@ async function handleCheckoutSessionCompleted(
       paymentId: paymentRecord.id,
       status: "pending",
     });
+    console.log(
+      `Video call created for student ${userId} and mentor ${mentorId}, payment ${paymentRecord.id}`
+    );
   }
 }
 

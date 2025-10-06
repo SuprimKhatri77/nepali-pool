@@ -20,6 +20,8 @@ import { CldUploadWidget, CloudinaryUploadWidgetInfo } from "next-cloudinary";
 import { ImageIcon, X, Download, FileText, Film } from "lucide-react";
 import { sendAttachments } from "../../server/actions/send-attachments/sendAttachments";
 import { getFileType } from "../../server/helper/getFileType";
+import { PaymentButton } from "./PaymentButton";
+import { Button } from "./ui/button";
 
 type Props = {
   role: "student" | "mentor";
@@ -383,364 +385,399 @@ const Message = ({ role, chatId, currentUser, chatRecord }: Props) => {
       </div>
       <hr />
 
-      <div
-        ref={messagesContainerRef}
-        className={`flex flex-1 flex-col ${
-          loadingMessage ? "items-center justify-center" : "justify-end"
-        } overflow-y-auto`}
-      >
-        {loadingMessage ? (
-          <Loader />
-        ) : (
-          <>
-            <div ref={observerTarget} className="h-4 flex justify-center py-2">
-              {isLoadingMore && (
-                <div className="inline-block border-blue-400 h-4 w-4 animate-spin rounded-full border-2 border-solid border-e-transparent" />
-              )}
-              {!hasMore && messages.length > MESSAGES_PER_PAGE && (
-                <p className="text-xs text-gray-400">No more messages</p>
-              )}
-            </div>
-
-            {messages.length > 0 ? (
-              messages.map((message) => {
-                const isCurrentUser = message.senderId === currentUser.id;
-                const hasText = Boolean(message.message?.trim());
-
-                return (
-                  <div
-                    key={message.id}
-                    className={`flex ${
-                      isCurrentUser ? "justify-end" : "justify-start"
-                    } mb-3`}
-                  >
-                    <div
-                      className={`rounded-lg max-w-[75%] sm:max-w-md overflow-hidden ${
-                        hasText
-                          ? isCurrentUser
-                            ? "bg-blue-500 text-white"
-                            : "bg-gray-200 text-black"
-                          : "bg-transparent"
-                      }`}
-                    >
-                      {message.message && (
-                        <p className="px-3 sm:px-4 py-2">{message.message}</p>
-                      )}
-
-                      {message.messageAttachments?.length > 0 && (
-                        <div
-                          className={`${
-                            message.message ? "pt-0" : "p-2"
-                          } space-y-2`}
-                        >
-                          {message.messageAttachments.map((file: any) => {
-                            if (file.type === "image") {
-                              return (
-                                <div
-                                  key={file.url}
-                                  className="relative group cursor-pointer"
-                                  onClick={() =>
-                                    window.open(file.url, "_blank")
-                                  }
-                                >
-                                  <Image
-                                    src={file.url}
-                                    alt={file.name || "attachment"}
-                                    width={300}
-                                    height={300}
-                                    className="w-full h-auto rounded-lg object-cover"
-                                  />
-                                  <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all duration-200 rounded-lg flex items-center justify-center">
-                                    <Download
-                                      className="text-white opacity-0 group-hover:opacity-100 transition-opacity"
-                                      size={24}
-                                    />
-                                  </div>
-                                </div>
-                              );
-                            }
-
-                            if (file.type === "video") {
-                              return (
-                                <div
-                                  key={file.url}
-                                  className="relative rounded-lg overflow-hidden"
-                                >
-                                  <video
-                                    src={file.url}
-                                    controls
-                                    className="w-full rounded-lg"
-                                    preload="metadata"
-                                  />
-                                </div>
-                              );
-                            }
-
-                            const isPDF =
-                              file.type === "pdf" ||
-                              file.name?.toLowerCase().endsWith(".pdf");
-
-                            return (
-                              <a
-                                key={file.url}
-                                href={file.url}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className={`flex items-center gap-3 p-3 rounded-lg transition-all duration-200 ${
-                                  isCurrentUser
-                                    ? "bg-blue-600 hover:bg-blue-700"
-                                    : "bg-white hover:bg-gray-50 shadow-sm"
-                                }`}
-                              >
-                                <div
-                                  className={`p-2 rounded-lg ${
-                                    isCurrentUser
-                                      ? "bg-blue-700"
-                                      : isPDF
-                                        ? "bg-red-100"
-                                        : "bg-gray-100"
-                                  }`}
-                                >
-                                  <FileText
-                                    size={20}
-                                    className={
-                                      isCurrentUser
-                                        ? "text-white"
-                                        : isPDF
-                                          ? "text-red-600"
-                                          : "text-gray-600"
-                                    }
-                                  />
-                                </div>
-
-                                <div className="flex-1 min-w-0">
-                                  <p
-                                    className={`text-sm font-medium truncate ${
-                                      isCurrentUser
-                                        ? "text-white"
-                                        : "text-gray-900"
-                                    }`}
-                                  >
-                                    {file.name || "Download File"}
-                                  </p>
-                                  <p
-                                    className={`text-xs uppercase ${
-                                      isCurrentUser
-                                        ? "text-blue-100"
-                                        : "text-gray-500"
-                                    }`}
-                                  >
-                                    {isPDF
-                                      ? "PDF Document"
-                                      : file.type || "File"}
-                                  </p>
-                                </div>
-
-                                <Download
-                                  size={18}
-                                  className={
-                                    isCurrentUser
-                                      ? "text-blue-200"
-                                      : "text-gray-400"
-                                  }
-                                />
-                              </a>
-                            );
-                          })}
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                );
-              })
+      {chatRecord.status !== "active" ? (
+        <div className="flex flex-col gap-5 items-center justify-center h-full">
+          <h1 className="text-lg font-medium flex gap-1">
+            Your susbcription to chat with
+            <span className="font-bold capitalize">
+              {chatRecord.mentorProfile.user.name}
+            </span>
+            has expied, consider renewing it!
+          </h1>
+          <PaymentButton
+            mentorId={chatRecord.mentorId}
+            userId={currentUser.id}
+            userEmail={currentUser.email}
+            paymentType="chat_subscription"
+          >
+            Renew Chat Subscription
+          </PaymentButton>
+        </div>
+      ) : (
+        <>
+          <div
+            ref={messagesContainerRef}
+            className={`flex flex-1 flex-col ${
+              loadingMessage ? "items-center justify-center" : "justify-end"
+            } overflow-y-auto`}
+          >
+            {loadingMessage ? (
+              <Loader />
             ) : (
-              <div className="h-full flex items-center justify-center px-4">
-                <h1 className="text-gray-500 text-sm sm:text-base text-center">
-                  This is the start of your conversation with{" "}
-                  {otherUser ? otherUser.user.name : "Unknown"}
-                </h1>
-              </div>
-            )}
-
-            <div ref={messagesEndRef} />
-          </>
-        )}
-      </div>
-
-      {uploadedFiles.length > 0 && (
-        <div className="px-2 pb-3">
-          <div className="bg-gray-50 rounded-lg p-3 border border-gray-200">
-            <div className="flex items-center justify-between mb-2">
-              <p className="text-xs font-medium text-gray-600">
-                {uploadedFiles.length} file
-                {uploadedFiles.length > 1 ? "s" : ""} attached
-              </p>
-              <button
-                onClick={() => setUploadedFiles([])}
-                className="text-xs text-gray-500 hover:text-red-500 transition-colors"
-              >
-                Clear all
-              </button>
-            </div>
-
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-              {uploadedFiles.map((file) => (
+              <>
                 <div
-                  key={file.id}
-                  className="relative group rounded-lg overflow-hidden border-2 border-gray-200 hover:border-blue-400 transition-all duration-200 bg-white"
+                  ref={observerTarget}
+                  className="h-4 flex justify-center py-2"
                 >
-                  {file.type === "image" ? (
-                    <div className="aspect-square relative">
-                      <Image
-                        src={file.url}
-                        alt={file.name}
-                        fill
-                        className="object-cover"
-                      />
-                      <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/60 to-transparent p-2">
-                        <p className="text-xs text-white truncate font-medium">
-                          {file.name}
-                        </p>
-                      </div>
-                    </div>
-                  ) : file.type === "video" ? (
-                    <div className="aspect-square relative bg-gray-100 flex items-center justify-center">
-                      <Film size={32} className="text-gray-400" />
-                      <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/60 to-transparent p-2">
-                        <p className="text-xs text-white truncate font-medium">
-                          {file.name}
-                        </p>
-                      </div>
-                    </div>
-                  ) : (
-                    <div
-                      className={`aspect-square relative flex flex-col items-center justify-center p-2 ${
-                        file.type === "pdf" ||
-                        file.name?.toLowerCase().endsWith(".pdf")
-                          ? "bg-red-50"
-                          : "bg-gray-100"
-                      }`}
-                    >
-                      <FileText
-                        size={32}
-                        className={`mb-1 ${
-                          file.type === "pdf" ||
-                          file.name?.toLowerCase().endsWith(".pdf")
-                            ? "text-red-500"
-                            : "text-gray-400"
-                        }`}
-                      />
-                      <p className="text-xs text-gray-600 truncate w-full text-center font-medium">
-                        {file.name}
-                      </p>
-                      <p className="text-xs text-gray-400 uppercase">
-                        {file.type === "pdf" ||
-                        file.name?.toLowerCase().endsWith(".pdf")
-                          ? "PDF"
-                          : file.type || "File"}
-                      </p>
-                    </div>
+                  {isLoadingMore && (
+                    <div className="inline-block border-blue-400 h-4 w-4 animate-spin rounded-full border-2 border-solid border-e-transparent" />
                   )}
+                  {!hasMore && messages.length > MESSAGES_PER_PAGE && (
+                    <p className="text-xs text-gray-400">No more messages</p>
+                  )}
+                </div>
 
+                {chatRecord.status === "active" ? (
+                  messages.length > 0 ? (
+                    messages.map((message) => {
+                      const isCurrentUser = message.senderId === currentUser.id;
+                      const hasText = Boolean(message.message?.trim());
+
+                      return (
+                        <div
+                          key={message.id}
+                          className={`flex ${
+                            isCurrentUser ? "justify-end" : "justify-start"
+                          } mb-3`}
+                        >
+                          <div
+                            className={`rounded-lg max-w-[75%] sm:max-w-md overflow-hidden ${
+                              hasText
+                                ? isCurrentUser
+                                  ? "bg-blue-500 text-white"
+                                  : "bg-gray-200 text-black"
+                                : "bg-transparent"
+                            }`}
+                          >
+                            {message.message && (
+                              <p className="px-3 sm:px-4 py-2">
+                                {message.message}
+                              </p>
+                            )}
+
+                            {message.messageAttachments?.length > 0 && (
+                              <div
+                                className={`${
+                                  message.message ? "pt-0" : "p-2"
+                                } space-y-2`}
+                              >
+                                {message.messageAttachments.map((file: any) => {
+                                  if (file.type === "image") {
+                                    return (
+                                      <div
+                                        key={file.url}
+                                        className="relative group cursor-pointer"
+                                        onClick={() =>
+                                          window.open(file.url, "_blank")
+                                        }
+                                      >
+                                        <Image
+                                          src={file.url}
+                                          alt={file.name || "attachment"}
+                                          width={300}
+                                          height={300}
+                                          className="w-full h-auto rounded-lg object-cover"
+                                        />
+                                        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all duration-200 rounded-lg flex items-center justify-center">
+                                          <Download
+                                            className="text-white opacity-0 group-hover:opacity-100 transition-opacity"
+                                            size={24}
+                                          />
+                                        </div>
+                                      </div>
+                                    );
+                                  }
+
+                                  if (file.type === "video") {
+                                    return (
+                                      <div
+                                        key={file.url}
+                                        className="relative rounded-lg overflow-hidden"
+                                      >
+                                        <video
+                                          src={file.url}
+                                          controls
+                                          className="w-full rounded-lg"
+                                          preload="metadata"
+                                        />
+                                      </div>
+                                    );
+                                  }
+
+                                  const isPDF =
+                                    file.type === "pdf" ||
+                                    file.name?.toLowerCase().endsWith(".pdf");
+
+                                  return (
+                                    <a
+                                      key={file.url}
+                                      href={file.url}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                      className={`flex items-center gap-3 p-3 rounded-lg transition-all duration-200 ${
+                                        isCurrentUser
+                                          ? "bg-blue-600 hover:bg-blue-700"
+                                          : "bg-white hover:bg-gray-50 shadow-sm"
+                                      }`}
+                                    >
+                                      <div
+                                        className={`p-2 rounded-lg ${
+                                          isCurrentUser
+                                            ? "bg-blue-700"
+                                            : isPDF
+                                              ? "bg-red-100"
+                                              : "bg-gray-100"
+                                        }`}
+                                      >
+                                        <FileText
+                                          size={20}
+                                          className={
+                                            isCurrentUser
+                                              ? "text-white"
+                                              : isPDF
+                                                ? "text-red-600"
+                                                : "text-gray-600"
+                                          }
+                                        />
+                                      </div>
+
+                                      <div className="flex-1 min-w-0">
+                                        <p
+                                          className={`text-sm font-medium truncate ${
+                                            isCurrentUser
+                                              ? "text-white"
+                                              : "text-gray-900"
+                                          }`}
+                                        >
+                                          {file.name || "Download File"}
+                                        </p>
+                                        <p
+                                          className={`text-xs uppercase ${
+                                            isCurrentUser
+                                              ? "text-blue-100"
+                                              : "text-gray-500"
+                                          }`}
+                                        >
+                                          {isPDF
+                                            ? "PDF Document"
+                                            : file.type || "File"}
+                                        </p>
+                                      </div>
+
+                                      <Download
+                                        size={18}
+                                        className={
+                                          isCurrentUser
+                                            ? "text-blue-200"
+                                            : "text-gray-400"
+                                        }
+                                      />
+                                    </a>
+                                  );
+                                })}
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      );
+                    })
+                  ) : (
+                    <div className="h-full flex items-center justify-center px-4">
+                      <h1 className="text-gray-500 text-sm sm:text-base text-center">
+                        This is the start of your conversation with{" "}
+                        {otherUser ? otherUser.user.name : "Unknown"}
+                      </h1>
+                    </div>
+                  )
+                ) : (
+                  <div>
+                    <h1>
+                      Your chat subscription with this mentor has expired,
+                      considering purchasing the pack again to chat!
+                    </h1>
+                  </div>
+                )}
+                <div ref={messagesEndRef} />
+              </>
+            )}
+          </div>
+
+          {uploadedFiles.length > 0 && (
+            <div className="px-2 pb-3">
+              <div className="bg-gray-50 rounded-lg p-3 border border-gray-200">
+                <div className="flex items-center justify-between mb-2">
+                  <p className="text-xs font-medium text-gray-600">
+                    {uploadedFiles.length} file
+                    {uploadedFiles.length > 1 ? "s" : ""} attached
+                  </p>
                   <button
-                    onClick={() => removeFile(file.id)}
-                    className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1.5
-                               opacity-0 group-hover:opacity-100 transition-all duration-200
-                               hover:bg-red-600 hover:scale-110 shadow-lg z-10"
-                    aria-label="Remove file"
+                    onClick={() => setUploadedFiles([])}
+                    className="text-xs text-gray-500 hover:text-red-500 transition-colors"
                   >
-                    <X size={14} />
+                    Clear all
                   </button>
                 </div>
-              ))}
+
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                  {uploadedFiles.map((file) => (
+                    <div
+                      key={file.id}
+                      className="relative group rounded-lg overflow-hidden border-2 border-gray-200 hover:border-blue-400 transition-all duration-200 bg-white"
+                    >
+                      {file.type === "image" ? (
+                        <div className="aspect-square relative">
+                          <Image
+                            src={file.url}
+                            alt={file.name}
+                            fill
+                            className="object-cover"
+                          />
+                          <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/60 to-transparent p-2">
+                            <p className="text-xs text-white truncate font-medium">
+                              {file.name}
+                            </p>
+                          </div>
+                        </div>
+                      ) : file.type === "video" ? (
+                        <div className="aspect-square relative bg-gray-100 flex items-center justify-center">
+                          <Film size={32} className="text-gray-400" />
+                          <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/60 to-transparent p-2">
+                            <p className="text-xs text-white truncate font-medium">
+                              {file.name}
+                            </p>
+                          </div>
+                        </div>
+                      ) : (
+                        <div
+                          className={`aspect-square relative flex flex-col items-center justify-center p-2 ${
+                            file.type === "pdf" ||
+                            file.name?.toLowerCase().endsWith(".pdf")
+                              ? "bg-red-50"
+                              : "bg-gray-100"
+                          }`}
+                        >
+                          <FileText
+                            size={32}
+                            className={`mb-1 ${
+                              file.type === "pdf" ||
+                              file.name?.toLowerCase().endsWith(".pdf")
+                                ? "text-red-500"
+                                : "text-gray-400"
+                            }`}
+                          />
+                          <p className="text-xs text-gray-600 truncate w-full text-center font-medium">
+                            {file.name}
+                          </p>
+                          <p className="text-xs text-gray-400 uppercase">
+                            {file.type === "pdf" ||
+                            file.name?.toLowerCase().endsWith(".pdf")
+                              ? "PDF"
+                              : file.type || "File"}
+                          </p>
+                        </div>
+                      )}
+
+                      <button
+                        onClick={() => removeFile(file.id)}
+                        className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1.5
+                               opacity-0 group-hover:opacity-100 transition-all duration-200
+                               hover:bg-red-600 hover:scale-110 shadow-lg z-10"
+                        aria-label="Remove file"
+                      >
+                        <X size={14} />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
+
+          <div className="flex items-center gap-1 sm:gap-2 justify-end relative">
+            <CldUploadWidget
+              uploadPreset="NepaliPoolChat"
+              options={{
+                resourceType: "auto",
+                multiple: true,
+              }}
+              onSuccess={(result) => {
+                const info = result.info as CloudinaryUploadWidgetInfo;
+
+                if (info && typeof info === "object" && "secure_url" in info) {
+                  const newFile = {
+                    url: info.secure_url,
+                    name: info.original_filename || "uploaded-file",
+                    type: getFileType(info),
+                    id: info.public_id,
+                  };
+                  console.log("Adding file to state:", newFile);
+
+                  setUploadedFiles((prev) => {
+                    const updated = [...prev, newFile];
+                    console.log("Updated uploadedFiles array:", updated);
+                    return updated;
+                  });
+                } else {
+                  console.error("Invalid info object structure");
+                }
+              }}
+            >
+              {({ open }) => {
+                return (
+                  <button
+                    type="button"
+                    onClick={() => open()}
+                    className="flex items-center justify-center p-2 sm:px-4 sm:py-3 text-slate-700 hover:bg-slate-100
+                rounded-full transition-all duration-200 cursor-pointer flex-shrink-0"
+                  >
+                    <ImageIcon className="w-5 h-5 sm:w-6 sm:h-6" />
+                  </button>
+                );
+              }}
+            </CldUploadWidget>
+            <Input
+              className="rounded-full border-gray-400 pr-10 sm:pr-12 text-sm sm:text-base"
+              type="text"
+              onChange={(e) => setMessageText(e.target.value)}
+              value={messageText}
+              onKeyDown={(e) => e.key === "Enter" && !pending && handleSend()}
+              disabled={pending}
+              placeholder="Type a message..."
+            />
+            <div className="absolute bottom-2 sm:bottom-2.5 right-3 sm:right-4">
+              <button
+                className="bg-transparent text-black hover:bg-transparent cursor-pointer hover:scale-105 duration-300 transition-all disabled:opacity-50"
+                onClick={handleSend}
+                disabled={
+                  pending || (!messageText.trim() && uploadedFiles.length === 0)
+                }
+              >
+                {pending ? (
+                  <div className="inline-block border-green-400 h-4 w-4 animate-spin rounded-full border-2 border-solid border-e-transparent">
+                    <span className="sr-only">Loading...</span>
+                  </div>
+                ) : (
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="18"
+                    height="18"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                    <path d="M4.698 4.034l16.302 7.966l-16.302 7.966a.503 .503 0 0 1 -.546 -.124a.555 .555 0 0 1 -.12 -.568l2.468 -7.274l-2.468 -7.274a.555 .555 0 0 1 .12 -.568a.503 .503 0 0 1 .546 -.124z" />
+                    <path d="M6.5 12h14.5" />
+                  </svg>
+                )}
+              </button>
             </div>
           </div>
-        </div>
+        </>
       )}
-
-      <div className="flex items-center gap-1 sm:gap-2 justify-end relative">
-        <CldUploadWidget
-          uploadPreset="NepaliPoolChat"
-          options={{
-            resourceType: "auto",
-            multiple: true,
-          }}
-          onSuccess={(result) => {
-            const info = result.info as CloudinaryUploadWidgetInfo;
-
-            if (info && typeof info === "object" && "secure_url" in info) {
-              const newFile = {
-                url: info.secure_url,
-                name: info.original_filename || "uploaded-file",
-                type: getFileType(info),
-                id: info.public_id,
-              };
-              console.log("Adding file to state:", newFile);
-
-              setUploadedFiles((prev) => {
-                const updated = [...prev, newFile];
-                console.log("Updated uploadedFiles array:", updated);
-                return updated;
-              });
-            } else {
-              console.error("Invalid info object structure");
-            }
-          }}
-        >
-          {({ open }) => {
-            return (
-              <button
-                type="button"
-                onClick={() => open()}
-                className="flex items-center justify-center p-2 sm:px-4 sm:py-3 text-slate-700 hover:bg-slate-100
-                rounded-full transition-all duration-200 cursor-pointer flex-shrink-0"
-              >
-                <ImageIcon className="w-5 h-5 sm:w-6 sm:h-6" />
-              </button>
-            );
-          }}
-        </CldUploadWidget>
-        <Input
-          className="rounded-full border-gray-400 pr-10 sm:pr-12 text-sm sm:text-base"
-          type="text"
-          onChange={(e) => setMessageText(e.target.value)}
-          value={messageText}
-          onKeyDown={(e) => e.key === "Enter" && !pending && handleSend()}
-          disabled={pending}
-          placeholder="Type a message..."
-        />
-        <div className="absolute bottom-2 sm:bottom-2.5 right-3 sm:right-4">
-          <button
-            className="bg-transparent text-black hover:bg-transparent cursor-pointer hover:scale-105 duration-300 transition-all disabled:opacity-50"
-            onClick={handleSend}
-            disabled={
-              pending || (!messageText.trim() && uploadedFiles.length === 0)
-            }
-          >
-            {pending ? (
-              <div className="inline-block border-green-400 h-4 w-4 animate-spin rounded-full border-2 border-solid border-e-transparent">
-                <span className="sr-only">Loading...</span>
-              </div>
-            ) : (
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="18"
-                height="18"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                <path d="M4.698 4.034l16.302 7.966l-16.302 7.966a.503 .503 0 0 1 -.546 -.124a.555 .555 0 0 1 -.12 -.568l2.468 -7.274l-2.468 -7.274a.555 .555 0 0 1 .12 -.568a.503 .503 0 0 1 .546 -.124z" />
-                <path d="M6.5 12h14.5" />
-              </svg>
-            )}
-          </button>
-        </div>
-      </div>
     </div>
   );
 };

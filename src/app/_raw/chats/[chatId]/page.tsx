@@ -49,7 +49,7 @@ const page = async ({ params }: ParamsType) => {
     return redirect("/select-role");
 
   const chatRecord = await db.query.chats.findFirst({
-    where: (fields, { eq }) => eq(chats.id, chatId),
+    where: (fields, { eq }) => and(eq(chats.id, chatId)),
     with: {
       studentProfile: { with: { user: true } },
       mentorProfile: { with: { user: true } },

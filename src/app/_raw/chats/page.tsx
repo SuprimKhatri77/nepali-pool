@@ -48,7 +48,7 @@ const Page = async () => {
       return (
         <div className="min-h-screen w-full flex flex-col justify-center items-center">
           <h1>
-            You don't have a active chat subscription, Please purchase one!
+            You haven't purchased a chat pack yet, Considering purchasing one.
           </h1>
         </div>
       );

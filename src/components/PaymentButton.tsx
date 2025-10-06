@@ -6,6 +6,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { PaymentButtonProps } from "../../types/all-types";
+import Loader from "./Loader";
 
 export function PaymentButton({
   paymentType,
@@ -52,7 +53,7 @@ export function PaymentButton({
 
   return (
     <Button onClick={handlePayment} disabled={loading} className={className}>
-      {loading ? "Processing..." : children}
+      {loading ? <Loader /> : children}
     </Button>
   );
 }

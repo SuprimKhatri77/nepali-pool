@@ -1,0 +1,1 @@
+CREATE UNIQUE INDEX "unique_student_mentor_chat" ON "chats" USING btree ("student_id","mentor_id");

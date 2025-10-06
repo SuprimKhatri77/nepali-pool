@@ -39,10 +39,9 @@ export async function getUserChats() {
       return [];
     }
 
-    // console.log("Where condition: ", whereConditions[0]);
+    console.log("Where condition: ", whereConditions[0]);
     const chatsRecords = await db.query.chats.findMany({
-      where: (fields, { eq }) =>
-        and(or(...whereConditions), eq(chats.status, "active")),
+      where: (fields, { eq }) => whereConditions[0],
       with: {
         studentProfile: {
           with: {

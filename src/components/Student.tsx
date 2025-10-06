@@ -230,13 +230,24 @@ export default function StudentPage({
                           <div className="flex  gap-5 items-center">
                             {activeChat &&
                             new Date(activeChat.endDate) > new Date() ? (
-                              studentChat ? (
+                              studentChat && studentChat.status === "active" ? (
                                 <Link
                                   href={`/chats/${studentChat?.id}`}
                                   className="bg-green-600 px-5 py-3 rounded-xl hover:bg-green-700 transition-all duration-300 ease-in-out text-white text-nowrap"
                                 >
                                   Chat with mentor
                                 </Link>
+                              ) : studentChat &&
+                                studentChat.status === "expired" ? (
+                                <PaymentButton
+                                  paymentType="chat_subscription"
+                                  userId={studentRecordWithUser.userId}
+                                  mentorId={mentor.userId}
+                                  userEmail={studentRecordWithUser.user.email!}
+                                  className="bg-gray-700 px-5 py-3 rounded-xl hover:bg-gray-800 transition-all duration-300 ease-in-out text-gray-100 cursor-pointer"
+                                >
+                                  Renew Chat Subscription
+                                </PaymentButton>
                               ) : (
                                 <Button disabled>Chat unavailable</Button>
                               )
