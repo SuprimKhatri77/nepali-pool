@@ -1,15 +1,47 @@
 import Image from "next/image";
 import { db } from "../../../../lib/db";
-import type { SchoolSelectType } from "../../../../lib/db/schema";
-import { ExternalLink, MapPin, Mail } from "lucide-react";
+import { school, type SchoolSelectType } from "../../../../lib/db/schema";
+import { MapPin } from "lucide-react";
 import Link from "next/link";
+import { count } from "drizzle-orm";
 
-export default async function AllSchools() {
-  const schools: SchoolSelectType[] = await db.query.school.findMany();
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination";
+import { Button } from "@/components/ui/button";
+
+export default async function AllSchools({
+  searchParams,
+}: {
+  searchParams: { page: string };
+}) {
+  let page = Number(searchParams.page) || 1;
+  const limit = 3;
+  const [totalResult] = await db.select({ count: count() }).from(school);
+
+  const total = Number(totalResult.count);
+  const totalPages = Math.ceil(total / limit);
+
+  if (page < 1) page = 1;
+  if (page > totalPages) page = totalPages;
+
+  const offset = (page - 1) * limit;
+
+  const schools: SchoolSelectType[] = await db.query.school.findMany({
+    limit,
+    offset,
+    orderBy: (school, { asc }) => [asc(school.id)],
+  });
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 py-12 px-4">
-      <div className="max-w-7xl mx-auto">
+      <div className="max-w-7xl mx-auto bg-slate-300 p-5 rounded-xl">
         <div className="text-center mb-12">
           <h1 className="text-4xl font-bold text-gray-900 mb-4">
             Discover Schools
@@ -21,10 +53,10 @@ export default async function AllSchools() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {schools.map((school, idx) => (
+          {schools.map((school) => (
             <Link
               href={`/all-schools/${school.id}`}
-              key={school.id || idx}
+              key={school.id}
               className="group bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 border border-gray-100"
             >
               <div className="relative overflow-hidden">
@@ -62,6 +94,36 @@ export default async function AllSchools() {
               </div>
             </Link>
           ))}
+        </div>
+
+        <div className="flex mt-8 justify-center">
+          <Pagination>
+            <PaginationContent>
+              <PaginationItem>
+                <Button variant="ghost" disabled={page === 1}>
+                  <PaginationPrevious
+                    href={page === 1 ? undefined : `?page=${page - 1}`}
+                  />
+                </Button>
+              </PaginationItem>
+
+              {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
+                <PaginationItem key={p}>
+                  <PaginationLink href={`?page=${p}`} isActive={p === page}>
+                    {p}
+                  </PaginationLink>
+                </PaginationItem>
+              ))}
+
+              <PaginationItem>
+                <Button variant="ghost" disabled={page === totalPages}>
+                  <PaginationNext
+                    href={page === totalPages ? undefined : `?page=${page + 1}`}
+                  />
+                </Button>
+              </PaginationItem>
+            </PaginationContent>
+          </Pagination>
         </div>
 
         {schools.length === 0 && (

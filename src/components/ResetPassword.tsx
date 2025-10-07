@@ -13,9 +13,8 @@ import { Label } from "@/components/ui/label";
 import { Eye, EyeOff } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
-import { authClient } from "../../server/lib/auth/auth-client";
 import { toast } from "sonner";
-import { resetPassword } from "../../server/actions/resetPassword";
+import { resetPassword } from "../../server/actions/reset-password/resetPassword";
 
 export default function ResetPassword({ token }: { token: string }) {
   const [isPending, setIsPending] = useState<boolean>(false);

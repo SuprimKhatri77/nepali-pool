@@ -6,7 +6,11 @@ import { cva, VariantProps } from "class-variance-authority";
 import { PanelLeftIcon } from "lucide-react";
 
 import { useIsMobile } from "@/hooks/use-mobile";
+<<<<<<< HEAD
 import { cn } from "@/lib/utils";
+=======
+import { cn } from "../lib/utils";
+>>>>>>> origin/auth-setup
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
@@ -467,10 +471,14 @@ function SidebarMenuItem({ className, ...props }: React.ComponentProps<"li">) {
     <li
       data-slot="sidebar-menu-item"
       data-sidebar="menu-item"
+<<<<<<< HEAD
       className={cn(
         "group/menu-item relative transition-colors duration-200 ease-linear",
         className
       )}
+=======
+      className={cn("group/menu-item relative", className)}
+>>>>>>> origin/auth-setup
       {...props}
     />
   );

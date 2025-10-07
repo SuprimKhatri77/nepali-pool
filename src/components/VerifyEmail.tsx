@@ -4,15 +4,13 @@ import { Button } from "@/components/ui/button";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
-import { resendEmailVerification } from "../../server/actions/resendEmailVerification";
+import { resendEmailVerification } from "../../server/actions/email-verification/resendEmailVerification";
 
 export default function VerifyEmail({ email }: { email: string }) {
   const params = useSearchParams();
   const router = useRouter();
   const from = params.get("from");
-  const [message, setMessage] = useState(
-    "A verification link has been sent to your email."
-  );
+
   const [isLoading, setIsLoading] = useState(false);
 
   const handleClick = async () => {

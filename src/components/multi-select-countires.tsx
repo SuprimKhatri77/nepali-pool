@@ -7,14 +7,7 @@ import { cn } from "@/components/lib/utils";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-
-interface MultiSelectCountriesProps {
-  countries: string[];
-  selectedCountries: string[];
-  onSelectionChange: (countries: string[]) => void;
-  placeholder?: string;
-  className?: string;
-}
+import { MultiSelectCountriesProps } from "../../types/all-types";
 
 export default function MultiSelectCountries({
   countries,

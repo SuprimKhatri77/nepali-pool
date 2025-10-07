@@ -7,13 +7,10 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "vbteadl6m3.ufs.sh",
       },
+      { protocol: "https", hostname: "logo.clearbit.com" },
       {
         protocol: "https",
-        hostname: "t4.ftcdn.net",
-      },
-      {
-        protocol: "https",
-        hostname: "logo.clearbit.com",
+        hostname: "res.cloudinary.com",
       },
     ],
   },

@@ -22,7 +22,7 @@ export default async function SchoolDetailPage({
       </div>
     );
   }
-  console.log("Id from Params: ", schoolId);
+  // console.log("Id from Params: ", schoolId);
   const [specificSchool] = await db
     .select()
     .from(school)
