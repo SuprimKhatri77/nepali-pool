@@ -4,7 +4,8 @@ import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 
-export default function Header({ Login }: { readonly Login: boolean }) {
+export default function Header({ Login, Role }: { readonly Login: boolean, readonly Role: string
+ }) {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
@@ -45,7 +46,10 @@ export default function Header({ Login }: { readonly Login: boolean }) {
               : "bg-[#3A86FF] hover:bg-[#2a64c2]"
           } text-white rounded-[9px] px-4 py-2 font-bold`}
         >
-          <Link href="/public/login">{Login ? "Dashboard" : "Login"}</Link>
+          <Link 
+            href={`${!Login ? "/login" : `/${Role}`}`}
+          
+          >{Login ? "Dashboard" : "Login"}</Link>
         </button>
       </div>
 
@@ -89,7 +93,8 @@ export default function Header({ Login }: { readonly Login: boolean }) {
             </Link>
           ))}
           <Link
-            href="/public/login"
+                        href={`${!Login ? "/login" : `/${Role}`}`}
+
             className={`${
               Login
                 ? "bg-white hover:bg-red-800 text-black"

@@ -19,11 +19,6 @@ export default async function MentorDashboard() {
     .from(user)
     .where(eq(user.id, session.user.id));
 
-  const [studentProfileRecord] = await db
-    .select()
-    .from(studentProfile)
-    .where(eq(studentProfile.userId, userRecord.id));
-
   if (!userRecord) {
     return redirect("/sign-up");
   }
@@ -35,6 +30,10 @@ export default async function MentorDashboard() {
   }
 
   if (userRecord.role === "student") {
+    const [studentProfileRecord] = await db
+      .select()
+      .from(studentProfile)
+      .where(eq(studentProfile.userId, userRecord.id));
     if (!studentProfileRecord) {
       return redirect("/sign-up/onboarding/student");
     }
