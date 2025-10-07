@@ -32,6 +32,7 @@ export default async function ServerHeader() {
   if (userRecord.role === "none") {
     return redirect("/select-role");
   }
+  const Role = userRecord.role
   
-  return <Header Login={true} />;
+  return <Header Login={true} Role={Role}/>;
 }
