@@ -111,11 +111,11 @@ export default function AddSchool({
                 )}
               </div>
               <div className="grid gap-3">
-                <Label htmlFor="perfecture">Perfecture</Label>
+                <Label htmlFor="prefecture">Perfecture</Label>
                 <Input
                   type="text"
-                  id="perfecture"
-                  name="perfecture"
+                  id="prefecture"
+                  name="prefecture"
                   defaultValue={state.inputs?.prefecture}
                   required
                 />

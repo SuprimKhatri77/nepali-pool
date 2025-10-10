@@ -24,6 +24,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { NavUser } from "./ui/nav-user";
 import { Skeleton } from "./ui/skeleton";
+import { toast } from "sonner";
 
 type Props = {
   role: "student" | "mentor";
@@ -48,8 +49,12 @@ const Chats = ({ role, currentUser }: Props) => {
       setLoading(true);
       try {
         const result = await getUserChats();
-        if (result) {
-          setChats(result);
+        if (result.success) {
+          setChats(result.chatsRecords);
+        }
+        if (!result.success && result.message) {
+          setChats(result.chatsRecords);
+          toast.error(result.message);
         }
       } catch (error) {
         console.error("Error fetching chats: ", error);
@@ -116,7 +121,7 @@ const Chats = ({ role, currentUser }: Props) => {
                 ))
               ) : (
                 <div className="flex items-center justify-center">
-                  <h1 className="text-xl font-bold">No chats found!s</h1>
+                  <h1 className="text-xl font-bold">No chats founds</h1>
                 </div>
               )
             ) : role === "mentor" ? (

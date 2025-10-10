@@ -1,5 +1,7 @@
 "use server";
 
+// SENDING THE VIDEO CALL TIME TO MENTOR AND STUDENT
+
 import z from "zod";
 import { db } from "../../../lib/db";
 import {
@@ -8,10 +10,9 @@ import {
   user,
   videoCall,
 } from "../../../lib/db/schema";
-import { eq } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 import { sendEmail } from "../../lib/send-email";
-import { auth } from "../../lib/auth/auth";
-import { headers } from "next/headers";
+import { getCurrentUser } from "../../lib/auth/helpers/getCurrentUser";
 
 const roleEnum = z
   .string()
@@ -27,28 +28,9 @@ export async function sendVideoCallSchedule(
   studentId: string,
   mentorId: string
 ) {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
-  if (!session) {
-    return {
-      redirectTo: "/login",
-      message: "Not authenticated",
-      success: false,
-    };
-  }
+  const result = await getCurrentUser();
+  if (!result.success) return result;
 
-  const [userRecord] = await db
-    .select()
-    .from(user)
-    .where(eq(user.id, session.user.id));
-  if (!userRecord) {
-    return {
-      redirectTo: "/sign-up",
-      message: "No user record found!",
-      success: false,
-    };
-  }
   const data = z.object({
     videoId: z.string({ required_error: "Video ID is required" }).nonempty(),
     date: z
@@ -80,7 +62,7 @@ export async function sendVideoCallSchedule(
       errors: validateFields.error.flatten().fieldErrors,
       message: "Validation Failed",
       success: true,
-      timesamp: new Date(),
+      timesamp: Date.now(),
     };
   }
   // console.log("Data: ", validateFields.data);
@@ -90,6 +72,26 @@ export async function sendVideoCallSchedule(
   combinedDate.setHours(hours, minutes, seconds || 0);
 
   try {
+    const [videoRecord] = await db
+      .select()
+      .from(videoCall)
+      .where(
+        and(
+          eq(videoCall.id, validated.videoId),
+          eq(videoCall.studentId, validated.studentId),
+          eq(videoCall.mentorId, validated.mentorId)
+        )
+      );
+
+    if (!videoRecord) {
+      return { success: false, message: "No video record found" };
+    }
+    if (videoRecord.status !== "pending") {
+      return {
+        success: false,
+        message: `The video call is already ${videoRecord.status}`,
+      };
+    }
     const [studentRecord] = await db
       .select()
       .from(user)
@@ -123,7 +125,7 @@ export async function sendVideoCallSchedule(
       .from(preferredTime)
       .where(eq(preferredTime.videoId, validated.videoId));
     if (!preferredTimeRecord) {
-      return;
+      return { success: false, message: "No time record found for the video" };
     }
     await db
       .update(preferredTime)
@@ -166,7 +168,6 @@ export async function sendVideoCallSchedule(
   } catch (error) {
     console.error("Error:", error);
     return {
-      errors: "Something went wrong!",
       message: "Something went wrong!",
       success: true,
     };

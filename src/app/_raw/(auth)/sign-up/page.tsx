@@ -2,13 +2,11 @@ import SignUpPage from "@/components/SignUpForm";
 import { auth } from "../../../../../server/lib/auth/auth";
 import { headers } from "next/headers";
 import { db } from "../../../../../lib/db";
-import {
-  mentorProfile,
-  studentProfile,
-  user,
-} from "../../../../../lib/db/schema";
+import { user } from "../../../../../lib/db/schema";
 import { eq } from "drizzle-orm";
 import { notFound, redirect } from "next/navigation";
+import { getStudentProfile } from "../../../../../server/lib/auth/helpers/getStudentProfile";
+import { getMentorProfile } from "../../../../../server/lib/auth/helpers/getMentorProfile";
 
 export const metadata = {
   title: "Sign up | Nepali Pool",
@@ -33,9 +31,7 @@ export default async function SignUp() {
   }
 
   if (!userRecord.emailVerified) {
-    return redirect(
-      `/sign-up/verify-email?email=${encodeURIComponent(userRecord.email)}`
-    );
+    return redirect("/verify-email");
   }
 
   if (!userRecord.role || userRecord.role === "none") {
@@ -47,31 +43,11 @@ export default async function SignUp() {
   }
 
   if (userRecord.role === "student") {
-    const [studentProfileRecord] = await db
-      .select()
-      .from(studentProfile)
-      .where(eq(studentProfile.userId, userRecord.id));
-    if (!studentProfileRecord) {
-      return redirect("/sign-up/onboarding/student");
-    }
-    return redirect("/dashboard/student");
+    await getStudentProfile(userRecord.id);
   }
 
   if (userRecord.role === "mentor") {
-    const [mentorProfileRecord] = await db
-      .select()
-      .from(mentorProfile)
-      .where(eq(mentorProfile.userId, userRecord.id));
-    if (!mentorProfileRecord) {
-      return redirect("/sign-up/onboarding/mentor");
-    }
-    if (mentorProfileRecord.verifiedStatus === "pending") {
-      return redirect("/waitlist");
-    }
-    if (mentorProfileRecord.verifiedStatus === "rejected") {
-      return redirect("/rejected");
-    }
-    return redirect("/dashboard/mentor");
+    await getMentorProfile(userRecord.id);
   }
 
   return notFound();

@@ -16,23 +16,7 @@ export default function VideoCall({
 }) {
   const params = useSearchParams();
   const status = params.get("status");
-  const [containsStudentPreferredTime, setContainsStudentPreferredTime] =
-    useState<boolean>(false);
-  const hasStudentPreferredTime = async (videoId: string) => {
-    const data = videoCallRecords.find((vid) => vid.id === videoId);
-    if (!data) {
-      return true;
-    }
 
-    const preferredTime = await getVideoCallPreferredTime(data.id);
-    if (preferredTime) {
-      setContainsStudentPreferredTime(true);
-      return;
-    } else {
-      setContainsStudentPreferredTime(false);
-      return;
-    }
-  };
   return (
     <div>
       {(status === "pending" || !status) && (

@@ -60,7 +60,6 @@ export async function searchUserInDB(prevState: FormState, formData: FormData) {
       };
     }
     return {
-      message: "A reset password link has been to your email!",
       success: true,
     };
   } catch (error) {

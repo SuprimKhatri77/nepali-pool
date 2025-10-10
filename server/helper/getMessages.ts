@@ -5,6 +5,7 @@ import { db } from "../../lib/db";
 import { chats, messages } from "../../lib/db/schema";
 import { auth } from "../lib/auth/auth";
 import { and, eq, or, lt, desc } from "drizzle-orm";
+import { getCurrentUser } from "../lib/auth/helpers/getCurrentUser";
 
 export async function getMessages(chatId: string, limit: number = 20) {
   if (!chatId) {
@@ -17,11 +18,9 @@ export async function getMessages(chatId: string, limit: number = 20) {
   }
 
   try {
-    const session = await auth.api.getSession({
-      headers: await headers(),
-    });
+    const result = await getCurrentUser();
 
-    if (!session?.user) {
+    if (!result.success) {
       console.error("Unauthorized access");
       return {
         success: false,
@@ -31,18 +30,20 @@ export async function getMessages(chatId: string, limit: number = 20) {
       };
     }
 
+    const currentUser = result.userRecord;
+
     const chat = await db.query.chats.findFirst({
       where: and(
         eq(chats.id, chatId),
         or(
-          eq(chats.studentId, session.user.id),
-          eq(chats.mentorId, session.user.id)
+          eq(chats.studentId, currentUser.id),
+          eq(chats.mentorId, currentUser.id)
         )
       ),
     });
 
     if (!chat) {
-      console.error(`User ${session.user.id} unauthorized for chat ${chatId}`);
+      console.error(`User ${currentUser.id} unauthorized for chat ${chatId}`);
       return {
         success: false,
         error: "Unauthorized",
@@ -110,25 +111,24 @@ export async function getMoreMessages(
   }
 
   try {
-    const session = await auth.api.getSession({
-      headers: await headers(),
-    });
-
-    if (!session?.user) {
+    const result = await getCurrentUser();
+    if (!result.success) {
+      console.log("Unauthorized access");
       return {
-        success: false,
+        success: result.success,
         error: "Unauthorized",
         messages: [],
         hasMore: false,
       };
     }
+    const currentUser = result.userRecord;
 
     const chat = await db.query.chats.findFirst({
       where: and(
         eq(chats.id, chatId),
         or(
-          eq(chats.studentId, session.user.id),
-          eq(chats.mentorId, session.user.id)
+          eq(chats.studentId, currentUser.id),
+          eq(chats.mentorId, currentUser.id)
         )
       ),
     });

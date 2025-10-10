@@ -1,10 +1,17 @@
 "use server";
 
+// STUDENT MENTOR MUTUAL SCHEDULATION
+
 import { z } from "zod";
 import { db } from "../../../lib/db";
-import { preferredTime, preferredTimeLog } from "../../../lib/db/schema";
-import { eq } from "drizzle-orm";
+import {
+  preferredTime,
+  preferredTimeLog,
+  videoCall,
+} from "../../../lib/db/schema";
+import { and, eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
+import { getCurrentUser } from "../../lib/auth/helpers/getCurrentUser";
 
 export type FormState = {
   errors?: {
@@ -63,6 +70,34 @@ export async function scheduleVideoCallTime(
   combinedDate.setHours(hours, minutes, seconds || 0);
 
   try {
+    const result = await getCurrentUser();
+    if (!result.success) {
+      return {
+        success: result.success,
+        message: result.message,
+        timestamp: new Date(),
+      };
+    }
+    const [videoCallRecord] = await db
+      .select()
+      .from(videoCall)
+      .where(eq(videoCall.id, videoId));
+
+    if (!videoCallRecord) {
+      return {
+        success: false,
+        message: "No video call record found",
+        timestamp: new Date(),
+      };
+    }
+
+    if (videoCallRecord.status !== "pending") {
+      return {
+        success: false,
+        message: `The video call is already ${videoCallRecord.status}`,
+        timestamp: new Date(),
+      };
+    }
     await db.insert(preferredTimeLog).values({
       videoId,
       suggestedBy: role,
@@ -71,7 +106,7 @@ export async function scheduleVideoCallTime(
     const [preferredTimeRecord] = await db
       .select()
       .from(preferredTime)
-      .where(eq(preferredTime.videoId, videoId));
+      .where(and(eq(preferredTime.videoId, videoId)));
     if (role === "student" && !preferredTimeRecord) {
       await db.insert(preferredTime).values({
         videoId,
@@ -82,7 +117,7 @@ export async function scheduleVideoCallTime(
       revalidatePath(`/video-call/schedule/${videoId}`);
       return {
         success: true,
-        message: "Preferred time sent for evaluation to mentor, successfully!",
+        message: "Preferred time sent for evaluation to mentor",
         timestamp: new Date(),
       };
     } else if (role === "mentor" && !preferredTimeRecord) {
@@ -112,8 +147,7 @@ export async function scheduleVideoCallTime(
       revalidatePath(`/video-call/schedule/${videoId}`);
       return {
         success: true,
-        message:
-          "New Preferred time sent for evaluation to mentor, successfully!",
+        message: "New Preferred time sent for evaluation to mentor",
         timestamp: new Date(),
       };
     } else if (role === "mentor") {
@@ -133,7 +167,7 @@ export async function scheduleVideoCallTime(
       };
     }
     return {
-      success: true,
+      success: false,
       message: "Invalid role",
       timestamp: new Date(),
     };

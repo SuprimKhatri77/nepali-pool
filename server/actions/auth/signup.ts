@@ -89,24 +89,31 @@ export async function SignUp(prevState: FormState, formData: FormData) {
     const normalizedEmail = email.toLowerCase();
     const isAdmin = adminEmails.includes(normalizedEmail);
 
-    await db
+    const [userRecord] = await db
       .update(user)
       .set({
         role: isAdmin
           ? "admin"
           : (normalizedRole as "student" | "none" | "mentor"),
       })
-      .where(eq(user.email, email));
+      .where(eq(user.email, email))
+      .returning();
 
     await auth.api.sendVerificationEmail({
       body: {
         email,
+        callbackURL:
+          userRecord.role !== "none"
+            ? userRecord.role === "admin"
+              ? "/admin"
+              : `/onboarding/${userRecord.role}`
+            : "/select-role",
       },
     });
 
     return {
       errors: {},
-      redirectTo: `/sign-up/verify-email?from=signup`,
+      redirectTo: `/verify-email?from=signup`,
       message: "Signup successfull , Redirecting to verify email....",
       success: true,
     };

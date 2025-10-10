@@ -1,12 +1,10 @@
 "use server";
 
 import z from "zod";
-import { auth } from "../../lib/auth/auth";
-import { headers } from "next/headers";
-import { redirect } from "next/navigation";
+
 import { db } from "../../../lib/db";
 import { school, SchoolInsertType, user } from "../../../lib/db/schema";
-import { eq } from "drizzle-orm";
+import { getCurrentAdmin } from "../../lib/auth/helpers/getCurrentAdmin";
 
 export type FormState = {
   errors?: {
@@ -32,26 +30,6 @@ export type FormState = {
 };
 
 export async function addSchool(prevState: FormState, formData: FormData) {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
-  if (!session) {
-    return redirect("/login");
-  }
-  const [userRecord] = await db
-    .select()
-    .from(user)
-    .where(eq(user.id, session.user.id));
-  if (!userRecord) {
-    return redirect("/sign-up");
-  }
-  if (userRecord.role !== "admin") {
-    if (!userRecord.role || userRecord.role !== "none") {
-      return redirect(`/dashboard/${userRecord.role}`);
-    }
-    return redirect("/select-role");
-  }
-
   const schoolData = z.object({
     name: z.string().min(1, "Name is required").nonempty(),
 
@@ -63,7 +41,7 @@ export async function addSchool(prevState: FormState, formData: FormData) {
       .regex(/^[A-Za-z]+$/, "Only alphabets A-Z or a-z are allowed"),
     prefecture: z
       .string()
-      .min(1, "perfecture is required")
+      .min(1, "prefecture is required")
       .nonempty()
       .regex(/^[A-Za-z]+$/, "Only alphabets A-Z or a-z are allowed"),
 
@@ -76,7 +54,7 @@ export async function addSchool(prevState: FormState, formData: FormData) {
     name: formData.get("name") as string,
     address: formData.get("address") as string,
     city: formData.get("city") as string,
-    perfecture: formData.get("perfecture") as string,
+    prefecture: formData.get("prefecture") as string,
     email: formData.get("email") as string,
     websiteUrl: formData.get("websiteUrl") as string,
     imageUrl: formData.get("imageUrl") as string,
@@ -94,6 +72,9 @@ export async function addSchool(prevState: FormState, formData: FormData) {
     validateFields.data;
 
   try {
+    const result = await getCurrentAdmin();
+    if (!result.success) return result;
+
     await db.insert(school).values({
       name,
       city,

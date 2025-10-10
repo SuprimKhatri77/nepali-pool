@@ -1,16 +1,29 @@
 "use server";
+
+import { eq } from "drizzle-orm";
+import { db } from "../../../lib/db";
+import { user } from "../../../lib/db/schema";
+import { checkAndUpdateRateLimit } from "../rate-limiting/checkAndUpdateRateLimit";
 import { auth } from "../../lib/auth/auth";
-import { checkAndUpdateRateLimit } from "../../actions/rate-limiting/checkAndUpdateRateLimit";
 
 export async function sendResetPasswordLink(email: string) {
   try {
-    const allowed = await checkAndUpdateRateLimit(
-      `reset-password-link:${email.toLowerCase()}`
+    const [userRecord] = await db
+      .select()
+      .from(user)
+      .where(eq(user.email, email));
+
+    if (!userRecord) {
+      return { success: false, message: "User doesn't exist" };
+    }
+
+    const { allowed } = await checkAndUpdateRateLimit(
+      `reset-password-link:${userRecord.id}`
     );
 
     if (!allowed) {
       return {
-        message: "Too many reset password requests. Please try again later!", // Fixed typo: "messgae" -> "message"
+        message: "Too many reset password requests. Please try again later!",
         success: false,
       };
     }
@@ -18,7 +31,7 @@ export async function sendResetPasswordLink(email: string) {
     await auth.api.requestPasswordReset({
       body: {
         email,
-        redirectTo: "/login/forgot-password/reset-password",
+        redirectTo: "/forgot-password/reset-password",
       },
     });
 
@@ -27,6 +40,7 @@ export async function sendResetPasswordLink(email: string) {
       success: true,
     };
   } catch (error) {
+    console.error("Server action error msg: ", error);
     return {
       message: "Something went wrong!",
       success: false,

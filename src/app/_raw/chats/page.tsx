@@ -12,6 +12,7 @@ import {
 import { and, eq } from "drizzle-orm";
 import Chats from "@/components/Chats";
 import SelectChatPlaceholder from "@/components/SelectChatPlaceholder";
+import { getMentorProfile } from "../../../../server/lib/auth/helpers/getMentorProfile";
 
 const Page = async () => {
   const session = await auth.api.getSession({
@@ -24,8 +25,11 @@ const Page = async () => {
     .select()
     .from(user)
     .where(eq(user.id, session.user.id));
-  if (!userRecord) return redirect("/sign-up");
-  if (!userRecord.emailVerified) return redirect("/sign-up/verify-email");
+  if (!userRecord) {
+    await auth.api.signOut({ headers: await headers() });
+    return redirect("/login?error=inavlid_session");
+  }
+  if (!userRecord.emailVerified) return redirect("/verify-email");
 
   if (!userRecord.role || userRecord.role === "none")
     return redirect("/select-role");
@@ -35,13 +39,13 @@ const Page = async () => {
       .select()
       .from(studentProfile)
       .where(eq(studentProfile.userId, userRecord.id));
-    if (!studentRecord) return redirect("/sign-up/onboarding/student");
+    if (!studentRecord) return redirect("/onboarding/student");
     const subscriptionRecords = await db.query.chatSubscription.findMany({
       where: (fields, { eq }) =>
-        and(
-          eq(chatSubscription.studentId, studentRecord.userId),
-          eq(chatSubscription.status, "active")
-        ),
+        // and(
+        eq(chatSubscription.studentId, studentRecord.userId),
+      // eq(chatSubscription.status, "active")
+      // ),
     });
 
     if (subscriptionRecords.length === 0) {
@@ -61,10 +65,26 @@ const Page = async () => {
       .select()
       .from(mentorProfile)
       .where(eq(mentorProfile.userId, userRecord.id));
-    if (!mentorRecord) return redirect("/sign-up/onboarding/mentor");
-    if (mentorRecord.verifiedStatus === "pending") return redirect("/waitlist");
+    if (!mentorRecord) return redirect("/onboarding/mentor");
     if (mentorRecord.verifiedStatus === "rejected")
       return redirect("/rejected");
+    if (mentorRecord.verifiedStatus === "pending") return redirect("/waitlist");
+    const subscriptionRecords = await db.query.chatSubscription.findMany({
+      where: (fields, { eq }) =>
+        and(
+          eq(chatSubscription.mentorId, mentorRecord.userId),
+          eq(chatSubscription.status, "active")
+        ),
+    });
+
+    if (subscriptionRecords.length === 0) {
+      return (
+        <div className="min-h-screen w-full flex flex-col justify-center items-center">
+          <h1>No student has purchased your chat pack yet.</h1>
+        </div>
+      );
+    }
+
     return <SelectChatPlaceholder />;
   }
 

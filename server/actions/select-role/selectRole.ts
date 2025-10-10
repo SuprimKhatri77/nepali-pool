@@ -7,6 +7,7 @@ import { auth } from "../../lib/auth/auth";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { eq } from "drizzle-orm";
+import { redirectByRole } from "../../helper/redirectByrole";
 
 export type FormState = {
   errors?: {
@@ -15,6 +16,7 @@ export type FormState = {
   message?: string;
   success?: boolean;
   redirectTo?: string;
+  timestamp?: number;
 };
 
 const roleEnum = z.enum(["student", "mentor", "none"]);
@@ -48,7 +50,7 @@ export async function UpdateUserRole(prevState: FormState, formData: FormData) {
     });
 
     if (!session) {
-      return redirect("/login");
+      return { message: "Unauthorized", success: false };
     }
 
     const [userRecord] = await db
@@ -56,13 +58,19 @@ export async function UpdateUserRole(prevState: FormState, formData: FormData) {
       .from(user)
       .where(eq(user.id, session.user.id));
     if (!userRecord) {
-      return redirect("/sign-up");
+      return { message: "Unauthorized", success: false };
     }
 
     if (!userRecord.emailVerified) {
-      return redirect(
-        `/sign-up/verify-email?email=${encodeURIComponent(userRecord.email)}`
-      );
+      return { message: "Email not verified", success: false };
+    }
+
+    if (
+      userRecord.role === "student" ||
+      userRecord.role === "mentor" ||
+      userRecord.role === "admin"
+    ) {
+      return { message: "You already have a role", success: false };
     }
 
     const userEmail = userRecord.email.toLowerCase();
@@ -75,72 +83,9 @@ export async function UpdateUserRole(prevState: FormState, formData: FormData) {
       })
       .where(eq(user.id, session.user.id));
 
-    if (isAdminEmail) {
-      return {
-        message: "Looks like you're an admin, Sorry for the trouble.",
-        success: true,
-        redirectTo: "/admin/dashboard",
-      };
-    }
+    await redirectByRole(userRecord);
 
-    if (role === "mentor") {
-      const [mentorProfileRecord] = await db
-        .select()
-        .from(mentorProfile)
-        .where(eq(mentorProfile.userId, userRecord.id));
-      if (!mentorProfileRecord) {
-        return {
-          message:
-            "You've not filled onboarding form!, redirecting to onboarding....",
-          success: true,
-          redirectTo: `/sign-up/onboarding/mentor`,
-        };
-      }
-
-      if (mentorProfileRecord.verifiedStatus === "pending") {
-        return {
-          message: "Role updated successfully!, Redirecting....",
-          success: true,
-          redirectTo: `/waitlist`,
-        };
-      }
-      if (mentorProfileRecord.verifiedStatus === "rejected") {
-        return {
-          message: "Role updated successfully!, Redirecting....",
-          success: true,
-          redirectTo: `/rejected`,
-        };
-      }
-      return {
-        message: "Role updated successfully!, Redirecting....",
-        success: true,
-        redirectTo: `/dashboard/mentor`,
-      };
-    }
-
-    if (role === "student") {
-      const [studentProfileRecord] = await db
-        .select()
-        .from(studentProfile)
-        .where(eq(studentProfile.userId, userRecord.id));
-      if (!studentProfileRecord) {
-        return {
-          message:
-            "You've not filled onboarding form!, redirecting to onboarding....",
-          success: true,
-          redirectTo: `/sign-up/onboarding/student`,
-        };
-      }
-      return {
-        message: "Role updated successfully!, Redirecting......",
-        success: true,
-        redirectTo: `/dashboard/student`,
-      };
-    }
-    return {
-      success: true,
-      redirectTo: `${role !== "none" ? `dashboard/${role}` : "/select-role"}`,
-    };
+    return { success: true, message: "Redirecting...", timestamp: Date.now() };
   } catch (error) {
     console.error("Error: ", error);
     return { message: "Couldn't update the role.", success: false };

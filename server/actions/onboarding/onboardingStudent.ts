@@ -8,6 +8,7 @@ import {
   type StudentProfileInsertType,
 } from "../../../lib/db/schema";
 import { eq } from "drizzle-orm";
+import { getCurrentUser } from "../../lib/auth/helpers/getCurrentUser";
 
 export type FormState = {
   errors?: {
@@ -109,17 +110,19 @@ export default async function studentOnboarding(
     validateFields.data;
 
   try {
-    const [userRecord] = await db
+    const result = await getCurrentUser();
+    if (!result.success) return result;
+    const userRecord = result.userRecord;
+    if (userRecord.role !== "student") {
+      return { message: "Access denied, Not a Student", success: false };
+    }
+
+    const [studentRecord] = await db
       .select()
-      .from(user)
-      .where(eq(user.id, userId));
-    if (!userRecord) {
-      return {
-        errors: {},
-        message: "User not found!",
-        success: false,
-        redirectTo: "/sign-up",
-      };
+      .from(studentProfile)
+      .where(eq(studentProfile.userId, userRecord.id));
+    if (studentRecord) {
+      return { success: false, message: "Student already onboarded" };
     }
     await db
       .update(user)

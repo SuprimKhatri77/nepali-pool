@@ -4,6 +4,7 @@ import { eq } from "drizzle-orm";
 import { db } from "../../../lib/db";
 import { mentorProfile, user } from "../../../lib/db/schema";
 import { sendEmail } from "../../lib/send-email";
+import { getCurrentAdmin } from "../../lib/auth/helpers/getCurrentAdmin";
 
 export type FormState = {
   errors?: {
@@ -30,6 +31,9 @@ export async function AcceptMentorApplication(
   }
 
   try {
+    const result = await getCurrentAdmin();
+    if (!result.success) return result;
+
     const [userRecord] = await db
       .select()
       .from(user)
@@ -89,6 +93,8 @@ export async function RejectMentorApplication(
   }
 
   try {
+    const result = await getCurrentAdmin();
+    if (!result.success) return result;
     const [userRecord] = await db
       .select()
       .from(user)

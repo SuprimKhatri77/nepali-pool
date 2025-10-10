@@ -41,7 +41,7 @@ export default function SelectRolePage() {
     }
 
     return () => clearTimeout(timeout);
-  }, [state.message, state.success]);
+  }, [state.message, state.success, state.timestamp]);
 
   return (
     <form

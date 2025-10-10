@@ -50,6 +50,13 @@
       "when": 1759743307444,
       "tag": "0006_minor_cobalt_man",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1759917116678,
+      "tag": "0007_living_goblin_queen",
+      "breakpoints": true
     }
   ]
 }

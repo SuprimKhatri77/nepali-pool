@@ -1,33 +1,28 @@
 "use server";
 
+import { auth } from "../../lib/auth/auth";
+import { checkAndUpdateRateLimit } from "../../actions/rate-limiting/checkAndUpdateRateLimit";
 import { headers } from "next/headers";
 import { db } from "../../../lib/db";
-import { user } from "../../../lib/db/schema";
-import { auth } from "../../lib/auth/auth";
+import { mentorProfile, studentProfile, user } from "../../../lib/db/schema";
 import { eq } from "drizzle-orm";
-import { redirect } from "next/navigation";
-import { checkAndUpdateRateLimit } from "../../actions/rate-limiting/checkAndUpdateRateLimit";
+import { getCurrentMentor } from "../../lib/auth/helpers/getCurrentMentor";
+import { getCallbackUrl } from "../../lib/auth/helpers/getCallbackUrl";
 
 export async function resendEmailVerification() {
   try {
     const session = await auth.api.getSession({
       headers: await headers(),
     });
-
     if (!session) {
-      return redirect("/login");
+      return { success: false, message: "No session found for the user!" };
     }
-
     const [userRecord] = await db
       .select()
       .from(user)
-      .where(eq(user.id, session?.user.id));
+      .where(eq(user.id, session.user.id));
     if (!userRecord) {
-      return redirect("/sign-up");
-    }
-
-    if (!userRecord.role || userRecord.role === "none") {
-      return redirect("/select-role");
+      return { success: false, message: "User doesn't exist" };
     }
 
     const allowed = await checkAndUpdateRateLimit(
@@ -41,10 +36,12 @@ export async function resendEmailVerification() {
       };
     }
 
+    const url = await getCallbackUrl(userRecord);
+
     await auth.api.sendVerificationEmail({
       body: {
         email: userRecord.email,
-        callbackURL: `${userRecord.role === "admin" ? "/admin" : `/sign-up/onboarding/${userRecord.role}`}`,
+        callbackURL: url,
       },
     });
 

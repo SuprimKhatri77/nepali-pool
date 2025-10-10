@@ -82,6 +82,7 @@ export const verification = pgTable("verification", {
   identifier: text("identifier").notNull(),
   value: text("value").notNull(),
   expiresAt: timestamp("expires_at").notNull(),
+  consumed: boolean("consumed").default(false),
   createdAt: timestamp("created_at").$defaultFn(
     () => /* @__PURE__ */ new Date()
   ),
@@ -91,8 +92,8 @@ export const verification = pgTable("verification", {
 });
 
 export const rateLimit = pgTable("rate_limit", {
-  id: text("id").primaryKey(),
-  key: text("key"),
+  id: uuid("id").defaultRandom().primaryKey().notNull(),
+  key: text("key").notNull(),
   count: integer("count"),
   lastRequest: bigint("last_request", { mode: "number" }),
 });
@@ -257,16 +258,6 @@ export const preferredTimeLog = pgTable("preferred_time_log", {
   suggestedTime: timestamp("suggested_time", { withTimezone: true }).notNull(),
   createdAt: timestamp("created_at").defaultNow(),
 });
-
-export const preferredTimeLogRelations = relations(
-  preferredTimeLog,
-  ({ one }) => ({
-    videoCall: one(videoCall, {
-      fields: [preferredTimeLog.videoId],
-      references: [videoCall.id],
-    }),
-  })
-);
 
 export const mentorProfile = pgTable("mentor_profile", {
   userId: text("user_id")
@@ -488,6 +479,16 @@ export const preferredTimeRelations = relations(preferredTime, ({ one }) => ({
     references: [videoCall.id],
   }),
 }));
+
+export const preferredTimeLogRelations = relations(
+  preferredTimeLog,
+  ({ one }) => ({
+    videoCall: one(videoCall, {
+      fields: [preferredTimeLog.videoId],
+      references: [videoCall.id],
+    }),
+  })
+);
 
 export type StudentProfileSelectType = InferSelectModel<typeof studentProfile>;
 export type StudentProfileInsertType = InferInsertModel<typeof studentProfile>;

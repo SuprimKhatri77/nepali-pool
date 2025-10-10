@@ -30,6 +30,9 @@ export default async function Page({
   if (!userRecord.role || userRecord.role === "none") {
     return redirect("/select-role");
   }
+  if (userRecord.role !== "mentor") {
+    return redirect("/");
+  }
 
   const { videoId } = await params;
   if (!videoId) {

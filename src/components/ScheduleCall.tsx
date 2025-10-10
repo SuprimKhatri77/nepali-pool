@@ -8,7 +8,7 @@ import {
 } from "../../server/actions/schedule-video-call/scheduleCall";
 
 import { toast } from "sonner";
-import { getVideoCallWithMentorProfile } from "../../server/helper/getVideoCallWithMentorProfile";
+import { getVideoCallRecordWithStudentAndMentor } from "../../server/helper/getVideoCallRecordWithStudentAndMenotr";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import Loader from "./Loader";
@@ -32,8 +32,9 @@ export default function ScheduleCall({
 }: {
   videoId: string;
   onSuccess?: (bool: boolean) => void;
-  role?: string;
+  role: "student" | "mentor";
 }) {
+  console.log("Role from schedule call component: ", role);
   const [date, setDate] = useState<Date | undefined>(new Date());
   const [time, setTime] = useState<string>("10:30:00");
   const [videoRecord, setVideoRecord] =
@@ -60,11 +61,15 @@ export default function ScheduleCall({
   const isVideoCallRoute = pathname.startsWith("/video-call");
   useEffect(() => {
     const fetchData = async () => {
-      const data = await getVideoCallWithMentorProfile(videoId);
-      if (!data) return;
+      const data = await getVideoCallRecordWithStudentAndMentor(videoId);
       console.log("Data: ", data);
-
-      setVideoRecord(data);
+      if (data.success) {
+        setVideoRecord(data.videoCallRecordWithStudentAndMentor);
+      }
+      if (!data.success) {
+        toast.error(data.message);
+        setVideoRecord(null);
+      }
       // console.log("VideoRecord: ", videoRecord);
     };
     fetchData();
@@ -141,7 +146,9 @@ export default function ScheduleCall({
             </BreadcrumbItem>
             <BreadcrumbSeparator />
             <BreadcrumbItem>
-              <BreadcrumbPage>Respond</BreadcrumbPage>
+              <BreadcrumbPage>
+                {role === "mentor" ? "Respond" : "Schedule"}
+              </BreadcrumbPage>
             </BreadcrumbItem>
           </BreadcrumbList>
         </Breadcrumb>
@@ -490,7 +497,7 @@ export default function ScheduleCall({
         )
       ) : (
         <div>
-          <h1>Invalid role</h1>
+          <h1>Invalid role hi sup</h1>
           <Link href="/select-role">
             <Button variant="ghost">Select role</Button>
           </Link>

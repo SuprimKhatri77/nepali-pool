@@ -1,31 +1,47 @@
 "use server";
 
-import { headers } from "next/headers";
-import { auth } from "../lib/auth/auth";
-import { redirect } from "next/navigation";
 import { db } from "../../lib/db";
 import {
   chats,
+  ChatsSelectType,
   chatSubscription,
   mentorProfile,
+  MentorProfileSelectType,
   studentProfile,
+  StudentProfileSelectType,
+  UserSelectType,
 } from "../../lib/db/schema";
 import { and, eq, or } from "drizzle-orm";
+import { getCurrentUser } from "../lib/auth/helpers/getCurrentUser";
 
-export async function getUserChats() {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
-  if (!session) return redirect("/login");
+type UserChatType =
+  | {
+      success: true;
+      chatsRecords: (ChatsSelectType & {
+        studentProfile: StudentProfileSelectType & {
+          user: UserSelectType;
+        };
+        mentorProfile: MentorProfileSelectType & {
+          user: UserSelectType;
+        };
+      })[];
+    }
+  | { success: false; message: string; chatsRecords: [] };
 
-  const userId = session.user.id;
+export async function getUserChats(): Promise<UserChatType> {
+  const result = await getCurrentUser();
+  if (!result.success) {
+    return { success: false, message: result.message, chatsRecords: [] };
+  }
+
+  const currentUser = result.userRecord;
 
   try {
     const userStudentProfile = await db.query.studentProfile.findFirst({
-      where: (fields, { eq }) => eq(studentProfile.userId, userId),
+      where: (fields, { eq }) => eq(studentProfile.userId, currentUser.id),
     });
     const userMentorProfile = await db.query.mentorProfile.findFirst({
-      where: (fields, { eq }) => eq(mentorProfile.userId, userId),
+      where: (fields, { eq }) => eq(mentorProfile.userId, currentUser.id),
     });
     const whereConditions: any = [];
 
@@ -36,10 +52,10 @@ export async function getUserChats() {
       whereConditions.push(eq(chats.mentorId, userMentorProfile?.userId));
     }
     if (whereConditions.length === 0) {
-      return [];
+      return { success: false, message: "", chatsRecords: [] };
     }
 
-    console.log("Where condition: ", whereConditions[0]);
+    // console.log("Where condition: ", whereConditions[0]);
     const chatsRecords = await db.query.chats.findMany({
       where: (fields, { eq }) => whereConditions[0],
       with: {
@@ -62,9 +78,13 @@ export async function getUserChats() {
     //   chatsRecords[0].studentProfile
     // );
 
-    return chatsRecords ?? [];
+    return { success: true, chatsRecords: chatsRecords ?? [] };
   } catch (error) {
     console.error("Error: ", error);
-    return [];
+    return {
+      success: false,
+      message: "Something went wrong",
+      chatsRecords: [],
+    };
   }
 }

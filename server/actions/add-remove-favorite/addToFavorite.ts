@@ -7,6 +7,7 @@ import { auth } from "../../lib/auth/auth";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { eq } from "drizzle-orm";
+import { getCurrentStudent } from "../../lib/auth/helpers/getCurrentStudent";
 
 export type FormState = {
   errors?: {
@@ -29,30 +30,13 @@ export async function addToFavorite(prevState: FormState, formData: FormData) {
     };
   }
   try {
-    const session = await auth.api.getSession({
-      headers: await headers(),
-    });
-    if (!session) {
-      return { message: "UNAUTHORIZED!", success: false };
-    }
-    const [userRecord] = await db
-      .select()
-      .from(user)
-      .where(eq(user.id, session.user.id));
-    if (!userRecord) {
-      return { message: "User doesn't exist.", success: false };
-    }
-    if (!userRecord.emailVerified) {
-      return { message: "User's email is not verified", success: false };
-    }
-    if (!userRecord.role) {
-      return { message: "Role not found for the user!", success: false };
-    }
-    if (userRecord.role === "mentor") {
-      return {
-        message: "Mentors cannot favorite other mentors.",
-        success: false,
-      };
+    const result = await getCurrentStudent();
+    if (!result.success) return result;
+
+    const currentStudentId = result.studentRecord.userId;
+
+    if (currentStudentId !== studentId) {
+      return { message: "Unauthorized, student ID mismatch", success: false };
     }
 
     await db.insert(favorite).values({
@@ -65,10 +49,13 @@ export async function addToFavorite(prevState: FormState, formData: FormData) {
       message: "Mentor added to favorite successfully!",
       success: true,
     };
-  } catch (error) {
+  } catch (error: any) {
     console.error("Error: ", error);
+    if (error.message.includes("Duplicate Key")) {
+      return { message: "Mentor is already favorited", success: false };
+    }
     return {
-      message: "Error adding to favorite, Please try again later!",
+      message: "Error adding to favorite!",
       success: false,
     };
   }

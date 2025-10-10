@@ -229,6 +229,7 @@ export default function StudentPage({
                           </div>
                           <div className="flex  gap-5 items-center">
                             {activeChat &&
+                            activeChat.status === "active" &&
                             new Date(activeChat.endDate) > new Date() ? (
                               studentChat && studentChat.status === "active" ? (
                                 <Link
@@ -237,19 +238,21 @@ export default function StudentPage({
                                 >
                                   Chat with mentor
                                 </Link>
-                              ) : studentChat &&
-                                studentChat.status === "expired" ? (
-                                <PaymentButton
-                                  paymentType="chat_subscription"
-                                  userId={studentRecordWithUser.userId}
-                                  mentorId={mentor.userId}
-                                  userEmail={studentRecordWithUser.user.email!}
-                                  className="bg-gray-700 px-5 py-3 rounded-xl hover:bg-gray-800 transition-all duration-300 ease-in-out text-gray-100 cursor-pointer"
-                                >
-                                  Renew Chat Subscription
-                                </PaymentButton>
                               ) : (
-                                <Button disabled>Chat unavailable</Button>
+                                studentChat &&
+                                studentChat.status === "expired" && (
+                                  <PaymentButton
+                                    paymentType="chat_subscription"
+                                    userId={studentRecordWithUser.userId}
+                                    mentorId={mentor.userId}
+                                    userEmail={
+                                      studentRecordWithUser.user.email!
+                                    }
+                                    className="bg-gray-700 px-5 py-3 rounded-xl hover:bg-gray-800 transition-all duration-300 ease-in-out text-gray-100 cursor-pointer"
+                                  >
+                                    Renew Chat Subscription
+                                  </PaymentButton>
+                                )
                               )
                             ) : (
                               <PaymentButton
@@ -297,6 +300,7 @@ export default function StudentPage({
                           <ScheduleCall
                             videoId={firstUnscheduledCall.id}
                             onSuccess={setSuccess}
+                            role="student"
                           />
                         </div>
                       </div>

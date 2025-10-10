@@ -5,6 +5,7 @@ import { db } from "../../../lib/db";
 import { chats, messages, user } from "../../../lib/db/schema";
 import { auth } from "../../lib/auth/auth";
 import { and, eq, or } from "drizzle-orm";
+import { getCurrentUser } from "../../lib/auth/helpers/getCurrentUser";
 
 export async function sendMessage(
   message: string,
@@ -17,28 +18,9 @@ export async function sendMessage(
   }
 
   try {
-    const session = await auth.api.getSession({
-      headers: await headers(),
-    });
-
-    if (!session?.user) {
-      console.error("Unauthorized access!");
-      return { success: false, error: "Unauthorized" };
-    }
-
-    if (session.user.id !== senderId) {
-      console.error("Unauthorized sender!");
-      return { success: false, error: "Sender ID mismatch" };
-    }
-
-    const [userRecord] = await db
-      .select()
-      .from(user)
-      .where(eq(user.id, session.user.id));
-
-    if (!userRecord) {
-      return { success: false, error: "User not found" };
-    }
+    const result = await getCurrentUser();
+    if (!result.success) return result;
+    const userRecord = result.userRecord;
 
     const chat = await db.query.chats.findFirst({
       where: and(
@@ -55,7 +37,14 @@ export async function sendMessage(
       return { success: false, error: "Chat not found or unauthorized" };
     }
 
-    const [result] = await db
+    if (chat.status !== "active") {
+      return {
+        succes: false,
+        error: "Chat subscription expired",
+      };
+    }
+
+    const [newMessage] = await db
       .insert(messages)
       .values({
         senderId,
@@ -64,7 +53,7 @@ export async function sendMessage(
       })
       .returning({ id: messages.id });
 
-    return { success: true, messageId: result.id };
+    return { success: true, messageId: newMessage.id };
   } catch (error) {
     console.error("Error sending message:", error);
     return { success: false, error: "Failed to send message" };

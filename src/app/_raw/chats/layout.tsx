@@ -25,7 +25,13 @@ export default async function ChatLayout({
     .from(user)
     .where(eq(user.id, session.user.id));
 
-  if (!userRecord) redirect("/sign-up");
+  if (!userRecord) {
+    await auth.api.signOut({ headers: await headers() });
+    return redirect("/login?error=invalid_session");
+  }
+  if (!userRecord.emailVerified) return redirect("/verify-email");
+  if (!userRecord.role || userRecord.role === "none")
+    return redirect("/select-role");
 
   const role = userRecord.role as "student" | "mentor";
 

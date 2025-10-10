@@ -8,6 +8,7 @@ import {
   MentorProfileInsertType,
   user,
 } from "../../../lib/db/schema";
+import { getCurrentUser } from "../../lib/auth/helpers/getCurrentUser";
 
 export type FormState = {
   errors?: {
@@ -119,17 +120,20 @@ export async function OnboardingMentor(
   } = validateFields.data;
 
   try {
-    const [userRecord] = await db
-      .select()
-      .from(user)
-      .where(eq(user.id, currentUserId));
-    if (!userRecord) {
-      return {
-        errors: {},
-        message: "User not found!",
-        success: false,
-        redirectTo: "/sign-up",
-      };
+    const result = await getCurrentUser();
+    if (!result.success) return result;
+
+    const userRecord = result.userRecord;
+
+    if (userRecord.role !== "mentor") {
+      return { success: false, message: "Access denied, Not a Mentor" };
+    }
+
+    const existingMentorProfile = await db.query.mentorProfile.findFirst({
+      where: (fields, { eq }) => eq(mentorProfile.userId, userRecord.id),
+    });
+    if (existingMentorProfile) {
+      return { success: false, message: "Mentor already onboarded" };
     }
 
     await db
@@ -150,6 +154,7 @@ export async function OnboardingMentor(
       zipCode,
       bio,
       imageUrl,
+      verifiedStatus: "pending",
       userId: currentUserId,
       createdAt: new Date(),
       updatedAt: new Date(),
@@ -159,7 +164,7 @@ export async function OnboardingMentor(
       errors: {},
       message: "Onboarding Form validated successfully!",
       success: true,
-      redirectTo: `/dashboard/${userRecord.role}`,
+      redirectTo: `/waitlist`,
     };
   } catch (error) {
     console.error("Error: ", error);

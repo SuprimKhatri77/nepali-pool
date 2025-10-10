@@ -32,6 +32,8 @@
     "@supabase/supabase-js": "^2.58.0",
     "@tabler/icons-react": "^3.35.0",
     "@uploadthing/react": "^7.3.2",
+    "@upstash/ratelimit": "^2.0.6",
+    "@vercel/kv": "^3.0.0",
     "better-auth": "^1.2.12",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",

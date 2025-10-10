@@ -5,6 +5,7 @@ import { db } from "../../../lib/db";
 import { chats, messageAttachments, user } from "../../../lib/db/schema";
 import { auth } from "../../lib/auth/auth";
 import { and, eq, or } from "drizzle-orm";
+import { getCurrentUser } from "../../lib/auth/helpers/getCurrentUser";
 
 export async function sendAttachments(
   messageId: string,
@@ -16,20 +17,10 @@ export async function sendAttachments(
   }
 
   try {
-    const session = await auth.api.getSession({
-      headers: await headers(),
-    });
-    if (!session) {
-      return { success: false, error: "Unauthorized" };
-    }
+    const result = await getCurrentUser();
+    if (!result.success) return result;
 
-    const [userRecord] = await db
-      .select()
-      .from(user)
-      .where(eq(user.id, session.user.id));
-    if (!userRecord) {
-      return { succes: false, error: "User not found" };
-    }
+    const userRecord = result.userRecord;
 
     const chat = await db.query.chats.findFirst({
       where: (fields, { eq }) =>

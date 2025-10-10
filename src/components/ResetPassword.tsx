@@ -24,12 +24,6 @@ export default function ResetPassword({ token }: { token: string }) {
   const router = useRouter();
   const params = useSearchParams();
 
-  const tokenFromParams = params.get("token") as string;
-
-  if (tokenFromParams !== token) {
-    router.replace("/login/forgot-password?error=invalid_token");
-  }
-
   const handleClick = async () => {
     if (!newPassword || !confirmNewPassword) {
       toast.error("Please fill in all fields");
@@ -63,6 +57,8 @@ export default function ResetPassword({ token }: { token: string }) {
     } catch (error) {
       toast.error("Something went wrong!");
     } finally {
+      setNewPassword("");
+      setConfirmNewPassword("");
       setIsPending(false);
     }
   };

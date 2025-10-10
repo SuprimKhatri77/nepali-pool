@@ -9,6 +9,8 @@ import {
 } from "../../../../../lib/db/schema";
 import { eq } from "drizzle-orm";
 import { notFound, redirect } from "next/navigation";
+import { getStudentProfile } from "../../../../../server/lib/auth/helpers/getStudentProfile";
+import { getMentorProfile } from "../../../../../server/lib/auth/helpers/getMentorProfile";
 
 export const metadata = {
   title: "Login | Nepali Pool",
@@ -35,13 +37,14 @@ export default async function Page() {
     .where(eq(user.id, session.user?.id));
 
   if (!userRecord) {
-    return redirect("/sign-up");
+    await auth.api.signOut({
+      headers: await headers(),
+    });
+    return redirect("/login?error=invalid_session");
   }
 
   if (!userRecord.emailVerified) {
-    return redirect(
-      `/sign-up/verify-email?email=${encodeURIComponent(userRecord.email)}`
-    );
+    return redirect("/verify-email");
   }
 
   if (!userRecord.role || userRecord.role === "none") {
@@ -53,31 +56,11 @@ export default async function Page() {
   }
 
   if (userRecord.role === "student") {
-    const [studentProfileRecord] = await db
-      .select()
-      .from(studentProfile)
-      .where(eq(studentProfile.userId, userRecord.id));
-    if (!studentProfileRecord) {
-      return redirect("/sign-up/onboarding/student");
-    }
-    return redirect("/dashboard/student");
+    await getStudentProfile(userRecord.id);
   }
 
   if (userRecord.role === "mentor") {
-    const [mentorProfileRecord] = await db
-      .select()
-      .from(mentorProfile)
-      .where(eq(mentorProfile.userId, userRecord.id));
-    if (!mentorProfileRecord) {
-      return redirect("/sign-up/onboarding/mentor");
-    }
-    if (mentorProfileRecord.verifiedStatus === "pending") {
-      return redirect("/waitlist");
-    }
-    if (mentorProfileRecord.verifiedStatus === "rejected") {
-      return redirect("/rejected");
-    }
-    return redirect("/dashboard/mentor");
+    await getMentorProfile(userRecord.id);
   }
 
   return notFound();

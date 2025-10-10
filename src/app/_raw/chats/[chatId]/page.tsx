@@ -14,6 +14,7 @@ import { headers } from "next/headers";
 import { notFound, redirect } from "next/navigation";
 import { and, eq, or } from "drizzle-orm";
 import Message from "@/components/Message";
+import { requireUser } from "../../../../../server/lib/auth/helpers/requireUser";
 
 type ParamsType = {
   params: Promise<{ chatId: string }>;
@@ -32,21 +33,7 @@ const page = async ({ params }: ParamsType) => {
     return notFound();
   }
 
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
-
-  if (!session) return redirect("/login");
-
-  const [userRecord] = await db
-    .select()
-    .from(user)
-    .where(eq(user.id, session.user.id));
-
-  if (!userRecord) return redirect("/sign-up");
-  if (!userRecord.emailVerified) return redirect("/sign-up/verify-email");
-  if (!userRecord.role || userRecord.role === "none")
-    return redirect("/select-role");
+  const userRecord = await requireUser();
 
   const chatRecord = await db.query.chats.findFirst({
     where: (fields, { eq }) => and(eq(chats.id, chatId)),
@@ -76,7 +63,7 @@ const page = async ({ params }: ParamsType) => {
       .from(studentProfile)
       .where(eq(studentProfile.userId, userRecord.id));
 
-    if (!studentRecord) return redirect("/sign-up/onboarding/student");
+    if (!studentRecord) return redirect("/onboarding/student");
 
     if (chatRecord.studentId !== userRecord.id) {
       console.warn(
@@ -101,7 +88,7 @@ const page = async ({ params }: ParamsType) => {
       .from(mentorProfile)
       .where(eq(mentorProfile.userId, userRecord.id));
 
-    if (!mentorRecord) return redirect("/sign-up/onboarding/mentor");
+    if (!mentorRecord) return redirect("/onboarding/mentor");
     if (mentorRecord.verifiedStatus === "pending") return redirect("/waitlist");
     if (mentorRecord.verifiedStatus === "rejected")
       return redirect("/rejected");

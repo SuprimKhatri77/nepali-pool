@@ -1,7 +1,7 @@
 import StudentPage from "@/components/Student";
 import { auth } from "../../../../../server/lib/auth/auth";
 import { headers } from "next/headers";
-import { redirect } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { db } from "../../../../../lib/db";
 import {
   chatSubscription,
@@ -15,42 +15,18 @@ import {
 } from "../../../../../lib/db/schema";
 import { and, eq } from "drizzle-orm";
 import { StudentProfileWithUser } from "../../../../../types/all-types";
+import { requireUser } from "../../../../../server/lib/auth/helpers/requireUser";
+import { getMentorProfile } from "../../../../../server/lib/auth/helpers/getMentorProfile";
 
 export default async function Student() {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
-
-  if (!session) {
-    return redirect("/login");
-  }
-
-  const [userRecord] = await db
-    .select()
-    .from(user)
-    .where(eq(user.id, session.user.id));
-
-  if (!userRecord.emailVerified) {
-    return redirect(`/sign-up/verify-email`);
-  }
-
-  if (userRecord.role === "none") {
-    return redirect(`/select-role`);
-  }
+  const userRecord = await requireUser();
 
   if (userRecord.role === "admin") {
     return redirect("/admin");
   }
 
   if (userRecord.role === "mentor") {
-    const [mentorProfileRecord] = await db
-      .select()
-      .from(mentorProfile)
-      .where(eq(mentorProfile.userId, userRecord.id));
-    if (!mentorProfileRecord) {
-      return redirect("/sign-up/onboarding/student");
-    }
-    return redirect("/dashboard/mentor");
+    await getMentorProfile(userRecord.id);
   }
 
   if (userRecord.role === "student") {
@@ -91,38 +67,24 @@ export default async function Student() {
       return redirect("/login");
     }
 
-    const favoriteMentor = await db.query.favorite.findMany({
-      where: (fields, { eq }) =>
-        eq(favorite.studentId, studentRecordWithUser.userId),
-      with: {
-        mentor: {
-          with: {
-            user: true,
+    const favoriteMentor =
+      (await db.query.favorite.findMany({
+        where: (fields, { eq }) =>
+          eq(favorite.studentId, studentRecordWithUser.userId),
+        with: {
+          mentor: {
+            with: {
+              user: true,
+            },
           },
         },
-      },
-    });
-
-    if (!favoriteMentor) {
-      return [];
-    }
+      })) || [];
 
     const studentChatSubscriptions: ChatSubscriptionSelectType[] =
       await db.query.chatSubscription.findMany({
         where: (fields, { eq }) =>
           eq(chatSubscription.studentId, studentRecordWithUser.userId),
       });
-
-    const videoCallRecord = await db.query.videoCall.findMany({
-      where: (field, { eq }) => eq(videoCall.studentId, userRecord.id),
-      with: {
-        preferredTime: true,
-      },
-    });
-
-    if (videoCallRecord.length === 0) {
-      return [];
-    }
 
     return (
       <StudentPage
@@ -134,5 +96,5 @@ export default async function Student() {
     );
   }
 
-  return redirect(`/select-role`);
+  return notFound();
 }

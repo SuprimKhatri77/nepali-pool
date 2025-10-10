@@ -1,52 +1,78 @@
-"use server";
+export const runtime = "nodejs";
+
 import { eq } from "drizzle-orm";
+import { headers } from "next/headers";
 import { db } from "../../../lib/db";
 import { rateLimit } from "../../../lib/db/schema";
 
 const windowSeconds = 86400;
 const maxRequests = 3;
 
-export async function checkAndUpdateRateLimit(key: string) {
+export async function checkAndUpdateRateLimit(
+  key: string,
+  providedIp?: string
+) {
+  let ip = providedIp;
+
+  if (!ip) {
+    const headersList = await headers();
+    const forwardedFor = headersList.get("x-forwarded-for");
+    const cfConnectingIp = headersList.get("cf-connecting-ip");
+    const realIp = headersList.get("x-real-ip");
+
+    ip =
+      forwardedFor?.split(",")[0].trim() ||
+      cfConnectingIp ||
+      realIp ||
+      "unknown";
+
+    if (ip.includes("::ffff:127.0.0.1") || ip === "::1") {
+      ip = "127.0.0.1";
+    }
+
+    console.log("IP detected from check and update ratelimit function:", ip);
+  }
+
+  const rateLimitKey = `${key}:${ip}`;
   const now = Date.now();
-  const rateLimitRecord = await db
-    .select()
-    .from(rateLimit)
-    .where(eq(rateLimit.key, key))
-    .limit(1);
 
-  if (rateLimitRecord.length === 0) {
-    await db.insert(rateLimit).values({
-      id: key,
-      key,
-      count: 1,
-      lastRequest: now,
-    });
-    return true;
-  }
+  return await db.transaction(async (tx) => {
+    const rateLimitRecord = await tx
+      .select()
+      .from(rateLimit)
+      .where(eq(rateLimit.key, rateLimitKey))
+      .for("update")
+      .limit(1);
 
-  const record = rateLimitRecord[0];
-  const lastRequest = record.lastRequest ?? 0;
-  const count = record.count ?? 0;
-  const elapsed = (now - lastRequest) / 1000;
+    if (rateLimitRecord.length === 0) {
+      await tx.insert(rateLimit).values({
+        key: rateLimitKey,
+        count: 1,
+        lastRequest: now,
+      });
+      return { allowed: true };
+    }
 
-  if (elapsed > windowSeconds) {
-    await db
+    const record = rateLimitRecord[0];
+    const elapsed = (now - (record.lastRequest ?? 0)) / 1000;
+
+    if (elapsed > windowSeconds) {
+      await tx
+        .update(rateLimit)
+        .set({ count: 1, lastRequest: now })
+        .where(eq(rateLimit.key, rateLimitKey));
+      return { allowed: true };
+    }
+
+    if ((record.count ?? 0) >= maxRequests) {
+      return { allowed: false };
+    }
+
+    await tx
       .update(rateLimit)
-      .set({ count: 1, lastRequest: now })
-      .where(eq(rateLimit.key, key));
-    return true;
-  }
+      .set({ count: (record.count ?? 0) + 1, lastRequest: now })
+      .where(eq(rateLimit.key, rateLimitKey));
 
-  // Check if we've already reached the limit BEFORE incrementing
-  if (count >= maxRequests) {
-    return false;
-  }
-
-  // Only increment if we're still under the limit
-  await db
-    .update(rateLimit)
-    .set({ count: count + 1, lastRequest: now })
-    .where(eq(rateLimit.key, key));
-
-  return true;
+    return { allowed: true };
+  });
 }

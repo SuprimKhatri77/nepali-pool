@@ -1,10 +1,8 @@
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { db } from "../../../lib/db";
-import { user as userTable } from "../../../lib/db/schema";
 import { sendEmail } from "../send-email";
 import { nextCookies } from "better-auth/next-js";
-import { eq } from "drizzle-orm";
 import { Resend } from "resend";
 import EmailVerification from "@/components/VerifyEmailMessage";
 import * as schema from "../../../lib/db/schema";
@@ -25,11 +23,8 @@ export const auth = betterAuth({
     sendResetPassword: async ({ user, url, token }, request) => {
       await sendEmail({
         to: user.email,
-        subject: "Reset Password",
-        html: `A reset password request was made from your side. <br> 
-               Click on the link to reset password ${url} <br> 
-               If it was not you, You can safely ignore this email.
-               The link will expire in 5 minutes.`,
+        subject: "Reset your password",
+        html: `Click the link to reset your password: ${url}`,
       });
     },
   },
@@ -37,30 +32,13 @@ export const auth = betterAuth({
     autoSignInAfterVerification: true,
     sendOnSignUp: false,
     sendVerificationEmail: async ({ user, url, token }, request) => {
-      const finalUrl = new URL(url);
-      const [userRecord] = await db
-        .select()
-        .from(userTable)
-        .where(eq(userTable.id, user.id));
-
-      finalUrl.searchParams.set(
-        "callbackURL",
-        `${process.env.BETTER_AUTH_URL}/${
-          userRecord.role !== "none"
-            ? userRecord.role === "admin"
-              ? `/admin`
-              : `/sign-up/onboarding/${userRecord.role}`
-            : "/select-role"
-        }`
-      );
-
       await sendEmail({
         to: user.email,
         subject: "Verify Your Email",
         html: `A request from your side was made for email verification. <br>
-               Click on the link to verify your email ${finalUrl} <br> 
-               If it was not you, You can safely ignore this email. 
-               This link will expire in 1 hour`,
+        Click on the link to verify your email ${url} <br>
+        If it was not you, You can safely ignore this email.
+        This link will expire in 1 hour`,
       });
     },
     expiresIn: 3600,
@@ -72,9 +50,8 @@ export const auth = betterAuth({
   },
   advanced: {
     ipAddress: {
-      ipAddressHeaders: ["cf-connecting-ip", "x-forwarded-for"],
+      ipAddressHeaders: ["cf-connecting-ip", "x-real-ip", "x-forwarded-for"],
     },
   },
-
   plugins: [nextCookies()],
 });

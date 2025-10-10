@@ -2,7 +2,7 @@ import { eq } from "drizzle-orm";
 import { db } from "../../../../../../../lib/db";
 import { videoCall } from "../../../../../../../lib/db/schema";
 import ScheduleVideoCallWithMentor from "@/components/ScheduleVideoCall";
-import { VideoCallWithStudentAndMentor } from "@/components/VideoCallApplications";
+import { VideoCallWithStudentAndMentor } from "../../../../../../../types/all-types";
 
 export default async function ({
   params,

@@ -4,6 +4,7 @@ import { and, eq } from "drizzle-orm";
 import { db } from "../../../lib/db";
 import { favorite } from "../../../lib/db/schema";
 import { revalidatePath } from "next/cache";
+import { getCurrentStudent } from "../../lib/auth/helpers/getCurrentStudent";
 
 export type FormState = {
   errors?: {
@@ -26,6 +27,14 @@ export async function removeFavorite(prevState: FormState, formData: FormData) {
   }
 
   try {
+    const result = await getCurrentStudent();
+    if (!result.success) return result;
+
+    const currentStudentId = result.studentRecord.userId;
+
+    if (currentStudentId !== studentId) {
+      return { message: "Unauthorized, student ID mismatch", success: false };
+    }
     await db
       .delete(favorite)
       .where(
@@ -33,7 +42,7 @@ export async function removeFavorite(prevState: FormState, formData: FormData) {
       );
     revalidatePath("/dashboard/student");
     return {
-      message: "Added to favorite successfully!",
+      message: "Removed from favorite successfully!",
       success: true,
     };
   } catch (error) {
