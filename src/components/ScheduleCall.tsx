@@ -3,7 +3,7 @@ import { useActionState, useEffect, useState } from "react";
 import { Button } from "./ui/button";
 import { DateTimePicker } from "./ui/date-time-picker";
 import {
-  FormState,
+  type FormState,
   scheduleVideoCallTime,
 } from "../../server/actions/schedule-video-call/scheduleCall";
 
@@ -23,7 +23,8 @@ import {
 } from "@/components/ui/breadcrumb";
 import Link from "next/link";
 import { sendVideoCallSchedule } from "../../server/actions/send-video-call-schedule/sendVideoCallSchedule";
-import { VideoCallWithStudentAndMentor } from "../../types/all-types";
+import type { VideoCallWithStudentAndMentor } from "../../types/all-types";
+import { Card, CardContent } from "./ui/card";
 
 export default function ScheduleCall({
   videoId,
@@ -62,7 +63,6 @@ export default function ScheduleCall({
   useEffect(() => {
     const fetchData = async () => {
       const data = await getVideoCallRecordWithStudentAndMentor(videoId);
-      console.log("Data: ", data);
       if (data.success) {
         setVideoRecord(data.videoCallRecordWithStudentAndMentor);
       }
@@ -70,15 +70,14 @@ export default function ScheduleCall({
         toast.error(data.message);
         setVideoRecord(null);
       }
-      // console.log("VideoRecord: ", videoRecord);
     };
     fetchData();
   }, [videoId]);
   useEffect(() => {
     if (state.success && state.message) {
-      onSuccess?.(true);
       setIsRejected(false);
       toast.success(state.message);
+      onSuccess?.(true);
     }
     if (!state.success && state.message) {
       toast.error(state.message);
@@ -86,7 +85,10 @@ export default function ScheduleCall({
   }, [state.success, state.message, state.timestamp]);
   if (!videoRecord) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
+      <div
+        suppressHydrationWarning
+        className="flex items-center justify-center min-h-screen bg-gradient-to-br from-emerald-50 to-green-50"
+      >
         <Loader />
       </div>
     );
@@ -130,23 +132,31 @@ export default function ScheduleCall({
   }
   return (
     <div
-      className={`flex items-center justify-center ${isVideoCallRoute && "min-h-screen"}   w-full flex-col gap-7 `}
+      className={`flex items-center justify-center ${isVideoCallRoute && "min-h-screen bg-gradient-to-br from-emerald-50 to-green-50"}   w-full flex-col gap-7 py-8 px-4`}
     >
       {isVideoCallRoute && (
         <Breadcrumb>
           <BreadcrumbList>
             <BreadcrumbItem>
-              <BreadcrumbLink href="/dashboard/student">
+              <BreadcrumbLink
+                href="/dashboard/student"
+                className="text-emerald-700 hover:text-emerald-900"
+              >
                 Dashboard
               </BreadcrumbLink>
             </BreadcrumbItem>
             <BreadcrumbSeparator />
             <BreadcrumbItem>
-              <BreadcrumbLink href="/video-call">Video call</BreadcrumbLink>
+              <BreadcrumbLink
+                href="/video-call"
+                className="text-emerald-700 hover:text-emerald-900"
+              >
+                Video call
+              </BreadcrumbLink>
             </BreadcrumbItem>
             <BreadcrumbSeparator />
             <BreadcrumbItem>
-              <BreadcrumbPage>
+              <BreadcrumbPage className="text-gray-900 font-medium">
                 {role === "mentor" ? "Respond" : "Schedule"}
               </BreadcrumbPage>
             </BreadcrumbItem>
@@ -157,351 +167,407 @@ export default function ScheduleCall({
       {role === "student" ? (
         videoRecord?.preferredTime &&
         videoRecord.preferredTime.studentPreferredTime ? (
-          <div>
-            <div className="flex flex-col">
-              <h1 className="text-muted-foreground text-xs flex">
-                Your selected Date and Time
-              </h1>
-              <div>
-                <p>
-                  Date:{" "}
+          <Card className="w-full max-w-2xl shadow-lg border-emerald-100">
+            <CardContent className="p-8 space-y-6">
+              <div className="flex flex-col space-y-2">
+                <h1 className="text-sm font-medium text-emerald-700">
+                  Your selected Date and Time
+                </h1>
+                <p className="text-gray-900 font-medium">
                   {videoRecord.preferredTime.studentPreferredTime.toLocaleString()}
                 </p>
               </div>
-            </div>
-            {videoRecord.preferredTime.mentorPreferredTime ? (
-              videoRecord.preferredTime.mentorPreferredTime !==
-              videoRecord.preferredTime.studentPreferredTime ? (
-                <div className="flex flex-col gap-5">
-                  <div className="flex flex-col gap-3">
-                    <div>
-                      <h1>Mentor Preferred Date and Time</h1>
+              {videoRecord.preferredTime.mentorPreferredTime ? (
+                videoRecord.preferredTime.mentorPreferredTime !==
+                videoRecord.preferredTime.studentPreferredTime ? (
+                  <div className="flex flex-col gap-5">
+                    <div className="flex flex-col gap-4 p-4 bg-emerald-50 rounded-lg border border-emerald-200">
                       <div>
-                        Date and Time:{" "}
-                        {videoRecord.preferredTime.mentorPreferredTime.toLocaleString()}
+                        <h2 className="text-base font-semibold text-gray-900 mb-2">
+                          Mentor Preferred Date and Time
+                        </h2>
+                        <p className="text-gray-700">
+                          {videoRecord.preferredTime.mentorPreferredTime.toLocaleString()}
+                        </p>
+                      </div>
+                      <p className="text-sm text-gray-600">
+                        If you are not available at this Date and Time then
+                        please click the reject button and send a new Date and
+                        Time to the Mentor
+                      </p>
+                      <div className="flex gap-3">
+                        <Button
+                          className="bg-emerald-600 hover:bg-emerald-700 text-white transition-all duration-300"
+                          disabled={isRejected || pending}
+                          onClick={handleAccept}
+                        >
+                          {pending ? <Loader from="schedule" /> : "Accept"}
+                        </Button>
+                        <Button
+                          variant="outline"
+                          className="border-gray-300 hover:bg-gray-100 transition-all duration-300 bg-transparent"
+                          onClick={() => setIsRejected(true)}
+                          disabled={isRejected || pending}
+                        >
+                          Reject
+                        </Button>
                       </div>
                     </div>
-                    <p>
-                      If you are not availabe at this Date and Time then please
-                      click the reject button and send a new Date and Time to
-                      the Mentor
-                    </p>
-                    <div className="flex gap-5">
-                      <Button
-                        className="bg-blue-500 hover:bg-blue-600 transition-all duration-300 cursor-pointer"
-                        disabled={isRejected || pending}
-                        onClick={handleAccept}
-                      >
-                        {pending ? <Loader from="schedule" /> : "Accept"}
-                      </Button>
-                      <Button
-                        className="bg-red-500 hover:bg-red-600 transition-all duration-300 cursor-pointer"
-                        onClick={() => setIsRejected(true)}
-                        disabled={isRejected || pending}
-                      >
-                        Reject
-                      </Button>
-                    </div>
-                    <div
-                      className={`${isRejected && !state.success ? "flex" : "hidden"} absolute left-100 bottom-50 bg-slate-100 z-50 py-10 px-8 rounded-xl shadow-2xl   flex-col gap-5 `}
-                    >
-                      <h1 className="text-lg font-medium">
-                        Select a new Date and Time
-                      </h1>
-                      <form
-                        action={formAction}
-                        className="flex flex-col gap-5 items-center justify-center"
-                      >
-                        <DateTimePicker
-                          onDateChange={setDate}
-                          onTimeChange={setTime}
-                          date={date}
-                          time={time}
-                        />
-                        {state.errors?.date && (
-                          <p className="text-xs text-red-500">
-                            {state.errors.date[0]}
-                          </p>
-                        )}
-                        {state.errors?.time && (
-                          <p className="text-xs text-red-500">
-                            {state.errors.time[0]}
-                          </p>
-                        )}
-                        <input type="hidden" name="date" value={String(date)} />
-                        <input type="hidden" name="time" value={time} />
-                        <input type="hidden" name="videoId" value={videoId} />
-                        <input type="hidden" name="role" value={role} />
+                    {isRejected && !state.success && (
+                      <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+                        <Card className="w-full max-w-md shadow-2xl">
+                          <CardContent className="p-8 space-y-6">
+                            <h2 className="text-xl font-semibold text-gray-900">
+                              Select a new Date and Time
+                            </h2>
+                            <form
+                              action={formAction}
+                              className="flex flex-col gap-5"
+                            >
+                              <DateTimePicker
+                                onDateChange={setDate}
+                                onTimeChange={setTime}
+                                date={date}
+                                time={time}
+                              />
+                              {state.errors?.date && (
+                                <p className="text-xs text-red-500">
+                                  {state.errors.date[0]}
+                                </p>
+                              )}
+                              {state.errors?.time && (
+                                <p className="text-xs text-red-500">
+                                  {state.errors.time[0]}
+                                </p>
+                              )}
+                              <input
+                                type="hidden"
+                                name="date"
+                                value={String(date)}
+                              />
+                              <input type="hidden" name="time" value={time} />
+                              <input
+                                type="hidden"
+                                name="videoId"
+                                value={videoId}
+                              />
+                              <input type="hidden" name="role" value={role} />
 
-                        <Button
-                          className=""
-                          type="submit"
-                          disabled={!date || isPending || !videoId}
-                        >
-                          {isPending ? (
-                            <Loader borderColor="green" />
-                          ) : (
-                            "Confirm"
-                          )}
-                        </Button>
-                      </form>
-                    </div>
+                              <div className="flex gap-3">
+                                <Button
+                                  className="flex-1 bg-emerald-600 hover:bg-emerald-700"
+                                  type="submit"
+                                  disabled={!date || isPending || !videoId}
+                                >
+                                  {isPending ? (
+                                    <Loader borderColor="green" />
+                                  ) : (
+                                    "Confirm"
+                                  )}
+                                </Button>
+                                <Button
+                                  type="button"
+                                  variant="outline"
+                                  onClick={() => setIsRejected(false)}
+                                  className="flex-1"
+                                >
+                                  Cancel
+                                </Button>
+                              </div>
+                            </form>
+                          </CardContent>
+                        </Card>
+                      </div>
+                    )}
                   </div>
-                </div>
-              ) : (
-                <div>
-                  <h1>
-                    The mentor has agreed for a video call at the Date and Time
-                    you selected, please check your mail for the video call link
-                  </h1>
-                </div>
-              )
-            ) : (
-              <div>
-                <h1>
-                  The mentor is yet to evaluate the Date and Time you selected.
-                </h1>
-              </div>
-            )}
-          </div>
-        ) : (
-          <>
-            <div className="flex flex-col items-center">
-              <h1 className="text-muted-foreground text-xs flex">
-                Pick a Date and Time to schedule your video call with,
-              </h1>
-              <br />
-              <div className="flex items-center gap-2">
-                {videoRecord?.mentorProfile.imageUrl ? (
-                  <Image
-                    src={
-                      videoRecord?.mentorProfile.imageUrl ||
-                      "https://vbteadl6m3.ufs.sh/f/DDJ5nPL6Yp1sHfAviE2zasoidYb10Mu7JGNQFZWgVmCrRHPE"
-                    }
-                    alt="mentor photo"
-                    height={50}
-                    width={100}
-                    className="object-cover obeject-center rounded-full h-8 w-8"
-                  />
                 ) : (
-                  <Loader borderColor="indigo" />
-                )}
-                <span className="text-center -order-1 w-full font-medium capitalize text-gray-600">
-                  {videoRecord?.mentorProfile.user?.name || ""}
-                </span>
-              </div>
-            </div>
-            <form
-              action={formAction}
-              className="flex flex-col gap-5 items-center justify-center"
-            >
-              <DateTimePicker
-                onDateChange={setDate}
-                onTimeChange={setTime}
-                date={date}
-                time={time}
-              />
-              {state.errors?.date && (
-                <p className="text-xs text-red-500">{state.errors.date[0]}</p>
-              )}
-              {state.errors?.time && (
-                <p className="text-xs text-red-500">{state.errors.time[0]}</p>
-              )}
-              <input type="hidden" name="date" value={String(date)} />
-              <input type="hidden" name="time" value={time} />
-              <input type="hidden" name="videoId" value={videoId} />
-              <input type="hidden" name="role" value={role} />
-
-              <Button
-                className=""
-                type="submit"
-                disabled={!date || isPending || !videoId}
-              >
-                Submit
-              </Button>
-            </form>
-          </>
-        )
-      ) : role === "mentor" ? (
-        videoRecord?.preferredTime &&
-        videoRecord.preferredTime.studentPreferredTime ? (
-          <div>
-            <div className="flex flex-col">
-              <h1 className="text-muted-foreground text-xs flex">
-                Student selected Date and Time
-              </h1>
-              <div>
-                <p>
-                  Date:{" "}
-                  {videoRecord.preferredTime.studentPreferredTime.toLocaleString()}
-                </p>
-              </div>
-            </div>
-            {videoRecord.preferredTime.studentPreferredTime ? (
-              videoRecord.preferredTime.studentPreferredTime !==
-              videoRecord.preferredTime.mentorPreferredTime ? (
-                <div className="flex flex-col gap-5">
-                  <div className="flex flex-col gap-3">
-                    <p>
-                      If you are not availabe at this Date and Time then please
-                      click the reject button and send a new Date and Time to
-                      the Student
+                  <div className="p-4 bg-emerald-50 rounded-lg border border-emerald-200">
+                    <p className="text-gray-900">
+                      The mentor has agreed for a video call at the Date and
+                      Time you selected, please check your mail for the video
+                      call link
                     </p>
-                    <div className="flex gap-5">
-                      <Button
-                        className="bg-blue-500 hover:bg-blue-600 transition-all duration-300 cursor-pointer"
-                        disabled={isRejected || pending}
-                        onClick={handleAccept}
-                      >
-                        {pending ? <Loader from="respond" /> : "Accept"}
-                      </Button>
-                      <Button
-                        className="bg-red-500 hover:bg-red-600 transition-all duration-300 cursor-pointer"
-                        onClick={() => setIsRejected(true)}
-                        disabled={isRejected || pending}
-                      >
-                        Reject
-                      </Button>
-                    </div>
-                    <div
-                      className={`${isRejected && !state.success ? "flex" : "hidden"} absolute left-100 bottom-50 bg-slate-100 z-50 py-10 px-8 rounded-xl shadow-2xl   flex-col gap-5 `}
-                    >
-                      <h1 className="text-lg font-medium">
-                        Select a new Date and Time
-                      </h1>
-                      <form
-                        action={formAction}
-                        className="flex flex-col gap-5 items-center justify-center"
-                      >
-                        <DateTimePicker
-                          onDateChange={setDate}
-                          onTimeChange={setTime}
-                          date={date}
-                          time={time}
-                        />
-                        {state.errors?.date && (
-                          <p className="text-xs text-red-500">
-                            {state.errors.date[0]}
-                          </p>
-                        )}
-                        {state.errors?.time && (
-                          <p className="text-xs text-red-500">
-                            {state.errors.time[0]}
-                          </p>
-                        )}
-                        <input type="hidden" name="date" value={String(date)} />
-                        <input type="hidden" name="time" value={time} />
-                        <input type="hidden" name="videoId" value={videoId} />
-                        <input type="hidden" name="role" value={role} />
-
-                        <Button
-                          className=""
-                          type="submit"
-                          disabled={!date || isPending || !videoId}
-                        >
-                          {isPending ? (
-                            <Loader borderColor="green" />
-                          ) : (
-                            "Confirm"
-                          )}
-                        </Button>
-                      </form>
-                    </div>
                   </div>
-                </div>
+                )
               ) : (
-                <div>
-                  <h1>
-                    The student has agreed for a video call at the Date and Time
-                    you selected, please check your mail for the video call link
-                  </h1>
-                </div>
-              )
-            ) : (
-              <div>
-                <h1>
-                  The student is yet to agree upon the Date and Time you
-                  selected.
-                </h1>
-              </div>
-            )}
-          </div>
-        ) : (
-          <>
-            <div className="flex flex-col items-center gap-5">
-              {videoRecord.preferredTime.studentPreferredTime && (
-                <div className="bg-slate-50 shadow-xl py-4 px-7 rounded-lg">
-                  <h1>Student Preferred Date and Time</h1>
-                  <div>
-                    Date and Time:{" "}
-                    {videoRecord.preferredTime.studentPreferredTime.toLocaleString()}
-                  </div>
+                <div className="p-4 bg-amber-50 rounded-lg border border-amber-200">
+                  <p className="text-gray-900">
+                    The mentor is yet to evaluate the Date and Time you
+                    selected.
+                  </p>
                 </div>
               )}
-              <div className="flex flex-col gap-2">
-                <h1 className="text-muted-foreground text-xs">
-                  Pick a Date and Time to schedule your video call with,
-                </h1>
-                <br />
-                <div className="flex items-center gap-2">
-                  {videoRecord?.studentProfile.imageUrl ? (
+            </CardContent>
+          </Card>
+        ) : (
+          <Card className="w-full max-w-md shadow-lg border-emerald-100">
+            <CardContent className="p-8 space-y-6">
+              <div className="flex flex-col items-center gap-4">
+                <p className="text-sm text-gray-600 text-center">
+                  Pick a Date and Time to schedule your video call with
+                </p>
+                <div className="flex items-center gap-3">
+                  {videoRecord?.mentorProfile.imageUrl ? (
                     <Image
                       src={
-                        videoRecord?.studentProfile.imageUrl ||
-                        "https://vbteadl6m3.ufs.sh/f/DDJ5nPL6Yp1sHfAviE2zasoidYb10Mu7JGNQFZWgVmCrRHPE"
+                        videoRecord?.mentorProfile.imageUrl ||
+                        "https://vbteadl6m3.ufs.sh/f/DDJ5nPL6Yp1sHfAviE2zasoidYb10Mu7JGNQFZWgVmCrRHPE" ||
+                        "/placeholder.svg"
                       }
                       alt="mentor photo"
                       height={50}
-                      width={100}
-                      className="object-cover obeject-center rounded-full h-8 w-8"
+                      width={50}
+                      className="object-cover rounded-full h-12 w-12 ring-2 ring-emerald-200"
                     />
                   ) : (
                     <Loader borderColor="indigo" />
                   )}
-                  <span className="text-center -order-1 font-medium capitalize text-gray-600">
-                    {videoRecord?.studentProfile?.user?.name || ""}
+                  <span className="font-semibold text-lg capitalize text-gray-900">
+                    {videoRecord?.mentorProfile.user?.name || ""}
                   </span>
                 </div>
               </div>
-            </div>
-            <form
-              action={formAction}
-              className="flex flex-col gap-5 items-center justify-center"
-            >
-              <DateTimePicker
-                onDateChange={setDate}
-                onTimeChange={setTime}
-                date={date}
-                time={time}
-              />
-              {state.errors?.date && (
-                <p className="text-xs text-red-500">{state.errors.date[0]}</p>
-              )}
-              {state.errors?.time && (
-                <p className="text-xs text-red-500">{state.errors.time[0]}</p>
-              )}
-              <input type="hidden" name="date" value={String(date)} />
-              <input type="hidden" name="time" value={time} />
-              <input type="hidden" name="videoId" value={videoId} />
-              <input type="hidden" name="role" value={role} />
+              <form action={formAction} className="flex flex-col gap-5">
+                <DateTimePicker
+                  onDateChange={setDate}
+                  onTimeChange={setTime}
+                  date={date}
+                  time={time}
+                />
+                {state.errors?.date && (
+                  <p className="text-xs text-red-500">{state.errors.date[0]}</p>
+                )}
+                {state.errors?.time && (
+                  <p className="text-xs text-red-500">{state.errors.time[0]}</p>
+                )}
+                <input type="hidden" name="date" value={String(date)} />
+                <input type="hidden" name="time" value={time} />
+                <input type="hidden" name="videoId" value={videoId} />
+                <input type="hidden" name="role" value={role} />
 
-              <Button
-                className=""
-                type="submit"
-                disabled={!date || isPending || !videoId}
-              >
-                Submit
-              </Button>
-            </form>
-          </>
+                <Button
+                  className="w-full bg-emerald-600 hover:bg-emerald-700"
+                  type="submit"
+                  disabled={!date || isPending || !videoId}
+                >
+                  {isPending ? <Loader /> : "Submit"}
+                </Button>
+              </form>
+            </CardContent>
+          </Card>
+        )
+      ) : role === "mentor" ? (
+        videoRecord?.preferredTime &&
+        videoRecord.preferredTime.studentPreferredTime ? (
+          <Card className="w-full max-w-2xl shadow-lg border-emerald-100">
+            <CardContent className="p-8 space-y-6">
+              <div className="flex flex-col space-y-2">
+                <h1 className="text-sm font-medium text-emerald-700">
+                  Student selected Date and Time
+                </h1>
+                <p className="text-gray-900 font-medium">
+                  {videoRecord.preferredTime.studentPreferredTime.toLocaleString()}
+                </p>
+              </div>
+              {videoRecord.preferredTime.studentPreferredTime ? (
+                videoRecord.preferredTime.studentPreferredTime !==
+                videoRecord.preferredTime.mentorPreferredTime ? (
+                  <div className="flex flex-col gap-5">
+                    <div className="flex flex-col gap-4 p-4 bg-emerald-50 rounded-lg border border-emerald-200">
+                      <p className="text-sm text-gray-600">
+                        If you are not available at this Date and Time then
+                        please click the reject button and send a new Date and
+                        Time to the Student
+                      </p>
+                      <div className="flex gap-3">
+                        <Button
+                          className="bg-emerald-600 hover:bg-emerald-700 text-white transition-all duration-300"
+                          disabled={isRejected || pending}
+                          onClick={handleAccept}
+                        >
+                          {pending ? <Loader from="respond" /> : "Accept"}
+                        </Button>
+                        <Button
+                          variant="outline"
+                          className="border-gray-300 hover:bg-gray-100 transition-all duration-300 bg-transparent"
+                          onClick={() => setIsRejected(true)}
+                          disabled={isRejected || pending}
+                        >
+                          Reject
+                        </Button>
+                      </div>
+                    </div>
+                    {isRejected && !state.success && (
+                      <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+                        <Card className="w-full max-w-md shadow-2xl">
+                          <CardContent className="p-8 space-y-6">
+                            <h2 className="text-xl font-semibold text-gray-900">
+                              Select a new Date and Time
+                            </h2>
+                            <form
+                              action={formAction}
+                              className="flex flex-col gap-5"
+                            >
+                              <DateTimePicker
+                                onDateChange={setDate}
+                                onTimeChange={setTime}
+                                date={date}
+                                time={time}
+                              />
+                              {state.errors?.date && (
+                                <p className="text-xs text-red-500">
+                                  {state.errors.date[0]}
+                                </p>
+                              )}
+                              {state.errors?.time && (
+                                <p className="text-xs text-red-500">
+                                  {state.errors.time[0]}
+                                </p>
+                              )}
+                              <input
+                                type="hidden"
+                                name="date"
+                                value={String(date)}
+                              />
+                              <input type="hidden" name="time" value={time} />
+                              <input
+                                type="hidden"
+                                name="videoId"
+                                value={videoId}
+                              />
+                              <input type="hidden" name="role" value={role} />
+
+                              <div className="flex gap-3">
+                                <Button
+                                  className="flex-1 bg-emerald-600 hover:bg-emerald-700"
+                                  type="submit"
+                                  disabled={!date || isPending || !videoId}
+                                >
+                                  {isPending ? (
+                                    <Loader borderColor="green" />
+                                  ) : (
+                                    "Confirm"
+                                  )}
+                                </Button>
+                                <Button
+                                  type="button"
+                                  variant="outline"
+                                  onClick={() => setIsRejected(false)}
+                                  className="flex-1"
+                                >
+                                  Cancel
+                                </Button>
+                              </div>
+                            </form>
+                          </CardContent>
+                        </Card>
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  <div className="p-4 bg-emerald-50 rounded-lg border border-emerald-200">
+                    <p className="text-gray-900">
+                      The student has agreed for a video call at the Date and
+                      Time you selected, please check your mail for the video
+                      call link
+                    </p>
+                  </div>
+                )
+              ) : (
+                <div className="p-4 bg-amber-50 rounded-lg border border-amber-200">
+                  <p className="text-gray-900">
+                    The student is yet to agree upon the Date and Time you
+                    selected.
+                  </p>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        ) : (
+          <Card className="w-full max-w-md shadow-lg border-emerald-100">
+            <CardContent className="p-8 space-y-6">
+              <div className="flex flex-col items-center gap-5">
+                {videoRecord.preferredTime.studentPreferredTime && (
+                  <div className="w-full p-4 bg-emerald-50 rounded-lg border border-emerald-200">
+                    <h2 className="text-base font-semibold text-gray-900 mb-2">
+                      Student Preferred Date and Time
+                    </h2>
+                    <p className="text-gray-700">
+                      {videoRecord.preferredTime.studentPreferredTime.toLocaleString()}
+                    </p>
+                  </div>
+                )}
+                <div className="flex flex-col gap-3 items-center">
+                  <p className="text-sm text-gray-600 text-center">
+                    Pick a Date and Time to schedule your video call with
+                  </p>
+                  <div className="flex items-center gap-3">
+                    {videoRecord?.studentProfile.imageUrl ? (
+                      <Image
+                        src={
+                          videoRecord?.studentProfile.imageUrl ||
+                          "https://vbteadl6m3.ufs.sh/f/DDJ5nPL6Yp1sHfAviE2zasoidYb10Mu7JGNQFZWgVmCrRHPE" ||
+                          "/placeholder.svg"
+                        }
+                        alt="student photo"
+                        height={50}
+                        width={50}
+                        className="object-cover rounded-full h-12 w-12 ring-2 ring-emerald-200"
+                      />
+                    ) : (
+                      <Loader borderColor="indigo" />
+                    )}
+                    <span className="font-semibold text-lg capitalize text-gray-900">
+                      {videoRecord?.studentProfile?.user?.name || ""}
+                    </span>
+                  </div>
+                </div>
+              </div>
+              <form action={formAction} className="flex flex-col gap-5">
+                <DateTimePicker
+                  onDateChange={setDate}
+                  onTimeChange={setTime}
+                  date={date}
+                  time={time}
+                />
+                {state.errors?.date && (
+                  <p className="text-xs text-red-500">{state.errors.date[0]}</p>
+                )}
+                {state.errors?.time && (
+                  <p className="text-xs text-red-500">{state.errors.time[0]}</p>
+                )}
+                <input type="hidden" name="date" value={String(date)} />
+                <input type="hidden" name="time" value={time} />
+                <input type="hidden" name="videoId" value={videoId} />
+                <input type="hidden" name="role" value={role} />
+
+                <Button
+                  className="w-full bg-emerald-600 hover:bg-emerald-700"
+                  type="submit"
+                  disabled={!date || isPending || !videoId}
+                >
+                  {isPending ? <Loader /> : "Submit"}
+                </Button>
+              </form>
+            </CardContent>
+          </Card>
         )
       ) : (
-        <div>
-          <h1>Invalid role hi sup</h1>
-          <Link href="/select-role">
-            <Button variant="ghost">Select role</Button>
-          </Link>
-        </div>
+        <Card className="w-full max-w-md shadow-lg">
+          <CardContent className="p-8 text-center space-y-4">
+            <h1 className="text-lg font-semibold text-gray-900">
+              Invalid role
+            </h1>
+            <Link href="/select-role">
+              <Button
+                variant="outline"
+                className="border-emerald-600 text-emerald-600 hover:bg-emerald-50 bg-transparent"
+              >
+                Select role
+              </Button>
+            </Link>
+          </CardContent>
+        </Card>
       )}
     </div>
   );

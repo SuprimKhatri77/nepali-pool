@@ -39,6 +39,7 @@ export async function OnboardingMentor(
   prevState: FormState,
   formData: FormData
 ) {
+  console.log("FORMDATA: ", formData);
   const userId = formData.get("currentUserId") as string;
 
   if (!userId) {

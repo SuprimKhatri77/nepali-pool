@@ -1,0 +1,1 @@
+CREATE UNIQUE INDEX "unique_student_mentor_status" ON "video_call" USING btree ("student_id","mentor_id","status");

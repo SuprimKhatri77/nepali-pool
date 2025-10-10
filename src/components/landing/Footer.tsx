@@ -1,134 +1,103 @@
-import Image from "next/image";
 import Link from "next/link";
-import React from "react";
 
 export default function Footer() {
   return (
-    <footer className="lg:rounded-md bg-white py-5 gap-8 shadow-md mt-4">
-      <div className="flex lg:flex-row flex-col px-8">
-        <div
-          id="logoLinks"
-          className="flex flex-col items-center justify-center max-w-[300px] w-full mx-auto"
-        >
-          <Image
-            src="/landing/logo.png"
-            alt="logo"
-            width={138}
-            height={158}
-          ></Image>
-          <p className="text-sm text-gray-600 mt-1 h-0.5 bg-amber-300 w-16"></p>
+    <footer className="bg-white border-t border-gray-200 py-12 px-6">
+      <div className="max-w-7xl mx-auto">
+        <div className="grid md:grid-cols-5 gap-8 mb-8">
+          {/* Logo & Social */}
+          <div className="md:col-span-1">
+            <div className="flex items-center gap-2 mb-4">
+              <div className="w-10 h-10 bg-gradient-to-br from-emerald-400 to-emerald-600 rounded-lg flex items-center justify-center text-white font-bold">
+                NP
+              </div>
+              <span className="font-semibold text-lg text-gray-900">
+                NepaliPool
+              </span>
+            </div>
+            <div className="w-16 h-1 bg-emerald-600 rounded-full mb-4"></div>
+            <p className="text-sm text-gray-600">
+              Connecting dreams to reality
+            </p>
+          </div>
+
+          {/* Explore */}
           <div>
-            <h3 className="font-semibold text-base sm:text-xl">Social Links</h3>
-            <ul>
-              <li>
-                <Link href={"/"}>
-                  {" "}
-                  <Image
-                    src="https://t4.ftcdn.net/jpg/03/92/71/99/240_F_392719944_L0LYv3e7QozB2tsj3CfUN0HPC8eZQOWb.jpg"
-                    alt="facebook"
-                    width={100}
-                    height={20}
-                  ></Image>{" "}
-                </Link>
-              </li>
+            <h3 className="font-semibold text-gray-900 mb-4">Explore</h3>
+            <ul className="space-y-2 text-sm text-gray-600">
+              {[
+                "Home",
+                "About Us",
+                "Pricing",
+                "Schools",
+                "Mentors",
+                "Blogs",
+              ].map((item) => (
+                <li key={item}>
+                  <Link href="/" className="hover:text-emerald-600">
+                    {item}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Details */}
+          <div>
+            <h3 className="font-semibold text-gray-900 mb-4">Details</h3>
+            <ul className="space-y-2 text-sm text-gray-600">
+              {["Blog", "FAQ", "Support", "Developers"].map((item) => (
+                <li key={item}>
+                  <Link href="/" className="hover:text-emerald-600">
+                    {item}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Important Notices */}
+          <div>
+            <h3 className="font-semibold text-gray-900 mb-4">Legal</h3>
+            <ul className="space-y-2 text-sm text-gray-600">
+              {["Terms", "Privacy Policy", "Refund Policy", "Cancellation"].map(
+                (item) => (
+                  <li key={item}>
+                    <Link href="/" className="hover:text-emerald-600">
+                      {item}
+                    </Link>
+                  </li>
+                )
+              )}
+            </ul>
+          </div>
+
+          {/* Contact */}
+          <div>
+            <h3 className="font-semibold text-gray-900 mb-4">Contact Us</h3>
+            <ul className="space-y-2 text-sm text-gray-600">
+              <li>Kathmandu, Nepal</li>
+              <li>(123) 456-7890</li>
+              <li>hello@nepalipool.com</li>
             </ul>
           </div>
         </div>
-        <div id="contentfooter">
-          <div
-            id="footgrid"
-            className="flex flex-wrap justify-between sm:grid grid-cols-2 md:grid-cols-4 sm:mx-auto gap-2"
-          >
-            <div className="mt-3 ">
-              <h3 className="font-semibold text-base sm:text-xl">Explore</h3>
-              <ul className="mt-3 text-base">
-                <li>
-                  <Link href="/">Home</Link>
-                </li>
-                <li>
-                  <Link href="/">About Us</Link>
-                </li>
-                <li>
-                  <Link href="/">Pricing</Link>
-                </li>
-                <li>
-                  <Link href="/">Schools</Link>
-                </li>
-                <li>
-                  <Link href="/">Mentors</Link>
-                </li>
-                <li>
-                  <Link href="/">Blogs</Link>
-                </li>
-              </ul>
-            </div>
-            <div className="mt-3">
-              <h3 className="font-semibold text-base sm:text-xl">Details</h3>
-              <ul className="mt-3 text-base">
-                <li>
-                  <Link href="/">Blog</Link>
-                </li>
-                <li>
-                  <Link href="/">FAQ</Link>
-                </li>
-                <li>
-                  <Link href="/">Support</Link>
-                </li>
-                <li>
-                  <Link href="/">Developers</Link>
-                </li>
-              </ul>
-            </div>
-            <div className="mt-3">
-              <h3 className="font-semibold text-base sm:text-xl">
-                Important Notices
-              </h3>
-              <ul className="mt-3 text-base">
-                <li>
-                  <Link href="/">Terms and Conditions</Link>
-                </li>
-                <li>
-                  <Link href="/">Privacy Policy</Link>
-                </li>
-                <li>
-                  <Link href="/">Refund Policy</Link>
-                </li>
-                <li>
-                  <Link href="/">Cancellation Policy</Link>
-                </li>
-              </ul>
-            </div>
-            <div className="mt-3">
-              <h3 className="font-semibold text-base sm:text-xl">Contact Us</h3>
-              <ul className="mt-3 text-base">
-                <li>
-                  <Link href="/">Address: 123 Main Street, City, Country</Link>
-                </li>
-                <li>
-                  <Link href="/">Phone: (123) 456-7890</Link>
-                </li>
-                <li>
-                  <Link href="/">Email: 0Owq0@example.com</Link>
-                </li>
-              </ul>
-            </div>
-          </div>
-          <div id="disclaimer" className="mt-5 md:mt-3">
-            <p className="text-xl text-[#E92424] text-center font-semibold">
-              Disclaimer
-            </p>
-            <p className="text-sm font-medium md:text-base text-center">
-              “We do not guarantee visa approval; final decisions rest with the
-              respective embassy/immigration office.”
-            </p>
-          </div>
+
+        {/* Disclaimer */}
+        <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-8">
+          <p className="text-sm text-center text-red-800">
+            <span className="font-semibold">Disclaimer:</span> We do not
+            guarantee visa approval; final decisions rest with the respective
+            embassy/immigration office.
+          </p>
         </div>
-      </div>
-      <div>
-        <hr className="mt-4 border border-[#E92424] opacity-60" />
-        <p className="text-sm text-center mt-4 font-medium">
-          Copyright © 2025 VisaHelp. All rights reserved.
-        </p>
+
+        {/* Copyright */}
+        <div className="border-t border-gray-200 pt-8 text-center">
+          <p className="text-sm text-gray-600">
+            Copyright © 2025 NepaliPool. All rights reserved.
+          </p>
+        </div>
       </div>
     </footer>
   );

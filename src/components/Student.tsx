@@ -1,6 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 import { authClient } from "../../server/lib/auth/auth-client";
 import { useRouter } from "next/navigation";
 import { startTransition, useEffect, useOptimistic, useState } from "react";
@@ -19,7 +20,7 @@ import { PaymentButton } from "@/components/PaymentButton";
 import Link from "next/link";
 import ScheduleCall from "./ScheduleCall";
 import { toast } from "sonner";
-import {
+import type {
   MentorProfileWithUserAndChat,
   StudentProfileWithUser,
 } from "../../types/all-types";
@@ -141,79 +142,123 @@ export default function StudentPage({
   const isVideoCallUnlocked = (mentorId: string) => {
     return studentRecordWithUser.videoCall.find(
       (sub) =>
-        (sub.mentorId === mentorId &&
-          sub.studentId === studentRecordWithUser.userId &&
-          sub.status === "pending") ||
-        sub.status === "scheduled"
+        sub.mentorId === mentorId &&
+        sub.studentId === studentRecordWithUser.userId
     );
   };
 
+  const handleSuccess = () => {
+    console.log("REFRESHING /DASHBOARD/STUDENT");
+    router.refresh();
+  };
+
   return (
-    <div className="flex flex-col gap-4 min-h-screen items-center justify-center">
-      Sup student!
-      <Button onClick={handleLogout} disabled={click}>
-        Logout
-      </Button>
-      <Link href="/video-call?status=pending">
-        <Button>All Purchased Video Calls</Button>
-      </Link>
-      <div className="flex gap-5 w-full px-10 justify-between">
-        <div className="flex flex-col gap-5 flex-wrap max-w-[600px]">
-          <h1
-            className={`cursor-pointer ${!isFavoritesShown ? "bg-green-400 h-fit py-2 rounded-lg px-4" : ""}`}
-            onClick={() => setIsFavoriteShown(false)}
-          >
-            Matching mentors
+    <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-white to-green-50">
+      <header className="border-b bg-white/80 backdrop-blur-sm sticky top-0 z-40">
+        <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+          <h1 className="text-2xl font-semibold text-gray-900">
+            Student Dashboard
           </h1>
+          <div className="flex items-center gap-3">
+            <Link href="/video-call?status=pending">
+              <Button
+                variant="outline"
+                className="border-emerald-200 hover:bg-emerald-50 bg-transparent"
+              >
+                Video Calls
+              </Button>
+            </Link>
+            <Button
+              onClick={handleLogout}
+              disabled={click}
+              variant="ghost"
+              className="hover:bg-gray-100"
+            >
+              Logout
+            </Button>
+          </div>
+        </div>
+      </header>
 
-          {matchingMentors.length > 0
-            ? !isFavoritesShown && (
-                <div className="flex flex-col gap-5">
-                  <div className="flex  gap-5 items-center">
-                    {matchingMentors.map((mentor) => {
-                      const activeCall = isVideoCallUnlocked(mentor.userId);
-                      const activeChat = isChatUnlocked(mentor.userId);
-                      const studentChat = getChatWithStudent(mentor.userId);
+      <main className="max-w-7xl mx-auto px-6 py-8">
+        <div className="flex gap-2 mb-8 border-b">
+          <button
+            onClick={() => setIsFavoriteShown(false)}
+            className={`px-6 py-3 font-medium transition-all relative ${
+              !isFavoritesShown
+                ? "text-emerald-600 border-b-2 border-emerald-600"
+                : "text-gray-600 hover:text-gray-900"
+            }`}
+          >
+            Matching Mentors
+          </button>
+          <button
+            onClick={() => setIsFavoriteShown(true)}
+            className={`px-6 py-3 font-medium transition-all relative ${
+              isFavoritesShown
+                ? "text-emerald-600 border-b-2 border-emerald-600"
+                : "text-gray-600 hover:text-gray-900"
+            }`}
+          >
+            Favorites
+          </button>
+        </div>
 
-                      return (
-                        <div
-                          key={mentor.userId}
-                          className="flex flex-col  gap-5 items-center bg-gray-100 py-5 px-7 rounded-xl"
-                        >
-                          <div className="flex flex-col items-center gap-5">
+        {!isFavoritesShown && (
+          <div>
+            {matchingMentors.length > 0 ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {matchingMentors.map((mentor) => {
+                  const activeCall = isVideoCallUnlocked(mentor.userId);
+                  const activeChat = isChatUnlocked(mentor.userId);
+                  const studentChat = getChatWithStudent(mentor.userId);
+
+                  return (
+                    <Card
+                      key={mentor.userId}
+                      className="overflow-hidden hover:shadow-lg transition-shadow border-gray-200"
+                    >
+                      <CardContent className="p-6">
+                        <div className="flex items-start justify-between mb-4">
+                          <div className="flex items-center gap-4">
                             <Image
                               src={mentor.imageUrl! || "/placeholder.svg"}
-                              alt=""
-                              width={100}
-                              height={100}
-                              className="rounded-full object-center"
+                              alt={mentor.user.name || "Mentor"}
+                              width={64}
+                              height={64}
+                              className="rounded-full object-cover ring-2 ring-emerald-100"
                             />
-                            <p>Name: {mentor.user.name}</p>
+                            <div>
+                              <h3 className="font-semibold text-lg text-gray-900">
+                                {mentor.user.name}
+                              </h3>
+                              <p className="text-sm text-gray-500">
+                                {mentor.country}
+                              </p>
+                            </div>
                           </div>
-                          <p className="max-w-[200px]">Bio: {mentor.bio}</p>
-                          <p>Country: {mentor.country}</p>
                           <div>
                             {isFavorited(mentor.userId) ? (
-                              <>
-                                <Button
-                                  type="submit"
-                                  variant="ghost"
-                                  onClick={() =>
-                                    handleRemoveFavorite(mentor.userId)
-                                  }
-                                  className="hover:bg-gray-200 cursor-pointer"
-                                >
-                                  <Star className="text-yellow-400 fill-yellow-400" />
-                                </Button>
-                              </>
+                              <Button
+                                type="submit"
+                                variant="ghost"
+                                size="icon"
+                                onClick={() =>
+                                  handleRemoveFavorite(mentor.userId)
+                                }
+                                className="hover:bg-emerald-50"
+                              >
+                                <Star className="w-5 h-5 text-yellow-500 fill-yellow-500" />
+                              </Button>
                             ) : (
                               <Button
                                 type="submit"
                                 variant="ghost"
+                                size="icon"
                                 onClick={() => handleClick(mentor.userId)}
-                                className="hover:bg-gray-200 cursor-pointer"
+                                className="hover:bg-emerald-50"
                               >
-                                <Star className="text-muted-foregrounds" />
+                                <Star className="w-5 h-5 text-gray-400" />
                               </Button>
                             )}
                             <input
@@ -227,132 +272,155 @@ export default function StudentPage({
                               value={studentRecordWithUser.userId}
                             />
                           </div>
-                          <div className="flex  gap-5 items-center">
-                            {activeChat &&
-                            activeChat.status === "active" &&
-                            new Date(activeChat.endDate) > new Date() ? (
-                              studentChat && studentChat.status === "active" ? (
-                                <Link
-                                  href={`/chats/${studentChat?.id}`}
-                                  className="bg-green-600 px-5 py-3 rounded-xl hover:bg-green-700 transition-all duration-300 ease-in-out text-white text-nowrap"
-                                >
-                                  Chat with mentor
-                                </Link>
-                              ) : (
-                                studentChat &&
-                                studentChat.status === "expired" && (
-                                  <PaymentButton
-                                    paymentType="chat_subscription"
-                                    userId={studentRecordWithUser.userId}
-                                    mentorId={mentor.userId}
-                                    userEmail={
-                                      studentRecordWithUser.user.email!
-                                    }
-                                    className="bg-gray-700 px-5 py-3 rounded-xl hover:bg-gray-800 transition-all duration-300 ease-in-out text-gray-100 cursor-pointer"
-                                  >
-                                    Renew Chat Subscription
-                                  </PaymentButton>
-                                )
-                              )
-                            ) : (
-                              <PaymentButton
-                                paymentType="chat_subscription"
-                                userId={studentRecordWithUser.userId}
-                                mentorId={mentor.userId}
-                                userEmail={studentRecordWithUser.user.email!}
-                                className="bg-gray-700 px-5 py-3 rounded-xl hover:bg-gray-800 transition-all duration-300 ease-in-out text-gray-100 cursor-pointer"
-                              >
-                                Unlock chat with mentor
-                              </PaymentButton>
-                            )}
-
-                            {activeCall && activeCall.status !== "cancelled" ? (
-                              activeCall.status !== "scheduled" ? (
-                                <Link
-                                  href={`/video-call/schedule/${activeCall.id}`}
-                                  className="bg-blue-400 hover:bg-blue-500 transition-all duration-300  p-3 rounded-lg text-nowrap"
-                                >
-                                  Schedule Call
-                                </Link>
-                              ) : (
-                                <Button disabled>Scheduled</Button>
-                              )
-                            ) : (
-                              <PaymentButton
-                                paymentType="video_call"
-                                userId={studentRecordWithUser.userId}
-                                mentorId={mentor.userId}
-                                userEmail={studentRecordWithUser.user.email!}
-                                className="bg-gray-700 px-5 py-3 rounded-xl hover:bg-gray-800 transition-all duration-300 ease-in-out text-gray-100 cursor-pointer"
-                              >
-                                Unlock video call with mentor
-                              </PaymentButton>
-                            )}
-                          </div>
                         </div>
-                      );
-                    })}
-                  </div>
-                  <div>
-                    {firstUnscheduledCall && (
-                      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30">
-                        <div className="bg-slate-50 rounded-lg p-8 shadow-lg w-fit max-w-md mx-4">
-                          <ScheduleCall
-                            videoId={firstUnscheduledCall.id}
-                            onSuccess={setSuccess}
-                            role="student"
-                          />
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              )
-            : "No mentors found for your provided favorite destination."}
-        </div>
 
-        <div
-          className="flex flex-col gap-5"
-          onClick={() => setIsFavoriteShown(true)}
-        >
-          <h1
-            className={`cursor-pointer ${isFavoritesShown ? "bg-green-400 h-fit py-2 rounded-lg px-4" : ""}`}
-          >
-            Favorites
-          </h1>
-          {isFavoritesShown &&
-            (favoriteMentor.length > 0 ? (
-              <div className="flex gap-5 items-center  flex-wrap max-w-[600px]">
+                        <p className="text-sm text-gray-600 mb-6 line-clamp-3">
+                          {mentor.bio}
+                        </p>
+
+                        <div className="flex flex-col gap-2">
+                          {activeChat &&
+                          activeChat.status === "active" &&
+                          new Date(activeChat.endDate) > new Date() ? (
+                            studentChat && studentChat.status === "active" ? (
+                              <Link
+                                href={`/chats/${studentChat?.id}`}
+                                className="inline-flex items-center justify-center rounded-md text-sm font-medium bg-emerald-600 text-white hover:bg-emerald-700 h-10 px-4 py-2 transition-colors"
+                              >
+                                Chat with Mentor
+                              </Link>
+                            ) : (
+                              studentChat &&
+                              studentChat.status === "expired" && (
+                                <PaymentButton
+                                  paymentType="chat_subscription"
+                                  userId={studentRecordWithUser.userId}
+                                  mentorId={mentor.userId}
+                                  userEmail={studentRecordWithUser.user.email!}
+                                  className="bg-gray-900 text-white hover:bg-gray-800 h-10 px-4 py-2 rounded-md transition-colors"
+                                >
+                                  Renew Chat Subscription
+                                </PaymentButton>
+                              )
+                            )
+                          ) : (
+                            <PaymentButton
+                              paymentType="chat_subscription"
+                              userId={studentRecordWithUser.userId}
+                              mentorId={mentor.userId}
+                              userEmail={studentRecordWithUser.user.email!}
+                              className="bg-gray-900 text-white hover:bg-gray-800 h-10 px-4 py-2 rounded-md transition-colors"
+                            >
+                              Unlock Chat
+                            </PaymentButton>
+                          )}
+
+                          {activeCall &&
+                          activeCall.status !== "cancelled" &&
+                          activeCall?.status !== "completed" ? (
+                            activeCall.status !== "scheduled" ? (
+                              <Link
+                                href={`/video-call/schedule/${activeCall.id}`}
+                                className="inline-flex items-center justify-center rounded-md text-sm font-medium bg-emerald-600 text-white hover:bg-emerald-700 h-10 px-4 py-2 transition-colors"
+                              >
+                                Schedule Call
+                              </Link>
+                            ) : (
+                              <Button
+                                disabled
+                                className="bg-emerald-100 text-emerald-700"
+                              >
+                                Scheduled
+                              </Button>
+                            )
+                          ) : (
+                            <PaymentButton
+                              paymentType="video_call"
+                              userId={studentRecordWithUser.userId}
+                              mentorId={mentor.userId}
+                              userEmail={studentRecordWithUser.user.email!}
+                              className="bg-gray-900 text-white hover:bg-gray-800 h-10 px-4 py-2 rounded-md transition-colors"
+                            >
+                              Unlock Video Call
+                            </PaymentButton>
+                          )}
+                        </div>
+                      </CardContent>
+                    </Card>
+                  );
+                })}
+              </div>
+            ) : (
+              <div className="text-center py-12">
+                <p className="text-gray-500">
+                  No mentors found for your provided favorite destination.
+                </p>
+              </div>
+            )}
+          </div>
+        )}
+
+        {isFavoritesShown && (
+          <div>
+            {favoriteMentor.length > 0 ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {favoriteMentor.map((favMentor) => {
                   const matchedMentor = matchingMentors.find(
                     (mentor) => mentor.userId === favMentor.mentorId
                   );
                   return matchedMentor ? (
-                    <div
+                    <Card
                       key={favMentor.mentorId}
-                      className="flex flex-col gap-5 items-center bg-yellow-100 py-5 px-7 rounded-xl"
+                      className="overflow-hidden border-emerald-200 bg-emerald-50/50"
                     >
-                      <div className="flex flex-col items-center gap-5">
-                        <Image
-                          src={matchedMentor.imageUrl! || "/placeholder.svg"}
-                          alt=""
-                          width={100}
-                          height={100}
-                          className="rounded-full object-center"
-                        />
-                        <p>Name: {matchedMentor.user.name}</p>
-                      </div>
-                      <p className="max-w-[200px]">Bio: {matchedMentor.bio}</p>
-                      <p>Country: {matchedMentor.country}</p>
-                    </div>
+                      <CardContent className="p-6">
+                        <div className="flex flex-col items-center text-center gap-4">
+                          <Image
+                            src={matchedMentor.imageUrl! || "/placeholder.svg"}
+                            alt={matchedMentor.user.name || "Mentor"}
+                            width={80}
+                            height={80}
+                            className="rounded-full object-cover ring-2 ring-emerald-200"
+                          />
+                          <div>
+                            <h3 className="font-semibold text-lg text-gray-900">
+                              {matchedMentor.user.name}
+                            </h3>
+                            <p className="text-sm text-gray-500 mt-1">
+                              {matchedMentor.country}
+                            </p>
+                          </div>
+                          <p className="text-sm text-gray-600 line-clamp-3">
+                            {matchedMentor.bio}
+                          </p>
+                        </div>
+                      </CardContent>
+                    </Card>
                   ) : null;
                 })}
               </div>
             ) : (
-              "No mentor"
-            ))}
+              <div className="text-center py-12">
+                <p className="text-gray-500">No favorite mentors yet.</p>
+              </div>
+            )}
+          </div>
+        )}
+      </main>
+
+      {firstUnscheduledCall && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
+          <Card className="w-full max-w-md mx-4 shadow-2xl">
+            <CardContent className="p-8">
+              <ScheduleCall
+                videoId={firstUnscheduledCall.id}
+                onSuccess={handleSuccess}
+                role="student"
+              />
+            </CardContent>
+          </Card>
         </div>
-      </div>
+      )}
     </div>
   );
 }

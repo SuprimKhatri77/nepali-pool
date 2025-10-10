@@ -4,7 +4,7 @@ import { auth } from "../server/lib/auth/auth";
 import { getSessionCookie } from "better-auth/cookies";
 
 export async function middleware(request: NextRequest) {
-  console.log("🔹 Middleware hit:", request.nextUrl.pathname);
+  // console.log("🔹 Middleware hit:", request.nextUrl.pathname);
   const cookies = getSessionCookie(request);
   if (!cookies) {
     return NextResponse.redirect(new URL("/login", request.url));
@@ -18,7 +18,7 @@ export const config = {
     "/dashboard/:path*",
     "/admin/:path*",
     "/select-role",
-    "/api/:path*",
+    // "/api/:path*",
     "/admin/:path*",
     "/chats/:path*",
     "/video-call/:path*",

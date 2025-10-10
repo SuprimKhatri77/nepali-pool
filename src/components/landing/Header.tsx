@@ -1,106 +1,132 @@
 "use client";
 
-import { useState } from "react";
 import Link from "next/link";
-import Image from "next/image";
+import { useState } from "react";
 
+// Mock components for demo
+// const Image = ({ src, alt, width, height, className, loading }) => (
+//   <div
+//     className={`${className} bg-gray-200 flex items-center justify-center text-xs text-gray-500`}
+//   >
+//     {alt}
+//   </div>
+// );
+
+// const Link = ({ href, children, className }) => (
+//   <Link href={href} className={className}>
+//     {children}
+//   </Link>
+// );
+
+// Header Component
 export default function Header() {
   const [isOpen, setIsOpen] = useState(false);
+  const session = null; // Mock session
+  const isPending = false;
 
   return (
-    <header className="bg-white lg:rounded-md flex justify-between items-center text-black shadow-md  px-6 lg:px-10 relative">
-      {/* Logo */}
-      <Link href="/">
-        <Image
-          src="/landing/logo.png"
-          alt="logo"
-          width={138}
-          height={138}
-          className="w-20 h-18"
-        />
-      </Link>
+    <header className="bg-white border-b border-gray-200 px-6 lg:px-10 py-4">
+      <div className="max-w-7xl mx-auto flex justify-between items-center">
+        {/* Logo */}
+        <Link href="/">
+          <div className="flex items-center gap-2">
+            <div className="w-10 h-10 bg-gradient-to-br from-emerald-400 to-emerald-600 rounded-lg flex items-center justify-center text-white font-bold">
+              NP
+            </div>
+            <span className="font-semibold text-lg text-gray-900">
+              NepaliPool
+            </span>
+          </div>
+        </Link>
 
-      {/* Desktop Menu */}
-      <nav className="hidden sm:flex items-center mt-1">
-        <ul className="flex gap-8 text-base">
+        {/* Desktop Menu */}
+        <nav className="hidden md:flex items-center gap-1">
           {["Home", "Schools", "Mentors", "Guides"].map((item) => (
-            <li key={item} className="relative group">
-              <Link
-                href={
-                  item === "Home"
-                    ? "/"
-                    : item === "Schools"
-                      ? "/all-schools"
-                      : `/${item.toLowerCase()}`
-                }
-                className="after:block after:h-[2px] after:bg-black after:w-0 after:transition-all after:duration-300 group-hover:after:w-full"
-              >
-                {item}
-              </Link>
-            </li>
+            <Link
+              key={item}
+              href={item === "Home" ? "/" : `/${item.toLowerCase()}`}
+              className="px-4 py-2 text-sm font-medium text-gray-700 hover:text-emerald-600 hover:bg-emerald-50 rounded-md transition-colors"
+            >
+              {item}
+            </Link>
           ))}
-        </ul>
-      </nav>
+        </nav>
 
-      {/* Login Button */}
-      <div className="hidden sm:block" id="div2">
-        <button
-          className="
-               bg-[#3A86FF] hover:bg-[#2a64c2]
-           text-white rounded-[9px] px-4 py-2 font-bold"
-        >
-          <Link href="/login">Login</Link>
-        </button>
-      </div>
+        {/* Login Button */}
+        <div className="hidden md:block">
+          {!session ? (
+            <Link
+              href="/login"
+              className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-medium rounded-md transition-colors"
+            >
+              Login
+            </Link>
+          ) : (
+            <div className="flex items-center gap-3">
+              <Link
+                href="/dashboard"
+                className="px-4 py-2 bg-emerald-50 text-emerald-700 text-sm font-medium rounded-md hover:bg-emerald-100 transition-colors"
+              >
+                Dashboard
+              </Link>
+              <button className="px-4 py-2 text-sm font-medium text-gray-700 hover:text-gray-900">
+                Sign Out
+              </button>
+            </div>
+          )}
+        </div>
 
-      {/* Hamburger Menu (Mobile) */}
-      <div className="sm:hidden flex items-center">
+        {/* Mobile Menu Button */}
         <button
           onClick={() => setIsOpen(!isOpen)}
-          className="focus:outline-none"
+          className="md:hidden p-2 text-gray-700 hover:bg-gray-100 rounded-md"
         >
-          <div className="space-y-1">
-            <span
-              className={`block h-1 w-6 bg-black transition-transform ${
-                isOpen ? "rotate-45 translate-y-2" : ""
-              }`}
-            ></span>
-            <span
-              className={`block h-1 w-6 bg-black transition-opacity ${
-                isOpen ? "opacity-0" : "opacity-100"
-              }`}
-            ></span>
-            <span
-              className={`block h-1 w-6 bg-black transition-transform ${
-                isOpen ? "-rotate-45 -translate-y-2" : ""
-              }`}
-            ></span>
-          </div>
+          <svg
+            className="w-6 h-6"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            {isOpen ? (
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M6 18L18 6M6 6l12 12"
+              />
+            ) : (
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M4 6h16M4 12h16M4 18h16"
+              />
+            )}
+          </svg>
         </button>
       </div>
 
       {/* Mobile Menu */}
       {isOpen && (
-        <div className="text-white absolute top-full left-auto w-1/2 right-4 bg-gradient-to-b from-0% from-[#FF4053] to-[#260F55] to-100% border shadow-md sm:hidden flex flex-col items-center py-4 space-y-4 z-50">
-          {["Home", "School", "Mentor", "Guides"].map((item) => (
+        <div className="md:hidden mt-4 pb-4 border-t border-gray-200">
+          <div className="flex flex-col gap-2 pt-4">
+            {["Home", "Schools", "Mentors", "Guides"].map((item) => (
+              <Link
+                key={item}
+                href={item === "Home" ? "/" : `/${item.toLowerCase()}`}
+                className="px-4 py-2 text-sm font-medium text-gray-700 hover:bg-emerald-50 hover:text-emerald-600 rounded-md"
+                onClick={() => setIsOpen(false)}
+              >
+                {item}
+              </Link>
+            ))}
             <Link
-              key={item}
-              href="/public/home"
-              className="text-sm font-medium"
-              onClick={() => setIsOpen(false)}
+              href="/login"
+              className="mx-4 mt-2 px-4 py-2 bg-emerald-600 text-white text-sm font-medium rounded-md text-center"
             >
-              {item}
+              Login
             </Link>
-          ))}
-          <Link
-            href="/login"
-            className="
-                bg-[#3A86FF] hover:bg-[#2a64c2]
-             text-black rounded-[9px] px-4 py-2 font-bold"
-            onClick={() => setIsOpen(false)}
-          >
-            Login
-          </Link>
+          </div>
         </div>
       )}
     </header>

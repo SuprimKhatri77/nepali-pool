@@ -1,37 +1,48 @@
 import Image from "next/image";
+import Link from "next/link";
+
 export default function Hero() {
   return (
-    <section className="bg-transparent h-auto mb-10 flex flex-col justify-start  items-center sm:pt-auto pt-10">
-      <h1 className="text-shadow-xs text-2xl sm:text-4xl md:text-[40px] font-semibold sm:font-bold pb-5 sm:text-left text-center">
-        Your Trusted Mentor to Study in <br className="hidden sm:block" />
-        <div className="w-full md:w-[500px] text-shadow-xs sm:mx-auto text-center">
-          <span className="text-[#b31f1f] text-shadow-xs">JAPAN</span> from{" "}
-          <span className="text-[#e92424] text-shadow-xs">Nepal</span>
-        </div>
-      </h1>
-      <div className="m-5 h-36 hidden sm:block">
-        <Image
-          src="/landing/hero.svg"
-          alt="hero secton image"
-          height={230}
-          width={800}
-        />
-      </div>
-      <div className="text-sm m-5 yellow-box rounded-[8px] bg-gradient-to-b p-3 px-5 shadow-xl from-[#F0B100]  to-[#fad366] max-w-80 w-full stroke-white stroke-2 text-[#1F1777] ">
-        Helping Nepali students choose the right college, city, and future —
-        with expert guidance from someone who&apos;s been there.
-      </div>
-      <div className="max-w-[500px] w-full mx-auto text-center mt-1">
-        <h2 className="text-3xl sm:text-5xl font-bold text-[#e92424]">START</h2>
-        <div className="cta flex justify-around text-base sm:text-xl font-semibold gap-4 sm:gap-10 mt-2">
-          <button className="m-5 bg-[#FACC15] rounded-[10px] py-2 px-4 cursor-pointer shadow-xs">
-            As a Mentor
-          </button>
-          <button className="m-5 bg-[#3a86ff] rounded-[10px] text-white py-2 px-2 cursor-pointer shadow-xs">
-            As a Student
-          </button>
+    <section className="py-20 px-6">
+      <div className="max-w-5xl mx-auto text-center">
+        <h1 className="text-4xl md:text-6xl font-bold text-gray-900 leading-tight">
+          Your Trusted Mentor to Study in{" "}
+          <span className="text-emerald-600">Japan</span> from{" "}
+          <span className="text-emerald-600">Nepal</span>
+        </h1>
+
+        <p className="mt-6 text-lg text-gray-600 max-w-2xl mx-auto">
+          Helping Nepali students choose the right college, city, and future —
+          with expert guidance from someone who's been there.
+        </p>
+
+        <div className="flex flex-col sm:flex-row gap-4 justify-center mt-10">
+          <Link
+            href="/login"
+            className="px-8 py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold rounded-lg transition-colors shadow-sm"
+          >
+            Start as a Mentor
+          </Link>
+          <Link
+            href="/login"
+            className="px-8 py-3 bg-white hover:bg-gray-50 text-emerald-600 font-semibold rounded-lg transition-colors shadow-sm border-2 border-emerald-600"
+          >
+            Start as a Student
+          </Link>
         </div>
       </div>
+
+      {/* <div className="mt-16 relative">
+          <div className="absolute inset-0 bg-gradient-to-r from-emerald-50 via-emerald-100 to-emerald-50 rounded-3xl blur-3xl opacity-30"></div>
+          <Image
+            src="/landing/hero.svg"
+            alt="Hero illustration"
+            height={300}
+            width={800}
+            className="relative rounded-2xl mx-auto h-64 max-w-4xl w-full"
+          />
+        </div>
+      </div> */}
     </section>
   );
 }

@@ -20,7 +20,7 @@ export type MentorProfileWithUser = MentorProfileSelectType & {
 export type StudentProfileWithUser = StudentProfileSelectType & {
   user: UserSelectType;
   videoCall: (VideoCallSelectType & {
-    preferredTime: PreferredTimeSelectType | null;
+    preferredTime: PreferredTimeSelectType;
   })[];
 };
 

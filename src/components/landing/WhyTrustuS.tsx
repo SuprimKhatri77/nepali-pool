@@ -1,96 +1,88 @@
-import Image from "next/image";
-
 export default function WhyTrustUs() {
+  const trustPoints = [
+    "Affordable mentorship by real Nepali students who've successfully navigated the process",
+    "Verified mentors with proven track records of successful applications",
+    "Comprehensive guidance from application to arrival in Japan",
+    "24/7 support system for all your questions and concerns",
+    "Transparent pricing with no hidden fees or charges",
+  ];
+
+  const testimonials = [
+    {
+      name: "Roshan Pokharel",
+      text: "I was skeptical at first, but the mentorship program turned out to be a game-changer. The guidance and support I received were invaluable, and I'm grateful for the opportunity to learn from someone who's been there.",
+    },
+    {
+      name: "Priya Sharma",
+      text: "The mentor assigned to me understood exactly what I was going through. Their firsthand experience made all the difference in my application success.",
+    },
+  ];
+
   return (
-    <section className="rounded-md bg-white text-black max-w-[90%] w-full px-8 shadow-md mx-auto min-h-auto my-10 py-10 flex flex-col md:flex-row gap-4">
-      <div id="1" className="md:w-1/2">
-        <h1 className="text-4xl font-medium text-center py-4">Why Trust Us?</h1>
-        <hr className="border-2 border-yellow-400 w-12 mx-auto" />
-        <div id="content" className="text-base xl:text-xl font-medium my-6">
-          {/* repeat trusting content 4times */}
-          <div className="flex justify-center items-center gap-4 mt-4">
-            <Image src="/landing/tick.png" height={40} width={40} alt="tick" />
-            <p className="text-sm sm:text-base md:text-lg text-black/80">
-              Affordable mentorship by real Nepali students Get guidance from
-              those who&apos;ve successfully navigated the process
-            </p>
+    <section className="py-20 px-6 bg-white">
+      <div className="max-w-7xl mx-auto">
+        <div className="grid md:grid-cols-2 gap-12">
+          {/* Trust Points */}
+          <div>
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-3">
+              Why Trust Us?
+            </h2>
+            <div className="w-20 h-1 bg-emerald-600 rounded-full mb-8"></div>
+
+            <div className="space-y-4">
+              {trustPoints.map((point, index) => (
+                <div key={index} className="flex items-start gap-3">
+                  <div className="mt-1 flex-shrink-0">
+                    <svg
+                      className="w-5 h-5 text-emerald-600"
+                      fill="currentColor"
+                      viewBox="0 0 20 20"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                        clipRule="evenodd"
+                      />
+                    </svg>
+                  </div>
+                  <p className="text-gray-700">{point}</p>
+                </div>
+              ))}
+            </div>
           </div>
-          <div className="flex justify-center items-center gap-4 mt-4">
-            <Image src="/landing/tick.png" height={0} width={40} alt="tick" />
-            <p className="text-sm sm:text-base md:text-lg text-black/80">
-              Affordable mentorship by real Nepali students Get guidance from
-              those who&apos;ve successfully navigated the process
-            </p>
-          </div>
-          <div className="flex justify-center items-center gap-4 mt-4">
-            <Image src="/landing/tick.png" height={40} width={40} alt="tick" />
-            <p className="text-sm sm:text-base md:text-lg text-black/80">
-              Affordable mentorship by real Nepali students Get guidance from
-              those who&apos;ve successfully navigated the process
-            </p>
-          </div>
-          <div className="flex justify-center items-center gap-4 mt-4">
-            <Image src="/landing/tick.png" height={40} width={40} alt="tick" />
-            <p className="text-sm sm:text-base md:text-lg text-black/80">
-              Affordable mentorship by real Nepali students Get guidance from
-              those who&apos;ve successfully navigated the process
-            </p>
-          </div>
-          <div className="flex justify-center items-center gap-4 mt-4">
-            <Image src="/landing/tick.png" height={40} width={40} alt="tick" />
-            <p className="text-sm sm:text-base md:text-lg text-black/80">
-              Affordable mentorship by real Nepali students Get guidance from
-              those who&apos;ve successfully navigated the process
-            </p>
-          </div>
-        </div>
-      </div>
-      <div id="2" className="md:w-1/2">
-        <h3 className="text-3xl font-medium text-center py-4">Testiomonials</h3>
-        <hr className="border-2 border-yellow-400 w-12 mx-auto" />
-        {/* repeat testimonial card 4times */}
-        <div
-          id="testimonial-card"
-          className="max-w-[350px] flex items-center flex-col mt-3 bg-gradient-to-l from-[#D9D9D9] via-[#69439D] to-[#15023B] from-0% via-0% to-100% rounded-[8px]  px-4 py-8 mx-auto"
-        >
-          <div
-            id="image-name"
-            className="flex items-center justify-around gap-3"
-          >
-            <p className="w-12 h-12 rounded-full bg-black"></p>
-            <p className="text-white">
-              Name: <span>Roshan Pokharel</span>
-            </p>
-          </div>
-          <div id="review" className="sm:px-0 px-2 pt-2 mt-3">
-            <p className="text-[#d8d8d8] text-sm">
-              I was skeptical at first, but the mentorship program turned out to
-              be a game-changer. The guidance and support I received were
-              invaluable, and I&apos;m grateful for the opportunity to learn
-              from someone who&apos;s been there.
-            </p>
-          </div>
-        </div>
-        <div
-          id="testimonial-card"
-          className="max-w-[350px] flex items-center flex-col mt-3 bg-gradient-to-l from-[#D9D9D9] via-[#69439D] to-[#15023B] from-0% via-0% to-100% rounded-[8px]  px-4 py-8 mx-auto"
-        >
-          <div
-            id="image-name"
-            className="flex items-center justify-around gap-3"
-          >
-            <p className="w-12 h-12 rounded-full bg-black"></p>
-            <p className="text-white">
-              Name: <span>Roshan Pokharel</span>
-            </p>
-          </div>
-          <div id="review" className="sm:px-0 px-2 mt-3 pt-2">
-            <p className="text-[#d8d8d8] text-sm">
-              I was skeptical at first, but the mentorship program turned out to
-              be a game-changer. The guidance and support I received were
-              invaluable, and I&apos;m grateful for the opportunity to learn
-              from someone who&apos;s been there.
-            </p>
+
+          {/* Testimonials */}
+          <div>
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-3">
+              Testimonials
+            </h2>
+            <div className="w-20 h-1 bg-emerald-600 rounded-full mb-8"></div>
+
+            <div className="space-y-6">
+              {testimonials.map((testimonial, index) => (
+                <div
+                  key={index}
+                  className="bg-gradient-to-br from-emerald-50 to-emerald-100 rounded-xl p-6 border border-emerald-200"
+                >
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="w-12 h-12 bg-emerald-600 rounded-full flex items-center justify-center text-white font-bold">
+                      {testimonial.name.charAt(0)}
+                    </div>
+                    <div>
+                      <p className="font-semibold text-gray-900">
+                        {testimonial.name}
+                      </p>
+                      <p className="text-sm text-emerald-700">
+                        Verified Student
+                      </p>
+                    </div>
+                  </div>
+                  <p className="text-gray-700 text-sm leading-relaxed">
+                    {testimonial.text}
+                  </p>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </div>

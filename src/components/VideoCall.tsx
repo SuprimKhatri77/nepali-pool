@@ -3,9 +3,9 @@
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
-import { getVideoCallPreferredTime } from "../../server/helper/getVideoCallPreferredTime";
-import { useState } from "react";
-import { VideoCallWithStudentAndMentor } from "../../types/all-types";
+import type { VideoCallWithStudentAndMentor } from "../../types/all-types";
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 
 export default function VideoCall({
   videoCallRecords,
@@ -17,73 +17,72 @@ export default function VideoCall({
   const params = useSearchParams();
   const status = params.get("status");
 
-  return (
-    <div>
-      {(status === "pending" || !status) && (
-        <div className="flex flex-col gap-5 px-15 py-5">
-          <h1>Pending video call status</h1>
-          <div className="flex gap-5">
-            <Link
-              href="/video-call?status=completed"
-              className="bg-green-400 hover:bg-green-500 transition-all duration-300 py-2 px-5 rounded-lg text-slate-600 font-medium"
-            >
-              Completed
-            </Link>
-            <Link
-              href="/video-call?status=scheduled"
-              className="bg-blue-400 hover:bg-blue-500 transition-all duration-300 py-2 px-5 rounded-lg text-slate-600 font-medium"
-            >
-              Scheduled
-            </Link>
-            <Link
-              href="/video-call?status=cancelled"
-              className="bg-red-400 hover:bg-red-500 transition-all duration-300 py-2 px-5 rounded-lg text-slate-600 font-medium"
-            >
-              Cancelled
-            </Link>
-          </div>
+  const renderVideoCallCards = (filterStatus: string) => {
+    const filteredCalls = videoCallRecords.filter(
+      (vcr) => vcr.status === filterStatus
+    );
 
-          <div className="flex max-w-5xl mx-auto bg-slate-200 w-full py-7 px-8 rounded-lg gap-7">
-            {role === "student" ? (
-              videoCallRecords
-                .filter((vcr) => vcr.status === "pending")
-                .map((videoCall) => (
-                  <div
-                    key={videoCall.id}
-                    className="flex flex-col bg-orange-200 px-4 py-3 rounded-sm gap-3"
-                  >
-                    <div>
-                      <div className="flex">
-                        <Image
-                          src={videoCall.mentorProfile.imageUrl || ""}
-                          width={120}
-                          height={120}
-                          alt=""
-                          className="rounded-full"
-                        />
-                        <p className="bg-indigo-600 text-white rounded-full h-fit py-2 px-3 font-medium">
-                          {videoCall.status}
-                        </p>
-                      </div>
-                      <h1>Mentor: {videoCall.mentorProfile.user.name}</h1>
-                    </div>
-                    <div>
-                      <p className="">
-                        Purchased for:
-                        <span className="underline">
-                          {videoCall.mentorProfile.user.name}
-                        </span>
-                      </p>
-                    </div>
-                    <div className="flex flex-col gap-2">
-                      <div>
-                        <p className="text-muted-foreground text-sm">
+    if (filteredCalls.length === 0) {
+      return (
+        <div className="text-center py-12 text-gray-500">
+          <p>No {filterStatus} video calls found.</p>
+        </div>
+      );
+    }
+
+    return (
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {role === "student"
+          ? filteredCalls.map((videoCall) => (
+              <Card
+                key={videoCall.id}
+                className="overflow-hidden border-emerald-100 hover:shadow-lg transition-shadow"
+              >
+                <CardContent className="p-6">
+                  <div className="flex items-start justify-between mb-4">
+                    <Image
+                      src={videoCall.mentorProfile.imageUrl || ""}
+                      width={80}
+                      height={80}
+                      alt=""
+                      className="rounded-full ring-2 ring-emerald-100"
+                    />
+                    <span
+                      className={`px-3 py-1 rounded-full text-xs font-medium ${
+                        filterStatus === "pending"
+                          ? "bg-amber-100 text-amber-700"
+                          : filterStatus === "scheduled"
+                            ? "bg-blue-100 text-blue-700"
+                            : filterStatus === "completed"
+                              ? "bg-emerald-100 text-emerald-700"
+                              : "bg-red-100 text-red-700"
+                      }`}
+                    >
+                      {videoCall.status}
+                    </span>
+                  </div>
+
+                  <h3 className="font-semibold text-gray-900 mb-2">
+                    Mentor: {videoCall.mentorProfile.user.name}
+                  </h3>
+
+                  <p className="text-sm text-gray-600 mb-4">
+                    Purchased for:{" "}
+                    <span className="font-medium">
+                      {videoCall.mentorProfile.user.name}
+                    </span>
+                  </p>
+
+                  {filterStatus === "pending" && (
+                    <div className="space-y-3">
+                      <div className="bg-emerald-50 p-3 rounded-lg">
+                        <p className="text-sm text-gray-700 mb-1">
                           Please select a preferred date for your video call
                         </p>
-                        <p className="text-muted-foreground text-xs">
+                        <p className="text-xs text-gray-500">
                           A mentor will review your preferred time and schedule
                           the video call or will send a new Date and Time which
-                          the mentor is avialabe at.
+                          the mentor is available at.
                         </p>
                       </div>
 
@@ -91,169 +90,260 @@ export default function VideoCall({
                         videoCall.preferredTime.studentPreferredTime && (
                           <Link
                             href={`/video-call/schedule/${videoCall.id}`}
-                            className="bg-violet-700 hover:bg-violet-800 py-3 px-5 rounded-lg duration-300 transition-all text-slate-50"
+                            className="block"
                           >
-                            Review your date
+                            <Button className="w-full bg-emerald-600 hover:bg-emerald-700">
+                              Review your date
+                            </Button>
                           </Link>
                         )
                       ) : (
                         <Link
                           href={`/video-call/schedule/${videoCall.id}`}
-                          className="bg-amber-700 hover:bg-amber-800 py-3 px-5 rounded-lg duration-300 transition-all text-slate-50"
+                          className="block"
                         >
-                          Select a date
+                          <Button className="w-full bg-amber-600 hover:bg-amber-700">
+                            Select a date
+                          </Button>
                         </Link>
                       )}
                     </div>
-                  </div>
-                ))
-            ) : role === "mentor" ? (
-              videoCallRecords
-                .filter((vcr) => vcr.status === "pending")
-                .map((videoCall) => (
-                  <div
-                    key={videoCall.id}
-                    className="flex flex-col bg-orange-200 px-4 py-3 rounded-sm gap-3"
-                  >
-                    <div>
-                      <div className="flex">
-                        <Image
-                          src={videoCall.studentProfile.imageUrl || ""}
-                          width={120}
-                          height={120}
-                          alt=""
-                          className="rounded-full"
-                        />
-                        <p className="bg-indigo-600 text-white rounded-full h-fit py-2 px-3 font-medium">
-                          {videoCall.status}
+                  )}
+
+                  {filterStatus === "scheduled" && (
+                    <div className="space-y-3">
+                      <div className="bg-blue-50 p-3 rounded-lg">
+                        <p className="text-sm text-gray-700">
+                          Your video call is scheduled
                         </p>
                       </div>
-                      <h1>Student: {videoCall.studentProfile.user.name}</h1>
+                      <Link
+                        href={`/video-call/schedule/${videoCall.id}`}
+                        className="block"
+                      >
+                        <Button className="w-full bg-emerald-600 hover:bg-emerald-700">
+                          View details
+                        </Button>
+                      </Link>
                     </div>
-                    <div>
-                      <p className="">
-                        Purchased for:
-                        <span className="underline">
-                          {videoCall.mentorProfile.user.name}
-                        </span>
+                  )}
+
+                  {filterStatus === "completed" && (
+                    <div className="bg-emerald-50 p-3 rounded-lg">
+                      <p className="text-sm text-gray-700">
+                        This video call has been completed
                       </p>
                     </div>
-                    <div className="flex flex-col gap-2">
-                      <div>
-                        <p className="text-muted-foreground text-sm">
-                          Please select a preferred date for your video call to
-                          be scheduled with the student.
+                  )}
+
+                  {filterStatus === "cancelled" && (
+                    <div className="bg-red-50 p-3 rounded-lg">
+                      <p className="text-sm text-gray-700">
+                        This video call was cancelled
+                      </p>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            ))
+          : role === "mentor"
+            ? filteredCalls.map((videoCall) => (
+                <Card
+                  key={videoCall.id}
+                  className="overflow-hidden border-emerald-100 hover:shadow-lg transition-shadow"
+                >
+                  <CardContent className="p-6">
+                    <div className="flex items-start justify-between mb-4">
+                      <Image
+                        src={videoCall.studentProfile.imageUrl || ""}
+                        width={80}
+                        height={80}
+                        alt=""
+                        className="rounded-full ring-2 ring-emerald-100"
+                      />
+                      <span
+                        className={`px-3 py-1 rounded-full text-xs font-medium ${
+                          filterStatus === "pending"
+                            ? "bg-amber-100 text-amber-700"
+                            : filterStatus === "scheduled"
+                              ? "bg-blue-100 text-blue-700"
+                              : filterStatus === "completed"
+                                ? "bg-emerald-100 text-emerald-700"
+                                : "bg-red-100 text-red-700"
+                        }`}
+                      >
+                        {videoCall.status}
+                      </span>
+                    </div>
+
+                    <h3 className="font-semibold text-gray-900 mb-2">
+                      Student: {videoCall.studentProfile.user.name}
+                    </h3>
+
+                    <p className="text-sm text-gray-600 mb-4">
+                      Purchased for:{" "}
+                      <span className="font-medium">
+                        {videoCall.mentorProfile.user.name}
+                      </span>
+                    </p>
+
+                    {filterStatus === "pending" && (
+                      <div className="space-y-3">
+                        <div className="bg-emerald-50 p-3 rounded-lg">
+                          <p className="text-sm text-gray-700">
+                            Please select a preferred date for your video call
+                            to be scheduled with the student.
+                          </p>
+                        </div>
+
+                        {videoCall.preferredTime &&
+                        videoCall.preferredTime.mentorPreferredTime ? (
+                          <Link
+                            href={`/video-call/respond/${videoCall.id}`}
+                            className="block"
+                          >
+                            <Button className="w-full bg-emerald-600 hover:bg-emerald-700">
+                              Review your date
+                            </Button>
+                          </Link>
+                        ) : (
+                          <Link
+                            href={`/video-call/respond/${videoCall.id}`}
+                            className="block"
+                          >
+                            <Button className="w-full bg-amber-600 hover:bg-amber-700">
+                              Select a date
+                            </Button>
+                          </Link>
+                        )}
+                      </div>
+                    )}
+
+                    {filterStatus === "scheduled" && (
+                      <div className="space-y-3">
+                        <div className="bg-blue-50 p-3 rounded-lg">
+                          <p className="text-sm text-gray-700">
+                            Your video call is scheduled with the student
+                          </p>
+                        </div>
+                        <Link
+                          href={`/video-call/respond/${videoCall.id}`}
+                          className="block"
+                        >
+                          <Button className="w-full bg-emerald-600 hover:bg-emerald-700">
+                            View details
+                          </Button>
+                        </Link>
+                      </div>
+                    )}
+
+                    {filterStatus === "completed" && (
+                      <div className="bg-emerald-50 p-3 rounded-lg">
+                        <p className="text-sm text-gray-700">
+                          This video call has been completed
                         </p>
                       </div>
+                    )}
 
-                      {videoCall.preferredTime &&
-                      videoCall.preferredTime.mentorPreferredTime ? (
-                        <Link
-                          href={`/video-call/respond/${videoCall.id}`}
-                          className="bg-violet-700 hover:bg-violet-800 py-3 px-5 rounded-lg duration-300 transition-all text-slate-50"
-                        >
-                          Review your date
-                        </Link>
-                      ) : (
-                        <Link
-                          href={`/video-call/respond/${videoCall.id}`}
-                          className="bg-amber-700 hover:bg-amber-800 py-3 px-5 rounded-lg duration-300 transition-all text-slate-50"
-                        >
-                          Select a date
-                        </Link>
-                      )}
-                    </div>
-                  </div>
-                ))
-            ) : (
-              <div className="flex flex-col items-center justify-center">
-                <h1>Invalid Role</h1>
-                <Link
-                  href="/select-role"
-                  className="bg-amber-700 hover:bg-amber-800 transition-all duration-300"
-                >
-                  Select role
-                </Link>
-              </div>
-            )}
-          </div>
-        </div>
-      )}
-      {status === "scheduled" && (
-        <div className="flex flex-col gap-5 px-15 py-5">
-          <h1>Scheduled video call status</h1>
-          <div className="flex gap-5">
-            <Link
-              href="/video-call?status=completed"
-              className="bg-green-400 hover:bg-green-500 transition-all duration-300 py-2 px-5 rounded-lg text-slate-600 font-medium"
-            >
-              Completed
+                    {filterStatus === "cancelled" && (
+                      <div className="bg-red-50 p-3 rounded-lg">
+                        <p className="text-sm text-gray-700">
+                          This video call was cancelled
+                        </p>
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
+              ))
+            : null}
+      </div>
+    );
+  };
+
+  if (role !== "student" && role !== "mentor") {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-emerald-50 to-green-50 flex items-center justify-center p-6">
+        <Card className="max-w-md w-full">
+          <CardContent className="p-8 text-center">
+            <h1 className="text-2xl font-bold text-gray-900 mb-4">
+              Invalid Role
+            </h1>
+            <Link href="/select-role">
+              <Button className="bg-emerald-600 hover:bg-emerald-700">
+                Select role
+              </Button>
             </Link>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-emerald-50 to-green-50">
+      <div className="sticky top-0 z-10 bg-white/80 backdrop-blur-md border-b border-emerald-100">
+        <div className="max-w-7xl mx-auto px-6 py-6">
+          <h1 className="text-3xl font-bold text-gray-900 mb-6">
+            {status === "pending" || !status
+              ? "Pending Video Calls"
+              : status === "scheduled"
+                ? "Scheduled Video Calls"
+                : status === "completed"
+                  ? "Completed Video Calls"
+                  : "Cancelled Video Calls"}
+          </h1>
+
+          <div className="flex flex-wrap gap-3">
             <Link
               href="/video-call?status=pending"
-              className="bg-blue-400 hover:bg-blue-500 transition-all duration-300 py-2 px-5 rounded-lg text-slate-600 font-medium"
-            >
-              Pending
-            </Link>
-            <Link
-              href="/video-call?status=cancelled"
-              className="bg-red-400 hover:bg-red-500 transition-all duration-300 py-2 px-5 rounded-lg text-slate-600 font-medium"
-            >
-              Cancelled
-            </Link>
-          </div>
-        </div>
-      )}
-      {status === "completed" && (
-        <div className="flex flex-col gap-5 px-15 py-5">
-          <h1>Completed video call status</h1>
-          <div className="flex gap-5">
-            <Link
-              href="/video-call?status=pending"
-              className="bg-green-400 hover:bg-green-500 transition-all duration-300 py-2 px-5 rounded-lg text-slate-600 font-medium"
+              className={`px-4 py-2 rounded-lg font-medium transition-all ${
+                status === "pending" || !status
+                  ? "bg-amber-600 text-white shadow-sm"
+                  : "bg-white text-gray-600 hover:bg-gray-50 border border-gray-200"
+              }`}
             >
               Pending
             </Link>
             <Link
               href="/video-call?status=scheduled"
-              className="bg-blue-400 hover:bg-blue-500 transition-all duration-300 py-2 px-5 rounded-lg text-slate-600 font-medium"
+              className={`px-4 py-2 rounded-lg font-medium transition-all ${
+                status === "scheduled"
+                  ? "bg-blue-600 text-white shadow-sm"
+                  : "bg-white text-gray-600 hover:bg-gray-50 border border-gray-200"
+              }`}
             >
               Scheduled
             </Link>
             <Link
+              href="/video-call?status=completed"
+              className={`px-4 py-2 rounded-lg font-medium transition-all ${
+                status === "completed"
+                  ? "bg-emerald-600 text-white shadow-sm"
+                  : "bg-white text-gray-600 hover:bg-gray-50 border border-gray-200"
+              }`}
+            >
+              Completed
+            </Link>
+            <Link
               href="/video-call?status=cancelled"
-              className="bg-red-400 hover:bg-red-500 transition-all duration-300 py-2 px-5 rounded-lg text-slate-600 font-medium"
+              className={`px-4 py-2 rounded-lg font-medium transition-all ${
+                status === "cancelled"
+                  ? "bg-red-600 text-white shadow-sm"
+                  : "bg-white text-gray-600 hover:bg-gray-50 border border-gray-200"
+              }`}
             >
               Cancelled
             </Link>
           </div>
         </div>
-      )}
-      {status === "cancelled" && (
-        <div className="flex flex-col gap-5 px-15 py-5">
-          <h1>Cancelled video call status</h1>
-          <div className="flex gap-5">
-            <Link
-              href="/video-call?status=completed"
-              className="bg-green-400 hover:bg-green-500 transition-all duration-300 py-2 px-5 rounded-lg text-slate-600 font-medium"
-            >
-              Completed
-            </Link>
-            <Link
-              href="/video-call?status=scheduled"
-              className="bg-blue-400 hover:bg-blue-500 transition-all duration-300 py-2 px-5 rounded-lg text-slate-600 font-medium"
-            >
-              Scheduled
-            </Link>
-            <Link
-              href="/video-call?status=pending"
-              className="bg-indigo-400 hover:bg-indigo-500 transition-all duration-300 py-2 px-5 rounded-lg text-slate-600 font-medium"
-            >
-              Pending
-            </Link>
-          </div>
-        </div>
-      )}
+      </div>
+
+      <div className="max-w-7xl mx-auto px-6 py-8">
+        {(status === "pending" || !status) && renderVideoCallCards("pending")}
+        {status === "scheduled" && renderVideoCallCards("scheduled")}
+        {status === "completed" && renderVideoCallCards("completed")}
+        {status === "cancelled" && renderVideoCallCards("cancelled")}
+      </div>
     </div>
   );
 }

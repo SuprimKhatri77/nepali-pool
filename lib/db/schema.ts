@@ -217,6 +217,11 @@ export const videoCall = pgTable(
     updatedAt: timestamp("updated_at").defaultNow(),
   },
   (table) => [
+    uniqueIndex("unique_student_mentor_status").on(
+      table.studentId,
+      table.mentorId,
+      table.status
+    ),
     index("idx_video_student").on(table.studentId),
     index("idx_video_mentor").on(table.mentorId),
     index("idx_video_scheduledTime").on(table.scheduledTime),
@@ -253,7 +258,9 @@ export const suggestedByEnum = pgEnum("suggestedBy", ["student", "mentor"]);
 
 export const preferredTimeLog = pgTable("preferred_time_log", {
   id: uuid("id").primaryKey().notNull().defaultRandom(),
-  videoId: uuid("video_id").references(() => videoCall.id),
+  videoId: uuid("video_id").references(() => videoCall.id, {
+    onDelete: "cascade",
+  }),
   suggestedBy: suggestedByEnum("suggested_by").notNull(),
   suggestedTime: timestamp("suggested_time", { withTimezone: true }).notNull(),
   createdAt: timestamp("created_at").defaultNow(),

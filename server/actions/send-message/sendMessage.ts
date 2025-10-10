@@ -7,19 +7,23 @@ import { auth } from "../../lib/auth/auth";
 import { and, eq, or } from "drizzle-orm";
 import { getCurrentUser } from "../../lib/auth/helpers/getCurrentUser";
 
+type SendMessageType =
+  | { success: true; messageId: string }
+  | { success: false; error: string };
 export async function sendMessage(
   message: string,
   senderId: string,
   chatId: string,
   hasAttachment: boolean = false
-) {
+): Promise<SendMessageType> {
   if (!chatId || !senderId || (!message.trim() && !hasAttachment)) {
     return { success: false, error: "Message cannot be empty" };
   }
 
   try {
     const result = await getCurrentUser();
-    if (!result.success) return result;
+    if (!result.success)
+      return { success: result.success, error: result.message };
     const userRecord = result.userRecord;
 
     const chat = await db.query.chats.findFirst({
@@ -39,7 +43,7 @@ export async function sendMessage(
 
     if (chat.status !== "active") {
       return {
-        succes: false,
+        success: false,
         error: "Chat subscription expired",
       };
     }

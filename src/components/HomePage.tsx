@@ -10,7 +10,7 @@ import Footer from "./landing/Footer";
 
 export default function HomePage() {
   return (
-    <>
+    <div className="min-h-screen bg-gray-50">
       <Header />
       <Hero />
       <HowItWorks />
@@ -18,6 +18,6 @@ export default function HomePage() {
       <Pricing />
       <SubscribeNewsLetter />
       <Footer />
-    </>
+    </div>
   );
 }
