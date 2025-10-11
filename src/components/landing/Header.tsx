@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
+import { UserSelectType } from "../../../lib/db/schema";
 
 // Mock components for demo
 // const Image = ({ src, alt, width, height, className, loading }) => (
@@ -19,11 +20,11 @@ import { useState } from "react";
 // );
 
 // Header Component
-export default function Header() {
+export default function Header({user}: {user: UserSelectType}) {
   const [isOpen, setIsOpen] = useState(false);
-  const session = null; // Mock session
-  const isPending = false;
 
+
+ 
   return (
     <header className="bg-white border-b border-gray-200 px-6 lg:px-10 py-4">
       <div className="max-w-7xl mx-auto flex justify-between items-center">
@@ -41,7 +42,7 @@ export default function Header() {
 
         {/* Desktop Menu */}
         <nav className="hidden md:flex items-center gap-1">
-          {["Home", "Schools", "Mentors", "Guides"].map((item) => (
+          {["Home", "Schools", "Mentors","Chats", "Guides"].map((item) => (
             <Link
               key={item}
               href={item === "Home" ? "/" : `/${item.toLowerCase()}`}
@@ -54,26 +55,13 @@ export default function Header() {
 
         {/* Login Button */}
         <div className="hidden md:block">
-          {!session ? (
             <Link
-              href="/login"
+               href={user ? `/dashboard/${user.role}`: "/login"}
               className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-medium rounded-md transition-colors"
             >
-              Login
+              {user ? "Dashboard": "Login"}
             </Link>
-          ) : (
-            <div className="flex items-center gap-3">
-              <Link
-                href="/dashboard"
-                className="px-4 py-2 bg-emerald-50 text-emerald-700 text-sm font-medium rounded-md hover:bg-emerald-100 transition-colors"
-              >
-                Dashboard
-              </Link>
-              <button className="px-4 py-2 text-sm font-medium text-gray-700 hover:text-gray-900">
-                Sign Out
-              </button>
-            </div>
-          )}
+         
         </div>
 
         {/* Mobile Menu Button */}
@@ -110,7 +98,7 @@ export default function Header() {
       {isOpen && (
         <div className="md:hidden mt-4 pb-4 border-t border-gray-200">
           <div className="flex flex-col gap-2 pt-4">
-            {["Home", "Schools", "Mentors", "Guides"].map((item) => (
+            {["Home", "Schools", "Mentors","Chats", "Guides"].map((item) => (
               <Link
                 key={item}
                 href={item === "Home" ? "/" : `/${item.toLowerCase()}`}
@@ -121,10 +109,12 @@ export default function Header() {
               </Link>
             ))}
             <Link
-              href="/login"
+                onClick={() => setIsOpen(false)}
+              
+              href={user ? `/dashboard/${user.role}`: "/login"}
               className="mx-4 mt-2 px-4 py-2 bg-emerald-600 text-white text-sm font-medium rounded-md text-center"
             >
-              Login
+              {user ? "Dashboard" : "Login"}
             </Link>
           </div>
         </div>
