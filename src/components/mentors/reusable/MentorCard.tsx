@@ -1,71 +1,82 @@
 "use client";
+
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { MapPin, Star, BadgeCheck } from "lucide-react";
 import React from "react";
-import { UserSelectType } from "../../../../../../lib/db/schema";
+import { MentorProfileWithUser } from "../../../../types/all-types";
 
-export default function MentorCard({
-  userId,
-  user,
-  imageUrl,
-  city,
-  country,
-  createdAt,
-}: {
-  readonly user: UserSelectType;
-  readonly userId: string;
-  readonly imageUrl: string;
-  readonly city: string;
-  readonly country: string;
-  readonly createdAt: string;
-}) {
-  console.log(createdAt);
+
+
+export default function MentorCard({ mentor }: {mentor: MentorProfileWithUser}) {
   const router = useRouter();
-  function handleRoute() {
-    router.push(`/public/mentors/${userId}`);
-  }
-  return (
-    <div
-      id="card"
-      className="max-w-[220px] h-[320px]   w-full bg-gradient-to-b from-[#D9D9D9] via-[#69439D] to-[#15023B] from-0% via-0% to-100% rounded-[8px]  p-4"
-    >
-      <div id="icon" className="flex  justify-center my-3">
-        <Image
-          src={`${imageUrl}`}
-          alt="signup"
-          width={127}
-          height={127}
-          className="rounded-full  object-center object-cover w-[127px] h-[127px]"
-        ></Image>
-      </div>
-      <div id="content" className="text-white">
-        <ul className="flex flex-col gap-2 items-start justify-start mt-3">
-          <li className="text-center font-medium text-xs">
-            Name:<span>&nbsp;{user.name}</span>
-          </li>
-          <li>
-            <p className="text-center text-xs font-medium">
-              Address:&nbsp;{`${city}, ${country}`}
-            </p>
-          </li>
-          <li>
-            <p className="text-center text-xs font-medium">
-              Specialize:&nbsp;{`Job Search`}
-            </p>
-          </li>
-          <li>
-            <p className="text-center text-xs font-medium">Rating:⭐⭐⭐⭐</p>
-          </li>
-        </ul>
-      </div>
+  const { userId, bio, city, country, imageUrl, verifiedStatus, user } = mentor;
 
-      <button
-        onClick={handleRoute}
-        className="bg-gradient-to-b from-0% via-0% to-100% from-[#D9D9D9] via-[#69439D] to-[#15023B] text-white cursor-pointer text-base py-2 w-[170px] rounded-[8px] mt-4 mb-3"
-      >
-        {" "}
-        View Profile
-      </button>
-    </div>
+  function handleRoute() {
+    router.push(`/mentors/${userId}`);
+  }
+
+  return (
+    <Card
+      onClick={handleRoute}
+      className="group max-w-[270px] w-full border border-gray-200 rounded-2xl shadow-sm 
+                 hover:shadow-lg transition-all duration-300 cursor-pointer 
+                 hover:border-emerald-400 bg-white"
+    >
+      {/* Header - Image */}
+      <CardHeader className="p-0 relative">
+        <div className="relative w-[180px] rounded-full mx-auto  h-[180px]">
+          <Image
+            src={imageUrl || "/default-avatar.png"}
+            alt={user.name || "Mentor"}
+            fill
+            className="object-cover flex justify-center rounded-full object-center"
+          />
+        </div>
+        {verifiedStatus === "accepted" && (
+          <span className="absolute top-2 right-2 bg-emerald-400 text-white rounded-full p-1">
+            <BadgeCheck className="h-4 w-4" />
+          </span>
+        )}
+      </CardHeader>
+
+      {/* Content */}
+      <CardContent className="px-4 py-3 space-y-2">
+        <CardTitle className="text-lg font-semibold text-gray-900 flex items-center justify-between">
+          {user.name}
+        </CardTitle>
+
+        <div className="flex items-center gap-1 text-gray-600 text-sm">
+          <MapPin className="h-4 w-4 text-emerald-500" />
+          <span className="capitalize">
+            {city}, {country}
+          </span>
+        </div>
+
+        <p className="text-sm text-gray-700 line-clamp-2">
+          {bio || "No bio provided."}
+        </p>
+
+        <div className="flex items-center gap-1 text-yellow-500 text-sm">
+          <Star className="h-4 w-4 fill-yellow-500" />
+          <span>4.8 / 5</span>
+        </div>
+      </CardContent>
+
+      {/* Footer */}
+      <CardFooter className="px-4 pb-4">
+        <Button
+          onClick={(e) => {
+            e.stopPropagation();
+            handleRoute();
+          }}
+          className="w-full bg-emerald-400 hover:bg-emerald-500 text-white rounded-lg transition"
+        >
+          View Profile
+        </Button>
+      </CardFooter>
+    </Card>
   );
 }

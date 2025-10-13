@@ -1,170 +1,194 @@
+"use client";
+
 import Image from "next/image";
-import { MentorProfileType } from "./MentorSpecific";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
+import { Badge } from "@/components/ui/badge";
+import { MapPin, Star, Phone, Bookmark, MessageSquareIcon } from "lucide-react";
+import {  MentorProfileWithUser } from "../../../../types/all-types";
+import { useRouter } from "next/navigation";
 
 export default function MentorProfile({
-  mentorDetail,
-}: Readonly<{ mentorDetail: MentorProfileType }>) {
+  mentorDetail
+}: Readonly<{ mentorDetail: MentorProfileWithUser}>) {
+  const router = useRouter()
   return (
-    <section className="md:mx-auto md:max-w-[90%] w-full">
-      <div
-        id="detail-container"
-        className="bg-[linear-gradient(60deg,#DD4251_44%,#760000_100%)] max-w-[1200px] w-full min-h-[630px] shadow-md  mx-auto p-4 sm:p-8 rounded-md sm:rounded-3xl text-white"
-      >
-        <div id="main-details" className="flex flex-col lg:flex-row gap-4">
-          <div
-            id="image"
-            className="sm:w-68 sm:h-64 w-40 h-36 rounded-2xl mx-auto lg:mx-0"
-          >
+    <section className="mx-auto w-full max-w-6xl p-4 md:p-6">
+      <Card className="bg-background text-gray-900 shadow-lg border rounded-2xl">
+        
+        {/* Header */}
+        <CardHeader className="flex flex-col lg:flex-row gap-6 items-center lg:items-start">
+          {/* Profile Image */}
+          <div className="relative w-36 h-36 sm:w-48 sm:h-48 rounded-full overflow-hidden border-4 border-emerald-400 shadow-md">
             <Image
-              src={mentorDetail.mentorDetail.imageUrl}
-              alt="signup"
+              src={mentorDetail.imageUrl ?? ""}
+              alt={mentorDetail.user.name}
               width={200}
               height={200}
-              className="rounded-full w-full h-full max-h-[200px] max-w-[200px]"
-            ></Image>
+              className="object-cover w-full h-full"
+            />
           </div>
-          <div id="details" className="max-w-[800px] w-full mt-6">
-            <div id="namerow" className="flex justify-between">
-              <h1 className="text-xl sm:text-3xl md:text-5xl font-bold lg:pl-20">
+
+          {/* Name + Info */}
+          <div className="flex flex-col flex-1 space-y-3">
+            <div className="flex grow gap-4 justify-between items-start">
+              <CardTitle className="text-2xl sm:text-4xl font-bold tracking-tight">
                 {mentorDetail.user.name}
-              </h1>
-              <button className="bg-[#12B02A] px-4 py-2 rounded-md cursor-pointer hover:bg-[#109524] transition-colors duration-200">
-                Make A Call
-              </button>
-            </div>
-            <div
-              id="role-address"
-              className="flex mt-3 text-xl sm:text-2xl lg:pl-20"
-            >
-              <div id="location" className="flex gap-2 items-center  mt-1">
-                <Image
-                  src="/navigation.png"
-                  alt="Location"
-                  width={20}
-                  height={20}
-                  className="mt-4 sm:block hidden"
-                ></Image>
-                <p className=" text-[#D2D2D2] mt-4 text-base font-medium sm:text-2xl">
-                  {mentorDetail.mentorDetail.city
-                    ?.charAt(0)
-                    .toUpperCase()
-                  // mentorDetail.mentorDetail.city.slice(1)
-                  }
-                  ,{" "}
-                  {mentorDetail.mentorDetail.country
-                    ?.charAt(0)
-                    .toUpperCase()
-                  // mentorDetail.mentorDetail.country.slice(1)
-                  }
-                </p>
+              </CardTitle>
+
+              <div className="flex  gap-2 lg:mt-0 mt-2 ">
+                <Button
+                 onClick={()=> router.push("/chats")}
+                size="sm"
+                className="bg-emerald-400 hover:bg-emerald-500 text-white cursor-pointer"
+              >
+                <MessageSquareIcon className="w-4 h-4 mr-2" />
+                Chat
+              </Button>
+              <Button
+                size="sm"
+                className="bg-emerald-400 hover:bg-emerald-500 text-white"
+              >
+                <Phone className="w-4 h-4 mr-2" />
+                Make a Call
+              </Button>
               </div>
-              <span className="flex gap-2 items-center text-base cursor-pointer mt-2 ml-auto">
-                <Image
-                  src="/Bookmark.png"
-                  alt="Bookmark"
-                  width={20}
-                  height={20}
-                  className=""
-                ></Image>
-                Add to favourites
+            </div>
+
+            <CardDescription className="text-gray-600 flex items-center gap-2 text-lg sm:text-xl">
+              <MapPin className="w-4 h-4 text-emerald-400" />
+              <span className="capitalize">
+                {mentorDetail.city}, {mentorDetail.country}
               </span>
+            </CardDescription>
+
+            <div className="flex items-center gap-2 text-gray-600 cursor-pointer hover:text-gray-800 transition">
+              <Bookmark className="w-4 h-4 text-emerald-400" />
+              <span>Add to favourites</span>
             </div>
-            <p className="text-xl sm:text-2xl text-[#D2D2D2] mt-4 lg:pl-20">
-              Rating:
-            </p>
-            <div id="rating" className="flex gap-4 items-center lg:pl-20">
-              <p className="text-xl sm:text-2xl  font-bold">8.5</p>
-              <div id="stars" className="flex pl-2">
-                <Image
-                  src="/Star.png"
-                  alt="Star"
-                  width={30}
-                  height={30}
-                  className="mt-0.5"
-                ></Image>
-                <Image
-                  src="/Star.png"
-                  alt="Star"
-                  width={30}
-                  height={30}
-                  className="mt-0.5"
-                ></Image>
-                <Image
-                  src="/Star.png"
-                  alt="Star"
-                  width={30}
-                  height={30}
-                  className="mt-0.5"
-                ></Image>
-                <Image
-                  src="/Star.png"
-                  alt="Star"
-                  width={30}
-                  height={30}
-                  className="mt-0.5"
-                ></Image>
-                <Image
-                  src="/Star.png"
-                  alt="Star"
-                  width={30}
-                  height={30}
-                  className="mt-0.5"
-                ></Image>
+
+            {/* Rating */}
+            <div className="flex items-center gap-3 mt-2">
+              <p className="text-lg font-semibold text-gray-700">Rating:</p>
+              <div className="flex gap-1 items-center">
+                {[...Array(5)].map((_, i) => (
+                  <Star
+                    key={i}
+                    className={`w-5 h-5 ${
+                      i < 4 ? "text-yellow-400 fill-yellow-400" : "text-gray-300"
+                    }`}
+                  />
+                ))}
               </div>
+              <span className="text-lg font-bold ml-2 text-gray-800">8.5</span>
             </div>
           </div>
-        </div>
-        <div
-          id="basic-information"
-          className="mt-6 flex flex-col md:flex-row gap-4"
-        >
-          <div id="first-col" className="md:w-1/2 text-xl sm:text-2xl">
-            <p className="text-[#D2D2D2] font-medium">Mentorship Record</p>
-            {/* todo : add mentorship record */}
-            <div className="mt-3">
-              <div className="flex gap-2   justify-between">
-                <p className="font-bold">Calls:</p>
-                <p className="font-medium">10</p>
+        </CardHeader>
+
+        <Separator className="my-4 bg-gray-200" />
+
+        {/* Middle Section */}
+        <CardContent className="grid md:grid-cols-2 gap-8">
+          {/* Mentorship Record */}
+          <div>
+            <h2 className="text-xl font-semibold text-emerald-600 mb-3">
+              Mentorship Record
+            </h2>
+            <div className="space-y-2 text-gray-700">
+              <div className="flex justify-between">
+                <span>Calls:</span>
+                <span className="font-semibold">10</span>
               </div>
-              <div className="flex gap-2  mt-2 justify-between">
-                <p className="font-bold">Requests:</p>
-                <p className="font-medium">40+</p>
+              <div className="flex justify-between">
+                <span>Requests:</span>
+                <span className="font-semibold">40+</span>
               </div>
             </div>
-            <hr className="border-2 mt-2" />
-            <p className="text-xl sm:text-xl text-[#D2D2D2] font-medium mt-4">
-              Specialization:
-            </p>
-            {/* todo : add specialization */}
-            <div className="mt-4  sm:text-2xl text-xl">
-              <div className="flex gap-2   justify-between">
-                <p className="font-bold">Fields:</p>
-                <p className="font-medium text-base sm:text-xl">
+
+            <Separator className="my-4 bg-gray-200" />
+
+            {/* Specialization */}
+            <h2 className="text-xl font-semibold text-emerald-600 mb-3">
+              Specialization
+            </h2>
+            <div className="space-y-2 text-gray-700">
+              <div className="flex justify-between">
+                <span>Field:</span>
+                <Badge
+                  variant="secondary"
+                  className="bg-emerald-100 text-emerald-700"
+                >
                   Computer Science
-                </p>
+                </Badge>
               </div>
-              <div className="flex gap-2  mt-2 justify-between">
-                <p className="font-bold">Institution:</p>
-                <p className="font-medium pr-2 text-base sm:text-xl text-right">
-                  Kyoto Language School
-                </p>
+              <div className="flex justify-between">
+                <span>Institution:</span>
+                <span className="text-right">Kyoto Language School</span>
               </div>
-              <div className="flex gap-2  mt-2 justify-between">
-                <p className="font-bold">Working:</p>
-                <p className="font-medium pr-2 text-base sm:text-2xl">Yes</p>
+              <div className="flex justify-between">
+                <span>Working:</span>
+                <span className="font-semibold">Yes</span>
               </div>
             </div>
           </div>
-          <hr />
-          <div
-            id="second-col"
-            className="md:w-1/3 border border-white ml-auto mt-6 p-2 sm:p-4 font-medium text-base"
-          >
-            <p className="font-bold">Bio:</p>
-            <p className="mt-3">{mentorDetail.mentorDetail.bio}</p>
+
+          {/* Bio */}
+          <div className="bg-gray-50 p-4 rounded-xl shadow-inner">
+            <h2 className="text-xl font-semibold text-emerald-600 mb-3">Bio</h2>
+            <p className="text-gray-700 leading-relaxed">{mentorDetail.bio}</p>
+
+            <Separator className="my-4 bg-gray-200" />
+
+            <div className="space-y-2 text-sm sm:text-base text-gray-700">
+              <p>
+                <span className="font-semibold">Email:</span>{" "}
+                {mentorDetail.user.email}
+              </p>
+              <p>
+                <span className="font-semibold">Phone:</span>{" "}
+                {mentorDetail.phoneNumber}
+              </p>
+              <p>
+                <span className="font-semibold">Nationality:</span>{" "}
+                {mentorDetail.nationality}
+              </p>
+            </div>
           </div>
-        </div>
-      </div>
+        </CardContent>
+
+        <Separator className="my-4 bg-gray-200" />
+
+        {/* Footer */}
+        <CardContent className="flex flex-wrap items-center justify-between text-sm text-gray-700">
+          <p>
+            <span className="font-semibold">Verified:</span>{" "}
+            <Badge
+              variant="secondary"
+              className="bg-emerald-400 text-white capitalize"
+            >
+              {mentorDetail.verifiedStatus}
+            </Badge>
+          </p>
+          <div className="flex gap-3 mt-2 md:mt-0">
+            <a
+              href={mentorDetail.resume ?? ""}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="underline text-emerald-600 hover:text-emerald-700 transition"
+            >
+              View Resume
+            </a>
+          </div>
+        </CardContent>
+      </Card>
     </section>
+
   );
 }

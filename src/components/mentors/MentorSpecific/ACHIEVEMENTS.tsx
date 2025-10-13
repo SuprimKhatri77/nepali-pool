@@ -2,7 +2,7 @@
 // import { MentorProfileSelectType } from "../../../../../../lib/db/schema";
 // import MentorCard from "../reusable/MentorCard";
 
-import MentorList from "../MentorList";
+import MentorListServer from "../MentorListServer";
 
 export default async function Achievements() {
   //   const mentors: MentorProfileSelectType[] =
@@ -11,5 +11,5 @@ export default async function Achievements() {
   //         user: true,
   //       },
   //     });
-  return <MentorList />;
+  return <MentorListServer />;
 }

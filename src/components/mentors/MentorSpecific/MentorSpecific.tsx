@@ -1,30 +1,30 @@
 "use client";
-import {
-  MentorProfileSelectType,
-  UserSelectType,
-} from "../../../../../../lib/db/schema";
+
+import { useRouter } from "next/navigation";
+import { MentorProfileWithUser, MentorProfileWithUserAndChat } from "../../../../types/all-types";
+import MentorList from "../MentorList";
 // import Achievements from "./ACHIEVEMENTS";
 import MentorProfile from "./MentorProfile";
+import { ChevronRightCircleIcon } from "lucide-react";
 
-export type MentorProfileType = {
-  mentorDetail: MentorProfileSelectType;
-  user: UserSelectType;
-};
+
 
 export default function MentorSpecific({
   mentorDetail,
+  matchingMentors
 }: Readonly<{
-  mentorDetail: MentorProfileType;
+  mentorDetail: MentorProfileWithUser;
+  matchingMentors: MentorProfileWithUser[]
 }>) {
-  // console.log(mentorDetail);
+  const router = useRouter()
   return (
     <main className=" mb-4">
-      <p className="text-xs font-semibold text-[#1D293D] mt-4 ml-16 mb-2">
-        Mentors {">"} {mentorDetail?.user?.name}
-      </p>
+      <div className="text-xs font-semibold text-[#1D293D] mt-4 ml-6 xl:ml-28 mb-2 flex items-center gadiv-2">
+        <p onClick={() => router.push("/mentors")} className="cursor-pointer p-2 rounded-[6px] hover:bg-emerald-400 hover:text-white transition-colors duration-150 ease-initial">Mentors</p> <ChevronRightCircleIcon /> <p className="p-2 rounded-[4px]">{mentorDetail?.user?.name}</p>
+      </div>
       <MentorProfile mentorDetail={mentorDetail} />
       {/* <Achievements /> */}
-      {/* <MentorList /> */}
+      <MentorList mentors={matchingMentors}/>
     </main>
   );
 }
