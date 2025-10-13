@@ -2,7 +2,8 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { UserSelectType } from "../../../lib/db/schema";
+import { sessionSelectType } from "../../../lib/db/schema";
+import { authClient } from "../../../server/lib/auth/auth-client";
 
 // Mock components for demo
 // const Image = ({ src, alt, width, height, className, loading }) => (
@@ -20,10 +21,10 @@ import { UserSelectType } from "../../../lib/db/schema";
 // );
 
 // Header Component
-export default function Header({user}: {user: UserSelectType}) {
+export default function Header() {
   const [isOpen, setIsOpen] = useState(false);
 
-
+  const {data: session } = authClient.useSession()
  
   return (
     <header className="bg-white border-b border-gray-200 px-6 lg:px-10 py-4">
@@ -56,10 +57,10 @@ export default function Header({user}: {user: UserSelectType}) {
         {/* Login Button */}
         <div className="hidden md:block">
             <Link
-               href={user ? `/dashboard/${user.role}`: "/login"}
+               href={session ? `/dashboard`: "/login"}
               className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-medium rounded-md transition-colors"
             >
-              {user ? "Dashboard": "Login"}
+              {session ? "Dashboard": "Login"}
             </Link>
          
         </div>
@@ -111,10 +112,10 @@ export default function Header({user}: {user: UserSelectType}) {
             <Link
                 onClick={() => setIsOpen(false)}
               
-              href={user ? `/dashboard/${user.role}`: "/login"}
+              href={session ? `/dashboard`: "/login"}
               className="mx-4 mt-2 px-4 py-2 bg-emerald-600 text-white text-sm font-medium rounded-md text-center"
             >
-              {user ? "Dashboard" : "Login"}
+              {session ? "Dashboard" : "Login"}
             </Link>
           </div>
         </div>
