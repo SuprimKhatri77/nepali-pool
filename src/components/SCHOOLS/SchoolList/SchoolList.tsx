@@ -1,30 +1,26 @@
-"use client";
-
-import { Pagination, PaginationItem, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
-import SchoolCard from "../reusableComponents/SchoolCard";
-import { SchoolSelectType } from "../../../../lib/db/schema";
-import { ChevronLeftCircleIcon, ChevronRightCircleIcon } from "lucide-react";
+"use client"
 import { usePagination } from "@/app/hooks/usePaginationHook";
+import { SchoolSelectType } from "../../../../lib/db/schema";
+import SchoolCard from "../reusableComponents/SchoolCard";
+import { Pagination, PaginationItem, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
+import { ChevronLeftCircleIcon, ChevronRightCircleIcon } from "lucide-react";
 
-export default function RecommendedSchools({ schools }: { schools: SchoolSelectType[] }) {
-const {setCurrentPage, visiblePages, currentItems, currentPage, totalPages} = usePagination(schools, 4)
 
+export default  function SchoolList({schools}:{schools: SchoolSelectType[]}) {
+  const {setCurrentPage, visiblePages, currentItems, currentPage, totalPages} = usePagination(schools, 6)
+  
   return (
-    <section className="bg-background  text-black max-w-[90%] w-full px-8 shadow-foreground mx-auto  pb-8 mb-8">
+    <section className="shadow-accent-foreground text-black max-w-[90%] w-full px-8 shadow-md mx-auto min-h-screen pb-8 mb-8">
       <h1 className="text-3xl sm:text-4xl font-medium text-center py-4">
-        Recommended Schools
+        {"Schools List"}
       </h1>
       <hr className="border-2 border-yellow-400 w-12 mx-auto" />
-
-      <div
-        id="container"
-        className="mt-6 flex gap-12 flex-wrap justify-center"
-      >
-        {currentItems.map((school, i) => (
-          <SchoolCard schoolDetail={school} key={i + 1} />
-        ))}
+      <div id="container" className="mt-6 flex gap-12 flex-wrap justify-center">
+        {/* load cards here! */}
+        {currentItems.map((school, i) => {
+          return <SchoolCard schoolDetail={school} key={i + 1} />;
+        })}
       </div>
-
       {/* Shadcn Pagination */}
       <div className="mt-8 flex justify-center">
         <Pagination

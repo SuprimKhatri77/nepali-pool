@@ -11,7 +11,7 @@ import {
   CommandShortcut,
 } from "@/components/ui/command";
 import { Button } from "@/components/ui/button";
-import { Search, Sliders } from "lucide-react";
+import {  Sliders } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { SchoolSelectType } from "../../../../lib/db/schema";
 
@@ -33,8 +33,13 @@ export default function SearchBelowHero({ schools }: SearchBelowHeroProps) {
     if (!query.trim()) return schools.slice(0, 6);
     const q = query.toLowerCase();
     return schools.filter(
-      (s) =>
-        s.name.toLowerCase().includes(q) || s.city.toLowerCase().includes(q)
+      (s) => {
+
+        if(s.name && s.city){
+
+         return s.name.toLowerCase().includes(q) || s.city.toLowerCase().includes(q)
+        }
+      }
     );
   }, [query, schools]);
 
@@ -82,7 +87,7 @@ export default function SearchBelowHero({ schools }: SearchBelowHeroProps) {
             isFocused ?  <CommandList className="absolute z-50 mt-12 w-1/2 bg-white border border-gray-200 rounded-md shadow-lg max-h-64">
           {results.length === 0 ? (
             <CommandEmpty className="px-4 py-3 text-sm text-gray-500">
-              No results — try "Tokyo", "Osaka", or a school name
+              No results — try &quot;Tokyo&quot;, &quot;Osaka&quot;, or a school name
             </CommandEmpty>
           ) : (
             <CommandGroup >

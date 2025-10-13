@@ -4,21 +4,10 @@ import { Button } from "@react-email/components";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import React from "react";
-type SchoolCardProps = {
-  id: string;
-  name: string | null;
-  city: string | null;
-  imageUrl: string;
-  supportsInternationalStudents: boolean | null;
-};
+import { SchoolSelectType } from "../../../../lib/db/schema";
 
-export default function SchoolCard({
-  id,
-  name,
-  city,
-  imageUrl,
-  supportsInternationalStudents,
-}: SchoolCardProps) {
+export default function SchoolCard({schoolDetail}:{schoolDetail: SchoolSelectType}) {
+  const {id, name, city, imageUrl, supportInternationalStudents} = schoolDetail
   const router = useRouter();
   const pathname = usePathname();
   const handleClick = (id: string) => {
@@ -40,7 +29,7 @@ export default function SchoolCard({
       {/* Image Section */}
       <CardHeader className="flex flex-col items-center justify-center w-[150px] h-[100px]">
           <Image
-            src={imageUrl}
+            src={imageUrl ?? ""}
             alt={name ?? "School Logo"}
             width={150}
             height={150}
@@ -56,7 +45,7 @@ export default function SchoolCard({
           <li>
             🌍 International Students:{" "}
             <span className="font-semibold text-gray-800">
-              {supportsInternationalStudents ? "Yes" : "No"}
+              {supportInternationalStudents ? "Yes" : "No"}
             </span>
           </li>
         </ul>

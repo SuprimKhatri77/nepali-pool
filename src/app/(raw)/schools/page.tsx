@@ -1,11 +1,9 @@
-import HeroSchoolServer from "@/components/SCHOOLS/HeroSchool/HeroSchoolServer";
-import SchoolListServer from "@/components/SCHOOLS/SchoolList/SchoolListServer";
+import Schools from "@/components/SCHOOLS/School";
+import { SchoolSelectType } from "../../../../lib/db/schema";
+import { db } from "../../../../lib/db";
 
-export default function Schools() {
-  return (
-    <main className="bg-background text-foreground mb-4">
-      <HeroSchoolServer />
-      <SchoolListServer />
-    </main>
-  );
+export default async function Page() {
+    const schools: SchoolSelectType[] = await db.query.school.findMany()
+
+  return <Schools schools={schools} />
 }
