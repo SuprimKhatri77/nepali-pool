@@ -1,10 +1,7 @@
 import MentorSpecific from "@/components/mentors/MentorSpecific/MentorSpecific";
 import { db } from "../../../../../lib/db";
-import { mentorProfile, studentProfile, user } from "../../../../../lib/db/schema";
-import { redirect } from "next/navigation";
+import { mentorProfile } from "../../../../../lib/db/schema";
 import { and,  ne, or } from "drizzle-orm";
-import { auth } from "../../../../../server/lib/auth/auth";
-import { headers } from "next/headers";
 
 export default async function MentorSpecificServer({
   params,

@@ -1,10 +1,10 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { MentorProfileWithUser, MentorProfileWithUserAndChat } from "../../../../types/all-types";
+import { MentorProfileWithUser } from "../../../../types/all-types";
 import MentorList from "../MentorList";
 // import Achievements from "./ACHIEVEMENTS";
-import MentorProfile from "./MentorProfile";
+import MentorProfile from "../MentorSpecific/MentorProfile";
 import { ChevronRightCircleIcon } from "lucide-react";
 
 

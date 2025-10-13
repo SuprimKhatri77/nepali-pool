@@ -13,7 +13,7 @@ export default function HeroMentors({mentors}:{mentors: MentorProfileWithUser[]}
 
         <p className="mt-6 text-lg text-gray-600 max-w-2xl mx-auto">
           Helping Nepali students choose the right college, city, and future —
-          with expert guidance from someone who's been there.
+          with expert guidance from someone who&aops;s been there.
         </p>
 
         

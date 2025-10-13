@@ -1,8 +1,8 @@
 
+import Mentors from "@/components/mentors/MENTORS";
 import { db } from "../../../../lib/db";
 import { MentorProfileWithUser } from "../../../../types/all-types";
 
-import Mentors from "@/components/mentors/Mentors";
 // import TopMentorsFrom from "@/components/mentors/TopMentorsFrom";
 
 
@@ -17,7 +17,6 @@ export default async function Page() {
           user: true,
         },
       });
-      console.log(mentors)
   
      
   

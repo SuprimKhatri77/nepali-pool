@@ -2,17 +2,29 @@
 
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardFooter,
+} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { MapPin, Star, BadgeCheck } from "lucide-react";
+import {  Star, BadgeCheck, Globe } from "lucide-react";
 import React from "react";
 import { MentorProfileWithUser } from "../../../../types/all-types";
 
-
-
-export default function MentorCard({ mentor }: {mentor: MentorProfileWithUser}) {
+export default function MentorCard({ mentor }: { mentor: MentorProfileWithUser }) {
   const router = useRouter();
-  const { userId, bio, city, country, imageUrl, verifiedStatus, user } = mentor;
+  const {
+    userId,
+    bio,
+    city,
+    country,
+    imageUrl,
+    verifiedStatus,
+    user,
+    nationality,
+  } = mentor;
 
   function handleRoute() {
     router.push(`/mentors/${userId}`);
@@ -21,45 +33,48 @@ export default function MentorCard({ mentor }: {mentor: MentorProfileWithUser}) 
   return (
     <Card
       onClick={handleRoute}
-      className="group max-w-[270px] w-full border border-gray-200 rounded-2xl shadow-sm 
+      className="group w-full max-w-[290px] border border-gray-200 rounded-2xl shadow-sm 
                  hover:shadow-lg transition-all duration-300 cursor-pointer 
                  hover:border-emerald-400 bg-white"
     >
-      {/* Header - Image */}
-      <CardHeader className="p-0 relative">
-        <div className="relative w-[180px] rounded-full mx-auto  h-[180px]">
+      {/* Top Section */}
+      <CardHeader className="relative p-0 flex flex-col items-center justify-center">
+        <div className="relative w-[120px] h-[120px] mt-4">
           <Image
             src={imageUrl || "/default-avatar.png"}
             alt={user.name || "Mentor"}
             fill
-            className="object-cover flex justify-center rounded-full object-center"
+            className="rounded-full object-cover"
           />
+          {verifiedStatus === "accepted" && (
+            <div className="absolute bottom-1 right-1 bg-emerald-400 text-white rounded-full p-[4px] shadow-md">
+              <BadgeCheck className="w-4 h-4" />
+            </div>
+          )}
         </div>
-        {verifiedStatus === "accepted" && (
-          <span className="absolute top-2 right-2 bg-emerald-400 text-white rounded-full p-1">
-            <BadgeCheck className="h-4 w-4" />
-          </span>
-        )}
+
+        <div className="mt-3 text-center">
+          <h2 className="text-lg font-semibold text-gray-900 flex items-center justify-center gap-1">
+            {user.name.charAt(0).toUpperCase() + user.name.slice(1)}
+          </h2>
+          <p className="text-sm text-gray-500 capitalize">
+            {city}, {country}
+          </p>
+        </div>
       </CardHeader>
 
-      {/* Content */}
-      <CardContent className="px-4 py-3 space-y-2">
-        <CardTitle className="text-lg font-semibold text-gray-900 flex items-center justify-between">
-          {user.name}
-        </CardTitle>
-
-        <div className="flex items-center gap-1 text-gray-600 text-sm">
-          <MapPin className="h-4 w-4 text-emerald-500" />
-          <span className="capitalize">
-            {city}, {country}
-          </span>
+      {/* Info Section */}
+      <CardContent className="px-4 py-3">
+        <div className="flex items-center justify-center gap-2 mb-2 text-sm text-gray-600">
+          <Globe className="h-4 w-4 text-emerald-500" />
+          <span className="capitalize">{nationality || "Not provided"}</span>
         </div>
 
-        <p className="text-sm text-gray-700 line-clamp-2">
-          {bio || "No bio provided."}
+        <p className="text-sm text-gray-700 text-center line-clamp-3 italic">
+          “{bio || "This mentor hasn’t added a bio yet."}”
         </p>
 
-        <div className="flex items-center gap-1 text-yellow-500 text-sm">
+        <div className="mt-3 flex justify-center items-center gap-1 text-yellow-500 text-sm font-medium">
           <Star className="h-4 w-4 fill-yellow-500" />
           <span>4.8 / 5</span>
         </div>
