@@ -2,7 +2,7 @@ import Image from "next/image";
 import {  SchoolSelectType } from "../../../../lib/db/schema";
 import RecommendedSchools from "./RecommendedSchools";
 
-export default async function SpecificSchoolDetailServer({
+export default async function SpecificSchoolDetail({
   schoolDetail,
   recommendedSchools
 }: {
