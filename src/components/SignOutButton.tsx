@@ -16,17 +16,24 @@ export default function SignOutButton({
 
   const handleLogout = async () => {
     setIsPending(true);
+    // console.log("clicked on logout");
+    // console.log(
+    //   `prod url :  ${process.env.NEXT_PUBLIC_BETTER_AUTH_URL}/api/auth`
+    // );
+
+    // console.log("trying to logout");
     await authClient.signOut({
       fetchOptions: {
         baseURL:
           process.env.NODE_ENV === "production"
-            ? process.env.NEXT_PUBLIC_BETTER_AUTH_URL
-            : "http://localhost:3000",
+            ? `${process.env.NEXT_PUBLIC_BETTER_AUTH_URL}/api/auth`
+            : "http://localhost:3000/api/auth",
         onSuccess: () => {
           router.push("/");
         },
       },
     });
+
     setIsPending(false);
   };
   return (
