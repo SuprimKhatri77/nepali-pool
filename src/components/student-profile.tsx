@@ -121,22 +121,22 @@ export function StudentProfile({
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <div className="container mx-auto px-4 py-12 max-w-5xl">
+      <div className="container mx-auto px-4 sm:px-6 py-6 sm:py-8 lg:py-12 max-w-5xl">
         {/* Header Section */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-semibold text-gray-900 mb-2">
+        <div className="mb-6 sm:mb-8">
+          <h1 className="text-2xl sm:text-3xl font-semibold text-gray-900 mb-2">
             Profile Settings
           </h1>
-          <p className="text-gray-600">
+          <p className="text-sm sm:text-base text-gray-600">
             Manage your personal information and preferences
           </p>
         </div>
 
         {/* Profile Overview Card */}
-        <Card className="mb-6 border border-gray-200 shadow-sm">
-          <CardHeader className="border-b border-gray-100 bg-white">
-            <div className="flex items-start gap-4">
-              <Avatar className="h-16 w-16 border border-gray-200">
+        <Card className="mb-4 sm:mb-6 border border-gray-200 shadow-sm">
+          <CardHeader className="border-b border-gray-100 bg-white p-4 sm:p-6">
+            <div className="flex flex-col sm:flex-row items-start gap-4">
+              <Avatar className="h-16 w-16 sm:h-20 sm:w-20 border border-gray-200 shrink-0">
                 <AvatarImage
                   src={
                     studentRecord.imageUrl ||
@@ -145,29 +145,29 @@ export function StudentProfile({
                   }
                   alt={studentRecord.user.name}
                 />
-                <AvatarFallback className="bg-emerald-100 text-emerald-700 text-lg font-medium">
+                <AvatarFallback className="bg-emerald-100 text-emerald-700 text-lg sm:text-xl font-medium">
                   {studentRecord.user.name.charAt(0).toUpperCase()}
                 </AvatarFallback>
               </Avatar>
-              <div className="flex-1 min-w-0">
-                <CardTitle className="text-xl text-gray-900 mb-1">
+              <div className="flex-1 min-w-0 w-full">
+                <CardTitle className="text-lg sm:text-xl text-gray-900 mb-1 break-words">
                   {studentRecord.user.name}
                 </CardTitle>
-                <CardDescription className="text-sm flex items-center gap-1.5 mb-3">
-                  <Mail className="h-3.5 w-3.5" />
-                  {studentRecord.user.email}
+                <CardDescription className="text-xs sm:text-sm flex items-center gap-1.5 mb-3 break-all">
+                  <Mail className="h-3.5 w-3.5 shrink-0" />
+                  <span className="truncate">{studentRecord.user.email}</span>
                 </CardDescription>
                 <div className="flex flex-wrap gap-2">
                   <Badge
                     variant="outline"
-                    className="bg-gray-50 text-gray-700 border-gray-200 font-normal"
+                    className="bg-gray-50 text-gray-700 border-gray-200 font-normal text-xs"
                   >
                     {studentRecord.user.role}
                   </Badge>
                   {studentRecord.user.emailVerified && (
                     <Badge
                       variant="outline"
-                      className="bg-emerald-50 text-emerald-700 border-emerald-200 font-normal"
+                      className="bg-emerald-50 text-emerald-700 border-emerald-200 font-normal text-xs"
                     >
                       Verified
                     </Badge>
@@ -179,28 +179,28 @@ export function StudentProfile({
         </Card>
 
         <Tabs defaultValue="personal" className="w-full">
-          <TabsList className="grid w-full grid-cols-4 mb-6 h-auto p-1 bg-gray-100 border border-gray-200">
+          <TabsList className="grid w-full grid-cols-4 mb-4 sm:mb-6 h-auto p-1 bg-gray-100 border border-gray-200 gap-1">
             <TabsTrigger
               value="personal"
-              className="data-[state=active]:bg-white data-[state=active]:text-gray-900 data-[state=active]:shadow-sm text-gray-600 py-2.5"
+              className="data-[state=active]:bg-white data-[state=active]:text-gray-900 data-[state=active]:shadow-sm text-gray-600 py-2 sm:py-2.5 px-2 sm:px-4 text-xs sm:text-sm font-medium whitespace-nowrap"
             >
               Personal
             </TabsTrigger>
             <TabsTrigger
               value="contact"
-              className="data-[state=active]:bg-white data-[state=active]:text-gray-900 data-[state=active]:shadow-sm text-gray-600 py-2.5"
+              className="data-[state=active]:bg-white data-[state=active]:text-gray-900 data-[state=active]:shadow-sm text-gray-600 py-2 sm:py-2.5 px-2 sm:px-4 text-xs sm:text-sm font-medium whitespace-nowrap"
             >
               Contact
             </TabsTrigger>
             <TabsTrigger
               value="account"
-              className="data-[state=active]:bg-white data-[state=active]:text-gray-900 data-[state=active]:shadow-sm text-gray-600 py-2.5"
+              className="data-[state=active]:bg-white data-[state=active]:text-gray-900 data-[state=active]:shadow-sm text-gray-600 py-2 sm:py-2.5 px-2 sm:px-4 text-xs sm:text-sm font-medium whitespace-nowrap"
             >
               Account
             </TabsTrigger>
             <TabsTrigger
               value="security"
-              className="data-[state=active]:bg-white data-[state=active]:text-gray-900 data-[state=active]:shadow-sm text-gray-600 py-2.5"
+              className="data-[state=active]:bg-white data-[state=active]:text-gray-900 data-[state=active]:shadow-sm text-gray-600 py-2 sm:py-2.5 px-2 sm:px-4 text-xs sm:text-sm font-medium whitespace-nowrap"
             >
               Security
             </TabsTrigger>
@@ -208,13 +208,13 @@ export function StudentProfile({
 
           <TabsContent value="personal">
             <Card className="border border-gray-200 shadow-sm">
-              <CardHeader className="border-b border-gray-100 bg-white">
-                <div className="flex items-center justify-between">
+              <CardHeader className="border-b border-gray-100 bg-white p-4 sm:p-6">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                   <div>
-                    <CardTitle className="text-lg text-gray-900">
+                    <CardTitle className="text-base sm:text-lg text-gray-900">
                       Personal Information
                     </CardTitle>
-                    <CardDescription className="text-sm mt-1">
+                    <CardDescription className="text-xs sm:text-sm mt-1">
                       Update your personal details
                     </CardDescription>
                   </div>
@@ -224,16 +224,19 @@ export function StudentProfile({
                     size="sm"
                     className={
                       isEditingPersonal
-                        ? ""
-                        : "bg-emerald-600 hover:bg-emerald-700 text-white"
+                        ? "w-full sm:w-auto"
+                        : "bg-emerald-600 hover:bg-emerald-700 text-white w-full sm:w-auto"
                     }
                   >
                     {isEditingPersonal ? "Cancel" : "Edit"}
                   </Button>
                 </div>
               </CardHeader>
-              <CardContent className="pt-6">
-                <form action={personalFormAction} className="space-y-6">
+              <CardContent className="pt-4 sm:pt-6 p-4 sm:p-6">
+                <form
+                  action={personalFormAction}
+                  className="space-y-5 sm:space-y-6"
+                >
                   <Field className="space-y-3">
                     <FieldLabel className="text-sm font-medium text-gray-900">
                       Profile Picture
@@ -382,18 +385,19 @@ export function StudentProfile({
                   </Field>
 
                   {isEditingPersonal && (
-                    <div className="flex gap-3 justify-end pt-4 border-t border-gray-100">
+                    <div className="flex flex-col sm:flex-row gap-3 justify-end pt-4 border-t border-gray-100">
                       <Button
                         type="button"
                         variant="outline"
                         onClick={() => setIsEditingPersonal(false)}
                         disabled={personalIsPending}
+                        className="w-full sm:w-auto"
                       >
                         Cancel
                       </Button>
                       <Button
                         type="submit"
-                        className="bg-emerald-600 hover:bg-emerald-700 text-white"
+                        className="bg-emerald-600 hover:bg-emerald-700 text-white w-full sm:w-auto"
                         disabled={personalIsPending}
                       >
                         {personalIsPending ? <Spinner /> : "Save Changes"}
@@ -413,13 +417,13 @@ export function StudentProfile({
 
           <TabsContent value="contact">
             <Card className="border border-gray-200 shadow-sm">
-              <CardHeader className="border-b border-gray-100 bg-white">
-                <div className="flex items-center justify-between">
+              <CardHeader className="border-b border-gray-100 bg-white p-4 sm:p-6">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                   <div>
-                    <CardTitle className="text-lg text-gray-900">
+                    <CardTitle className="text-base sm:text-lg text-gray-900">
                       Contact & Location
                     </CardTitle>
-                    <CardDescription className="text-sm mt-1">
+                    <CardDescription className="text-xs sm:text-sm mt-1">
                       Manage your contact information
                     </CardDescription>
                   </div>
@@ -429,8 +433,8 @@ export function StudentProfile({
                     size="sm"
                     className={
                       isEditingContact
-                        ? ""
-                        : "bg-emerald-600 hover:bg-emerald-700 text-white"
+                        ? "w-full sm:w-auto"
+                        : "bg-emerald-600 hover:bg-emerald-700 text-white w-full sm:w-auto"
                     }
                     disabled={contactIsPending || personalIsPending}
                   >
@@ -438,7 +442,7 @@ export function StudentProfile({
                   </Button>
                 </div>
               </CardHeader>
-              <CardContent className="pt-6">
+              <CardContent className="pt-4 sm:pt-6 p-4 sm:p-6">
                 <form action={contactFormAction} className="space-y-5">
                   <Field className="space-y-2">
                     <FieldLabel
@@ -538,7 +542,7 @@ export function StudentProfile({
                             <Badge
                               key={destination}
                               variant="secondary"
-                              className="bg-emerald-100 text-emerald-700 border-emerald-200"
+                              className="bg-emerald-100 text-emerald-700 border-emerald-200 text-xs"
                             >
                               {destination}
                             </Badge>
@@ -555,7 +559,6 @@ export function StudentProfile({
                         key={`${country}-${index}`}
                         type="hidden"
                         name="favoriteDestination"
-                        // value={country}
                         value={
                           !contactState.success &&
                           contactState.errors?.favoriteDestination &&
@@ -574,18 +577,19 @@ export function StudentProfile({
                   </Field>
 
                   {isEditingContact && (
-                    <div className="flex gap-3 justify-end pt-4 border-t border-gray-100">
+                    <div className="flex flex-col sm:flex-row gap-3 justify-end pt-4 border-t border-gray-100">
                       <Button
                         type="button"
                         variant="outline"
                         onClick={() => setIsEditingContact(false)}
                         disabled={contactIsPending}
+                        className="w-full sm:w-auto"
                       >
                         Cancel
                       </Button>
                       <Button
                         type="submit"
-                        className="bg-emerald-600 hover:bg-emerald-700 text-white"
+                        className="bg-emerald-600 hover:bg-emerald-700 text-white w-full sm:w-auto"
                         disabled={contactIsPending}
                       >
                         {contactIsPending ? <Spinner /> : "Save Changes"}
@@ -605,15 +609,15 @@ export function StudentProfile({
 
           <TabsContent value="account">
             <Card className="border border-gray-200 shadow-sm">
-              <CardHeader className="border-b border-gray-100 bg-white">
-                <CardTitle className="text-lg text-gray-900">
+              <CardHeader className="border-b border-gray-100 bg-white p-4 sm:p-6">
+                <CardTitle className="text-base sm:text-lg text-gray-900">
                   Account Information
                 </CardTitle>
-                <CardDescription className="text-sm mt-1">
+                <CardDescription className="text-xs sm:text-sm mt-1">
                   View your account details
                 </CardDescription>
               </CardHeader>
-              <CardContent className="pt-6">
+              <CardContent className="pt-4 sm:pt-6 p-4 sm:p-6">
                 <div className="space-y-6">
                   <div className="space-y-2">
                     <Label className="text-sm font-medium text-gray-900">
@@ -622,7 +626,7 @@ export function StudentProfile({
                     <div>
                       <Badge
                         variant="outline"
-                        className="bg-gray-50 text-gray-700 border-gray-200"
+                        className="bg-gray-50 text-gray-700 border-gray-200 text-xs"
                       >
                         {studentRecord.user.role}
                       </Badge>
@@ -674,14 +678,14 @@ export function StudentProfile({
                       {studentRecord.user.emailVerified ? (
                         <Badge
                           variant="outline"
-                          className="bg-emerald-50 text-emerald-700 border-emerald-200"
+                          className="bg-emerald-50 text-emerald-700 border-emerald-200 text-xs"
                         >
                           Verified
                         </Badge>
                       ) : (
                         <Badge
                           variant="outline"
-                          className="bg-amber-50 text-amber-700 border-amber-200"
+                          className="bg-amber-50 text-amber-700 border-amber-200 text-xs"
                         >
                           Not Verified
                         </Badge>
@@ -695,13 +699,13 @@ export function StudentProfile({
 
           <TabsContent value="security">
             <Card className="border border-gray-200 shadow-sm">
-              <CardHeader className="border-b border-gray-100 bg-white">
-                <div className="flex items-center justify-between">
+              <CardHeader className="border-b border-gray-100 bg-white p-4 sm:p-6">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                   <div>
-                    <CardTitle className="text-lg text-gray-900">
+                    <CardTitle className="text-base sm:text-lg text-gray-900">
                       Security Settings
                     </CardTitle>
-                    <CardDescription className="text-sm mt-1">
+                    <CardDescription className="text-xs sm:text-sm mt-1">
                       Manage your password and account security
                     </CardDescription>
                   </div>
@@ -709,13 +713,14 @@ export function StudentProfile({
                     onClick={() => setIsEditingSecurity(!isEditingSecurity)}
                     variant="outline"
                     size="sm"
+                    className="w-full sm:w-auto"
                   >
                     {isEditingSecurity ? "Cancel" : "Change Password"}
                   </Button>
                 </div>
               </CardHeader>
               {isEditingSecurity ? (
-                <CardContent className="pt-6">
+                <CardContent className="pt-4 sm:pt-6 p-4 sm:p-6">
                   <form className="space-y-5">
                     <div className="space-y-2">
                       <Label
@@ -767,17 +772,18 @@ export function StudentProfile({
 
                     <Separator />
 
-                    <div className="flex gap-3 justify-end">
+                    <div className="flex flex-col sm:flex-row gap-3 justify-end">
                       <Button
                         type="button"
                         variant="outline"
                         onClick={() => setIsEditingSecurity(false)}
+                        className="w-full sm:w-auto"
                       >
                         Cancel
                       </Button>
                       <Button
                         type="submit"
-                        className="bg-emerald-600 hover:bg-emerald-700 text-white"
+                        className="bg-emerald-600 hover:bg-emerald-700 text-white w-full sm:w-auto"
                       >
                         Update Password
                       </Button>
@@ -785,7 +791,7 @@ export function StudentProfile({
                   </form>
                 </CardContent>
               ) : (
-                <CardContent className="pt-6">
+                <CardContent className="pt-4 sm:pt-6 p-4 sm:p-6">
                   <div className="text-center py-12">
                     <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-gray-100 mb-3">
                       <Shield className="h-6 w-6 text-gray-400" />

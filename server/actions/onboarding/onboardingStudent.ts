@@ -45,7 +45,7 @@ export default async function studentOnboarding(
   prevState: FormState,
   formData: FormData
 ): Promise<FormState> {
-  console.log("FORMDATA: ", formData);
+  // console.log("FORMDATA: ", formData);
   const userId = formData.get("userId") as string;
 
   if (!userId) {

@@ -2,9 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { authClient } from "../../server/lib/auth/auth-client";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -19,7 +17,18 @@ import {
   TrendingUp,
 } from "lucide-react";
 
-export default function MentorPage() {
+type Props = {
+  chatCount: number;
+  scheduledVideoCallCount: number;
+  totalUniqueStudents: number;
+  chatIncreaseCount: number;
+};
+export default function MentorPage({
+  chatCount,
+  scheduledVideoCallCount,
+  totalUniqueStudents,
+  chatIncreaseCount,
+}: Props) {
   const [click, setClick] = useState(false);
   const router = useRouter();
   const { data: session, isPending } = authClient.useSession();
@@ -28,6 +37,10 @@ export default function MentorPage() {
     setClick(true);
     await authClient.signOut({
       fetchOptions: {
+        baseUrl:
+          process.env.NODE_ENV === "production"
+            ? `process.env.NEXT_PUBLIC_BETTER_AUTH_URL/api/auth`
+            : "http://localhost:3000/api/auth",
         onSuccess: () => {
           router.push("/");
         },
@@ -66,10 +79,12 @@ export default function MentorPage() {
                   <p className="text-sm font-medium text-gray-600 mb-1">
                     Active Chats
                   </p>
-                  <p className="text-3xl font-bold text-gray-900">12</p>
+                  <p className="text-3xl font-bold text-gray-900">
+                    {chatCount}
+                  </p>
                   <p className="text-xs text-emerald-600 mt-1 flex items-center gap-1">
-                    <TrendingUp className="w-3 h-3" />
-                    +3 this week
+                    <TrendingUp className="w-3 h-3" />+{chatIncreaseCount} this
+                    week
                   </p>
                 </div>
                 <div className="w-12 h-12 rounded-full bg-emerald-100 flex items-center justify-center">
@@ -86,7 +101,9 @@ export default function MentorPage() {
                   <p className="text-sm font-medium text-gray-600 mb-1">
                     Scheduled Calls
                   </p>
-                  <p className="text-3xl font-bold text-gray-900">5</p>
+                  <p className="text-3xl font-bold text-gray-900">
+                    {scheduledVideoCallCount}
+                  </p>
                   <p className="text-xs text-gray-500 mt-1 flex items-center gap-1">
                     <Calendar className="w-3 h-3" />
                     Next: Today 3PM
@@ -106,7 +123,9 @@ export default function MentorPage() {
                   <p className="text-sm font-medium text-gray-600 mb-1">
                     Total Students
                   </p>
-                  <p className="text-3xl font-bold text-gray-900">28</p>
+                  <p className="text-3xl font-bold text-gray-900">
+                    {totalUniqueStudents}
+                  </p>
                   <p className="text-xs text-gray-500 mt-1 flex items-center gap-1">
                     <Users className="w-3 h-3" />
                     All time

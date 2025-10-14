@@ -3,8 +3,7 @@
 import { eq } from "drizzle-orm";
 import { db } from "../../../lib/db";
 import { user } from "../../../lib/db/schema";
-import { auth } from "../../lib/auth/auth";
-import { headers } from "next/headers";
+
 import { redirect } from "next/navigation";
 import { getCurrentAdmin } from "../../lib/auth/helpers/getCurrentAdmin";
 

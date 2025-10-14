@@ -72,9 +72,11 @@ export async function updatePersonal(
     bio: z
       .string()
       .trim()
-      .regex(/^[a-zA-Z.'\s]*$/, {
-        message: "Bio can only contain letters, spaces, . and '",
+      .regex(/^[\p{L}\p{N}\p{P}\p{S}\s]*$/u, {
+        message:
+          "Bio can only contain letters, numbers, spaces, and special characters",
       })
+
       .min(20, "Bio must be at least 20 characters"),
   });
 

@@ -63,6 +63,7 @@ export function LoginForm({
             defaultValue={state.inputs?.email}
             type="email"
             placeholder="m@example.com"
+            disabled={isPending}
             required
           />
           {state.errors?.email && (
@@ -79,7 +80,13 @@ export function LoginForm({
               Forgot your password?
             </Link>
           </div>
-          <Input id="password" name="password" type="password" required />
+          <Input
+            id="password"
+            disabled={isPending}
+            name="password"
+            type="password"
+            required
+          />
           {state.errors?.password && (
             <FieldError>{state.errors.password[0]}</FieldError>
           )}

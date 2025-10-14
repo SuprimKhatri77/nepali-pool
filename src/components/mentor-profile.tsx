@@ -138,13 +138,13 @@ export function MentorProfile({
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <div className="container mx-auto px-4 py-12 max-w-5xl">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 lg:py-12 max-w-5xl">
         {/* Header Section */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-semibold text-gray-900 mb-2">
+        <div className="mb-6 sm:mb-8">
+          <h1 className="text-2xl sm:text-3xl font-semibold text-gray-900 mb-2">
             Profile Settings
           </h1>
-          <p className="text-gray-600">
+          <p className="text-sm sm:text-base text-gray-600">
             Manage your professional information and credentials
           </p>
         </div>
@@ -152,8 +152,8 @@ export function MentorProfile({
         {/* Profile Overview Card */}
         <Card className="mb-6 border border-gray-200 shadow-sm">
           <CardHeader className="border-b border-gray-100 bg-white">
-            <div className="flex items-start gap-4">
-              <Avatar className="h-16 w-16 border border-gray-200">
+            <div className="flex flex-col sm:flex-row items-start sm:items-start gap-4">
+              <Avatar className="h-16 w-16 sm:h-16 sm:w-16 border border-gray-200 flex-shrink-0">
                 <AvatarImage
                   src={
                     mentorRecord.imageUrl ||
@@ -167,25 +167,25 @@ export function MentorProfile({
                   {mentorRecord.user.name.charAt(0).toUpperCase()}
                 </AvatarFallback>
               </Avatar>
-              <div className="flex-1 min-w-0">
-                <CardTitle className="text-xl text-gray-900 mb-1 capitalize">
+              <div className="flex-1 min-w-0 w-full">
+                <CardTitle className="text-lg sm:text-xl text-gray-900 mb-1 capitalize break-words">
                   {mentorRecord.user.name}
                 </CardTitle>
-                <CardDescription className="text-sm flex items-center gap-1.5 mb-3">
-                  <Mail className="h-3.5 w-3.5" />
-                  {mentorRecord.user.email}
+                <CardDescription className="text-xs sm:text-sm flex items-center gap-1.5 mb-3 break-all">
+                  <Mail className="h-3.5 w-3.5 flex-shrink-0" />
+                  <span className="truncate">{mentorRecord.user.email}</span>
                 </CardDescription>
                 <div className="flex flex-wrap gap-2">
                   <Badge
                     variant="outline"
-                    className="bg-gray-50 text-gray-700 border-gray-200 font-normal"
+                    className="bg-gray-50 text-gray-700 border-gray-200 font-normal text-xs"
                   >
                     {mentorRecord.user.role}
                   </Badge>
                   {mentorRecord.user.emailVerified && (
                     <Badge
                       variant="outline"
-                      className="bg-blue-50 text-blue-700 border-blue-200 font-normal"
+                      className="bg-blue-50 text-blue-700 border-blue-200 font-normal text-xs"
                     >
                       Email Verified
                     </Badge>
@@ -198,34 +198,38 @@ export function MentorProfile({
         </Card>
 
         <Tabs defaultValue="personal" className="w-full">
-          <TabsList className="grid w-full grid-cols-4 mb-6 h-auto p-1 bg-gray-100 border border-gray-200">
+          <TabsList className="grid w-full grid-cols-2 sm:grid-cols-4 mb-6 h-auto p-1 bg-gray-100 border border-gray-200 gap-1">
             <TabsTrigger
               value="personal"
-              className="data-[state=active]:bg-white data-[state=active]:text-gray-900 data-[state=active]:shadow-sm text-gray-600 py-2.5"
+              className="data-[state=active]:bg-white data-[state=active]:text-gray-900 data-[state=active]:shadow-sm text-gray-600 py-2.5 px-2 text-xs sm:text-sm whitespace-nowrap"
             >
-              <User className="h-4 w-4 mr-2" />
-              Personal
+              <User className="h-3.5 w-3.5 sm:h-4 sm:w-4 sm:mr-2" />
+              <span className="hidden sm:inline">Personal</span>
+              <span className="sm:hidden ml-1">Info</span>
             </TabsTrigger>
             <TabsTrigger
               value="contact"
-              className="data-[state=active]:bg-white data-[state=active]:text-gray-900 data-[state=active]:shadow-sm text-gray-600 py-2.5"
+              className="data-[state=active]:bg-white data-[state=active]:text-gray-900 data-[state=active]:shadow-sm text-gray-600 py-2.5 px-2 text-xs sm:text-sm whitespace-nowrap"
             >
-              <MapPin className="h-4 w-4 mr-2" />
-              Contact
+              <MapPin className="h-3.5 w-3.5 sm:h-4 sm:w-4 sm:mr-2" />
+              <span className="hidden sm:inline">Contact</span>
+              <span className="sm:hidden ml-1">Contact</span>
             </TabsTrigger>
             <TabsTrigger
               value="documents"
-              className="data-[state=active]:bg-white data-[state=active]:text-gray-900 data-[state=active]:shadow-sm text-gray-600 py-2.5"
+              className="data-[state=active]:bg-white data-[state=active]:text-gray-900 data-[state=active]:shadow-sm text-gray-600 py-2.5 px-2 text-xs sm:text-sm whitespace-nowrap"
             >
-              <FileText className="h-4 w-4 mr-2" />
-              Documents
+              <FileText className="h-3.5 w-3.5 sm:h-4 sm:w-4 sm:mr-2" />
+              <span className="hidden sm:inline">Documents</span>
+              <span className="sm:hidden ml-1">Docs</span>
             </TabsTrigger>
             <TabsTrigger
               value="security"
-              className="data-[state=active]:bg-white data-[state=active]:text-gray-900 data-[state=active]:shadow-sm text-gray-600 py-2.5"
+              className="data-[state=active]:bg-white data-[state=active]:text-gray-900 data-[state=active]:shadow-sm text-gray-600 py-2.5 px-2 text-xs sm:text-sm whitespace-nowrap"
             >
-              <Shield className="h-4 w-4 mr-2" />
-              Security
+              <Shield className="h-3.5 w-3.5 sm:h-4 sm:w-4 sm:mr-2" />
+              <span className="hidden sm:inline">Security</span>
+              <span className="sm:hidden ml-1">Security</span>
             </TabsTrigger>
           </TabsList>
 
@@ -233,12 +237,12 @@ export function MentorProfile({
           <TabsContent value="personal">
             <Card className="border border-gray-200 shadow-sm">
               <CardHeader className="border-b border-gray-100 bg-white">
-                <div className="flex items-center justify-between">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                   <div>
-                    <CardTitle className="text-lg text-gray-900">
+                    <CardTitle className="text-base sm:text-lg text-gray-900">
                       Personal Information
                     </CardTitle>
-                    <CardDescription className="text-sm mt-1">
+                    <CardDescription className="text-xs sm:text-sm mt-1">
                       Update your personal details and bio
                     </CardDescription>
                   </div>
@@ -248,8 +252,8 @@ export function MentorProfile({
                     size="sm"
                     className={
                       isEditingPersonal
-                        ? ""
-                        : "bg-emerald-600 hover:bg-emerald-700 text-white"
+                        ? "w-full sm:w-auto"
+                        : "bg-emerald-600 hover:bg-emerald-700 text-white w-full sm:w-auto"
                     }
                     disabled={isPending || contactIsPending}
                   >
@@ -257,8 +261,8 @@ export function MentorProfile({
                   </Button>
                 </div>
               </CardHeader>
-              <CardContent className="pt-6">
-                <form className="space-y-6" action={formAction}>
+              <CardContent className="pt-4 sm:pt-6">
+                <form className="space-y-5 sm:space-y-6" action={formAction}>
                   {/* Profile Picture Section */}
                   <Field className="space-y-3">
                     <FieldLabel className="text-sm font-medium text-gray-900">
@@ -399,18 +403,19 @@ export function MentorProfile({
                   </Field>
 
                   {isEditingPersonal && (
-                    <div className="flex gap-3 justify-end pt-4 border-t border-gray-100">
+                    <div className="flex flex-col sm:flex-row gap-3 justify-end pt-4 border-t border-gray-100">
                       <Button
                         type="button"
                         variant="outline"
                         onClick={() => setIsEditingPersonal(false)}
                         disabled={isPending}
+                        className="w-full sm:w-auto"
                       >
                         Cancel
                       </Button>
                       <Button
                         type="submit"
-                        className="bg-emerald-600 hover:bg-emerald-700 text-white"
+                        className="bg-emerald-600 hover:bg-emerald-700 text-white w-full sm:w-auto"
                         disabled={isPending}
                       >
                         {isPending ? <Spinner /> : "Save Changes"}
@@ -431,12 +436,12 @@ export function MentorProfile({
           <TabsContent value="contact">
             <Card className="border border-gray-200 shadow-sm">
               <CardHeader className="border-b border-gray-100 bg-white">
-                <div className="flex items-center justify-between">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                   <div>
-                    <CardTitle className="text-lg text-gray-900">
+                    <CardTitle className="text-base sm:text-lg text-gray-900">
                       Contact & Location
                     </CardTitle>
-                    <CardDescription className="text-sm mt-1">
+                    <CardDescription className="text-xs sm:text-sm mt-1">
                       Manage your contact information
                     </CardDescription>
                   </div>
@@ -446,8 +451,8 @@ export function MentorProfile({
                     size="sm"
                     className={
                       isEditingContact
-                        ? ""
-                        : "bg-emerald-600 hover:bg-emerald-700 text-white"
+                        ? "w-full sm:w-auto"
+                        : "bg-emerald-600 hover:bg-emerald-700 text-white w-full sm:w-auto"
                     }
                     disabled={isPending || contactIsPending}
                   >
@@ -455,7 +460,7 @@ export function MentorProfile({
                   </Button>
                 </div>
               </CardHeader>
-              <CardContent className="pt-6">
+              <CardContent className="pt-4 sm:pt-6">
                 <form action={contactFormAction} className="space-y-5">
                   <Field className="space-y-2">
                     <FieldLabel
@@ -561,18 +566,19 @@ export function MentorProfile({
                   </Field>
 
                   {isEditingContact && (
-                    <div className="flex gap-3 justify-end pt-4 border-t border-gray-100">
+                    <div className="flex flex-col sm:flex-row gap-3 justify-end pt-4 border-t border-gray-100">
                       <Button
                         type="button"
                         variant="outline"
                         onClick={() => setIsEditingContact(false)}
                         disabled={contactIsPending}
+                        className="w-full sm:w-auto"
                       >
                         Cancel
                       </Button>
                       <Button
                         type="submit"
-                        className="bg-emerald-600 hover:bg-emerald-700 text-white"
+                        className="bg-emerald-600 hover:bg-emerald-700 text-white w-full sm:w-auto"
                         disabled={contactIsPending}
                       >
                         {contactIsPending ? <Spinner /> : "Save Changes"}
@@ -594,14 +600,14 @@ export function MentorProfile({
           <TabsContent value="documents">
             <Card className="border border-gray-200 shadow-sm">
               <CardHeader className="border-b border-gray-100 bg-white">
-                <CardTitle className="text-lg text-gray-900">
+                <CardTitle className="text-base sm:text-lg text-gray-900">
                   Professional Documents
                 </CardTitle>
-                <CardDescription className="text-sm mt-1">
+                <CardDescription className="text-xs sm:text-sm mt-1">
                   View your uploaded documents and verification materials
                 </CardDescription>
               </CardHeader>
-              <CardContent className="pt-6 space-y-6">
+              <CardContent className="pt-4 sm:pt-6 space-y-6">
                 <div className="space-y-3">
                   <Label className="text-sm font-medium text-gray-900">
                     Resume / CV
@@ -612,15 +618,15 @@ export function MentorProfile({
                         href={mentorRecord.resume}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex items-center gap-2 text-sm text-emerald-600 hover:text-emerald-700 font-medium"
+                        className="inline-flex items-center gap-2 text-sm text-emerald-600 hover:text-emerald-700 font-medium break-all"
                       >
-                        <FileText className="h-4 w-4" />
-                        View Resume
-                        <ExternalLink className="h-3 w-3" />
+                        <FileText className="h-4 w-4 flex-shrink-0" />
+                        <span>View Resume</span>
+                        <ExternalLink className="h-3 w-3 flex-shrink-0" />
                       </a>
                     ) : (
                       <div className="p-4 bg-gray-50 rounded-lg border border-gray-200">
-                        <p className="text-sm text-gray-700 whitespace-pre-wrap">
+                        <p className="text-sm text-gray-700 whitespace-pre-wrap break-words">
                           {mentorRecord.resume}
                         </p>
                       </div>
@@ -638,7 +644,7 @@ export function MentorProfile({
                   </Label>
                   {mentorRecord.citizenshipPhotoUrl ? (
                     <div className="space-y-3">
-                      <div className="relative rounded-lg border border-gray-200 w-full h-80 overflow-hidden bg-gray-50">
+                      <div className="relative rounded-lg border border-gray-200 w-full h-60 sm:h-80 overflow-hidden bg-gray-50">
                         <Image
                           src={
                             mentorRecord.citizenshipPhotoUrl ||
@@ -724,12 +730,12 @@ export function MentorProfile({
           <TabsContent value="security">
             <Card className="border border-gray-200 shadow-sm">
               <CardHeader className="border-b border-gray-100 bg-white">
-                <div className="flex items-center justify-between">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                   <div>
-                    <CardTitle className="text-lg text-gray-900">
+                    <CardTitle className="text-base sm:text-lg text-gray-900">
                       Security Settings
                     </CardTitle>
-                    <CardDescription className="text-sm mt-1">
+                    <CardDescription className="text-xs sm:text-sm mt-1">
                       Manage your password and account security
                     </CardDescription>
                   </div>
@@ -737,13 +743,14 @@ export function MentorProfile({
                     variant="outline"
                     size="sm"
                     onClick={() => setShowPasswordSection(!showPasswordSection)}
+                    className="w-full sm:w-auto"
                   >
                     {showPasswordSection ? "Hide" : "Change Password"}
                   </Button>
                 </div>
               </CardHeader>
               {showPasswordSection && (
-                <CardContent className="pt-6">
+                <CardContent className="pt-4 sm:pt-6">
                   <form className="space-y-5">
                     <div className="space-y-2">
                       <Label

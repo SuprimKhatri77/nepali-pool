@@ -160,7 +160,7 @@ export default function ScheduleCall({
             <BreadcrumbList>
               <BreadcrumbItem>
                 <BreadcrumbLink
-                  href="/dashboard/student"
+                  href={`/dashboard/${role === "mentor" ? "mentor" : "student"}`}
                   className="text-emerald-600 hover:text-emerald-700 transition-colors"
                 >
                   Dashboard

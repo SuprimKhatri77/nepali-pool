@@ -4,14 +4,13 @@ import { db } from "../../lib/db";
 import {
   chats,
   ChatsSelectType,
-  chatSubscription,
   mentorProfile,
   MentorProfileSelectType,
   studentProfile,
   StudentProfileSelectType,
   UserSelectType,
 } from "../../lib/db/schema";
-import { and, eq, or } from "drizzle-orm";
+import { eq } from "drizzle-orm";
 import { getCurrentUser } from "../lib/auth/helpers/getCurrentUser";
 
 type UserChatType =

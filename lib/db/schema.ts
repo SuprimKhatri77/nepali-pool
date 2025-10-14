@@ -390,6 +390,15 @@ export const messageAttachments = pgTable("message_attachments", {
   createdAt: timestamp("created_at").defaultNow(),
 });
 
+export const newsletter = pgTable("newsletter", {
+  id: uuid("id").defaultRandom().primaryKey().notNull(),
+  email: text("email").notNull().unique(),
+  isConfirmed: boolean("is_confirmed").default(false),
+  confirmedAt: timestamp("confirmed_at"),
+  confirmationToken: text("confirmation_token"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
 // ==========RELATIONS===============
 
 export const messageAttachmentRelations = relations(

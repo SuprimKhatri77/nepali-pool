@@ -2,10 +2,9 @@
 
 import z from "zod";
 import { db } from "../../../lib/db";
-import { mentorProfile, studentProfile, user } from "../../../lib/db/schema";
+import { user } from "../../../lib/db/schema";
 import { auth } from "../../lib/auth/auth";
 import { headers } from "next/headers";
-import { redirect } from "next/navigation";
 import { eq } from "drizzle-orm";
 import { redirectByRole } from "../../helper/redirectByrole";
 

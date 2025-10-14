@@ -2,11 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { db } from "../../../lib/db";
-import { favorite, FavoriteInsertType, user } from "../../../lib/db/schema";
-import { auth } from "../../lib/auth/auth";
-import { headers } from "next/headers";
-import { redirect } from "next/navigation";
-import { eq } from "drizzle-orm";
+import { favorite, FavoriteInsertType } from "../../../lib/db/schema";
 import { getCurrentStudent } from "../../lib/auth/helpers/getCurrentStudent";
 
 export type FormState = {

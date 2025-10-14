@@ -29,7 +29,7 @@ export default function Footer() {
           {/* Logo & Social */}
           <div className="md:col-span-1">
             <div className="flex items-center gap-2 mb-4">
-              <div className="w-10 h-10 bg-gradient-to-br from-emerald-400 to-emerald-600 rounded-lg flex items-center justify-center text-white font-bold">
+              <div className="px-2 py-2 sm:px-0 sm:py-0 sm:w-10 sm:h-10 bg-gradient-to-br from-emerald-400 to-emerald-600 rounded-lg flex items-center justify-center text-white font-bold">
                 NP
               </div>
               <span className="font-semibold text-lg text-gray-900">
