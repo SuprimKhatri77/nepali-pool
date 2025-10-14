@@ -4,9 +4,8 @@ import { auth } from "../../lib/auth/auth";
 import { checkAndUpdateRateLimit } from "../../actions/rate-limiting/checkAndUpdateRateLimit";
 import { headers } from "next/headers";
 import { db } from "../../../lib/db";
-import { mentorProfile, studentProfile, user } from "../../../lib/db/schema";
+import { user } from "../../../lib/db/schema";
 import { eq } from "drizzle-orm";
-import { getCurrentMentor } from "../../lib/auth/helpers/getCurrentMentor";
 import { getCallbackUrl } from "../../lib/auth/helpers/getCallbackUrl";
 
 export async function resendEmailVerification() {
@@ -23,6 +22,10 @@ export async function resendEmailVerification() {
       .where(eq(user.id, session.user.id));
     if (!userRecord) {
       return { success: false, message: "User doesn't exist" };
+    }
+
+    if (userRecord.emailVerified) {
+      return { success: false, message: "Email already verified" };
     }
 
     const allowed = await checkAndUpdateRateLimit(

@@ -1,10 +1,12 @@
-type GuideParaCardProps = {
-  step: number | string;
+import { CheckCircle2 } from "lucide-react";
+
+interface GuideParaCardProps {
+  step: number;
   title: string;
   description: string;
   isLast?: boolean;
   ul?: string[];
-};
+}
 
 export default function GuideParaCard({
   step,
@@ -13,39 +15,44 @@ export default function GuideParaCard({
   isLast = false,
   ul = [],
 }: GuideParaCardProps) {
-  const li: string[] = [];
-  if (ul.length > 0) {
-    for (const list of ul) {
-      li.push(list);
-    }
-  }
   return (
-    <div className="flex flex-col items-start relative px-8 pt-5">
-      <div className="flex flex-col items-center absolute left-0 h-full">
-        <svg className="h-5 w-5">
-          <circle
-            cx="10"
-            cy="10"
-            r="5"
-            className="stroke-black stroke-1 fill-[#3A86FF]"
-          />
-        </svg>
-        {!isLast && (
-          <div className="absolute w-[2px] h-full bg-black flex-1 mt-0 top-[15]" />
-        )}
+    <div className="relative">
+      <div className="flex gap-6 group">
+        {/* Step indicator */}
+        <div className="flex flex-col items-center flex-shrink-0">
+          <div className="relative z-10 flex items-center justify-center w-12 h-12 rounded-full bg-gradient-to-br from-emerald-500 to-emerald-600 text-white font-semibold shadow-lg group-hover:scale-110 transition-transform">
+            {isLast ? <CheckCircle2 className="w-6 h-6" /> : step}
+          </div>
+          {!isLast && (
+            <div className="w-0.5 h-full bg-gradient-to-b from-emerald-300 to-emerald-100 mt-2" />
+          )}
+        </div>
+
+        {/* Content */}
+        <div className="flex-1 pb-12">
+          <div className="bg-white rounded-xl border border-emerald-100 p-6 shadow-sm hover:shadow-md hover:border-emerald-200 transition-all">
+            <h3 className="text-xl font-semibold mb-2 text-gray-900">
+              {title}
+            </h3>
+            {description && (
+              <p className="text-gray-600 leading-relaxed">{description}</p>
+            )}
+            {ul.length > 0 && (
+              <ul className="mt-4 space-y-2">
+                {ul.map((item, index) => (
+                  <li
+                    key={index}
+                    className="flex items-start gap-2 text-gray-600"
+                  >
+                    <span className="text-emerald-500 mt-1">•</span>
+                    <span>{item}</span>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+        </div>
       </div>
-      <span className="text-base">step {step}</span>
-      <h1 className="text-[#3A86FF] text-lg font-semibold">{title}</h1>
-      <p className="text-sm">{description}</p>
-      {li.length > 0 && (
-        <ul className="pl-5">
-          {li.map((list, key) => (
-            <li className="list-disc" key={key}>
-              {list}
-            </li>
-          ))}
-        </ul>
-      )}
     </div>
   );
 }

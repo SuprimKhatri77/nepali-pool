@@ -1,23 +1,22 @@
+const trustPoints = [
+  "Affordable mentorship by real Nepali students who've successfully navigated the process",
+  "Verified mentors with proven track records of successful applications",
+  "Comprehensive guidance from application to arrival in Japan",
+  "24/7 support system for all your questions and concerns",
+  "Transparent pricing with no hidden fees or charges",
+];
+
+const testimonials = [
+  {
+    name: "Roshan Pokharel",
+    text: "I was skeptical at first, but the mentorship program turned out to be a game-changer. The guidance and support I received were invaluable, and I'm grateful for the opportunity to learn from someone who's been there.",
+  },
+  {
+    name: "Bhupendra Thapa",
+    text: "The mentor assigned to me understood exactly what I was going through. Their firsthand experience made all the difference in my application success.",
+  },
+];
 export default function WhyTrustUs() {
-  const trustPoints = [
-    "Affordable mentorship by real Nepali students who've successfully navigated the process",
-    "Verified mentors with proven track records of successful applications",
-    "Comprehensive guidance from application to arrival in Japan",
-    "24/7 support system for all your questions and concerns",
-    "Transparent pricing with no hidden fees or charges",
-  ];
-
-  const testimonials = [
-    {
-      name: "Roshan Pokharel",
-      text: "I was skeptical at first, but the mentorship program turned out to be a game-changer. The guidance and support I received were invaluable, and I'm grateful for the opportunity to learn from someone who's been there.",
-    },
-    {
-      name: "Priya Sharma",
-      text: "The mentor assigned to me understood exactly what I was going through. Their firsthand experience made all the difference in my application success.",
-    },
-  ];
-
   return (
     <section className="py-20 px-6 bg-white">
       <div className="max-w-7xl mx-auto">

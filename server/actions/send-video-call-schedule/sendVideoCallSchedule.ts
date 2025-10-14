@@ -13,6 +13,7 @@ import {
 import { and, eq } from "drizzle-orm";
 import { sendEmail } from "../../lib/send-email";
 import { getCurrentUser } from "../../lib/auth/helpers/getCurrentUser";
+import { revalidatePath } from "next/cache";
 
 const roleEnum = z
   .string()
@@ -20,6 +21,21 @@ const roleEnum = z
     message: "Invalid role!",
   }) as z.ZodType<"student" | "mentor">;
 
+type sendVideoCallScheduleType =
+  | { success: true; message: string; timestamp: number }
+  | {
+      success: false;
+      message: string;
+      errors: {
+        date?: string[] | undefined;
+        videoId?: string[] | undefined;
+        time?: string[] | undefined;
+        role?: string[] | undefined;
+        studentId?: string[] | undefined;
+        mentorId?: string[] | undefined;
+      };
+      timestamp: number;
+    };
 export async function sendVideoCallSchedule(
   videoId: string,
   date: string,
@@ -27,9 +43,15 @@ export async function sendVideoCallSchedule(
   time: string,
   studentId: string,
   mentorId: string
-) {
+): Promise<sendVideoCallScheduleType> {
   const result = await getCurrentUser();
-  if (!result.success) return result;
+  if (!result.success)
+    return {
+      success: result.success,
+      message: result.message,
+      timestamp: Date.now(),
+      errors: {},
+    };
 
   const data = z.object({
     videoId: z.string({ required_error: "Video ID is required" }).nonempty(),
@@ -61,8 +83,8 @@ export async function sendVideoCallSchedule(
     return {
       errors: validateFields.error.flatten().fieldErrors,
       message: "Validation Failed",
-      success: true,
-      timesamp: Date.now(),
+      success: false,
+      timestamp: Date.now(),
     };
   }
   // console.log("Data: ", validateFields.data);
@@ -84,12 +106,19 @@ export async function sendVideoCallSchedule(
       );
 
     if (!videoRecord) {
-      return { success: false, message: "No video record found" };
+      return {
+        success: false,
+        message: "No video record found",
+        errors: {},
+        timestamp: Date.now(),
+      };
     }
     if (videoRecord.status !== "pending") {
       return {
         success: false,
         message: `The video call is already ${videoRecord.status}`,
+        errors: {},
+        timestamp: Date.now(),
       };
     }
     const [studentRecord] = await db
@@ -100,6 +129,8 @@ export async function sendVideoCallSchedule(
       return {
         message: "No record found for the student!",
         success: false,
+        errors: {},
+        timestamp: Date.now(),
       };
     }
 
@@ -111,6 +142,8 @@ export async function sendVideoCallSchedule(
       return {
         message: "No record found for the mentor!",
         success: false,
+        errors: {},
+        timestamp: Date.now(),
       };
     }
 
@@ -125,7 +158,12 @@ export async function sendVideoCallSchedule(
       .from(preferredTime)
       .where(eq(preferredTime.videoId, validated.videoId));
     if (!preferredTimeRecord) {
-      return { success: false, message: "No time record found for the video" };
+      return {
+        success: false,
+        message: "No time record found for the video",
+        errors: {},
+        timestamp: Date.now(),
+      };
     }
     await db
       .update(preferredTime)
@@ -145,6 +183,7 @@ export async function sendVideoCallSchedule(
         joinUrl: "test-join-url",
         status: "scheduled",
         zoomMeetingId: "test-zoom-meeting-id",
+        updatedAt: new Date(),
       })
       .where(eq(videoCall.id, validated.videoId));
 
@@ -159,17 +198,22 @@ export async function sendVideoCallSchedule(
       subject: "Video Call Schedule",
       html: `Your video call with the mentor ${mentorRecord.name} has been scheduled at time : 123. Please be ready for the call with the mentor.<br>ZOOM MEETING JOIN URL: test-join-url`,
     });
-
+    role === "student"
+      ? revalidatePath(`/video-call/schedule/${videoId}`)
+      : revalidatePath(`/video-call/respond/${videoId}`);
     return {
       success: true,
       message: "Video call scheduled successfully, Please check your mail!",
-      redirectTo: `/dashboard/${validated.role}`,
+      // redirectTo: `/dashboard/${validated.role}`,
+      timestamp: Date.now(),
     };
   } catch (error) {
     console.error("Error:", error);
     return {
       message: "Something went wrong!",
-      success: true,
+      success: false,
+      timestamp: Date.now(),
+      errors: {},
     };
   }
 }

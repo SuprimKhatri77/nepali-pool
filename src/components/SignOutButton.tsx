@@ -4,8 +4,13 @@ import { useRouter } from "next/navigation";
 import { Button } from "./ui/button";
 import { authClient } from "../../server/lib/auth/auth-client";
 import { useState } from "react";
+import { Spinner } from "./ui/spinner";
 
-export default function SignOutButton() {
+export default function SignOutButton({
+  children,
+}: {
+  children?: React.ReactNode;
+}) {
   const [isPending, setIsPending] = useState<boolean>(false);
   const router = useRouter();
 
@@ -22,12 +27,12 @@ export default function SignOutButton() {
   };
   return (
     <Button
-      variant="default"
-      className="w-fit"
+      variant="outline"
       disabled={isPending}
       onClick={handleLogout}
+      className={` px-4  py-2 w-full text-sm font-medium text-gray-700 hover:text-gray-800 ${isPending && "border-none hover:bg-transparent shadow-none hover:shadow-none "}`}
     >
-      Logout
+      {isPending ? <Spinner /> : children ? children : "Logout"}
     </Button>
   );
 }

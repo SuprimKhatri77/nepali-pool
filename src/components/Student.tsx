@@ -148,13 +148,13 @@ export default function StudentPage({
   };
 
   const handleSuccess = () => {
-    console.log("REFRESHING /DASHBOARD/STUDENT");
+    // console.log("REFRESHING /DASHBOARD/STUDENT");
     router.refresh();
   };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-white to-green-50">
-      <header className="border-b bg-white/80 backdrop-blur-sm sticky top-0 z-40">
+      {/* <header className="border-b bg-white/80 backdrop-blur-sm sticky top-0 z-40">
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
           <h1 className="text-2xl font-semibold text-gray-900">
             Student Dashboard
@@ -178,30 +178,40 @@ export default function StudentPage({
             </Button>
           </div>
         </div>
-      </header>
+      </header> */}
 
       <main className="max-w-7xl mx-auto px-6 py-8">
-        <div className="flex gap-2 mb-8 border-b">
-          <button
-            onClick={() => setIsFavoriteShown(false)}
-            className={`px-6 py-3 font-medium transition-all relative ${
-              !isFavoritesShown
-                ? "text-emerald-600 border-b-2 border-emerald-600"
-                : "text-gray-600 hover:text-gray-900"
-            }`}
-          >
-            Matching Mentors
-          </button>
-          <button
-            onClick={() => setIsFavoriteShown(true)}
-            className={`px-6 py-3 font-medium transition-all relative ${
-              isFavoritesShown
-                ? "text-emerald-600 border-b-2 border-emerald-600"
-                : "text-gray-600 hover:text-gray-900"
-            }`}
-          >
-            Favorites
-          </button>
+        <div className="flex justify-between items-center">
+          <div className="flex gap-2 mb-8 border-b">
+            <button
+              onClick={() => setIsFavoriteShown(false)}
+              className={`px-6 py-3 font-medium transition-all relative ${
+                !isFavoritesShown
+                  ? "text-emerald-600 border-b-2 border-emerald-600"
+                  : "text-gray-600 hover:text-gray-900"
+              }`}
+            >
+              Matching Mentors
+            </button>
+            <button
+              onClick={() => setIsFavoriteShown(true)}
+              className={`px-6 py-3 font-medium transition-all relative ${
+                isFavoritesShown
+                  ? "text-emerald-600 border-b-2 border-emerald-600"
+                  : "text-gray-600 hover:text-gray-900"
+              }`}
+            >
+              Favorites
+            </button>
+          </div>
+          <Link href="/video-call?status=pending">
+            <Button
+              variant="outline"
+              className="border-emerald-200 hover:bg-emerald-50 bg-transparent"
+            >
+              Video Calls
+            </Button>
+          </Link>
         </div>
 
         {!isFavoritesShown && (
@@ -221,13 +231,14 @@ export default function StudentPage({
                       <CardContent className="p-6">
                         <div className="flex items-start justify-between mb-4">
                           <div className="flex items-center gap-4">
-                            <Image
-                              src={mentor.imageUrl! || "/placeholder.svg"}
-                              alt={mentor.user.name || "Mentor"}
-                              width={64}
-                              height={64}
-                              className="rounded-full object-cover ring-2 ring-emerald-100"
-                            />
+                            <div className="relative h-20 w-20">
+                              <Image
+                                src={mentor.imageUrl! || "/placeholder.svg"}
+                                alt={mentor.user.name || "Mentor"}
+                                fill
+                                className="rounded-full object-cover ring-2 ring-emerald-100"
+                              />
+                            </div>
                             <div>
                               <h3 className="font-semibold text-lg text-gray-900">
                                 {mentor.user.name}

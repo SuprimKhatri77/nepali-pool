@@ -6,7 +6,13 @@ import { user } from "../../../lib/db/schema";
 import { checkAndUpdateRateLimit } from "../rate-limiting/checkAndUpdateRateLimit";
 import { auth } from "../../lib/auth/auth";
 
-export async function sendResetPasswordLink(email: string) {
+type ResetPasswordLinkType =
+  | { success: true; message: string }
+  | { success: false; message: string };
+
+export async function sendResetPasswordLink(
+  email: string
+): Promise<ResetPasswordLinkType> {
   try {
     const [userRecord] = await db
       .select()
@@ -31,7 +37,7 @@ export async function sendResetPasswordLink(email: string) {
     await auth.api.requestPasswordReset({
       body: {
         email,
-        redirectTo: "/forgot-password/reset-password",
+        redirectTo: "/reset-password",
       },
     });
 
@@ -40,7 +46,7 @@ export async function sendResetPasswordLink(email: string) {
       success: true,
     };
   } catch (error) {
-    console.error("Server action error msg: ", error);
+    // console.error("Server action error msg: ", error);
     return {
       message: "Something went wrong!",
       success: false,

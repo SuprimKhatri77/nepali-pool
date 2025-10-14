@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useRef, useCallback } from "react";
 import { getMessages, getMoreMessages } from "../../server/helper/getMessages";
-import {
+import type {
   ChatsSelectType,
   MentorProfileSelectType,
   MessageAttachmentsSelectType,
@@ -16,12 +16,14 @@ import { sendMessage } from "../../server/actions/send-message/sendMessage";
 import { toast } from "sonner";
 import { createClient } from "../../server/utlis/supabase/client";
 import Loader from "./Loader";
-import { CldUploadWidget, CloudinaryUploadWidgetInfo } from "next-cloudinary";
+import {
+  CldUploadWidget,
+  type CloudinaryUploadWidgetInfo,
+} from "next-cloudinary";
 import { ImageIcon, X, Download, FileText, Film } from "lucide-react";
 import { sendAttachments } from "../../server/actions/send-attachments/sendAttachments";
 import { getFileType } from "../../server/helper/getFileType";
 import { PaymentButton } from "./PaymentButton";
-import { Button } from "./ui/button";
 
 type Props = {
   role: "student" | "mentor";
@@ -70,6 +72,7 @@ const Message = ({ role, chatId, currentUser, chatRecord }: Props) => {
   const observerTarget = useRef<HTMLDivElement>(null);
   const isInitialLoad = useRef(true);
   const previousScrollHeight = useRef(0);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   let otherUser = null;
   if (chatRecord.studentId === currentUser.id) {
@@ -184,20 +187,20 @@ const Message = ({ role, chatId, currentUser, chatRecord }: Props) => {
   useEffect(() => {
     const supabase = createClient();
 
-    console.log("Setting up real-time subscription for chat:", chatRecord.id);
+    // console.log("Setting up real-time subscription for chat:", chatRecord.id);
 
     const channel = supabase
-      .channel(`chat-${chatRecord.id}`)
+      .channel(`chat-${chatId}`)
       .on(
         "postgres_changes",
         {
           event: "INSERT",
           schema: "public",
           table: "messages",
-          filter: `chat_id=eq.${chatRecord.id}`,
+          filter: `chat_id=eq.${chatId}`,
         },
         (payload) => {
-          console.log("New message received:", payload);
+          // console.log("New message received:", payload);
 
           const rawData = payload.new as any;
 
@@ -228,7 +231,7 @@ const Message = ({ role, chatId, currentUser, chatRecord }: Props) => {
             );
 
             if (messageExists) {
-              console.log("Message already exists, skipping");
+              // console.log("Message already exists, skipping");
               return prevMessages;
             }
 
@@ -249,7 +252,7 @@ const Message = ({ role, chatId, currentUser, chatRecord }: Props) => {
           table: "message_attachments",
         },
         (payload) => {
-          console.log("📎 New attachment received:", payload);
+          // console.log("📎 New attachment received:", payload);
           const rawData = payload.new as any;
 
           const newAttachment = {
@@ -285,37 +288,37 @@ const Message = ({ role, chatId, currentUser, chatRecord }: Props) => {
         }
       )
       .subscribe((status, err) => {
-        console.log("Subscription status:", status);
+        // console.log("Subscription status:", status);
         if (err) {
-          console.error("Subscription error:", err);
+          // console.error("Subscription error:", err);
         }
 
         switch (status) {
           case "SUBSCRIBED":
-            console.log(
-              "Successfully subscribed to real-time for chat:",
-              chatRecord.id
-            );
+            // console.log(
+            //   "Successfully subscribed to real-time for chat:",
+            //   chatRecord.id
+            // );
             break;
           case "CHANNEL_ERROR":
-            console.error("Channel error for chat:", chatRecord.id);
-            toast.error("Real-time connection error");
+            // console.error("Channel error for chat:", chatRecord.id);
+            // toast.error("Real-time connection error");
             break;
           case "TIMED_OUT":
-            console.error("Subscription timed out for chat:", chatRecord.id);
-            toast.error("Real-time connection timed out");
+            // console.error("Subscription timed out for chat:", chatRecord.id);
+            // toast.error("Real-time connection timed out");
             break;
           case "CLOSED":
-            console.log("Subscription closed for chat:", chatRecord.id);
+            // console.log("Subscription closed for chat:", chatRecord.id);
             break;
         }
       });
 
     return () => {
-      console.log("Cleaning up channel for chat:", chatRecord.id);
+      // console.log("Cleaning up channel for chat:", chatRecord.id);
       supabase.removeChannel(channel);
     };
-  }, [chatRecord.id, scrollToBottom]);
+  }, [chatId, scrollToBottom]);
 
   const handleSend = async () => {
     if (!messageText.trim() && uploadedFiles.length === 0) return;
@@ -346,6 +349,9 @@ const Message = ({ role, chatId, currentUser, chatRecord }: Props) => {
       }
 
       setMessageText("");
+      setTimeout(() => {
+        inputRef.current?.focus();
+      }, 1);
       setUploadedFiles([]);
     } catch (error) {
       console.error("Error:", error);
@@ -360,40 +366,43 @@ const Message = ({ role, chatId, currentUser, chatRecord }: Props) => {
   };
 
   return (
-    <div className="min-h-screen w-full bg-slate-50 rounded-xl py-3 sm:py-5 px-2 sm:px-4 flex flex-col gap-3 sm:gap-4">
-      <div className="flex items-center gap-2 sm:gap-4">
-        <div className="h-8 w-8 sm:h-10 sm:w-10 relative rounded-full flex-shrink-0">
-          {otherUser?.imageUrl ? (
-            <Image
-              src={otherUser.imageUrl!}
-              alt="Profile Picture"
-              fill
-              className="rounded-full object-cover"
-            />
-          ) : (
-            <Image
-              src="https://vbteadl6m3.ufs.sh/f/DDJ5nPL6Yp1sHfAviE2zasoidYb10Mu7JGNQFZWgVmCrRHPE"
-              alt="Profile Picture"
-              fill
-              className="rounded-full object-cover"
-            />
-          )}
+    <div className="min-h-screen w-full   bg-white rounded-xl flex flex-col shadow-sm border border-gray-100 z-30">
+      <div className=" bg-white sticky  top-12 z-20 rounded-t-xl py-4 sm:py-5 px-3 sm:px-5 border-b border-gray-100">
+        <div className="flex items-center gap-3 sm:gap-4">
+          <div className="h-10 w-10 sm:h-12 sm:w-12 relative rounded-full flex-shrink-0 ring-2 ring-emerald-100">
+            {otherUser?.imageUrl ? (
+              <Image
+                src={otherUser.imageUrl! || "/placeholder.svg"}
+                alt="Profile Picture"
+                fill
+                className="rounded-full object-cover"
+              />
+            ) : (
+              <Image
+                src="https://vbteadl6m3.ufs.sh/f/DDJ5nPL6Yp1sHfAviE2zasoidYb10Mu7JGNQFZWgVmCrRHPE"
+                alt="Profile Picture"
+                fill
+                className="rounded-full object-cover"
+              />
+            )}
+          </div>
+          <p className="text-base sm:text-lg font-semibold capitalize truncate text-gray-900">
+            {otherUser?.user?.name || ""}
+          </p>
         </div>
-        <p className="text-base sm:text-xl font-medium capitalize truncate">
-          {otherUser?.user?.name || ""}
-        </p>
       </div>
-      <hr />
 
       {chatRecord.status !== "active" ? (
-        <div className="flex flex-col gap-5 items-center justify-center h-full">
-          <h1 className="text-lg font-medium flex gap-1">
-            Your susbcription to chat with
-            <span className="font-bold capitalize">
-              {chatRecord.mentorProfile.user.name}
-            </span>
-            has expied, consider renewing it!
-          </h1>
+        <div className="flex flex-col gap-6 items-center justify-center h-full p-8">
+          <div className="bg-amber-50 border border-amber-200 rounded-lg p-6 max-w-md">
+            <h1 className="text-base font-medium text-gray-800 text-center leading-relaxed">
+              Your subscription to chat with{" "}
+              <span className="font-bold capitalize text-emerald-700">
+                {chatRecord.mentorProfile.user.name}
+              </span>{" "}
+              has expired. Consider renewing it to continue the conversation!
+            </h1>
+          </div>
           <PaymentButton
             mentorId={chatRecord.mentorId}
             userId={currentUser.id}
@@ -409,7 +418,7 @@ const Message = ({ role, chatId, currentUser, chatRecord }: Props) => {
             ref={messagesContainerRef}
             className={`flex flex-1 flex-col ${
               loadingMessage ? "items-center justify-center" : "justify-end"
-            } overflow-y-auto`}
+            } overflow-y-auto px-2 sm:px-4`}
           >
             {loadingMessage ? (
               <Loader />
@@ -417,13 +426,15 @@ const Message = ({ role, chatId, currentUser, chatRecord }: Props) => {
               <>
                 <div
                   ref={observerTarget}
-                  className="h-4 flex justify-center py-2"
+                  className="h-4 flex justify-center py-4"
                 >
                   {isLoadingMore && (
-                    <div className="inline-block border-blue-400 h-4 w-4 animate-spin rounded-full border-2 border-solid border-e-transparent" />
+                    <div className="inline-block border-emerald-500 h-5 w-5 animate-spin rounded-full border-2 border-solid border-e-transparent" />
                   )}
                   {!hasMore && messages.length > MESSAGES_PER_PAGE && (
-                    <p className="text-xs text-gray-400">No more messages</p>
+                    <p className="text-xs text-gray-400 font-medium">
+                      No more messages
+                    </p>
                   )}
                 </div>
 
@@ -436,52 +447,48 @@ const Message = ({ role, chatId, currentUser, chatRecord }: Props) => {
                       return (
                         <div
                           key={message.id}
-                          className={`flex ${
-                            isCurrentUser ? "justify-end" : "justify-start"
-                          } mb-3`}
+                          className={`flex ${isCurrentUser ? "justify-end" : "justify-start"} mb-4`}
                         >
                           <div
-                            className={`rounded-lg max-w-[75%] sm:max-w-md overflow-hidden ${
+                            className={`rounded-2xl max-w-[75%] sm:max-w-md overflow-hidden ${
                               hasText
                                 ? isCurrentUser
-                                  ? "bg-blue-500 text-white"
-                                  : "bg-gray-200 text-black"
+                                  ? "bg-emerald-600 text-white shadow-sm"
+                                  : "bg-gray-50 text-gray-900 border border-gray-100 shadow-sm"
                                 : "bg-transparent"
                             }`}
                           >
                             {message.message && (
-                              <p className="px-3 sm:px-4 py-2">
+                              <p className="px-4 sm:px-5 py-2.5 leading-relaxed text-[15px]">
                                 {message.message}
                               </p>
                             )}
 
                             {message.messageAttachments?.length > 0 && (
                               <div
-                                className={`${
-                                  message.message ? "pt-0" : "p-2"
-                                } space-y-2`}
+                                className={`${message.message ? "pt-0 pb-2 px-2" : "p-2"} space-y-2`}
                               >
                                 {message.messageAttachments.map((file: any) => {
                                   if (file.type === "image") {
                                     return (
                                       <div
                                         key={file.url}
-                                        className="relative group cursor-pointer"
+                                        className="relative group cursor-pointer rounded-lg overflow-hidden"
                                         onClick={() =>
                                           window.open(file.url, "_blank")
                                         }
                                       >
                                         <Image
-                                          src={file.url}
+                                          src={file.url || "/placeholder.svg"}
                                           alt={file.name || "attachment"}
                                           width={300}
                                           height={300}
                                           className="w-full h-auto rounded-lg object-cover"
                                         />
-                                        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all duration-200 rounded-lg flex items-center justify-center">
+                                        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-all duration-200 rounded-lg flex items-center justify-center">
                                           <Download
-                                            className="text-white opacity-0 group-hover:opacity-100 transition-opacity"
-                                            size={24}
+                                            className="text-white opacity-0 group-hover:opacity-100 transition-opacity drop-shadow-lg"
+                                            size={28}
                                           />
                                         </div>
                                       </div>
@@ -516,17 +523,17 @@ const Message = ({ role, chatId, currentUser, chatRecord }: Props) => {
                                       rel="noopener noreferrer"
                                       className={`flex items-center gap-3 p-3 rounded-lg transition-all duration-200 ${
                                         isCurrentUser
-                                          ? "bg-blue-600 hover:bg-blue-700"
-                                          : "bg-white hover:bg-gray-50 shadow-sm"
+                                          ? "bg-emerald-700 hover:bg-emerald-800"
+                                          : "bg-white hover:bg-gray-50 shadow-sm border border-gray-100"
                                       }`}
                                     >
                                       <div
-                                        className={`p-2 rounded-lg ${
+                                        className={`p-2.5 rounded-lg ${
                                           isCurrentUser
-                                            ? "bg-blue-700"
+                                            ? "bg-emerald-800"
                                             : isPDF
-                                              ? "bg-red-100"
-                                              : "bg-gray-100"
+                                              ? "bg-red-50"
+                                              : "bg-gray-50"
                                         }`}
                                       >
                                         <FileText
@@ -552,9 +559,9 @@ const Message = ({ role, chatId, currentUser, chatRecord }: Props) => {
                                           {file.name || "Download File"}
                                         </p>
                                         <p
-                                          className={`text-xs uppercase ${
+                                          className={`text-xs uppercase font-medium ${
                                             isCurrentUser
-                                              ? "text-blue-100"
+                                              ? "text-emerald-100"
                                               : "text-gray-500"
                                           }`}
                                         >
@@ -568,7 +575,7 @@ const Message = ({ role, chatId, currentUser, chatRecord }: Props) => {
                                         size={18}
                                         className={
                                           isCurrentUser
-                                            ? "text-blue-200"
+                                            ? "text-emerald-200"
                                             : "text-gray-400"
                                         }
                                       />
@@ -582,11 +589,33 @@ const Message = ({ role, chatId, currentUser, chatRecord }: Props) => {
                       );
                     })
                   ) : (
-                    <div className="h-full flex items-center justify-center px-4">
-                      <h1 className="text-gray-500 text-sm sm:text-base text-center">
-                        This is the start of your conversation with{" "}
-                        {otherUser ? otherUser.user.name : "Unknown"}
-                      </h1>
+                    <div className="h-full flex items-center justify-center px-4 py-12">
+                      <div className="text-center">
+                        <div className="w-16 h-16 bg-emerald-50 rounded-full flex items-center justify-center mx-auto mb-4">
+                          <svg
+                            className="w-8 h-8 text-emerald-600"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
+                            />
+                          </svg>
+                        </div>
+                        <h1 className="text-gray-600 text-sm sm:text-base font-medium">
+                          Start your conversation with{" "}
+                          <span className="text-emerald-700 font-semibold">
+                            {otherUser ? otherUser.user.name : "Unknown"}
+                          </span>
+                        </h1>
+                        <p className="text-gray-400 text-xs sm:text-sm mt-2">
+                          Send a message to begin chatting
+                        </p>
+                      </div>
                     </div>
                   )
                 ) : (
@@ -603,45 +632,45 @@ const Message = ({ role, chatId, currentUser, chatRecord }: Props) => {
           </div>
 
           {uploadedFiles.length > 0 && (
-            <div className="px-2 pb-3">
-              <div className="bg-gray-50 rounded-lg p-3 border border-gray-200">
-                <div className="flex items-center justify-between mb-2">
-                  <p className="text-xs font-medium text-gray-600">
+            <div className="px-3 sm:px-4 pb-3">
+              <div className="bg-emerald-50/50 rounded-xl p-4 border border-emerald-100">
+                <div className="flex items-center justify-between mb-3">
+                  <p className="text-sm font-semibold text-emerald-900">
                     {uploadedFiles.length} file
                     {uploadedFiles.length > 1 ? "s" : ""} attached
                   </p>
                   <button
                     onClick={() => setUploadedFiles([])}
-                    className="text-xs text-gray-500 hover:text-red-500 transition-colors"
+                    className="text-xs text-gray-500 hover:text-red-600 transition-colors font-medium"
                   >
                     Clear all
                   </button>
                 </div>
 
-                <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                   {uploadedFiles.map((file) => (
                     <div
                       key={file.id}
-                      className="relative group rounded-lg overflow-hidden border-2 border-gray-200 hover:border-blue-400 transition-all duration-200 bg-white"
+                      className="relative group rounded-xl overflow-hidden border-2 border-emerald-100 hover:border-emerald-300 transition-all duration-200 bg-white shadow-sm"
                     >
                       {file.type === "image" ? (
                         <div className="aspect-square relative">
                           <Image
-                            src={file.url}
+                            src={file.url || "/placeholder.svg"}
                             alt={file.name}
                             fill
                             className="object-cover"
                           />
-                          <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/60 to-transparent p-2">
+                          <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 to-transparent p-2.5">
                             <p className="text-xs text-white truncate font-medium">
                               {file.name}
                             </p>
                           </div>
                         </div>
                       ) : file.type === "video" ? (
-                        <div className="aspect-square relative bg-gray-100 flex items-center justify-center">
-                          <Film size={32} className="text-gray-400" />
-                          <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/60 to-transparent p-2">
+                        <div className="aspect-square relative bg-gray-50 flex items-center justify-center">
+                          <Film size={36} className="text-emerald-500" />
+                          <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 to-transparent p-2.5">
                             <p className="text-xs text-white truncate font-medium">
                               {file.name}
                             </p>
@@ -649,26 +678,26 @@ const Message = ({ role, chatId, currentUser, chatRecord }: Props) => {
                         </div>
                       ) : (
                         <div
-                          className={`aspect-square relative flex flex-col items-center justify-center p-2 ${
+                          className={`aspect-square relative flex flex-col items-center justify-center p-3 ${
                             file.type === "pdf" ||
                             file.name?.toLowerCase().endsWith(".pdf")
                               ? "bg-red-50"
-                              : "bg-gray-100"
+                              : "bg-gray-50"
                           }`}
                         >
                           <FileText
-                            size={32}
-                            className={`mb-1 ${
+                            size={36}
+                            className={`mb-2 ${
                               file.type === "pdf" ||
                               file.name?.toLowerCase().endsWith(".pdf")
                                 ? "text-red-500"
                                 : "text-gray-400"
                             }`}
                           />
-                          <p className="text-xs text-gray-600 truncate w-full text-center font-medium">
+                          <p className="text-xs text-gray-700 truncate w-full text-center font-medium px-1">
                             {file.name}
                           </p>
-                          <p className="text-xs text-gray-400 uppercase">
+                          <p className="text-xs text-gray-500 uppercase mt-1 font-medium">
                             {file.type === "pdf" ||
                             file.name?.toLowerCase().endsWith(".pdf")
                               ? "PDF"
@@ -679,12 +708,12 @@ const Message = ({ role, chatId, currentUser, chatRecord }: Props) => {
 
                       <button
                         onClick={() => removeFile(file.id)}
-                        className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1.5
+                        className="absolute top-2 right-2 bg-red-500 text-white rounded-full p-1.5
                                opacity-0 group-hover:opacity-100 transition-all duration-200
                                hover:bg-red-600 hover:scale-110 shadow-lg z-10"
                         aria-label="Remove file"
                       >
-                        <X size={14} />
+                        <X size={14} strokeWidth={2.5} />
                       </button>
                     </div>
                   ))}
@@ -693,7 +722,7 @@ const Message = ({ role, chatId, currentUser, chatRecord }: Props) => {
             </div>
           )}
 
-          <div className="flex items-center gap-1 sm:gap-2 justify-end relative">
+          <div className="flex border-t border-gray-100 py-3 items-center gap-2 justify-end relative px-2 sm:px-3 bg-white">
             <CldUploadWidget
               uploadPreset="NepaliPoolChat"
               options={{
@@ -727,8 +756,8 @@ const Message = ({ role, chatId, currentUser, chatRecord }: Props) => {
                   <button
                     type="button"
                     onClick={() => open()}
-                    className="flex items-center justify-center p-2 sm:px-4 sm:py-3 text-slate-700 hover:bg-slate-100
-                rounded-full transition-all duration-200 cursor-pointer flex-shrink-0"
+                    className="flex items-center justify-center p-2.5 sm:p-3 text-emerald-600 hover:bg-emerald-50
+                rounded-full transition-all duration-200 cursor-pointer flex-shrink-0 border border-transparent hover:border-emerald-200"
                   >
                     <ImageIcon className="w-5 h-5 sm:w-6 sm:h-6" />
                   </button>
@@ -736,35 +765,36 @@ const Message = ({ role, chatId, currentUser, chatRecord }: Props) => {
               }}
             </CldUploadWidget>
             <Input
-              className="rounded-full border-gray-400 pr-10 sm:pr-12 text-sm sm:text-base"
+              className="rounded-full border-gray-200 focus:border-emerald-300 focus:ring-emerald-200 pr-11 sm:pr-12 text-sm sm:text-base py-2.5 sm:py-3"
               type="text"
               onChange={(e) => setMessageText(e.target.value)}
               value={messageText}
               onKeyDown={(e) => e.key === "Enter" && !pending && handleSend()}
+              ref={inputRef}
               disabled={pending}
               placeholder="Type a message..."
             />
-            <div className="absolute bottom-2 sm:bottom-2.5 right-3 sm:right-4">
+            <div className="absolute bottom-5 sm:bottom-5 right-4 sm:right-5">
               <button
-                className="bg-transparent text-black hover:bg-transparent cursor-pointer hover:scale-105 duration-300 transition-all disabled:opacity-50"
+                className="bg-transparent text-emerald-600 hover:text-emerald-700 hover:bg-transparent cursor-pointer hover:scale-110 duration-200 transition-all disabled:opacity-40 disabled:cursor-not-allowed"
                 onClick={handleSend}
                 disabled={
                   pending || (!messageText.trim() && uploadedFiles.length === 0)
                 }
               >
                 {pending ? (
-                  <div className="inline-block border-green-400 h-4 w-4 animate-spin rounded-full border-2 border-solid border-e-transparent">
+                  <div className="inline-block border-emerald-600 h-5 w-5 animate-spin rounded-full border-2 border-solid border-e-transparent">
                     <span className="sr-only">Loading...</span>
                   </div>
                 ) : (
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
-                    width="18"
-                    height="18"
+                    width="20"
+                    height="20"
                     viewBox="0 0 24 24"
                     fill="none"
                     stroke="currentColor"
-                    strokeWidth="2"
+                    strokeWidth="2.5"
                     strokeLinecap="round"
                     strokeLinejoin="round"
                   >

@@ -3,11 +3,18 @@
 import type React from "react";
 import { useState, useRef, useEffect } from "react";
 import { X, ChevronDown, Search } from "lucide-react";
-import { cn } from "@/components/lib/utils";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { MultiSelectCountriesProps } from "../../types/all-types";
+import { cn } from "./lib/utils";
+
+interface MultiSelectCountriesProps {
+  countries: string[];
+  selectedCountries: string[];
+  onSelectionChange: (countries: string[]) => void;
+  placeholder?: string;
+  className?: string;
+}
 
 export default function MultiSelectCountries({
   countries,

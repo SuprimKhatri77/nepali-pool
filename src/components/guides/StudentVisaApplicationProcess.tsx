@@ -9,11 +9,12 @@ export default function StudentVisaApplicationProcess() {
     "A recent passport sized photo taken within the last six months",
     "The completed student visa application form.",
   ];
+
   const procedure = [
     {
       title: "Application Submission",
       description:
-        "Start with filling out the school’s application form thoroughly. Then, submit all necessary documents as previously mentioned, which encompass academic certificates, transcripts, photographs, and any other required paperwork. This step is crucial for a successful application process.",
+        "Start with filling out the school's application form thoroughly. Then, submit all necessary documents as previously mentioned, which encompass academic certificates, transcripts, photographs, and any other required paperwork. This step is crucial for a successful application process.",
     },
     {
       title: "Document Review and Submission",
@@ -28,7 +29,7 @@ export default function StudentVisaApplicationProcess() {
     {
       title: "Post-Approval Steps",
       description:
-        "Once the COE is approved (usually 5-6 weeks before the course starts), the school will send you a copy of your COE, an invoice for tuition (and any other requested fees), and an acceptance letter. It’s crucial to make the payment by the due date to receive the original COE via mail.",
+        "Once the COE is approved (usually 5-6 weeks before the course starts), the school will send you a copy of your COE, an invoice for tuition (and any other requested fees), and an acceptance letter. It's crucial to make the payment by the due date to receive the original COE via mail.",
     },
     {
       title: "Apply to Student Visa",
@@ -42,28 +43,46 @@ export default function StudentVisaApplicationProcess() {
       lists: li,
     },
   ];
-  return (
-    <div className="p-10 mx-auto bg-white flex flex-col justify-center items-center">
-      <h1 className="text-3xl font-bold pb-5">School Admission Requirements</h1>
-      <Image
-        src="/guides/guide3.png"
-        alt="School Admission Requirements image"
-        width={990}
-        height={497}
-      />
 
-      <p className="pt-5">
-        Selecting the right school is crucial and should be based on factors
-        like teaching style, course offerings, and location. After completing
-        the school application and submitting all required documents, the school
-        applies for a Certificate of Eligibility (COE) on the student’s behalf,
-        which typically takes 2-3 months to process. Once the COE is granted,
-        the student can then apply for a student visa at the nearest Japanese
-        embassy or consulate, providing the COE, a valid passport, and other
-        necessary documents.
-      </p>
-      {
-        <div>
+  return (
+    <div className="space-y-12">
+      {/* Header */}
+      <div className="text-center space-y-4">
+        <h2 className="text-3xl md:text-4xl font-bold">
+          Student Visa Application Process
+        </h2>
+        <p className="text-muted-foreground text-lg max-w-3xl mx-auto">
+          Your step-by-step guide to obtaining your student visa
+        </p>
+      </div>
+
+      {/* Introduction */}
+      <div className="bg-gradient-to-br from-emerald-50 to-white rounded-2xl p-8 border border-emerald-100">
+        <div className="max-w-4xl mx-auto space-y-4">
+          <p className="text-gray-700 leading-relaxed">
+            Selecting the right school is crucial and should be based on factors
+            like teaching style, course offerings, and location.
+          </p>
+          <p className="text-gray-700 leading-relaxed">
+            After completing the school application and submitting all required
+            documents, the school applies for a Certificate of Eligibility (COE)
+            on the student's behalf, which typically takes 2-3 months to
+            process.
+          </p>
+          <p className="text-gray-700 leading-relaxed">
+            Once the COE is granted, the student can then apply for a student
+            visa at the nearest Japanese embassy or consulate, providing the
+            COE, a valid passport, and other necessary documents.
+          </p>
+        </div>
+      </div>
+
+      {/* Process Steps */}
+      <div>
+        <h3 className="text-2xl font-semibold mb-8 text-center">
+          The Application Journey
+        </h3>
+        <div className="space-y-4">
           {procedure.map(({ title, description, lists }, key) => (
             <GuideParaCard
               ul={lists ?? []}
@@ -75,7 +94,7 @@ export default function StudentVisaApplicationProcess() {
             />
           ))}
         </div>
-      }
+      </div>
     </div>
   );
 }

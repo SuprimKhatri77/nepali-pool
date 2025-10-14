@@ -32,6 +32,7 @@ export type FormState = {
     sex?: string;
     city?: string;
   };
+  timestamp: number;
 };
 
 const sexEnum = z
@@ -43,7 +44,8 @@ const sexEnum = z
 export default async function studentOnboarding(
   prevState: FormState,
   formData: FormData
-) {
+): Promise<FormState> {
+  console.log("FORMDATA: ", formData);
   const userId = formData.get("userId") as string;
 
   if (!userId) {
@@ -51,6 +53,7 @@ export default async function studentOnboarding(
       errors: {},
       message: "User not found!",
       success: false,
+      timestamp: Date.now(),
     };
   }
 
@@ -64,7 +67,7 @@ export default async function studentOnboarding(
 
   const onboardingData = z.object({
     imageUrl: z.string().nonempty("Image cannot be empty"),
-    bio: z.string().min(1).nonempty("Bio is required"),
+    bio: z.string().trim().min(1).nonempty("Bio is required"),
     favoriteDestination: z
       .array(z.string())
       .min(1, "Select at least one destination")
@@ -72,17 +75,20 @@ export default async function studentOnboarding(
       .nonempty("At least one destination is required"),
     phoneNumber: z
       .string()
+      .trim()
       .min(10, "Phone number must be more than or equal to 10 digits.")
       .max(20, "Phone number cannot exceed more than 20 digits.")
       .regex(/^\d+$/, "Phone number must contain only digits")
       .nonempty("Phone number is required."),
     district: z
       .string()
+      .trim()
       .regex(/^[A-Za-z]+$/, "District name must contain alphabets only.")
       .nonempty("District name is required."),
     sex: sexEnum,
     city: z
       .string()
+      .trim()
       .regex(/^[A-Za-z]+$/, "City name must contain alphabets only.")
       .nonempty("City name is required."),
   });
@@ -103,6 +109,7 @@ export default async function studentOnboarding(
       message: "Error validating!",
       success: false,
       inputs: Object.fromEntries(formData.entries()),
+      timestamp: Date.now(),
     };
   }
 
@@ -111,10 +118,19 @@ export default async function studentOnboarding(
 
   try {
     const result = await getCurrentUser();
-    if (!result.success) return result;
+    if (!result.success)
+      return {
+        success: result.success,
+        message: result.message,
+        timestamp: Date.now(),
+      };
     const userRecord = result.userRecord;
     if (userRecord.role !== "student") {
-      return { message: "Access denied, Not a Student", success: false };
+      return {
+        message: "Access denied, Not a Student",
+        success: false,
+        timestamp: Date.now(),
+      };
     }
 
     const [studentRecord] = await db
@@ -122,7 +138,11 @@ export default async function studentOnboarding(
       .from(studentProfile)
       .where(eq(studentProfile.userId, userRecord.id));
     if (studentRecord) {
-      return { success: false, message: "Student already onboarded" };
+      return {
+        success: false,
+        message: "Student already onboarded",
+        timestamp: Date.now(),
+      };
     }
     await db
       .update(user)
@@ -148,15 +168,14 @@ export default async function studentOnboarding(
       message: "Onboarding form submitted successfully!",
       success: true,
       redirectTo: "/dashboard/student",
+      timestamp: Date.now(),
     };
   } catch (error) {
     console.error("Database error: ", error);
     return {
-      errors: {
-        bio: ["Something went wrong!"],
-      },
       message: "Something went wrong!",
       success: false,
+      timestamp: Date.now(),
     };
   }
 }

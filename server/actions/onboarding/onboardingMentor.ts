@@ -27,6 +27,19 @@ export type FormState = {
   message?: string;
   success?: boolean;
   redirectTo?: string;
+  inputs?: {
+    country?: string;
+    city?: string;
+    zipCode?: string;
+    phoneNumber?: string;
+    sex?: string;
+    resume?: string;
+    citizenshipPhotoUrl?: string;
+    currentUserId?: string;
+    nationality?: string;
+    bio?: string;
+    imageUrl?: string;
+  };
 };
 
 const sexEnum = z
@@ -55,20 +68,24 @@ export async function OnboardingMentor(
   const onboardingMentorData = z.object({
     country: z
       .string()
+      .trim()
       .min(1, "Country is required")
       .nonempty()
       .regex(/^[A-Za-z]+$/, "Only alphabets A-Z or a-z are allowed"),
     city: z
       .string()
+      .trim()
       .min(1, "City is required")
       .nonempty()
       .regex(/^[A-Za-z]+$/, "Only alphabets A-Z or a-z are allowed"),
     zipCode: z
       .string()
+      .trim()
       .nonempty("Zip code is required")
       .regex(/^\d+$/, "Zipcode must contain only digits"),
     phoneNumber: z
       .string()
+      .trim()
       .min(10, "Phone number must be more than or equal to 10 digits.")
       .max(20, "Phone number cannot exceed more than 20 digits.")
       .regex(/^\d+$/, "Phone number must contain only digits"),
@@ -77,11 +94,12 @@ export async function OnboardingMentor(
     citizenshipPhotoUrl: z.string().nonempty("Citizenship photo is required"),
     nationality: z
       .string()
+      .trim()
       .nonempty("nationality is required")
       .regex(/^[A-Za-z]+$/, "Only alphabets A-Z or a-z are allowed"),
     currentUserId: z.string().nonempty(),
     imageUrl: z.string().nonempty(),
-    bio: z.string().nonempty(),
+    bio: z.string().trim().nonempty(),
   });
 
   const validateFields = onboardingMentorData.safeParse({
@@ -103,6 +121,7 @@ export async function OnboardingMentor(
       errors: validateFields.error.flatten().fieldErrors,
       message: "Validation Error",
       success: false,
+      inputs: Object.fromEntries(formData),
     };
   }
 

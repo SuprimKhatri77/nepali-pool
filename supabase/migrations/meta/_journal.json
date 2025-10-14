@@ -71,6 +71,13 @@
       "when": 1760104524223,
       "tag": "0009_rainy_caretaker",
       "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1760427833607,
+      "tag": "0010_damp_kingpin",
+      "breakpoints": true
     }
   ]
 }

@@ -1,5 +1,4 @@
-export const runtime = "nodejs";
-
+"use server";
 import { eq } from "drizzle-orm";
 import { headers } from "next/headers";
 import { db } from "../../../lib/db";

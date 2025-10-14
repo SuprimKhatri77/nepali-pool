@@ -1,6 +1,4 @@
 "use client";
-
-import * as React from "react";
 import { GalleryVerticalEnd } from "lucide-react";
 
 import {
@@ -11,10 +9,11 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  SidebarFooter,
 } from "@/components/ui/sidebar";
 import { useEffect, useState } from "react";
 import { getUserChats } from "../../server/helper/getUserChats";
-import {
+import type {
   ChatsSelectType,
   MentorProfileSelectType,
   StudentProfileSelectType,
@@ -66,19 +65,21 @@ const Chats = ({ role, currentUser }: Props) => {
   }, []);
 
   return (
-    <Sidebar variant="inset">
-      <SidebarHeader className="flex flex-row items-center justify-between">
+    <Sidebar variant="sidebar" className="border-r">
+      <SidebarHeader className="flex flex-row items-center justify-between border-b">
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton size="lg" asChild>
-              <a href="#">
-                <div className="bg-sidebar-primary text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center rounded-lg">
-                  <GalleryVerticalEnd className="size-4" />
+              <Link href="/">
+                <div className="flex items-center gap-2">
+                  <div className="w-10 h-10 bg-gradient-to-br from-emerald-400 to-emerald-600 rounded-lg flex items-center justify-center text-white font-bold">
+                    NP
+                  </div>
+                  <span className="font-semibold text-lg text-gray-900">
+                    NepaliPool
+                  </span>
                 </div>
-                <div className="flex flex-col gap-0.5 leading-none">
-                  <span className="font-bold sm:text-lg">NepaliPool</span>
-                </div>
-              </a>
+              </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
@@ -88,25 +89,27 @@ const Chats = ({ role, currentUser }: Props) => {
           <SidebarMenu className="gap-2">
             {loading ? (
               <div className="flex flex-col gap-4 px-2">
-                <Skeleton className="h-8 w-full" />
-                <Skeleton className="h-8 w-full" />
-                <Skeleton className="h-8 w-full" />
-                <Skeleton className="h-8 w-full" />
-                <Skeleton className="h-8 w-full" />
-                <Skeleton className="h-8 w-full" />
+                <Skeleton className="h-12 w-full rounded-lg" />
+                <Skeleton className="h-12 w-full rounded-lg" />
+                <Skeleton className="h-12 w-full rounded-lg" />
+                <Skeleton className="h-12 w-full rounded-lg" />
+                <Skeleton className="h-12 w-full rounded-lg" />
+                <Skeleton className="h-12 w-full rounded-lg" />
               </div>
             ) : role === "student" ? (
               chats.length > 0 ? (
                 chats.map((chat) => (
                   <SidebarMenuItem key={chat.id}>
-                    <SidebarMenuButton asChild>
+                    <SidebarMenuButton asChild className="h-12">
                       <Link
                         href={`/chats/${chat.id}`}
-                        className="font-medium flex items-center gap-2"
+                        className="font-medium flex items-center gap-3 px-3"
                       >
-                        <div className="relative w-8 h-8 rounded-full overflow-hidden flex-shrink-0">
+                        <div className="relative w-9 h-9 rounded-full overflow-hidden flex-shrink-0 ring-2 ring-emerald-100">
                           <Image
-                            src={chat.mentorProfile.imageUrl!}
+                            src={
+                              chat.mentorProfile.imageUrl! || "/placeholder.svg"
+                            }
                             fill
                             alt="profile picture"
                             className="object-cover"
@@ -120,8 +123,10 @@ const Chats = ({ role, currentUser }: Props) => {
                   </SidebarMenuItem>
                 ))
               ) : (
-                <div className="flex items-center justify-center">
-                  <h1 className="text-xl font-bold">No chats founds</h1>
+                <div className="flex items-center justify-center py-8">
+                  <p className="text-sm text-muted-foreground">
+                    No chats found
+                  </p>
                 </div>
               )
             ) : role === "mentor" ? (
@@ -129,24 +134,27 @@ const Chats = ({ role, currentUser }: Props) => {
                 chats.map((chat) => {
                   return (
                     <SidebarMenuItem key={chat.id}>
-                      <SidebarMenuButton asChild>
+                      <SidebarMenuButton asChild className="h-12">
                         <Link
                           href={`/chats/${chat.id}`}
-                          className="font-medium flex items-center gap-2"
+                          className="font-medium flex items-center gap-3 px-3"
                         >
                           {chat.studentProfile && (
                             <>
                               {chat.studentProfile.imageUrl ? (
-                                <div className="relative w-8 h-8 rounded-full overflow-hidden flex-shrink-0">
+                                <div className="relative w-9 h-9 rounded-full overflow-hidden flex-shrink-0 ring-2 ring-emerald-100">
                                   <Image
-                                    src={chat.studentProfile.imageUrl}
+                                    src={
+                                      chat.studentProfile.imageUrl ||
+                                      "/placeholder.svg"
+                                    }
                                     fill
                                     alt="profile picture"
                                     className="object-cover"
                                   />
                                 </div>
                               ) : (
-                                <div className="relative w-8 h-8 rounded-full overflow-hidden flex-shrink-0">
+                                <div className="relative w-9 h-9 rounded-full overflow-hidden flex-shrink-0 ring-2 ring-emerald-100">
                                   <Image
                                     src="https://vbteadl6m3.ufs.sh/f/DDJ5nPL6Yp1sHfAviE2zasoidYb10Mu7JGNQFZWgVmCrRHPE"
                                     fill
@@ -166,25 +174,29 @@ const Chats = ({ role, currentUser }: Props) => {
                   );
                 })
               ) : (
-                <div className="flex items-center justify-center">
-                  <h1 className="text-xl font-bold">No chats found! </h1>
+                <div className="flex items-center justify-center py-8">
+                  <p className="text-sm text-muted-foreground">
+                    No chats found
+                  </p>
                 </div>
               )
             ) : (
-              <div className="px-4 py-2">
-                <h1 className="text-sm text-muted-foreground">No chat found</h1>
+              <div className="px-4 py-8">
+                <p className="text-sm text-muted-foreground">No chat found</p>
               </div>
             )}
           </SidebarMenu>
         </SidebarGroup>
       </SidebarContent>
-      <NavUser
-        user={{
-          name: currentUser.name,
-          email: currentUser.email,
-          avatar: currentUser.image || "",
-        }}
-      />
+      <SidebarFooter className="border-t">
+        <NavUser
+          user={{
+            name: currentUser.name,
+            email: currentUser.email,
+            avatar: currentUser.image || "",
+          }}
+        />
+      </SidebarFooter>
     </Sidebar>
   );
 };

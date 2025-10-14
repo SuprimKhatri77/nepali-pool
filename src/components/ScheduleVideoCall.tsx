@@ -5,7 +5,7 @@ import Image from "next/image";
 import {
   FormState,
   scheduleVideoCall,
-} from "../../server/actions/schedule-video-call/scheduleVideoCall";
+} from "../../server/actions/admin/scheduleVideoCall";
 import { Button } from "./ui/button";
 import { useActionState, useEffect } from "react";
 import { toast } from "sonner";

@@ -26,7 +26,7 @@ export async function getCurrentUser(): Promise<CurrentUser> {
   }
 
   if (!userRecord.emailVerified) {
-    return { message: "Users email is not verified", success: false };
+    return { message: "Email not verified", success: false };
   }
   if (!userRecord.role || userRecord.role === "none") {
     return { message: "Missing user role", success: false };

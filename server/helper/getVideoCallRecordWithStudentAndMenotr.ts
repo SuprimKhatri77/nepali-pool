@@ -1,5 +1,6 @@
 "use server";
 
+import { unstable_noStore } from "next/cache";
 import { db } from "../../lib/db";
 import { videoCall } from "../../lib/db/schema";
 import { VideoCallWithStudentAndMentor } from "../../types/all-types";
@@ -15,6 +16,7 @@ type VideoCallRecord =
 export async function getVideoCallRecordWithStudentAndMentor(
   videoId: string
 ): Promise<VideoCallRecord> {
+  unstable_noStore();
   const currentUser = await getCurrentUser();
   if (!currentUser.success) return currentUser;
   try {

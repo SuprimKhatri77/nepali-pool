@@ -233,7 +233,10 @@ export const preferredTimeStatusEnum = pgEnum("preferred_time_status", [
   "accepted",
   "rejected",
 ]);
-
+export const preferredTimeSentByEnum = pgEnum("last_sent_by", [
+  "student",
+  "mentor",
+]);
 export const preferredTime = pgTable(
   "preferred_time",
   {
@@ -248,6 +251,7 @@ export const preferredTime = pgTable(
       withTimezone: true,
     }),
     status: preferredTimeStatusEnum("status").default("pending"),
+    lastSentBy: preferredTimeSentByEnum("last_sent_by").default("student"),
     createdAt: timestamp("created_at").defaultNow(),
     updatedAt: timestamp("updated_at").defaultNow(),
   },

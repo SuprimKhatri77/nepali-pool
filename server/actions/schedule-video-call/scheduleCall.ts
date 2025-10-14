@@ -107,11 +107,13 @@ export async function scheduleVideoCallTime(
       .select()
       .from(preferredTime)
       .where(and(eq(preferredTime.videoId, videoId)));
+
     if (role === "student" && !preferredTimeRecord) {
       await db.insert(preferredTime).values({
         videoId,
         status: "pending",
         studentPreferredTime: combinedDate,
+        lastSentBy: "student",
       });
       revalidatePath("/dashboard/student");
       revalidatePath(`/video-call/schedule/${videoId}`);
@@ -120,26 +122,13 @@ export async function scheduleVideoCallTime(
         message: "Preferred time sent for evaluation to mentor",
         timestamp: new Date(),
       };
-    } else if (role === "mentor" && !preferredTimeRecord) {
-      await db.insert(preferredTime).values({
-        videoId,
-        status: "pending",
-        mentorPreferredTime: combinedDate,
-      });
-      revalidatePath("/dashboard/mentor");
-      revalidatePath(`/video-call/respond/${videoId}`);
-      return {
-        success: true,
-        message: "Preferred time sent to student, successfully!",
-        timestamp: new Date(),
-      };
     }
-
-    if (role === "student") {
+    if (role === "student" && preferredTime) {
       await db
         .update(preferredTime)
         .set({
           studentPreferredTime: combinedDate,
+          lastSentBy: "student",
           updatedAt: new Date(),
         })
         .where(eq(preferredTime.videoId, videoId));
@@ -147,25 +136,59 @@ export async function scheduleVideoCallTime(
       revalidatePath(`/video-call/schedule/${videoId}`);
       return {
         success: true,
-        message: "New Preferred time sent for evaluation to mentor",
+        message: "New Preferred time sent to mentor",
         timestamp: new Date(),
       };
-    } else if (role === "mentor") {
+    }
+
+    if (role === "mentor" && preferredTimeRecord) {
+      console.log("COMBINED DATE", combinedDate);
+      console.log("STD PREF TIME: ", preferredTimeRecord.studentPreferredTime);
+      if (!preferredTimeRecord) {
+        return {
+          success: false,
+          message: "No scheduling request exists yet",
+          timestamp: new Date(),
+        };
+      }
+
+      if (!preferredTimeRecord.studentPreferredTime) {
+        return {
+          success: false,
+          message: "Student is yet to select a date and time",
+          timestamp: new Date(),
+        };
+      }
+      if (
+        new Date(combinedDate).getTime() ===
+        new Date(preferredTimeRecord?.studentPreferredTime).getTime()
+      ) {
+        return {
+          success: false,
+          message: "Select a  different date or click on accept",
+          timestamp: new Date(),
+        };
+      }
+      console.log("I am being triggered(Schedulecall.ts)");
       await db
         .update(preferredTime)
         .set({
           mentorPreferredTime: combinedDate,
+          lastSentBy: "mentor",
           updatedAt: new Date(),
         })
         .where(eq(preferredTime.videoId, videoId));
-      revalidatePath("/dashboard/mentor");
+      console.log("revalidating the path");
       revalidatePath(`/video-call/respond/${videoId}`);
+      console.log("revalidated path");
+      revalidatePath("/dashboard/mentor");
       return {
         success: true,
         message: "New Preferred time sent to student, successfully!",
         timestamp: new Date(),
       };
     }
+
     return {
       success: false,
       message: "Invalid role",

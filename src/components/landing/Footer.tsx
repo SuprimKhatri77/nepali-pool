@@ -1,5 +1,26 @@
 import Link from "next/link";
 
+const exploreLinks = [
+  { href: "/home", name: "Home", id: 1 },
+  { href: "/about-us", name: "About Us", id: 2 },
+  { href: "/pricing", name: "Pricing", id: 3 },
+  { href: "/schools", name: "Schools", id: 4 },
+  { href: "/mentors", name: "Mentors", id: 5 },
+  { href: "/blogs", name: "Blogs", id: 6 },
+];
+const detailLinks = [
+  { href: "/blog", name: "Blog", id: 1 },
+  { href: "/faq", name: "FAQ", id: 2 },
+  { href: "/support", name: "Support", id: 3 },
+  { href: "/developers", name: "Developers", id: 4 },
+];
+const legalLinks = [
+  { href: "/terms", name: "Terms", id: 1 },
+  { href: "/privacy-policy", name: "Privacy Policy", id: 2 },
+  { href: "/refund-policy", name: "Refund Policy", id: 3 },
+  { href: "/cancellation", name: "Cancellation", id: 4 },
+];
+
 export default function Footer() {
   return (
     <footer className="bg-white border-t border-gray-200 py-12 px-6">
@@ -25,17 +46,10 @@ export default function Footer() {
           <div>
             <h3 className="font-semibold text-gray-900 mb-4">Explore</h3>
             <ul className="space-y-2 text-sm text-gray-600">
-              {[
-                "Home",
-                "About Us",
-                "Pricing",
-                "Schools",
-                "Mentors",
-                "Blogs",
-              ].map((item) => (
-                <li key={item}>
-                  <Link href="/" className="hover:text-emerald-600">
-                    {item}
+              {exploreLinks.map((item) => (
+                <li key={item.id}>
+                  <Link href={item.href} className="hover:text-emerald-600">
+                    {item.name}
                   </Link>
                 </li>
               ))}
@@ -46,10 +60,10 @@ export default function Footer() {
           <div>
             <h3 className="font-semibold text-gray-900 mb-4">Details</h3>
             <ul className="space-y-2 text-sm text-gray-600">
-              {["Blog", "FAQ", "Support", "Developers"].map((item) => (
-                <li key={item}>
-                  <Link href="/" className="hover:text-emerald-600">
-                    {item}
+              {detailLinks.map((item) => (
+                <li key={item.id}>
+                  <Link href={item.href} className="hover:text-emerald-600">
+                    {item.name}
                   </Link>
                 </li>
               ))}
@@ -60,15 +74,13 @@ export default function Footer() {
           <div>
             <h3 className="font-semibold text-gray-900 mb-4">Legal</h3>
             <ul className="space-y-2 text-sm text-gray-600">
-              {["Terms", "Privacy Policy", "Refund Policy", "Cancellation"].map(
-                (item) => (
-                  <li key={item}>
-                    <Link href="/" className="hover:text-emerald-600">
-                      {item}
-                    </Link>
-                  </li>
-                )
-              )}
+              {legalLinks.map((item) => (
+                <li key={item.id}>
+                  <Link href={item.href} className="hover:text-emerald-600">
+                    {item.name}
+                  </Link>
+                </li>
+              ))}
             </ul>
           </div>
 
@@ -76,9 +88,9 @@ export default function Footer() {
           <div>
             <h3 className="font-semibold text-gray-900 mb-4">Contact Us</h3>
             <ul className="space-y-2 text-sm text-gray-600">
-              <li>Kathmandu, Nepal</li>
+              <li>Butwal, Nepal</li>
               <li>(123) 456-7890</li>
-              <li>hello@nepalipool.com</li>
+              <li>support@nepalipool.com</li>
             </ul>
           </div>
         </div>

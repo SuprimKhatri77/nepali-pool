@@ -65,11 +65,7 @@ export async function UpdateUserRole(prevState: FormState, formData: FormData) {
       return { message: "Email not verified", success: false };
     }
 
-    if (
-      userRecord.role === "student" ||
-      userRecord.role === "mentor" ||
-      userRecord.role === "admin"
-    ) {
+    if (userRecord.role !== "none") {
       return { message: "You already have a role", success: false };
     }
 

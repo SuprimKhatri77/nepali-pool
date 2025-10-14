@@ -14,7 +14,7 @@ import Link from "next/link";
 import { FormState, SignUp } from "../../server/actions/auth/signup";
 import { useActionState, useEffect, useState } from "react";
 import { toast } from "sonner";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 export default function SignUpPage() {
   const initialState: FormState = {
@@ -27,6 +27,8 @@ export default function SignUpPage() {
   );
   const [role, setRole] = useState("");
   const router = useRouter();
+  const params = useSearchParams();
+  const roleFromParams = params.get("role");
 
   useEffect(() => {
     if (state.redirectTo && typeof state.redirectTo === "string") {
@@ -189,7 +191,13 @@ export default function SignUpPage() {
               <Select
                 defaultValue={state.inputs?.role}
                 onValueChange={(value) => setRole(value)}
-                value={role}
+                value={
+                  roleFromParams === "mentor"
+                    ? "mentor"
+                    : roleFromParams === "student"
+                      ? "student"
+                      : role
+                }
               >
                 <SelectTrigger className="w-full">
                   <SelectValue placeholder="Role" />

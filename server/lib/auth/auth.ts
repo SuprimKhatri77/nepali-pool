@@ -48,6 +48,7 @@ export const auth = betterAuth({
       enabled: true,
     },
   },
+  rateLimit: { enabled: true },
   advanced: {
     ipAddress: {
       ipAddressHeaders: ["cf-connecting-ip", "x-real-ip", "x-forwarded-for"],

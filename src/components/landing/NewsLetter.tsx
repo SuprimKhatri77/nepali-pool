@@ -14,13 +14,13 @@ export default function SubscribeNewsLetter() {
             </p>
           </div>
 
-          <div className="flex gap-2">
+          <div className="flex gap-2 flex-wrap">
             <input
               type="email"
               placeholder="Enter your email"
               className="flex-1 px-4 py-3 rounded-lg border-2 border-white/20 bg-white/10 text-white placeholder:text-white/70 focus:outline-none focus:border-white/40"
             />
-            <button className="px-6 py-3 bg-white text-emerald-600 font-semibold rounded-lg hover:bg-emerald-50 transition-colors whitespace-nowrap">
+            <button className="px-6 py-3 bg-white text-emerald-600 font-semibold rounded-lg hover:bg-emerald-50 transition-colors whitespace-nowrap w-full lg:w-auto">
               Subscribe
             </button>
           </div>
