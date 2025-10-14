@@ -47,8 +47,8 @@ export function NavUser({
       fetchOptions: {
         baseURL:
           process.env.NODE_ENV === "production"
-            ? `process.env.NEXT_PUBLIC_BETTER_AUTH_URL/api/auth`
-            : "http://localhost:3000/api/auth",
+            ? `process.env.NEXT_PUBLIC_BETTER_AUTH_URL`
+            : "http://localhost:3000",
         onSuccess: () => {
           router.push("/");
         },
