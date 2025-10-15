@@ -1,4 +1,3 @@
-import Image from "next/image";
 import GuideParaCard from "./card/GuideCard";
 
 export default function StudentVisaApplicationProcess() {
@@ -66,7 +65,7 @@ export default function StudentVisaApplicationProcess() {
           <p className="text-gray-700 leading-relaxed">
             After completing the school application and submitting all required
             documents, the school applies for a Certificate of Eligibility (COE)
-            on the student's behalf, which typically takes 2-3 months to
+            on the student&apos;s behalf, which typically takes 2-3 months to
             process.
           </p>
           <p className="text-gray-700 leading-relaxed">

@@ -9,7 +9,7 @@ const exploreLinks = [
   { href: "/blogs", name: "Blogs", id: 6 },
 ];
 const detailLinks = [
-  { href: "/blog", name: "Blog", id: 1 },
+  { href: "/blogs", name: "Blog", id: 1 },
   { href: "/faq", name: "FAQ", id: 2 },
   { href: "/support", name: "Support", id: 3 },
   { href: "/developers", name: "Developers", id: 4 },

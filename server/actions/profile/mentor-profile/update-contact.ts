@@ -3,7 +3,7 @@
 import z from "zod";
 import { getCurrentMentor } from "../../../lib/auth/helpers/getCurrentMentor";
 import { db } from "../../../../lib/db";
-import { mentorProfile, user } from "../../../../lib/db/schema";
+import { mentorProfile } from "../../../../lib/db/schema";
 import { eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 

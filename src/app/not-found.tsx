@@ -48,8 +48,8 @@ export default function NotFound() {
             Page Not Found
           </CardTitle>
           <CardDescription className="text-base md:text-lg text-gray-600 max-w-md mx-auto">
-            Oops! The page you're looking for seems to have wandered off. Don't
-            worry, we'll help you find your way back.
+            Oops! The page you&apos;re looking for seems to have wandered off.
+            Don&apos;t worry, we&apos;ll help you find your way back.
           </CardDescription>
         </CardHeader>
 

@@ -6,21 +6,27 @@ import { user } from "../../../lib/db/schema";
 import { auth } from "../../lib/auth/auth";
 import { headers } from "next/headers";
 import { eq } from "drizzle-orm";
-import { redirectByRole } from "../../helper/redirectByrole";
 
 export type FormState = {
   errors?: {
     role?: string[];
   };
-  message?: string;
-  success?: boolean;
+  message: string;
+  success: boolean;
   redirectTo?: string;
-  timestamp?: number;
+  timestamp: number;
 };
 
-const roleEnum = z.enum(["student", "mentor", "none"]);
+const roleEnum = z
+  .enum(["student", "mentor"])
+  .refine((val) => ["student", "mentor"].includes(val), {
+    message: "Invalid role, Allowed roles: Student, Mentor",
+  });
 
-export async function UpdateUserRole(prevState: FormState, formData: FormData) {
+export async function UpdateUserRole(
+  prevState: FormState,
+  formData: FormData
+): Promise<FormState> {
   const adminEmails = (process.env.ADMIN_EMAILS?.split(",") ?? []).map(
     (email) => email.toLowerCase()
   );
@@ -38,6 +44,7 @@ export async function UpdateUserRole(prevState: FormState, formData: FormData) {
       errors: validateField.error.flatten().fieldErrors,
       message: "Error updating role",
       success: false,
+      timestamp: Date.now(),
     };
   }
 
@@ -49,7 +56,7 @@ export async function UpdateUserRole(prevState: FormState, formData: FormData) {
     });
 
     if (!session) {
-      return { message: "Unauthorized", success: false };
+      return { message: "Unauthorized", success: false, timestamp: Date.now() };
     }
 
     const [userRecord] = await db
@@ -57,15 +64,23 @@ export async function UpdateUserRole(prevState: FormState, formData: FormData) {
       .from(user)
       .where(eq(user.id, session.user.id));
     if (!userRecord) {
-      return { message: "Unauthorized", success: false };
+      return { message: "Unauthorized", success: false, timestamp: Date.now() };
     }
 
     if (!userRecord.emailVerified) {
-      return { message: "Email not verified", success: false };
+      return {
+        message: "Email not verified",
+        success: false,
+        timestamp: Date.now(),
+      };
     }
 
     if (userRecord.role !== "none") {
-      return { message: "You already have a role", success: false };
+      return {
+        message: "You already have a role",
+        success: false,
+        timestamp: Date.now(),
+      };
     }
 
     const userEmail = userRecord.email.toLowerCase();
@@ -78,11 +93,44 @@ export async function UpdateUserRole(prevState: FormState, formData: FormData) {
       })
       .where(eq(user.id, session.user.id));
 
-    await redirectByRole(userRecord);
+    if (isAdminEmail) {
+      return {
+        success: true,
+        message: "Role updated successfully",
+        timestamp: Date.now(),
+        redirectTo: "/admin",
+      };
+    }
 
-    return { success: true, message: "Redirecting...", timestamp: Date.now() };
+    if (role === "student") {
+      return {
+        success: true,
+        message: "Role updated successfully",
+        timestamp: Date.now(),
+        redirectTo: "/dashboard/student",
+      };
+    }
+    if (role === "mentor") {
+      return {
+        success: true,
+        message: "Role updated successfully",
+        timestamp: Date.now(),
+        redirectTo: "/dashboard/mentor",
+      };
+    }
+
+    return {
+      success: true,
+      message: "Role updated successfully",
+      timestamp: Date.now(),
+      redirectTo: "/",
+    };
   } catch (error) {
     console.error("Error: ", error);
-    return { message: "Couldn't update the role.", success: false };
+    return {
+      message: "Couldn't update the role.",
+      success: false,
+      timestamp: Date.now(),
+    };
   }
 }

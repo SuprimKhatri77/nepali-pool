@@ -7,6 +7,7 @@ import { Spinner } from "../ui/spinner";
 import SignOutButton from "../SignOutButton";
 import { usePathname } from "next/navigation";
 import { cn } from "../lib/utils";
+import Image from "next/image";
 
 export default function Header() {
   const [isOpen, setIsOpen] = useState(false);
@@ -15,6 +16,7 @@ export default function Header() {
   const { data: session, isPending } = authClient.useSession();
   const pathname = usePathname();
   const isDashboardRoute = pathname.startsWith("/dashboard");
+  const isChatRoute = pathname.startsWith("/chats");
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -30,14 +32,15 @@ export default function Header() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  const getInitials = (name?: string) => {
-    if (!name) return "U";
-    const names = name.split(" ");
-    if (names.length >= 2) {
-      return (names[0][0] + names[1][0]).toUpperCase();
-    }
-    return name.slice(0, 2).toUpperCase();
-  };
+  const initials =
+    session &&
+    session.user?.name
+      ?.split(" ")
+      .filter(Boolean)
+      .slice(0, 2)
+      .map((n) => n[0])
+      .join("")
+      .toUpperCase();
 
   return (
     <header
@@ -94,19 +97,29 @@ export default function Header() {
                   Dashboard
                 </Link>
               )}
+              {!isChatRoute && (
+                <Link
+                  href="/chats"
+                  className="px-4 py-2 bg-emerald-50 text-emerald-700 text-sm font-medium rounded-md hover:bg-emerald-100 transition-colors text-center"
+                  onClick={() => setIsOpen(false)}
+                >
+                  Chats
+                </Link>
+              )}
               <div className="relative" ref={dropdownRef}>
                 <button
                   onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                  className="w-10 h-10 bg-gradient-to-br from-emerald-400 to-emerald-600 rounded-full flex items-center justify-center text-white font-semibold text-sm hover:from-emerald-500 hover:to-emerald-700 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 overflow-hidden"
+                  className="relative w-10 h-10 bg-gradient-to-br from-emerald-400 to-emerald-600 rounded-full flex items-center justify-center text-white font-semibold text-sm hover:from-emerald-500 hover:to-emerald-700 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 overflow-hidden"
                 >
                   {session.user?.image ? (
-                    <img
+                    <Image
                       src={session.user.image}
+                      fill
                       alt={session.user?.name || "User"}
                       className="w-full h-full object-cover"
                     />
                   ) : (
-                    getInitials(session.user?.name)
+                    initials
                   )}
                 </button>
 
@@ -234,6 +247,15 @@ export default function Header() {
                     onClick={() => setIsOpen(false)}
                   >
                     Dashboard
+                  </Link>
+                )}
+                {!isChatRoute && (
+                  <Link
+                    href="/chats"
+                    className="px-4 py-2 bg-emerald-50 text-emerald-700 text-sm font-medium rounded-md hover:bg-emerald-100 transition-colors text-center"
+                    onClick={() => setIsOpen(false)}
+                  >
+                    Chats
                   </Link>
                 )}
                 <Link

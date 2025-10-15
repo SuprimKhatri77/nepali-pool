@@ -19,17 +19,12 @@ import {
   User,
   Mail,
   MapPin,
-  Lock,
   Shield,
   FileText,
-  Globe,
   CheckCircle2,
   Clock,
   XCircle,
-  Phone,
-  Edit2,
   ExternalLink,
-  ImageIcon,
 } from "lucide-react";
 import { useActionState, useEffect, useState } from "react";
 import { MentorProfileSelectType, UserSelectType } from "../../lib/db/schema";
@@ -41,12 +36,12 @@ import {
 } from "../../server/actions/profile/mentor-profile/update-personal";
 import { Spinner } from "./ui/spinner";
 import { toast } from "sonner";
-import { useRouter } from "next/navigation";
 import { Field, FieldDescription, FieldError, FieldLabel } from "./ui/field";
 import {
   ContactFormState,
   updateContact,
 } from "../../server/actions/profile/mentor-profile/update-contact";
+import { updatePassword } from "../../server/actions/update-password/updatePassword";
 
 type MentorProfileProps = MentorProfileSelectType & {
   user: UserSelectType;
@@ -61,6 +56,13 @@ export function MentorProfile({
   const [isEditingContact, setIsEditingContact] = useState(false);
   const [showPasswordSection, setShowPasswordSection] = useState(false);
   const [uploadedImageUrl, setUploadedImageUrl] = useState<string | null>(null);
+  const [currentPassword, setCurrentPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmNewPassword, setConfirmNewPassword] = useState("");
+  const [isUpdating, setIsUpdating] = useState<boolean>(false);
+  const [updatePasswordError, setUpdatePasswordError] = useState<{
+    newPassword?: string[] | undefined;
+  }>({ newPassword: [""] });
 
   const currentProfileImage =
     uploadedImageUrl || mentorRecord.user.image || mentorRecord.user.image;
@@ -135,6 +137,33 @@ export function MentorProfile({
       toast.error(contactState.message);
     }
   }, [contactState.success, contactState.message, contactState.timestamp]);
+
+  const handleUpdatePassword = async () => {
+    setIsUpdating(true);
+    if (newPassword !== confirmNewPassword) {
+      setIsUpdating(false);
+      toast.error("Password don't match");
+      return;
+    }
+
+    try {
+      const result = await updatePassword(currentPassword, newPassword);
+      if (!result.success && result.message) {
+        setUpdatePasswordError(result.error);
+        toast.error(result.message);
+      }
+      if (result.success && result.message) {
+        setShowPasswordSection(false);
+        toast.success(result.message);
+      }
+    } catch {
+      toast.error("Something went wrong!");
+    } finally {
+      setIsUpdating(false);
+      setNewPassword("");
+      setConfirmNewPassword("");
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -272,7 +301,7 @@ export function MentorProfile({
                       <div className="flex flex-col gap-3">
                         <CustomProfileUploader
                           currentImage={currentProfileImage || undefined}
-                          onUploadComplete={(url: any) =>
+                          onUploadComplete={(url: string) =>
                             setUploadedImageUrl(url)
                           }
                           imageUploadName="Profile Picture"
@@ -744,6 +773,7 @@ export function MentorProfile({
                     size="sm"
                     onClick={() => setShowPasswordSection(!showPasswordSection)}
                     className="w-full sm:w-auto"
+                    disabled={isUpdating}
                   >
                     {showPasswordSection ? "Hide" : "Change Password"}
                   </Button>
@@ -751,7 +781,7 @@ export function MentorProfile({
               </CardHeader>
               {showPasswordSection && (
                 <CardContent className="pt-4 sm:pt-6">
-                  <form className="space-y-5">
+                  <div className="space-y-5">
                     <div className="space-y-2">
                       <Label
                         htmlFor="currentPassword"
@@ -763,6 +793,7 @@ export function MentorProfile({
                         id="currentPassword"
                         name="currentPassword"
                         type="password"
+                        onChange={(e) => setCurrentPassword(e.target.value)}
                         placeholder="Enter current password"
                         className="border-gray-300"
                       />
@@ -778,33 +809,44 @@ export function MentorProfile({
                         id="newPassword"
                         name="newPassword"
                         type="password"
+                        onChange={(e) => setNewPassword(e.target.value)}
                         placeholder="Enter new password"
                         className="border-gray-300"
                       />
                     </div>
-                    <div className="space-y-2">
-                      <Label
+                    <Field className="space-y-2">
+                      <FieldLabel
                         htmlFor="confirmPassword"
                         className="text-sm font-medium text-gray-900"
                       >
                         Confirm New Password
-                      </Label>
+                      </FieldLabel>
                       <Input
                         id="confirmPassword"
                         name="confirmPassword"
                         type="password"
+                        onChange={(e) => setConfirmNewPassword(e.target.value)}
                         placeholder="Confirm new password"
                         className="border-gray-300"
                       />
-                    </div>
+                    </Field>
+                    {newPassword !== confirmNewPassword && (
+                      <FieldError>Password don&apos;t match</FieldError>
+                    )}
+                    {updatePasswordError.newPassword && (
+                      <FieldError>
+                        {updatePasswordError.newPassword[0]}
+                      </FieldError>
+                    )}
                     <Separator />
                     <Button
-                      type="submit"
                       className="w-full bg-emerald-600 hover:bg-emerald-700 text-white"
+                      onClick={handleUpdatePassword}
+                      disabled={isUpdating}
                     >
-                      Update Password
+                      {isUpdating ? <Spinner /> : "Update Password"}
                     </Button>
-                  </form>
+                  </div>
                 </CardContent>
               )}
             </Card>

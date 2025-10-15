@@ -1,30 +1,26 @@
-import { count } from "drizzle-orm";
+import { count, eq } from "drizzle-orm";
 import { db } from "../../../lib/db";
 import { MentorProfileWithUser } from "../../../types/all-types";
 import { mentorProfile } from "../../../lib/db/schema";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, MapPin, Sparkles } from "lucide-react";
-import {
-  Pagination,
-  PaginationContent,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from "@/components/ui/pagination";
-import { Button } from "@/components/ui/button";
+
 import { Badge } from "@/components/ui/badge";
+import { PaginationClient } from "@/components/PaginationClient";
 
 export default async function Page({
   searchParams,
 }: {
   searchParams: Promise<{ page: string }>;
 }) {
-  let params = await searchParams;
+  const params = await searchParams;
   let page = Number(params.page) || 1;
-  const limit = 2;
-  const [totalResult] = await db.select({ count: count() }).from(mentorProfile);
+  const limit = 6;
+  const [totalResult] = await db
+    .select({ count: count() })
+    .from(mentorProfile)
+    .where(eq(mentorProfile.verifiedStatus, "accepted"));
 
   const total = Number(totalResult.count);
   const totalPages = Math.ceil(total / limit);
@@ -33,6 +29,7 @@ export default async function Page({
   const offset = (page - 1) * limit;
   const allMentors: MentorProfileWithUser[] =
     await db.query.mentorProfile.findMany({
+      where: (fields, { eq }) => eq(mentorProfile.verifiedStatus, "accepted"),
       limit,
       offset,
       with: {
@@ -176,54 +173,14 @@ export default async function Page({
 
         {/* Pagination */}
         {totalPages > 1 && (
-          <div className="flex justify-center pt-8 border-t border-slate-200">
-            <Pagination>
-              <PaginationContent>
-                <PaginationItem>
-                  <Button
-                    variant="ghost"
-                    disabled={page === 1}
-                    className="disabled:opacity-50 hover:bg-emerald-50 hover:text-emerald-700"
-                  >
-                    <PaginationPrevious
-                      href={page === 1 ? undefined : `?page=${page - 1}`}
-                    />
-                  </Button>
-                </PaginationItem>
-
-                {Array.from({ length: totalPages }, (_, i) => i + 1).map(
-                  (p) => (
-                    <PaginationItem key={p}>
-                      <PaginationLink
-                        href={`?page=${p}`}
-                        isActive={p === page}
-                        className={
-                          p === page
-                            ? "bg-emerald-600 text-white hover:bg-emerald-700 border-emerald-600"
-                            : "hover:bg-emerald-50 hover:text-emerald-700 hover:border-emerald-200"
-                        }
-                      >
-                        {p}
-                      </PaginationLink>
-                    </PaginationItem>
-                  )
-                )}
-
-                <PaginationItem>
-                  <Button
-                    variant="ghost"
-                    disabled={page === totalPages}
-                    className="disabled:opacity-50 hover:bg-emerald-50 hover:text-emerald-700"
-                  >
-                    <PaginationNext
-                      href={
-                        page === totalPages ? undefined : `?page=${page + 1}`
-                      }
-                    />
-                  </Button>
-                </PaginationItem>
-              </PaginationContent>
-            </Pagination>
+          <div
+            id="mentors-list"
+            className="flex justify-center pt-8 border-t border-slate-200"
+          >
+            <PaginationClient
+              totalPages={totalPages}
+              scrollTarget="mentors-list"
+            />
           </div>
         )}
       </div>

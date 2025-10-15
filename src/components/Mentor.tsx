@@ -11,7 +11,6 @@ import {
   MessageSquare,
   Video,
   LogOut,
-  CheckCircle2,
   Calendar,
   Users,
   TrendingUp,
@@ -31,7 +30,6 @@ export default function MentorPage({
 }: Props) {
   const [click, setClick] = useState(false);
   const router = useRouter();
-  const { data: session, isPending } = authClient.useSession();
 
   const handleClick = async () => {
     setClick(true);
@@ -49,16 +47,6 @@ export default function MentorPage({
     setClick(false);
   };
 
-  const initials =
-    session &&
-    session.user?.name
-      ?.split(" ")
-      .filter(Boolean)
-      .slice(0, 2)
-      .map((n) => n[0])
-      .join("")
-      .toUpperCase();
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-white to-green-50">
       <main className="container mx-auto px-4 py-8 max-w-6xl">
@@ -67,7 +55,7 @@ export default function MentorPage({
             Welcome back! 👋
           </h2>
           <p className="text-gray-600">
-            Here's what's happening with your mentorship today
+            Here&apos;s what&apos;s happening with your mentorship today
           </p>
         </div>
 
@@ -197,7 +185,7 @@ export default function MentorPage({
           </CardContent>
         </Card>
 
-        <Card className="border-emerald-100 shadow-sm mt-6">
+        {/* <Card className="border-emerald-100 shadow-sm mt-6">
           <CardHeader>
             <CardTitle className="text-xl text-gray-900">
               Recent Activity
@@ -234,7 +222,7 @@ export default function MentorPage({
               </div>
             </div>
           </CardContent>
-        </Card>
+        </Card> */}
       </main>
     </div>
   );

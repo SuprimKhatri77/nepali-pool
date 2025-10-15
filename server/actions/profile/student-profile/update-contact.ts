@@ -3,7 +3,7 @@
 import z from "zod";
 import { getCurrentStudent } from "../../../lib/auth/helpers/getCurrentStudent";
 import { db } from "../../../../lib/db";
-import { studentProfile, user } from "../../../../lib/db/schema";
+import { studentProfile } from "../../../../lib/db/schema";
 import { eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 
@@ -30,7 +30,7 @@ export async function updateContact(
   prevState: StudentContactFormState,
   formData: FormData
 ): Promise<StudentContactFormState> {
-  console.log("CONTACT FORMDATA: ", formData);
+  // console.log("CONTACT FORMDATA: ", formData);
   const result = await getCurrentStudent();
   if (!result.success)
     return {

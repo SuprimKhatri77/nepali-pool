@@ -36,7 +36,7 @@ export async function updatePersonal(
   prevState: StudentProfileFormState,
   formData: FormData
 ): Promise<StudentProfileFormState> {
-  console.log(formData);
+  // console.log(formData);
   const result = await getCurrentStudent();
   if (!result.success)
     return {

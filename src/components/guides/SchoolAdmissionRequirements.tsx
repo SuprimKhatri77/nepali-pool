@@ -1,4 +1,3 @@
-import Image from "next/image";
 import { FileText, Users, DollarSign } from "lucide-react";
 
 export default function SchoolAdmissionRequirements() {
@@ -82,19 +81,19 @@ export default function SchoolAdmissionRequirements() {
         <p className="text-gray-700 leading-relaxed">
           Applicants must be at least 18 years old and have completed 12 years
           of formal education, including elementary school, to be eligible for
-          admission to Japanese language schools. Depending on the applicant's
-          nationality, proof of Japanese language proficiency, such as a JLPT N5
-          certificate or evidence of 150 hours of Japanese language study, may
-          be required. The application process involves submitting several
-          documents, including passport photographs, a copy of the passport,
-          academic transcripts or certificates, and an essay explaining the
-          motivation for studying in Japan. The application periods for
-          enrollments typically occur four times a year, corresponding to the
-          April, July, October, and January intake periods. Applicants from OECD
-          countries generally face a more streamlined documentation process,
-          while those from non-OECD countries might need to provide additional
-          documentation like a birth certificate and proof of financial
-          capability.
+          admission to Japanese language schools. Depending on the
+          applicant&apos;s nationality, proof of Japanese language proficiency,
+          such as a JLPT N5 certificate or evidence of 150 hours of Japanese
+          language study, may be required. The application process involves
+          submitting several documents, including passport photographs, a copy
+          of the passport, academic transcripts or certificates, and an essay
+          explaining the motivation for studying in Japan. The application
+          periods for enrollments typically occur four times a year,
+          corresponding to the April, July, October, and January intake periods.
+          Applicants from OECD countries generally face a more streamlined
+          documentation process, while those from non-OECD countries might need
+          to provide additional documentation like a birth certificate and proof
+          of financial capability.
         </p>
       </div>
 

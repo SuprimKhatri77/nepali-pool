@@ -1,9 +1,4 @@
-import {
-  InferInsertModel,
-  InferSelectModel,
-  One,
-  relations,
-} from "drizzle-orm";
+import { InferInsertModel, InferSelectModel, relations } from "drizzle-orm";
 import {
   pgTable,
   text,
@@ -18,7 +13,6 @@ import {
   index,
   primaryKey,
 } from "drizzle-orm/pg-core";
-import { eq } from "drizzle-orm";
 
 export const roleEnum = pgEnum("role", ["none", "student", "mentor", "admin"]);
 

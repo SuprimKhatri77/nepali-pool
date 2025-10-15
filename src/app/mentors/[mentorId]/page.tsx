@@ -44,8 +44,8 @@ export default async function MentorDetailPage({
               Mentor Not Found
             </h2>
             <p className="text-slate-600">
-              The mentor profile you're looking for doesn't exist or has been
-              removed.
+              The mentor profile you&apos;re looking for doesn&apos;t exist or
+              has been removed.
             </p>
             <Button
               asChild
@@ -191,7 +191,7 @@ export default async function MentorDetailPage({
                   </p>
                 ) : (
                   <p className="text-slate-500 italic">
-                    This mentor hasn't added a bio yet.
+                    This mentor hasn&apos;t added a bio yet.
                   </p>
                 )}
               </CardContent>
