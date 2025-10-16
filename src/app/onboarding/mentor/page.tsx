@@ -25,9 +25,7 @@ export default async function OnboardingMentor() {
   }
 
   if (!userRecord.emailVerified) {
-    return redirect(
-      `/sign-up/verify-email?email=${encodeURIComponent(userRecord.email)}`
-    );
+    return redirect("/verify-email");
   }
 
   if (!userRecord.role || userRecord.role === "none") {
@@ -44,7 +42,7 @@ export default async function OnboardingMentor() {
       .from(studentProfile)
       .where(eq(studentProfile.userId, userRecord.id));
     if (!studentProfileRecord) {
-      return redirect("/sign-up/onboading/student");
+      return redirect("/onboading/student");
     }
     return redirect("/dashboard/student");
   }

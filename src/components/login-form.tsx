@@ -7,7 +7,6 @@ import {
   FieldError,
   FieldGroup,
   FieldLabel,
-  FieldSeparator,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { cn } from "./lib/utils";
@@ -16,7 +15,6 @@ import { useRouter } from "next/navigation";
 import { useActionState, useEffect } from "react";
 import { toast } from "sonner";
 import Link from "next/link";
-import { SpinnerButton } from "./ui/spinner-button";
 
 export function LoginForm({
   className,
@@ -41,7 +39,7 @@ export function LoginForm({
     if (!state.success && state.message) {
       toast.error(state.message);
     }
-  }, [state.timestamp, state.message, state.redirectTo]);
+  }, [state.timestamp, state.message, state.redirectTo, router, state.success]);
   return (
     <form
       action={formAction}
@@ -108,7 +106,7 @@ export function LoginForm({
         </Field>
         <Field>
           <FieldDescription className="px-6 text-center">
-            Don't have an account? <Link href="/sign-up">Sign up</Link>
+            Don&apos;t have an account? <Link href="/sign-up">Sign up</Link>
           </FieldDescription>
         </Field>
       </FieldGroup>

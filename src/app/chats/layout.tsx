@@ -51,7 +51,7 @@ export default async function ChatLayout({
           <Separator orientation="vertical" className="mr-2 h-4" />
           <h1 className="text-lg font-semibold text-gray-900">Messages</h1>
         </header>
-        <div className="p-4 z-30 bg-white sticky top-20 ">{children}</div>
+        <div className="p-4 z-20 bg-white  ">{children}</div>
       </SidebarInset>
     </SidebarProvider>
   );

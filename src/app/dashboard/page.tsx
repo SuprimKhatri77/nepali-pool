@@ -23,6 +23,10 @@ export default async function Dashboard() {
     .from(user)
     .where(eq(user.id, session.user.id));
 
+  if (!userRecord.emailVerified) {
+    return redirect("/verify-email");
+  }
+
   await redirectByRole(userRecord);
 
   return <NotFound />;

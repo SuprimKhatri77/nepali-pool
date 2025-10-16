@@ -18,7 +18,7 @@ export default function Hero() {
 
         <p className="mt-4 sm:mt-6 text-base sm:text-lg text-gray-600 max-w-2xl mx-auto px-2">
           Helping Nepali students choose the right college, city, and future —
-          with expert guidance from someone who's been there.
+          with expert guidance from someone who&apos;s been there.
         </p>
 
         <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center mt-8 sm:mt-10 w-full max-w-md sm:max-w-none mx-auto px-2">
@@ -44,7 +44,7 @@ export default function Hero() {
           ) : (
             <Link
               href="/dashboard"
-              className="w-full sm:w-auto px-6 py-3 bg-emerald-50 text-emerald-700 text-base font-medium rounded-md hover:bg-emerald-100 transition-colors"
+              className="w-full sm:w-auto px-6 py-3 bg-emerald-50 text-emerald-700 text-base font-medium rounded-md hover:bg-emerald-100 transition-colors border-1 border-emerald-400"
             >
               Go to Dashboard
             </Link>

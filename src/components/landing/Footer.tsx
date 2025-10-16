@@ -1,7 +1,7 @@
 import Link from "next/link";
 
 const exploreLinks = [
-  { href: "/home", name: "Home", id: 1 },
+  { href: "/", name: "Home", id: 1 },
   { href: "/about-us", name: "About Us", id: 2 },
   { href: "/pricing", name: "Pricing", id: 3 },
   { href: "/schools", name: "Schools", id: 4 },
@@ -89,7 +89,8 @@ export default function Footer() {
             <h3 className="font-semibold text-gray-900 mb-4">Contact Us</h3>
             <ul className="space-y-2 text-sm text-gray-600">
               <li>Butwal, Nepal</li>
-              <li>(123) 456-7890</li>
+              <li>9867473181</li>
+              <li>9817487614</li>
               <li>support@nepalipool.com</li>
             </ul>
           </div>

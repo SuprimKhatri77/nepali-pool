@@ -31,15 +31,15 @@ export default async function Page() {
         preferredTime: true,
       },
     })) as VideoCallWithStudentAndMentor[];
-    if (videoRecords.length === 0) {
-      return (
-        <div className="min-h-screen w-full flex items-center justify-center">
-          <h1 className="text-2xl font-bold">
-            No records found for the provided Video ID!
-          </h1>
-        </div>
-      );
-    }
+    // if (videoRecords.length === 0) {
+    //   return (
+    //     <div className="min-h-screen w-full flex items-center justify-center">
+    //       <h1 className="text-2xl font-bold">
+    //         No records found for the provided Video ID!
+    //       </h1>
+    //     </div>
+    //   );
+    // }
     return <VideoCall videoCallRecords={videoRecords} role={userRecord.role} />;
   } else if (userRecord.role === "mentor") {
     const videoRecords = (await db.query.videoCall.findMany({
@@ -50,16 +50,18 @@ export default async function Page() {
         preferredTime: true,
       },
     })) as VideoCallWithStudentAndMentor[];
-    if (videoRecords.length === 0) {
-      return (
-        <div className="min-h-screen w-full flex items-center justify-center">
-          <h1 className="text-2xl font-bold">
-            No records found for the provided Video ID!
-          </h1>
-        </div>
-      );
-    }
-    return <VideoCall videoCallRecords={videoRecords} role={userRecord.role} />;
+    // if (videoRecords.length === 0) {
+    //   return (
+    //     <div className="min-h-screen w-full flex items-center justify-center">
+    //       <h1 className="text-2xl font-bold">
+    //         No records found for the provided Video ID!
+    //       </h1>
+    //     </div>
+    //   );
+    // }
+    return (
+      <VideoCall videoCallRecords={videoRecords ?? []} role={userRecord.role} />
+    );
   }
   return redirect("/select-role");
 }

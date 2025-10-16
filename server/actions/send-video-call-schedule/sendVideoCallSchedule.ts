@@ -198,9 +198,11 @@ export async function sendVideoCallSchedule(
       subject: "Video Call Schedule",
       html: `Your video call with the mentor ${mentorRecord.name} has been scheduled at time : 123. Please be ready for the call with the mentor.<br>ZOOM MEETING JOIN URL: test-join-url`,
     });
-    role === "student"
-      ? revalidatePath(`/video-call/schedule/${videoId}`)
-      : revalidatePath(`/video-call/respond/${videoId}`);
+    if (role === "student") {
+      revalidatePath(`/video-call/schedule/${videoId}`);
+    } else {
+      revalidatePath(`/video-call/respond/${videoId}`);
+    }
     return {
       success: true,
       message: "Video call scheduled successfully, Please check your mail!",

@@ -28,7 +28,6 @@ import {
   SelectValue,
 } from "./ui/select";
 import type { MentorOnboardingFormProps } from "../../types/all-types";
-import { SpinnerButton } from "./ui/spinner-button";
 import { Spinner } from "./ui/spinner";
 
 export default function MentorOnboardingForm({
@@ -63,7 +62,7 @@ export default function MentorOnboardingForm({
     if (state.success && state.redirectTo) {
       router.replace(state.redirectTo);
     }
-  }, [state.redirectTo, router]);
+  }, [state.redirectTo, router, state.success]);
 
   const canProceedStep1 = profilePhotoUrl && gender;
   const canProceedStep2 = true; // All location fields have defaults

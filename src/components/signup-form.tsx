@@ -63,11 +63,11 @@ export function SignupForm({
         router.replace(state.redirectTo as string);
       }, 1500);
     }
-  }, [state.message, state.success, state.redirectTo]);
+  }, [state.message, state.success, state.redirectTo, router]);
 
-  console.log("roleFromParams:", roleFromParams);
-  console.log("state.inputs?.role:", state.inputs?.role);
-  console.log("current role state:", role);
+  // console.log("roleFromParams:", roleFromParams);
+  // console.log("state.inputs?.role:", state.inputs?.role);
+  // console.log("current role state:", role);
 
   return (
     <form
@@ -105,6 +105,7 @@ export function SignupForm({
               type="text"
               name="lastname"
               placeholder="Doe"
+              defaultValue={state.inputs?.lastname}
               required
             />
             {state.errors?.lastname && (
@@ -118,6 +119,7 @@ export function SignupForm({
             id="email"
             type="email"
             name="email"
+            defaultValue={state.inputs?.email}
             placeholder="m@example.com"
             required
           />
@@ -128,7 +130,11 @@ export function SignupForm({
         <Field>
           <FieldLabel htmlFor="password">Password</FieldLabel>
           <InputGroup>
-            <InputGroupInput type={toggleInputType} name="password" />
+            <InputGroupInput
+              type={toggleInputType}
+              name="password"
+              defaultValue={state.inputs?.password}
+            />
             <InputGroupAddon align="inline-end">
               {toggleInputType === "text" ? (
                 <EyeIcon

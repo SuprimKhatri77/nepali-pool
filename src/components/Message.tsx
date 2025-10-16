@@ -24,6 +24,7 @@ import { ImageIcon, X, Download, FileText, Film } from "lucide-react";
 import { sendAttachments } from "../../server/actions/send-attachments/sendAttachments";
 import { getFileType } from "../../server/helper/getFileType";
 import { PaymentButton } from "./PaymentButton";
+import { Spinner } from "./ui/spinner";
 
 type Props = {
   role: "student" | "mentor";
@@ -55,7 +56,7 @@ type MessagesWithUser = MessageSelectType & {
 
 const MESSAGES_PER_PAGE = 20;
 
-const Message = ({ role, chatId, currentUser, chatRecord }: Props) => {
+const Message = ({ chatId, currentUser, chatRecord }: Props) => {
   const [messages, setMessages] = useState<MessagesWithUser[]>([]);
   const [pending, setPending] = useState<boolean>(false);
   const [messageText, setMessageText] = useState<string>("");
@@ -366,7 +367,7 @@ const Message = ({ role, chatId, currentUser, chatRecord }: Props) => {
   };
 
   return (
-    <div className="min-h-screen w-full   bg-white rounded-xl flex flex-col shadow-sm border border-gray-100 z-30">
+    <div className="min-h-screen w-full   bg-white rounded-xl flex flex-col shadow-sm border border-gray-100 ">
       <div className=" bg-white sticky  top-12 z-20 rounded-t-xl py-4 sm:py-5 px-3 sm:px-5 border-b border-gray-100">
         <div className="flex items-center gap-3 sm:gap-4">
           <div className="h-10 w-10 sm:h-12 sm:w-12 relative rounded-full flex-shrink-0 ring-2 ring-emerald-100">
@@ -421,7 +422,7 @@ const Message = ({ role, chatId, currentUser, chatRecord }: Props) => {
             } overflow-y-auto px-2 sm:px-4`}
           >
             {loadingMessage ? (
-              <Loader />
+              <Spinner />
             ) : (
               <>
                 <div

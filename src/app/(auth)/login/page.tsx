@@ -4,11 +4,12 @@ import { headers } from "next/headers";
 import { db } from "../../../../lib/db";
 import { user } from "../../../../lib/db/schema";
 import { eq } from "drizzle-orm";
-import { notFound, redirect } from "next/navigation";
+import { redirect } from "next/navigation";
 import { getStudentProfile } from "../../../../server/lib/auth/helpers/getStudentProfile";
 import { getMentorProfile } from "../../../../server/lib/auth/helpers/getMentorProfile";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
+import NotFound from "@/app/not-found";
 
 export const metadata = {
   title: "Login | Nepali Pool",
@@ -86,5 +87,5 @@ export default async function Page() {
     await getMentorProfile(userRecord.id);
   }
 
-  return notFound();
+  return <NotFound />;
 }

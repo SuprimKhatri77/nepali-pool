@@ -65,9 +65,8 @@ export async function scheduleVideoCallTime(
   }
 
   const { date, time, videoId, role } = parsedData.data;
-  const [hours, minutes, seconds] = time.split(":").map(Number);
-  const combinedDate = new Date(date);
-  combinedDate.setHours(hours, minutes, seconds || 0);
+  const combinedDate = new Date(`${date}T${time}`);
+  console.log("combineddate: ", combinedDate);
 
   try {
     const result = await getCurrentUser();
@@ -142,8 +141,8 @@ export async function scheduleVideoCallTime(
     }
 
     if (role === "mentor" && preferredTimeRecord) {
-      console.log("COMBINED DATE", combinedDate);
-      console.log("STD PREF TIME: ", preferredTimeRecord.studentPreferredTime);
+      // console.log("COMBINED DATE", combinedDate);
+      // console.log("STD PREF TIME: ", preferredTimeRecord.studentPreferredTime);
       if (!preferredTimeRecord) {
         return {
           success: false,
@@ -169,7 +168,7 @@ export async function scheduleVideoCallTime(
           timestamp: new Date(),
         };
       }
-      console.log("I am being triggered(Schedulecall.ts)");
+      // console.log("I am being triggered(Schedulecall.ts)");
       await db
         .update(preferredTime)
         .set({
@@ -178,9 +177,9 @@ export async function scheduleVideoCallTime(
           updatedAt: new Date(),
         })
         .where(eq(preferredTime.videoId, videoId));
-      console.log("revalidating the path");
+      // console.log("revalidating the path");
       revalidatePath(`/video-call/respond/${videoId}`);
-      console.log("revalidated path");
+      // console.log("revalidated path");
       revalidatePath("/dashboard/mentor");
       return {
         success: true,
@@ -195,6 +194,7 @@ export async function scheduleVideoCallTime(
       timestamp: new Date(),
     };
   } catch (error) {
+    console.log("Error: ", error);
     return {
       errors: { date: ["Something went wrong!"] },
       success: false,
