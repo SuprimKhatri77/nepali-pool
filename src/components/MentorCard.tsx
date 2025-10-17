@@ -92,7 +92,7 @@ export default function MentorCard({ mentor }: { mentor: MentorProfileWithUser }
                  hover:bg-emerald-500 hover:scale-[1.03] 
                  group overflow-hidden"
     >
-      <span className="relative z-10 flex items-center gap-2">
+      <span className="relative z-10 flex items-center gap-2 text-black">
         View Profile
         <ArrowRight
           className="ml-1 h-4 w-4 transition-transform duration-300 group-hover:translate-x-1"
