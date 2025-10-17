@@ -100,7 +100,7 @@ export default async function Page({
       <Link
         href={isYou ? `/profile` : `/mentors/${mentor.userId}`}
         key={mentor.userId}
-        className="max-w-[320px] min-h-[400px]"
+        className="max-w-[350px] min-h-[400px]"
       >
          <MentorCard key={mentor.userId} mentor={mentor}/>
         </Link>

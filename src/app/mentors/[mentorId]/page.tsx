@@ -33,6 +33,7 @@ import { redirect } from "next/navigation";
 import { getCurrentUserData } from "../../../../server/lib/auth/helpers/getCurrentUserData";
 import { PaymentButton } from "@/components/PaymentButton";
 import { capitalizeFirstLetter } from "better-auth";
+import MentorCard from "@/components/MentorCard";
 
 export default async function MentorDetailPage({
   params,
@@ -523,69 +524,9 @@ export default async function MentorDetailPage({
                 <Link
                   href={`/mentors/${mentor.userId}`}
                   key={mentor.userId}
-                  className="group"
+                  className="group max-w-[350px] min-h-[400px]"
                 >
-                  <Card className="border border-slate-200 hover:border-emerald-300 shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden h-full">
-                    <CardContent className="p-0">
-                      <div className="relative h-64 overflow-hidden bg-slate-100">
-                        <Image
-                          width={400}
-                          height={250}
-                          src={
-                            mentor.imageUrl ||
-                            mentor.user.image ||
-                            "/placeholder.svg?height=250&width=400&query=professional"
-                          }
-                          alt={mentor.user.name}
-                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                        />
-                        {mentor.verifiedStatus === "accepted" && (
-                          <div className="absolute top-3 right-3">
-                            <Badge className="bg-emerald-500 text-white text-xs">
-                              Verified
-                            </Badge>
-                          </div>
-                        )}
-                      </div>
-
-                      <div className="p-6 space-y-4">
-                        <div>
-                          <h3 className="text-xl font-bold text-slate-900 group-hover:text-emerald-600 transition-colors line-clamp-1">
-                            {capitalizeFirstLetter(mentor.user.name)}
-                          </h3>
-                          {mentor.nationality && (
-                            <p className="text-sm text-slate-600 mt-1">
-                              {capitalizeFirstLetter(mentor.nationality)}
-                            </p>
-                          )}
-                        </div>
-
-                        {mentor.bio && (
-                          <p className="text-sm text-slate-600 line-clamp-2">
-                            {capitalizeFirstLetter(mentor.bio)}
-                          </p>
-                        )}
-
-                        {(mentor.city || mentor.country) && (
-                          <div className="flex items-center gap-2 text-sm text-slate-600 pt-2 border-t border-slate-100">
-                            <MapPin className="w-4 h-4 text-emerald-600" />
-                            <span>
-                              {[mentor.city, mentor.country]
-                                .filter(Boolean)
-                                .join(", ")}
-                            </span>
-                          </div>
-                        )}
-
-                        <div className="flex items-center justify-between pt-2">
-                          <span className="text-sm font-semibold text-emerald-600">
-                            View Profile
-                          </span>
-                          <ArrowRight className="w-5 h-5 text-emerald-600 group-hover:translate-x-1 transition-transform" />
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
+                  <MentorCard mentor={mentor} />
                 </Link>
               ))}
             </div>
