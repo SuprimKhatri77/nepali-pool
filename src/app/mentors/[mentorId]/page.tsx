@@ -22,16 +22,17 @@ import {
   TrendingUp,
   Heart,
   BookOpen,
+  LockIcon,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
 import { auth } from "../../../../server/lib/auth/auth";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { getCurrentUserData } from "../../../../server/lib/auth/helpers/getCurrentUserData";
 import { PaymentButton } from "@/components/PaymentButton";
+import { capitalizeFirstLetter } from "better-auth";
 
 export default async function MentorDetailPage({
   params,
@@ -163,14 +164,14 @@ export default async function MentorDetailPage({
                 <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-6">
                   <div>
                     <h1 className="text-4xl font-bold text-slate-900 mb-2">
-                      {mentorRecord.user.name}
+                      {capitalizeFirstLetter(mentorRecord.user.name)}
                     </h1>
                     <div className="flex flex-wrap items-center gap-3 text-slate-600">
                       {mentorRecord.nationality && (
                         <div className="flex items-center gap-2">
                           <Globe className="w-5 h-5 text-emerald-600" />
                           <span className="font-medium">
-                            {mentorRecord.nationality}
+                            {capitalizeFirstLetter(mentorRecord.nationality)}
                           </span>
                         </div>
                       )}
@@ -180,7 +181,7 @@ export default async function MentorDetailPage({
                           <div className="flex items-center gap-2">
                             <MapPin className="w-5 h-5 text-emerald-600" />
                             <span className="font-medium">
-                              {[mentorRecord.city, mentorRecord.country]
+                              {[capitalizeFirstLetter(mentorRecord.city ?? "Not"), capitalizeFirstLetter(mentorRecord.country ?? "Provided")]
                                 .filter(Boolean)
                                 .join(", ")}
                             </span>
@@ -228,13 +229,85 @@ export default async function MentorDetailPage({
                   </div>
                 </div>
 
-                {/* Contact Email */}
-                <div className="flex items-center gap-3 p-4 rounded-xl bg-slate-50 border border-slate-200">
-                  <Mail className="w-5 h-5 text-emerald-600" />
-                  <span className="text-slate-700 font-medium">
-                    {mentorRecord.user.email}
-                  </span>
-                </div>
+               {/* Contact info */}
+               <div className="flex gap-2 mb-2 ml-1">
+                <Phone className="w-6 h-6 text-emerald-400" />
+                    <h3 className="text-xl font-bold">
+                      Get in Touch
+                    </h3>
+               </div>
+<div className="grid grid-cols-[repeat(auto-fit,_minmax(200px,_1fr))] gap-3 p-4 rounded-xl bg-white border border-gray-200">
+  <Button
+    asChild
+    className="w-[200px] bg-emerald-50 text-emerald-700 hover:bg-emerald-100 h-12 font-semibold shadow-sm border border-emerald-200 transition-all"
+  >
+    <Link
+      href={`https://mail.google.com/mail/?view=cm&fs=1&to=${mentorRecord.user.email}`}
+    >
+      <Mail className="w-5 h-5 mr-2" />
+      Send Email
+    </Link>
+  </Button>
+
+  {currentUser && currentUser.role === "student" && (
+    <>
+      <Button
+        asChild
+        className="w-[200px] bg-white text-black border border-gray-300 hover:bg-gray-50 h-12 font-semibold transition-all"
+      >
+        {currentUser.success && currentUser.chatId ? (
+          <Link href={`/chats/${currentUser.chatId}`}>
+            <MessageCircleIcon className="w-5 h-5 mr-2 text-emerald-600" />
+            Start Chat
+          </Link>
+        ) : (
+          <PaymentButton
+            mentorId={mentorRecord.userId}
+            userId={currentUser.userId}
+            userEmail={currentUser.email}
+            paymentType="chat_subscription"
+            className="flex items-center justify-center gap-2 text-emerald-700 hover:text-emerald-800"
+          >
+            <LockIcon className="w-4 h-4 text-emerald-700" />
+            Unlock Chat
+          </PaymentButton>
+        )}
+      </Button>
+
+      {currentUser.success &&
+      currentUser.videoCallStatus === "pending" &&
+      currentUser.videoCallId ? (
+        <Link href={`/video-call/${currentUser.videoCallId}`}>
+          <Button className="w-[200px] bg-amber-50 text-amber-700 hover:bg-amber-100 border border-amber-200 h-12 font-semibold transition-all">
+            <Calendar className="w-5 h-5 mr-2" />
+            Video Pending
+          </Button>
+        </Link>
+      ) : currentUser.success &&
+        currentUser.videoCallStatus === "scheduled" ? (
+        <Button
+          className="w-[200px] bg-gray-100 text-gray-500 border border-gray-300 h-12 font-semibold cursor-not-allowed"
+          disabled
+        >
+          <Calendar className="w-5 h-5 mr-2" />
+          Scheduled
+        </Button>
+      ) : (
+        <PaymentButton
+          mentorId={mentorRecord.userId}
+          userId={currentUser.userId}
+          userEmail={currentUser.email}
+          paymentType="video_call"
+          className="w-[200px] bg-white text-emerald-700 hover:bg-emerald-50 border border-emerald-200 h-12 font-semibold transition-all"
+        >
+          <LockIcon className="w-4 h-4 mr-2 text-emerald-700" />
+          Unlock Video Call
+        </PaymentButton>
+      )}
+    </>
+  )}
+</div>
+
               </div>
             </div>
           </CardContent>
@@ -253,7 +326,7 @@ export default async function MentorDetailPage({
                 </h2>
                 {mentorRecord.bio ? (
                   <p className="text-slate-700 text-lg leading-relaxed whitespace-pre-line">
-                    {mentorRecord.bio}
+                    {capitalizeFirstLetter(mentorRecord.bio)}
                   </p>
                 ) : (
                   <p className="text-slate-500 italic text-lg">
@@ -272,7 +345,7 @@ export default async function MentorDetailPage({
                 </h2>
                 <div className="grid sm:grid-cols-2 gap-6">
                   <div className="flex gap-4">
-                    <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-emerald-100 flex items-center justify-center">
+                    <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-emerald-100 flex  items-center justify-center">
                       <Shield className="w-6 h-6 text-emerald-600" />
                     </div>
                     <div>
@@ -389,88 +462,7 @@ export default async function MentorDetailPage({
           {/* Right Column - Sticky Sidebar */}
           <div className="lg:col-span-1">
             <div className="sticky top-8 space-y-6">
-              {/* Contact Card */}
-              <Card className="border border-emerald-200 shadow-lg bg-gradient-to-br from-emerald-600 to-teal-600">
-                <CardContent className="p-6">
-                  <div className="flex items-center gap-3 mb-4">
-                    <Phone className="w-6 h-6 text-white" />
-                    <h3 className="text-xl font-bold text-white">
-                      Get in Touch
-                    </h3>
-                  </div>
-                  <p className="text-emerald-50 text-sm mb-6">
-                    Connect with this mentor and start your journey today
-                  </p>
-                  <div className="space-y-3">
-                    <Button
-                      asChild
-                      className="w-full bg-white text-emerald-700 hover:bg-emerald-50 h-12 font-semibold shadow-lg"
-                    >
-                      <Link
-                        href={`https://mail.google.com/mail/?view=cm&fs=1&to=${mentorRecord.user.email}`}
-                      >
-                        <Mail className="w-5 h-5 mr-2" />
-                        Send Email
-                      </Link>
-                    </Button>
-
-                    {currentUser && currentUser.role === "student" && (
-                      <>
-                        <Button
-                          asChild
-                          className="w-full bg-white/20 hover:bg-white/30 text-white border-2 border-white/40 h-12 font-semibold backdrop-blur-sm"
-                        >
-                          {currentUser.success && currentUser.chatId ? (
-                            <Link href={`/chats/${currentUser.chatId}`}>
-                              <MessageCircleIcon className="w-5 h-5 mr-2" />
-                              Start Chat
-                            </Link>
-                          ) : (
-                            <PaymentButton
-                              mentorId={mentorRecord.userId}
-                              userId={currentUser.userId}
-                              userEmail={currentUser.email}
-                              paymentType="chat_subscription"
-                            >
-                              Unlock Chat
-                            </PaymentButton>
-                          )}
-                        </Button>
-
-                        {currentUser.success &&
-                        currentUser.videoCallStatus === "pending" &&
-                        currentUser.videoCallId ? (
-                          <Link href={`/video-call/${currentUser.videoCallId}`}>
-                            <Button className="w-full bg-white/20 hover:bg-white/30 text-white border-2 border-white/40 h-12 font-semibold backdrop-blur-sm">
-                              <Calendar className="w-5 h-5 mr-2" />
-                              Video Pending
-                            </Button>
-                          </Link>
-                        ) : currentUser.success &&
-                          currentUser.videoCallStatus === "scheduled" ? (
-                          <Button
-                            className="w-full bg-white/10 text-white/60 border-2 border-white/20 h-12 font-semibold"
-                            disabled
-                          >
-                            <Calendar className="w-5 h-5 mr-2" />
-                            Scheduled
-                          </Button>
-                        ) : (
-                          <PaymentButton
-                            mentorId={mentorRecord.userId}
-                            userId={currentUser.userId}
-                            userEmail={currentUser.email}
-                            paymentType="video_call"
-                            className="w-full bg-white/20 hover:bg-white/30 text-white border-2 border-white/40 h-12 font-semibold backdrop-blur-sm"
-                          >
-                            Unlock Video Call
-                          </PaymentButton>
-                        )}
-                      </>
-                    )}
-                  </div>
-                </CardContent>
-              </Card>
+             
 
               {/* Trust Badges */}
               <Card className="border border-slate-200 shadow-lg">
@@ -559,18 +551,18 @@ export default async function MentorDetailPage({
                       <div className="p-6 space-y-4">
                         <div>
                           <h3 className="text-xl font-bold text-slate-900 group-hover:text-emerald-600 transition-colors line-clamp-1">
-                            {mentor.user.name}
+                            {capitalizeFirstLetter(mentor.user.name)}
                           </h3>
                           {mentor.nationality && (
                             <p className="text-sm text-slate-600 mt-1">
-                              {mentor.nationality}
+                              {capitalizeFirstLetter(mentor.nationality)}
                             </p>
                           )}
                         </div>
 
                         {mentor.bio && (
                           <p className="text-sm text-slate-600 line-clamp-2">
-                            {mentor.bio}
+                            {capitalizeFirstLetter(mentor.bio)}
                           </p>
                         )}
 

@@ -39,19 +39,24 @@ export async function SignUp(prevState: FormState, formData: FormData) {
   const userData = z.object({
     firstname: z
       .string()
+      .trim()
       .min(1, "Firstname is required")
       .max(20, "Firstname must be less than 20 characters")
       .regex(/^[A-Za-z]+$/, "Firstname must contain only letters")
       .nonempty(),
     lastname: z
       .string()
+      .trim()
+
       .min(1, "Lastname is required")
       .max(20, "Lastname must be less than 20 characters")
       .regex(/^[A-Za-z]+$/, "Lastname must contain only letters")
       .nonempty(),
-    email: z.string().email().nonempty(),
+    email: z.string().trim().email().nonempty(),
     password: z
       .string()
+      .trim()
+
       .min(8, "Password must be at least 8 characters long")
       .regex(/[a-z]/, "Password must contain at least one lowercase letter")
       .regex(/[A-Z]/, "Password must contain at least one uppercase letter")
