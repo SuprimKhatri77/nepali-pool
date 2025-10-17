@@ -2,7 +2,7 @@ export default function Pricing() {
   const plans = [
     {
       name: "Free Access",
-      price: "$0",
+      price: "रु0",
       features: [
         "Access to all features",
         "Unlimited downloads",
@@ -15,7 +15,7 @@ export default function Pricing() {
     },
     {
       name: "Mentor Guidance Pack",
-      price: "$49",
+      price: "रु500",
       features: [
         "Access to all features",
         "Priority support",
@@ -29,7 +29,7 @@ export default function Pricing() {
     },
     {
       name: "Make A Call",
-      price: "$19",
+      price: "रु200",
       features: [
         "Access to all features",
         "Unlimited downloads",
