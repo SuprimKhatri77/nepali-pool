@@ -117,17 +117,16 @@ export default async function MentorDetailPage({
     <div className="min-h-screen bg-white">
       {/* Hero Section with Cover */}
       <div className="relative h-80 bg-gradient-to-br from-emerald-600 via-emerald-500 to-teal-600">
+         
         <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxwYXRoIGQ9Ik0zNiAxOGMzLjMxNCAwIDYgMi42ODYgNiA2cy0yLjY4NiA2LTYgNi02LTIuNjg2LTYtNiAyLjY4Ni02IDYtNnoiIHN0cm9rZT0iI2ZmZiIgc3Ryb2tlLW9wYWNpdHk9Ii4xIi8+PC9nPjwvc3ZnPg==')] opacity-20" />
 
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full flex items-end pb-8">
-          <Link
+       <Link
             href="/mentors"
-            className="inline-flex items-center gap-2 text-sm font-medium text-white/90 hover:text-white transition-colors px-4 py-2 rounded-lg bg-white/10 backdrop-blur-sm border border-white/20"
+            className="inline-flex mt-4 ml-4 z-[100] items-center gap-2 text-sm font-medium text-white/90 hover:text-white bg-white/10  transition-colors px-4 py-2 rounded-lg  backdrop-blur-sm border border-white/20"
           >
             <ArrowRight className="w-4 h-4 rotate-180" />
             Back to all mentors
           </Link>
-        </div>
       </div>
 
       {/* Main Content - Overlapping Hero */}
@@ -278,7 +277,7 @@ export default async function MentorDetailPage({
       {currentUser.success &&
       currentUser.videoCallStatus === "pending" &&
       currentUser.videoCallId ? (
-        <Link href={`/video-call/${currentUser.videoCallId}`}>
+        <Link href={`/video-call/schedule/${currentUser.videoCallId}`}>
           <Button className="w-[200px] bg-amber-50 text-amber-700 hover:bg-amber-100 border border-amber-200 h-12 font-semibold transition-all">
             <Calendar className="w-5 h-5 mr-2" />
             Video Pending
