@@ -25,6 +25,7 @@ export type FormState = {
     password?: string;
     role?: string;
   };
+  timestamp: number;
 };
 
 const roleEnum = z
@@ -34,24 +35,32 @@ const roleEnum = z
   }) as z.ZodType<"none" | "student" | "mentor">;
 const adminEmails = process.env.ADMIN_EMAILS?.split(",") ?? [];
 
-export async function SignUp(prevState: FormState, formData: FormData) {
+export async function SignUp(
+  prevState: FormState,
+  formData: FormData
+): Promise<FormState> {
   // console.log("ROLE: ", formData.get("role"));
   const userData = z.object({
     firstname: z
       .string()
+      .trim()
       .min(1, "Firstname is required")
       .max(20, "Firstname must be less than 20 characters")
       .regex(/^[A-Za-z]+$/, "Firstname must contain only letters")
       .nonempty(),
     lastname: z
       .string()
+      .trim()
+
       .min(1, "Lastname is required")
       .max(20, "Lastname must be less than 20 characters")
       .regex(/^[A-Za-z]+$/, "Lastname must contain only letters")
       .nonempty(),
-    email: z.string().email().nonempty(),
+    email: z.string().trim().email().nonempty(),
     password: z
       .string()
+      .trim()
+
       .min(8, "Password must be at least 8 characters long")
       .regex(/[a-z]/, "Password must contain at least one lowercase letter")
       .regex(/[A-Z]/, "Password must contain at least one uppercase letter")
@@ -79,6 +88,7 @@ export async function SignUp(prevState: FormState, formData: FormData) {
       message: "Validation Failed",
       success: false,
       inputs,
+      timestamp: Date.now(),
     };
   }
 
@@ -124,17 +134,16 @@ export async function SignUp(prevState: FormState, formData: FormData) {
       redirectTo: `/verify-email?from=signup`,
       message: "Signup successfull , Redirecting to verify email....",
       success: true,
+      timestamp: Date.now(),
     };
   } catch (error) {
     if (error instanceof APIError) {
-      switch (error.status) {
-        case "UNPROCESSABLE_ENTITY":
-          return { success: false, message: "User already exists" };
-        case "BAD_REQUEST":
-          return { success: false, message: "Invalid email" };
-        default:
-          return { success: false, message: "Something went wrong" };
-      }
+      return {
+        success: false,
+        message: error.message,
+        timestamp: Date.now(),
+        inputs: Object.fromEntries(formData),
+      };
     }
     throw error;
   }

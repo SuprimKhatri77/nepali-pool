@@ -7,16 +7,22 @@ export default function Hero() {
   const { data: session, isPending } = authClient.useSession();
 
   return (
-    <section className="min-h-screen flex items-center bg-gradient-to-bl from-emerald-50/90 via-white to-emerald-100/80 px-4 sm:px-6 py-16 sm:py-20">
+    <section className="min-h-screen flex items-center bg-gradient-to-bl from-emerald-50/90 via-white to-emerald-100/80 px-4 sm:px-6 py-16 sm:py-24">
       <div className="max-w-5xl mx-auto text-center w-full">
-        <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-gray-900 leading-tight tracking-tight">
-          Your Trusted Mentor to
-          <br className="hidden sm:block" />
-          <span className="block sm:inline"> Study in </span>
-          <span className="text-emerald-600">Abroad</span>
-          <br className="sm:hidden" />
-          <span className="block sm:inline"> from </span>
-          <span className="text-emerald-600">Nepal</span>
+        <h1 className="text-4xl sm:text-5xl sm:mb-0 mb-12 md:text-6xl lg:text-7xl font-bold text-gray-900 leading-tight tracking-tight">
+          Your Trusted Mentor to{" "}
+          <span className="hidden sm:inline">
+            <br className="hidden sm:block" />
+            <span className="block sm:inline">Study </span>
+            <span className="text-emerald-600">Abroad</span>{" "}
+            <span className="block sm:inline">from </span>
+            <span className="text-emerald-600">Nepal</span>
+          </span>
+          {/* Mobile version */}
+          <span className="inline sm:hidden">
+            <span className="text-emerald-600">Study Abroad</span> from{" "}
+            <span className="text-emerald-600">Nepal</span>
+          </span>
         </h1>
 
         <p className="mt-6 sm:mt-8 text-lg sm:text-xl text-gray-600 max-w-2xl mx-auto leading-relaxed">

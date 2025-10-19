@@ -1,11 +1,7 @@
-"use client";
-
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "@/components/ui/sonner";
-import { usePathname } from "next/navigation";
-import Header from "@/components/landing/Header";
-import Footer from "@/components/landing/Footer";
+import ClientLayout from "./client-layout";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -17,27 +13,21 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-const excludeNavRoutes = ["/login", "/sign-up", "/admin", "/verify-email"];
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const pathname = usePathname();
-  const isExcludedNavRoute = excludeNavRoutes.includes(pathname);
   return (
     <html lang="en">
+      <head>
+        {/* Required for Facebook */}
+        <meta property="fb:app_id" content="4071033779812681" />
+      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen`}
       >
-        {!isExcludedNavRoute && <Header />}
-
-        {children}
-
-        {!pathname.startsWith("/chats") &&
-          !pathname.startsWith("/login") &&
-          !pathname.startsWith("/sign-up") &&
-          !pathname.startsWith("/verify-email") && <Footer />}
+        <ClientLayout>{children}</ClientLayout>
         <Toaster />
       </body>
     </html>

@@ -63,7 +63,7 @@ export function SignupForm({
         router.replace(state.redirectTo as string);
       }, 1500);
     }
-  }, [state.message, state.success, state.redirectTo, router]);
+  }, [state.message, state.success, state.redirectTo, router, state.timestamp]);
 
   // console.log("roleFromParams:", roleFromParams);
   // console.log("state.inputs?.role:", state.inputs?.role);

@@ -2,20 +2,13 @@ import { count, eq } from "drizzle-orm";
 import { db } from "../../../lib/db";
 import { MentorProfileWithUser } from "../../../types/all-types";
 import { mentorProfile, user } from "../../../lib/db/schema";
-import Image from "next/image";
-import Link from "next/link";
-import {
-  ArrowRight,
-  MapPin,
-  Sparkles,
-  Globe,
-  CheckCircle2,
-} from "lucide-react";
 
-import { Badge } from "@/components/ui/badge";
 import { PaginationClient } from "@/components/PaginationClient";
 import { auth } from "../../../server/lib/auth/auth";
 import { headers } from "next/headers";
+import SearchBelowHero from "@/components/SearchBelowHero";
+import MentorCard from "@/components/MentorCard";
+import { Sparkles } from "lucide-react";
 
 export default async function Page({
   searchParams,
@@ -80,6 +73,8 @@ export default async function Page({
           </p>
         </div>
 
+        <SearchBelowHero mentors={allMentors} />
+
         {/* Stats Bar */}
         <div className="flex justify-center mb-8 sm:mb-12">
           <div className="inline-flex items-center gap-2 px-4 sm:px-6 py-2.5 sm:py-3 bg-white border border-slate-200 rounded-full shadow-sm">
@@ -96,111 +91,13 @@ export default async function Page({
         {/* Mentors Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-12 sm:mb-16">
           {allMentors.map((mentor) => {
-            const isYou =
-              currentUserRole === "mentor" && mentor.userId === currentUserId;
             return (
-              <Link
-                href={isYou ? `/profile` : `/mentors/${mentor.userId}`}
+              <MentorCard
                 key={mentor.userId}
-                className="group relative bg-white rounded-3xl overflow-hidden border-2 border-slate-100 hover:border-emerald-200 shadow-sm hover:shadow-2xl hover:shadow-emerald-100/50 transition-all duration-500 hover:-translate-y-2"
-              >
-                {/* Image Section with Overlay */}
-                <div className="relative h-56 sm:h-64 overflow-hidden bg-gradient-to-br from-emerald-50 via-emerald-50/50 to-slate-50">
-                  <Image
-                    width={400}
-                    height={300}
-                    src={
-                      mentor.imageUrl ||
-                      mentor.user.image ||
-                      "/placeholder.svg?height=300&width=400&query=professional"
-                    }
-                    alt={mentor.user.name}
-                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out"
-                    style={{ objectPosition: "center 30%" }}
-                  />
-                  {/* Gradient Overlays */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-slate-900/60 via-slate-900/20 to-transparent" />
-                  <div className="absolute inset-0 bg-gradient-to-br from-emerald-600/0 via-emerald-600/0 to-emerald-600/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-
-                  {/* Verified Badge */}
-                  {mentor.verifiedStatus === "accepted" && (
-                    <div className="absolute top-3 right-3 sm:top-4 sm:right-4">
-                      <Badge className="bg-emerald-500/95 backdrop-blur-sm hover:bg-emerald-600 text-white border-0 shadow-lg flex items-center gap-1 text-xs px-2.5 py-1">
-                        <CheckCircle2 className="w-3 h-3" />
-                        Verified
-                      </Badge>
-                    </div>
-                  )}
-
-                  {/* Name Overlay on Image */}
-                  <div className="absolute bottom-0 left-0 right-0 p-4 sm:p-5 translate-y-0 group-hover:translate-y-1 transition-transform duration-300">
-                    <h2 className="text-xl sm:text-2xl font-bold text-white drop-shadow-lg line-clamp-1 mb-1">
-                      {mentor.user.name}
-                    </h2>
-                    {mentor.nationality && (
-                      <div className="flex items-center gap-1.5 text-white/90">
-                        <Globe className="w-3.5 h-3.5" />
-                        <p className="text-xs sm:text-sm font-medium">
-                          {mentor.nationality}
-                        </p>
-                      </div>
-                    )}
-                  </div>
-                </div>
-
-                {/* Content Section */}
-                <div className="p-5 sm:p-6 space-y-3">
-                  {/* Bio Preview - Fixed height */}
-                  <div className="h-16">
-                    {mentor.bio ? (
-                      <p className="text-sm text-slate-600 line-clamp-3 leading-relaxed">
-                        {mentor.bio}
-                      </p>
-                    ) : (
-                      <p className="text-sm text-slate-400 italic">
-                        No bio available yet.
-                      </p>
-                    )}
-                  </div>
-
-                  {/* Location - Fixed height */}
-                  <div className="h-10 flex items-center">
-                    {(mentor.city || mentor.country) && (
-                      <div className="flex items-center gap-2.5 text-slate-600 w-full">
-                        <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-emerald-50 flex-shrink-0">
-                          <MapPin className="w-4 h-4 text-emerald-600" />
-                        </div>
-                        <div className="text-sm min-w-0 flex-1">
-                          <p className="text-slate-700 font-medium line-clamp-1">
-                            {mentor.city && mentor.country ? (
-                              <>
-                                {mentor.city}, {mentor.country}
-                              </>
-                            ) : (
-                              mentor.country || mentor.city
-                            )}
-                          </p>
-                        </div>
-                      </div>
-                    )}
-                  </div>
-
-                  {/* CTA Button */}
-                  <div className="pt-2">
-                    <div className="flex items-center justify-between px-4 py-3 rounded-xl bg-gradient-to-r from-emerald-50 to-emerald-50/50 group-hover:from-emerald-500 group-hover:to-emerald-600 transition-all duration-300">
-                      <span className="text-sm font-semibold text-emerald-700 group-hover:text-white transition-colors">
-                        View Full Profile
-                      </span>
-                      <ArrowRight className="w-5 h-5 text-emerald-600 group-hover:text-white group-hover:translate-x-1 transition-all duration-300" />
-                    </div>
-                  </div>
-                </div>
-
-                {/* Decorative Elements */}
-                <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/5 rounded-full blur-3xl -translate-y-16 translate-x-16 group-hover:bg-emerald-500/10 transition-colors duration-500" />
-                <div className="absolute bottom-0 left-0 w-24 h-24 bg-emerald-500/5 rounded-full blur-2xl translate-y-12 -translate-x-12 group-hover:bg-emerald-500/10 transition-colors duration-500" />
-              </Link>
+                mentor={mentor}
+                currentUserRole={currentUserRole}
+                currentUserId={currentUserId}
+              />
             );
           })}
         </div>
