@@ -24,6 +24,13 @@ export const metadata = {
     ],
     locale: "en_US",
     type: "website",
+    // Add Facebook App ID here
+    additionalMetaTags: [
+      {
+        property: "fb:app_id",
+        content: "4071033779812681",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
