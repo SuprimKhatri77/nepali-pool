@@ -9,6 +9,13 @@ import { usePathname } from "next/navigation";
 import { cn } from "../lib/utils";
 import Image from "next/image";
 
+const navLinks = [
+  { name: "Home", href: "/" },
+  { name: "Schools", href: "/schools" },
+  { name: "Mentors", href: "/mentors" },
+  { name: "Guides", href: "/guides" },
+];
+
 export default function Header() {
   const [isOpen, setIsOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -18,7 +25,6 @@ export default function Header() {
   const isDashboardRoute = pathname.startsWith("/dashboard");
   const isChatRoute = pathname.startsWith("/chats");
 
-  // Close dropdown when clicking outside
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (
@@ -32,7 +38,6 @@ export default function Header() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  // Prevent body scroll when mobile menu is open
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = "hidden";
@@ -78,13 +83,16 @@ export default function Header() {
 
           {/* Desktop Menu */}
           <nav className="hidden md:flex items-center gap-1">
-            {["Home", "Schools", "Mentors", "Guides"].map((item) => (
+            {navLinks.map((item) => (
               <Link
-                key={item}
-                href={item === "Home" ? "/" : `/${item.toLowerCase()}`}
-                className="px-4 py-2 text-sm font-medium text-gray-700 hover:text-emerald-600 hover:bg-emerald-50 rounded-md transition-colors"
+                key={item.name}
+                href={item.href}
+                className={cn(
+                  "px-4 py-2 text-sm font-medium text-gray-700 hover:text-emerald-600 hover:bg-emerald-50 rounded-md transition-colors",
+                  pathname === item.href ? "text-emerald-400" : ""
+                )}
               >
-                {item}
+                {item.name}
               </Link>
             ))}
           </nav>

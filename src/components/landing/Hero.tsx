@@ -13,7 +13,7 @@ export default function Hero() {
           Your Trusted Mentor to
           <br className="hidden sm:block" />
           <span className="block sm:inline"> Study in </span>
-          <span className="text-emerald-600">Japan</span>
+          <span className="text-emerald-600">Abroad</span>
           <br className="sm:hidden" />
           <span className="block sm:inline"> from </span>
           <span className="text-emerald-600">Nepal</span>

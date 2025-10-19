@@ -29,7 +29,7 @@ type sendVideoCallScheduleType =
       errors: {
         date?: string[] | undefined;
         videoId?: string[] | undefined;
-        time?: string[] | undefined;
+        // time?: string[] | undefined;
         role?: string[] | undefined;
         studentId?: string[] | undefined;
         mentorId?: string[] | undefined;
@@ -40,7 +40,7 @@ export async function sendVideoCallSchedule(
   videoId: string,
   date: string,
   role: string,
-  time: string,
+  // time: string,
   studentId: string,
   mentorId: string
 ): Promise<sendVideoCallScheduleType> {
@@ -58,11 +58,11 @@ export async function sendVideoCallSchedule(
     date: z
       .string({ required_error: "Date is required" })
       .refine((val) => !isNaN(Date.parse(val)), { message: "Invalid date" }),
-    time: z
-      .string({ required_error: "Time is required" })
-      .refine((val) => /^([01]\d|2[0-3]):([0-5]\d):([0-5]\d)$/.test(val), {
-        message: "Invalid time format (HH:mm)",
-      }),
+    // time: z
+    //   .string({ required_error: "Time is required" })
+    //   .refine((val) => /^([01]\d|2[0-3]):([0-5]\d):([0-5]\d)$/.test(val), {
+    //     message: "Invalid time format (HH:mm)",
+    //   }),
     role: roleEnum,
     studentId: z
       .string({ required_error: "Student ID is requireed" })
@@ -74,12 +74,22 @@ export async function sendVideoCallSchedule(
     videoId,
     date,
     role,
-    time,
+    // time,
     studentId,
     mentorId,
   });
 
+  console.log("date: ", date);
+  console.log("date type: ", typeof date);
+  console.log("videoId: ", videoId);
+  console.log("role: ", role);
+  console.log("studentId: ", studentId);
+  console.log("mentorId: ", mentorId);
   if (!validateFields.success) {
+    console.log(
+      "validation error: ",
+      validateFields.error.flatten().fieldErrors
+    );
     return {
       errors: validateFields.error.flatten().fieldErrors,
       message: "Validation Failed",
@@ -89,9 +99,11 @@ export async function sendVideoCallSchedule(
   }
   // console.log("Data: ", validateFields.data);
   const validated = validateFields.data;
-  const [hours, minutes, seconds] = validated.time.split(":").map(Number);
+  // const [hours, minutes, seconds] = validated.time.split(":").map(Number);
   const combinedDate = new Date(validated.date);
-  combinedDate.setHours(hours, minutes, seconds || 0);
+  // combinedDate.setHours(hours, minutes, seconds || 0);
+  console.log("combined date: ", combinedDate);
+  console.log("converted date: ", combinedDate.toLocaleString());
 
   try {
     const [videoRecord] = await db
@@ -171,6 +183,7 @@ export async function sendVideoCallSchedule(
         mentorPreferredTime: combinedDate,
         studentPreferredTime: combinedDate,
         status: "accepted",
+        lastSentBy: role as "student" | "mentor",
         updatedAt: new Date(),
       })
       .where(eq(preferredTime.videoId, validated.videoId));
@@ -190,13 +203,13 @@ export async function sendVideoCallSchedule(
     await sendEmail({
       to: mentorRecord.email,
       subject: "Video Call Schedule",
-      html: `Your video call with the student ${studentRecord.name} has been scheduled at time : 123. Please be ready for the call with the student.<br>ZOOM MEETING START URL: test-start-url`,
+      html: `Your video call with the student ${studentRecord.name} has been scheduled at time : ${combinedDate}. Please be ready for the call with the student.<br>ZOOM MEETING START URL: test-start-url`,
     });
 
     await sendEmail({
       to: studentRecord.email,
       subject: "Video Call Schedule",
-      html: `Your video call with the mentor ${mentorRecord.name} has been scheduled at time : 123. Please be ready for the call with the mentor.<br>ZOOM MEETING JOIN URL: test-join-url`,
+      html: `Your video call with the mentor ${mentorRecord.name} has been scheduled at time : ${combinedDate}. Please be ready for the call with the mentor.<br>ZOOM MEETING JOIN URL: test-join-url`,
     });
     if (role === "student") {
       revalidatePath(`/video-call/schedule/${videoId}`);

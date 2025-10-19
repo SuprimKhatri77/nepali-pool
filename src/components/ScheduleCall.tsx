@@ -71,7 +71,7 @@ export default function ScheduleCall({
     | {
         date?: string[] | undefined;
         videoId?: string[] | undefined;
-        time?: string[] | undefined;
+        // time?: string[] | undefined;
         role?: string[] | undefined;
         studentId?: string[] | undefined;
         mentorId?: string[] | undefined;
@@ -123,20 +123,49 @@ export default function ScheduleCall({
     const studentId = videoRecord.studentId;
     const mentorId = videoRecord.mentorId;
 
-    if (!role || !date || !videoId || !studentId || !mentorId) {
+    if (!role || !videoId || !studentId || !mentorId) {
       toast.warning("Something went wrong");
       return;
     }
-    const fullDate = date
-      ? `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`
-      : "";
+    let date: string;
+    if (role === "student" && videoRecord.preferredTime.mentorPreferredTime) {
+      date = videoRecord.preferredTime.mentorPreferredTime.toLocaleString(
+        "en-US",
+        {
+          weekday: "long",
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+          hour: "2-digit",
+          minute: "2-digit",
+        }
+      );
+    } else if (
+      role === "mentor" &&
+      videoRecord.preferredTime.studentPreferredTime
+    ) {
+      date = videoRecord.preferredTime.studentPreferredTime.toLocaleString(
+        "en-US",
+        {
+          weekday: "long",
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+          hour: "2-digit",
+          minute: "2-digit",
+        }
+      );
+    } else {
+      toast.error("invalid attempt to schedule a call");
+      return;
+    }
 
     try {
       const result = await sendVideoCallSchedule(
         videoId,
-        fullDate,
+        date,
         role,
-        time,
+        // time,
         studentId,
         mentorId
       );
@@ -154,6 +183,7 @@ export default function ScheduleCall({
       setPending(false);
     }
   };
+  //   : "";
 
   return (
     <div
