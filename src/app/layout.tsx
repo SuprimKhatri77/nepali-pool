@@ -61,6 +61,10 @@ export default function RootLayout({
  
   return (
     <html lang="en">
+       <Head>
+        {/* Required for Facebook */}
+        <meta property="fb:app_id" content="4071033779812681" />
+      </Head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen`}
       >
