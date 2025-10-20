@@ -18,8 +18,8 @@ export default function MentorCard({
   currentUserId,
 }: {
   mentor: MentorProfileWithUser;
-  currentUserRole: string | null;
-  currentUserId: string | undefined;
+  currentUserRole?: "student" | "mentor" | "none" | "admin" | null;
+  currentUserId: string | null;
 }) {
   const router = useRouter();
   const {

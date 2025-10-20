@@ -99,6 +99,10 @@ export default async function MentorDetailPage({
     );
   }
 
+  const role = session && currentUser?.success ? currentUser.role : null;
+  const currentUserId =
+    session && currentUser?.success ? currentUser.userId : null;
+
   const otherSuggestedMentors = await db.query.mentorProfile.findMany({
     where: (fields, { eq }) =>
       mentorRecord.country
@@ -117,16 +121,15 @@ export default async function MentorDetailPage({
     <div className="min-h-screen bg-white">
       {/* Hero Section with Cover */}
       <div className="relative h-80 bg-gradient-to-br from-emerald-600 via-emerald-500 to-teal-600">
-         
         <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxwYXRoIGQ9Ik0zNiAxOGMzLjMxNCAwIDYgMi42ODYgNiA2cy0yLjY4NiA2LTYgNi02LTIuNjg2LTYtNiAyLjY4Ni02IDYtNnoiIHN0cm9rZT0iI2ZmZiIgc3Ryb2tlLW9wYWNpdHk9Ii4xIi8+PC9nPjwvc3ZnPg==')] opacity-20" />
 
-       <Link
-            href="/mentors"
-            className="inline-flex mt-4 ml-4 z-[100] items-center gap-2 text-sm font-medium text-white/90 hover:text-white bg-white/10  transition-colors px-4 py-2 rounded-lg  backdrop-blur-sm border border-white/20"
-          >
-            <ArrowRight className="w-4 h-4 rotate-180" />
-            Back to all mentors
-          </Link>
+        <Link
+          href="/mentors"
+          className="inline-flex mt-4 ml-4 z-[100] items-center gap-2 text-sm font-medium text-white/90 hover:text-white bg-white/10  transition-colors px-4 py-2 rounded-lg  backdrop-blur-sm border border-white/20"
+        >
+          <ArrowRight className="w-4 h-4 rotate-180" />
+          Back to all mentors
+        </Link>
       </div>
 
       {/* Main Content - Overlapping Hero */}
@@ -181,7 +184,14 @@ export default async function MentorDetailPage({
                           <div className="flex items-center gap-2">
                             <MapPin className="w-5 h-5 text-emerald-600" />
                             <span className="font-medium">
-                              {[capitalizeFirstLetter(mentorRecord.city ?? "Not"), capitalizeFirstLetter(mentorRecord.country ?? "Provided")]
+                              {[
+                                capitalizeFirstLetter(
+                                  mentorRecord.city ?? "Not"
+                                ),
+                                capitalizeFirstLetter(
+                                  mentorRecord.country ?? "Provided"
+                                ),
+                              ]
                                 .filter(Boolean)
                                 .join(", ")}
                             </span>
@@ -229,85 +239,84 @@ export default async function MentorDetailPage({
                   </div>
                 </div>
 
-               {/* Contact info */}
-               <div className="flex gap-2 mb-2 ml-1">
-                <Phone className="w-6 h-6 text-emerald-400" />
-                    <h3 className="text-xl font-bold">
-                      Get in Touch
-                    </h3>
-               </div>
-<div className="grid grid-cols-[repeat(auto-fit,_minmax(200px,_1fr))] gap-3 p-4 rounded-xl bg-white border border-gray-200">
-  <Button
-    asChild
-    className="w-[200px] bg-emerald-50 text-emerald-700 hover:bg-emerald-100 h-12 font-semibold shadow-sm border border-emerald-200 transition-all"
-  >
-    <Link
-      href={`https://mail.google.com/mail/?view=cm&fs=1&to=${mentorRecord.user.email}`}
-    >
-      <Mail className="w-5 h-5 mr-2" />
-      Send Email
-    </Link>
-  </Button>
+                {/* Contact info */}
+                <div className="flex gap-2 mb-2 ml-1">
+                  <Phone className="w-6 h-6 text-emerald-400" />
+                  <h3 className="text-xl font-bold">Get in Touch</h3>
+                </div>
+                <div className="grid grid-cols-[repeat(auto-fit,_minmax(200px,_1fr))] gap-3 p-4 rounded-xl bg-white border border-gray-200">
+                  <Button
+                    asChild
+                    className="w-[200px] bg-emerald-50 text-emerald-700 hover:bg-emerald-100 h-12 font-semibold shadow-sm border border-emerald-200 transition-all"
+                  >
+                    <Link
+                      href={`https://mail.google.com/mail/?view=cm&fs=1&to=${mentorRecord.user.email}`}
+                    >
+                      <Mail className="w-5 h-5 mr-2" />
+                      Send Email
+                    </Link>
+                  </Button>
 
-  {currentUser && currentUser.role === "student" && (
-    <>
-      <Button
-        asChild
-        className="w-[200px] bg-white text-black border border-gray-300 hover:bg-gray-50 h-12 font-semibold transition-all"
-      >
-        {currentUser.success && currentUser.chatId ? (
-          <Link href={`/chats/${currentUser.chatId}`}>
-            <MessageCircleIcon className="w-5 h-5 mr-2 text-emerald-600" />
-            Start Chat
-          </Link>
-        ) : (
-          <PaymentButton
-            mentorId={mentorRecord.userId}
-            userId={currentUser.userId}
-            userEmail={currentUser.email}
-            paymentType="chat_subscription"
-            className="flex items-center justify-center gap-2 text-emerald-700 hover:text-emerald-800"
-          >
-            <LockIcon className="w-4 h-4 text-emerald-700" />
-            Unlock Chat
-          </PaymentButton>
-        )}
-      </Button>
+                  {currentUser && currentUser.role === "student" && (
+                    <>
+                      <Button
+                        asChild
+                        className="w-[200px] bg-white text-black border border-gray-300 hover:bg-gray-50 h-12 font-semibold transition-all"
+                      >
+                        {currentUser.success && currentUser.chatId ? (
+                          <Link href={`/chats/${currentUser.chatId}`}>
+                            <MessageCircleIcon className="w-5 h-5 mr-2 text-emerald-600" />
+                            Start Chat
+                          </Link>
+                        ) : (
+                          <PaymentButton
+                            mentorId={mentorRecord.userId}
+                            userId={currentUser.userId}
+                            userEmail={currentUser.email}
+                            paymentType="chat_subscription"
+                            className="flex items-center justify-center gap-2 text-emerald-700 hover:text-emerald-800"
+                          >
+                            <LockIcon className="w-4 h-4 text-emerald-700" />
+                            Unlock Chat
+                          </PaymentButton>
+                        )}
+                      </Button>
 
-      {currentUser.success &&
-      currentUser.videoCallStatus === "pending" &&
-      currentUser.videoCallId ? (
-        <Link href={`/video-call/schedule/${currentUser.videoCallId}`}>
-          <Button className="w-[200px] bg-amber-50 text-amber-700 hover:bg-amber-100 border border-amber-200 h-12 font-semibold transition-all">
-            <Calendar className="w-5 h-5 mr-2" />
-            Video Pending
-          </Button>
-        </Link>
-      ) : currentUser.success &&
-        currentUser.videoCallStatus === "scheduled" ? (
-        <Button
-          className="w-[200px] bg-gray-100 text-gray-500 border border-gray-300 h-12 font-semibold cursor-not-allowed"
-          disabled
-        >
-          <Calendar className="w-5 h-5 mr-2" />
-          Scheduled
-        </Button>
-      ) : (
-        <PaymentButton
-          mentorId={mentorRecord.userId}
-          userId={currentUser.userId}
-          userEmail={currentUser.email}
-          paymentType="video_call"
-          className="w-[200px] bg-white text-emerald-700 hover:bg-emerald-50 border border-emerald-200 h-12 font-semibold transition-all"
-        >
-          <LockIcon className="w-4 h-4 mr-2 text-emerald-700" />
-          Unlock Video Call
-        </PaymentButton>
-      )}
-    </>
-  )}
-</div>
-
+                      {currentUser.success &&
+                      currentUser.videoCallStatus === "pending" &&
+                      currentUser.videoCallId ? (
+                        <Link
+                          href={`/video-call/schedule/${currentUser.videoCallId}`}
+                        >
+                          <Button className="w-[200px] bg-amber-50 text-amber-700 hover:bg-amber-100 border border-amber-200 h-12 font-semibold transition-all">
+                            <Calendar className="w-5 h-5 mr-2" />
+                            Video Pending
+                          </Button>
+                        </Link>
+                      ) : currentUser.success &&
+                        currentUser.videoCallStatus === "scheduled" ? (
+                        <Button
+                          className="w-[200px] bg-gray-100 text-gray-500 border border-gray-300 h-12 font-semibold cursor-not-allowed"
+                          disabled
+                        >
+                          <Calendar className="w-5 h-5 mr-2" />
+                          Scheduled
+                        </Button>
+                      ) : (
+                        <PaymentButton
+                          mentorId={mentorRecord.userId}
+                          userId={currentUser.userId}
+                          userEmail={currentUser.email}
+                          paymentType="video_call"
+                          className="w-[200px] bg-white text-emerald-700 hover:bg-emerald-50 border border-emerald-200 h-12 font-semibold transition-all"
+                        >
+                          <LockIcon className="w-4 h-4 mr-2 text-emerald-700" />
+                          Unlock Video Call
+                        </PaymentButton>
+                      )}
+                    </>
+                  )}
+                </div>
               </div>
             </div>
           </CardContent>
@@ -462,8 +471,6 @@ export default async function MentorDetailPage({
           {/* Right Column - Sticky Sidebar */}
           <div className="lg:col-span-1">
             <div className="sticky top-8 space-y-6">
-             
-
               {/* Trust Badges */}
               <Card className="border border-slate-200 shadow-lg">
                 <CardContent className="p-6">
@@ -525,7 +532,11 @@ export default async function MentorDetailPage({
                   key={mentor.userId}
                   className="group max-w-[350px] min-h-[400px]"
                 >
-                  <MentorCard mentor={mentor} />
+                  <MentorCard
+                    mentor={mentor}
+                    currentUserRole={role}
+                    currentUserId={currentUserId}
+                  />
                 </Link>
               ))}
             </div>

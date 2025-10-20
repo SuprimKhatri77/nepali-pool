@@ -37,8 +37,10 @@ export default async function Page({
       .select({ role: user.role })
       .from(user)
       .where(eq(user.id, currentUserId));
-
-    currentUserRole = userRecord?.role ?? null;
+    if (userRecord.role) {
+      currentUserRole = userRecord.role;
+    }
+    currentUserRole = null;
   }
   const allMentors: MentorProfileWithUser[] =
     await db.query.mentorProfile.findMany({
@@ -95,8 +97,8 @@ export default async function Page({
               <MentorCard
                 key={mentor.userId}
                 mentor={mentor}
-                currentUserRole={currentUserRole}
-                currentUserId={currentUserId}
+                currentUserRole={currentUserRole ?? null}
+                currentUserId={currentUserId ?? null}
               />
             );
           })}
