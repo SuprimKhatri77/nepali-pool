@@ -1,3 +1,6 @@
+"use client"
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "../ui/carousel";
+import {motion } from "framer-motion"
 const trustPoints = [
   "Affordable mentorship by real Nepali students who've successfully navigated the process",
   "Verified mentors with proven track records of successful applications",
@@ -30,7 +33,7 @@ export default function WhyTrustUs() {
 
             <div className="space-y-4">
               {trustPoints.map((point, index) => (
-                <div key={index} className="flex items-start gap-3">
+                <div  key={index} className="flex items-start gap-3">
                   <div className="mt-1 flex-shrink-0">
                     <svg
                       className="w-5 h-5 text-emerald-600"
@@ -57,10 +60,14 @@ export default function WhyTrustUs() {
             </h2>
             <div className="w-20 h-1 bg-emerald-600 rounded-full mb-8"></div>
 
-            <div className="space-y-6">
+            <div className="space-y-6 max-w-[270px] sm:max-w-[800px] w-full">
+              <Carousel className="sm:max-w-1/2 w-full mx-auto">
+                <CarouselContent>
               {testimonials.map((testimonial, index) => (
-                <div
-                  key={index}
+                  <CarouselItem key={index}>
+
+                <motion.div
+                  whileHover={{scale:1.02}} transition={{duration: 0.2, ease: "easeIn"}}
                   className="bg-gradient-to-br from-emerald-50 to-emerald-100 rounded-xl p-6 border border-emerald-200"
                 >
                   <div className="flex items-center gap-3 mb-4">
@@ -79,8 +86,14 @@ export default function WhyTrustUs() {
                   <p className="text-gray-700 text-sm leading-relaxed">
                     {testimonial.text}
                   </p>
-                </div>
+                </motion.div>
+                  </CarouselItem>
               ))}
+
+                </CarouselContent>
+                <CarouselPrevious></CarouselPrevious>
+                <CarouselNext></CarouselNext>
+              </Carousel>
             </div>
           </div>
         </div>

@@ -8,6 +8,8 @@ import SignOutButton from "../SignOutButton";
 import { usePathname } from "next/navigation";
 import { cn } from "../lib/utils";
 import Image from "next/image";
+import { motion} from "framer-motion"
+const MotionLink = motion(Link)
 
 const navLinks = [
   { name: "Home", href: "/" },
@@ -61,7 +63,8 @@ export default function Header() {
 
   return (
     <>
-      <header
+      <motion.header
+        initial={{opacity:0, scaleY: 0}} animate={{opacity:1,scaleY:1}} transition={{duration:0.5}}
         className={cn(
           "bg-white z-50 border-b border-gray-200 px-6 lg:px-10 py-4",
           !pathname.startsWith("/chats") && "sticky top-0"
@@ -71,20 +74,23 @@ export default function Header() {
         <div className="max-w-7xl mx-auto flex justify-between items-center">
           {/* Logo */}
           <Link href="/">
-            <div className="flex items-center gap-2">
+            <motion.div initial={{opacity:0, y: -30}} animate={{opacity:1,y:0}} transition={{duration:0.5}} className="flex items-center gap-2">
               <div className="w-10 h-10 bg-gradient-to-br from-emerald-400 to-emerald-600 rounded-lg flex items-center justify-center text-white font-bold">
                 NP
               </div>
               <span className="font-semibold text-lg text-gray-900">
                 NepaliPool
               </span>
-            </div>
+            </motion.div>
           </Link>
 
           {/* Desktop Menu */}
           <nav className="hidden md:flex items-center gap-1">
-            {navLinks.map((item) => (
-              <Link
+            {navLinks.map((item,i) => (
+              <MotionLink
+                initial={{y:-100, opacity: 0}}
+                animate={{y:0, opacity: 1}}
+                transition={{duration: i * 0.5}}
                 key={item.name}
                 href={item.href}
                 className={cn(
@@ -93,7 +99,7 @@ export default function Header() {
                 )}
               >
                 {item.name}
-              </Link>
+              </MotionLink>
             ))}
           </nav>
 
@@ -102,30 +108,38 @@ export default function Header() {
             {isPending ? (
               <Spinner className="size-6 text-green-500" />
             ) : !session ? (
-              <Link
+              <MotionLink
+                whileHover={{scale: 1.1}}
+                transition={{duration: 0.5}}
+
                 href="/login"
                 className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-medium rounded-md transition-colors"
               >
                 Login
-              </Link>
+              </MotionLink>
             ) : (
               <div className="flex items-center gap-3">
                 {!isDashboardRoute && (
-                  <Link
+                  <MotionLink
+                whileHover={{scale: 1.1}}
+                transition={{duration: 0.5}}
+
                     href="/dashboard"
                     className="px-4 py-2 bg-emerald-50 text-emerald-700 text-sm font-medium rounded-md hover:bg-emerald-100 transition-colors"
                   >
                     Dashboard
-                  </Link>
+                  </MotionLink>
                 )}
                 {!isChatRoute && (
-                  <Link
+                  <MotionLink
+                whileHover={{scale: 1.1}}
+                transition={{duration: 0.5}}
                     href="/chats"
                     className="px-4 py-2 bg-emerald-50 text-emerald-700 text-sm font-medium rounded-md hover:bg-emerald-100 transition-colors text-center"
                     onClick={() => setIsOpen(false)}
                   >
                     Chats
-                  </Link>
+                  </MotionLink>
                 )}
                 <div className="relative" ref={dropdownRef}>
                   <button
@@ -205,7 +219,8 @@ export default function Header() {
           </div>
 
           {/* Mobile Menu Button */}
-          <button
+          <motion.button
+          initial={{opacity:0, y: -30}} animate={{opacity:1,y:0}} transition={{duration:0.5}}
             onClick={() => setIsOpen(!isOpen)}
             className="md:hidden p-2 text-gray-700 hover:bg-gray-100 rounded-md z-50 relative"
           >
@@ -231,9 +246,9 @@ export default function Header() {
                 />
               )}
             </svg>
-          </button>
+          </motion.button>
         </div>
-      </header>
+      </motion.header>
 
       {/* Mobile Menu Overlay */}
       {isOpen && (

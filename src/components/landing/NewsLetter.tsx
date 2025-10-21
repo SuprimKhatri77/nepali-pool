@@ -1,6 +1,8 @@
+"use client"
+import {easeOut, motion} from "framer-motion"
 export default function SubscribeNewsLetter() {
   return (
-    <section className="py-12 px-6">
+    <motion.section initial={{opacity: 0}} whileInView={{opacity: 1}} transition={{duration: 0.6, ease: easeOut}} className="py-12 px-6">
       <div className="max-w-5xl mx-auto bg-gradient-to-r from-emerald-600 to-emerald-700 rounded-2xl p-8 md:p-12 shadow-lg">
         <div className="grid md:grid-cols-2 gap-8 items-center">
           <div className="text-white">
@@ -20,12 +22,12 @@ export default function SubscribeNewsLetter() {
               placeholder="Enter your email"
               className="flex-1 px-4 py-3 rounded-lg border-2 border-white/20 bg-white/10 text-white placeholder:text-white/70 focus:outline-none focus:border-white/40"
             />
-            <button className="px-6 py-3 bg-white text-emerald-600 font-semibold rounded-lg hover:bg-emerald-50 transition-colors whitespace-nowrap w-full lg:w-auto">
+            <motion.button initial={{scale:0}} whileInView={{scale:1}} transition={{duration:0.3}} className="px-6 py-3 bg-white text-emerald-600 font-semibold rounded-lg hover:bg-emerald-50 transition-colors whitespace-nowrap w-full lg:w-auto">
               Subscribe
-            </button>
+            </motion.button>
           </div>
         </div>
       </div>
-    </section>
+    </motion.section>
   );
 }

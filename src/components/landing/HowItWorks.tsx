@@ -1,4 +1,7 @@
+"use client"
 import HowItWorksCard from "./resuable/HITWcard";
+import { motion} from "framer-motion"
+
 
 export default function HowItWorks() {
   const steps = [
@@ -33,7 +36,7 @@ export default function HowItWorks() {
   ];
 
   return (
-    <section className="py-20 px-6 bg-gradient-to-b from-white to-emerald-50">
+    <motion.section initial={{opacity: 0}} whileInView={{opacity:1}} transition={{duration: 0.8}} className="py-20 px-6 bg-gradient-to-b from-white to-emerald-50">
       <div className="max-w-7xl mx-auto">
         <h2 className="text-3xl md:text-4xl font-bold text-center text-gray-900 mb-3">
           How It Works
@@ -46,6 +49,6 @@ export default function HowItWorks() {
           ))}
         </div>
       </div>
-    </section>
+    </motion.section>
   );
 }

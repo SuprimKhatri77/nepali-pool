@@ -1,8 +1,11 @@
+"use client"
 type Props = { img: string; Header: string; Content: string; step: number };
+import { motion} from "framer-motion"
 
-export default function HowItWorksCard({ img, Header, Content, step }: Props) {
+
+export default function HowItWorksCard({  Header, Content, step }: Props) {
   return (
-    <div className="relative group">
+    <motion.div whileHover={{scale:1.1}} transition={{duration: 0.5}} className="relative group">
       <div className="bg-white border border-gray-200 rounded-xl p-6 hover:border-emerald-300 hover:shadow-lg transition-all duration-300 max-w-xs">
         <div className="w-12 h-12 bg-emerald-100 rounded-lg flex items-center justify-center mb-4">
           <span className="text-emerald-600 font-bold text-lg">{step}</span>
@@ -10,6 +13,6 @@ export default function HowItWorksCard({ img, Header, Content, step }: Props) {
         <h3 className="text-lg font-semibold text-gray-900 mb-2">{Header}</h3>
         <p className="text-sm text-gray-600 leading-relaxed">{Content}</p>
       </div>
-    </div>
+    </motion.div>
   );
 }
