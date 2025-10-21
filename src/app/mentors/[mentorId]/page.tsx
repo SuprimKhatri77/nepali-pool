@@ -525,7 +525,7 @@ export default async function MentorDetailPage({
                   key={mentor.userId}
                   className="group max-w-[350px] min-h-[400px]"
                 >
-                  <MentorCard mentor={mentor} />
+                  <MentorCard mentor={mentor} currentUserId={mentor.userId} currentUserRole={"mentor"} />
                 </Link>
               ))}
             </div>
