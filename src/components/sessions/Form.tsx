@@ -74,7 +74,7 @@ export default function SessionForm({
     
 useEffect(()=>{
     const isSubmitted = JSON.stringify(localStorage.getItem("isSubmitted"))
-    if(isSubmitted){
+    if(isSubmitted === "true"){
         setSubmittedForm(true)
     }
 },[])
