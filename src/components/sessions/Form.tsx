@@ -27,7 +27,7 @@ export default function SessionForm({
     message: "",
   });
 
-  const [submittedForm, setSubmittedForm]= useState(true)
+  const [submittedForm, setSubmittedForm]= useState(false)
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
