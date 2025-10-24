@@ -126,8 +126,7 @@ export default function SessionLandingPage({
         />
       </div>
 
-      <div className="relative min-h-screen w-full bg-gradient-to-br from-gray-100 to-gray-200 flex flex-col items-center justify-center px-6 py-16">
-        {/* Animated Heading */}
+      {/* <div className="relative min-h-screen w-full bg-gradient-to-br from-gray-100 to-gray-200 flex flex-col items-center justify-center px-6 py-16">
         <motion.h1
           className="text-4xl sm:text-5xl md:text-6xl font-bold text-gray-900 text-center mb-6"
           initial={{ y: -50, opacity: 0 }}
@@ -137,7 +136,6 @@ export default function SessionLandingPage({
           Connect with Professional Mentors
         </motion.h1>
 
-        {/* Description */}
         <motion.p
           className="max-w-3xl text-center text-lg sm:text-xl text-gray-700 mb-10"
           initial={{ opacity: 0 }}
@@ -150,7 +148,6 @@ export default function SessionLandingPage({
           we never charge any fees. Grow your skills with guidance from experts!
         </motion.p>
 
-        {/* Session Card */}
         <motion.div
           className="bg-white rounded-2xl shadow-xl p-8 max-w-lg w-full flex flex-col items-center gap-6"
           initial={{ scale: 0.8, opacity: 0 }}
@@ -189,7 +186,6 @@ export default function SessionLandingPage({
           </div>
         </motion.div>
 
-        {/* Animated Background Elements */}
         <motion.div
           className="absolute top-0 left-0 w-64 h-64 bg-emerald-200 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-pulse"
           initial={{ scale: 0 }}
@@ -207,7 +203,7 @@ export default function SessionLandingPage({
             delay: 1,
           }}
         />
-      </div>
+      </div> */}
       
 
 
