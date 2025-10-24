@@ -3,6 +3,7 @@
 import * as React from "react";
 import {
 
+  FileVideo2Icon,
   Frame,
   Map,
   PieChart,
@@ -105,7 +106,14 @@ const data = {
   {
     title: "Sessions",
     url: "/admin/session-users",
-    icon: VideoIcon
+    icon: VideoIcon,
+    items: [
+      {
+        title: "Sessions",
+        url: "/admin/session-users",
+        icon: FileVideo2Icon
+      }
+    ]
   }
 ],
   projects: [

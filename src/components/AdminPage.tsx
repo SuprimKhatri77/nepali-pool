@@ -11,17 +11,20 @@ export default function AdminPage() {
       </div>
       <SignOutButton />
 
-      <Button asChild>
-        <Link href="/admin/mentor-applications">Mentor Applications</Link>
-      </Button>
-      <Button asChild>
-        <Link href="/admin/add-school">Add school</Link>
-      </Button>
-      <Button asChild>
-        <Link href="/admin/video-call-applications?status=pending">
-          Video Call
-        </Link>
-      </Button>
-    </div>
+        <Button asChild>
+          <Link href="/admin/mentor-applications">Mentor Applications</Link>
+        </Button>
+        <Button asChild>
+          <Link href="/admin/add-school">Add school</Link>
+        </Button>
+        <Button asChild>
+          <Link href="/admin/video-call-applications?status=pending">
+            Video Call
+          </Link>
+        </Button>
+        <Button asChild>
+          <Link href="/admin/session-users">Session users list</Link>
+        </Button>
+      </div>
   );
 }

@@ -2,99 +2,103 @@
 import Link from "next/link";
 import { authClient } from "../../../server/lib/auth/auth-client";
 import { Spinner } from "../ui/spinner";
-import {  motion} from "framer-motion"
-const MotionLink = motion(Link)
+import { motion } from "framer-motion";
+const MotionLink = motion(Link);
 
 export default function Hero() {
   const { data: session, isPending } = authClient.useSession();
 
   return (
- <motion.section initial={{opacity:0}} animate={{opacity:1}} className="relative overflow-hidden min-h-screen flex items-center justify-center bg-gradient-to-bl from-emerald-50/90 via-white to-emerald-100/80 px-4 sm:px-6 py-16 sm:py-24">
-
-  {/* Subtle animated background pattern */}
-   <motion.div
-    initial={{ opacity: 0 }}
-    animate={{ opacity: 0.2, backgroundPosition: ["0% 0%", "100% 100%"] }}
-    transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-    className="absolute inset-0 z-0"
-    style={{
-      backgroundColor: "green",
-      backgroundImage:
-        "radial-gradient(ellipse farthest-corner at 10px 10px, #444cf7, #444cf7 50%, green 50%)",
-      backgroundSize: "10px 10px",
-      opacity: 0.10,
-    }}
-  />
-
-  {/* Gradient glow at bottom for depth */}
-  <div className="absolute bottom-0 left-0 right-0 h-64 bg-gradient-to-t from-emerald-200/60 via-transparent to-transparent blur-2xl" />
-
-  {/* Content */}
-  <div className="max-w-5xl mx-auto text-center w-full relative z-10">
-    <h1 className="text-4xl sm:text-5xl sm:mb-0 mb-12 md:text-6xl lg:text-7xl font-bold text-gray-900 leading-tight tracking-tight">
-      Your Trusted Mentor to{" "}
-      <span className="hidden sm:inline">
-        <br className="hidden sm:block" />
-        <span className="block sm:inline">Study </span>
-        <span className="text-emerald-600">Abroad</span>{" "}
-        <span className="block sm:inline">from </span>
-        <span className="text-emerald-600">Nepal</span>
-      </span>
-      <span className="inline sm:hidden">
-        <span className="text-emerald-600">Study Abroad</span> from{" "}
-        <span className="text-emerald-600">Nepal</span>
-      </span>
-    </h1>
-
-    <motion.p
-      whileHover={{ scale: 1.04 }}
-      transition={{ duration: 0.8, ease: "easeInOut" }}
-      className="mt-6 sm:mt-8 text-lg sm:text-xl text-gray-600 max-w-2xl mx-auto leading-relaxed"
+    <motion.section
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      className="relative overflow-hidden min-h-screen flex items-center justify-center bg-gradient-to-bl from-emerald-50/90 via-white to-emerald-100/80 px-4 sm:px-6 py-16 sm:py-24"
     >
-      Helping Nepali students choose the right college, city, and future — with
-      expert guidance from someone who&apos;s been there.
-    </motion.p>
+      {/* Subtle animated background pattern */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 0.2, backgroundPosition: ["0% 0%", "100% 100%"] }}
+        transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+        className="absolute inset-0 z-0"
+      />
 
-    <div
-      className="flex flex-col sm:flex-row gap-4 justify-center mt-8 sm:mt-12 w-full max-w-sm sm:max-w-none mx-auto"
-    >
-      {isPending ? (
-        <div className="flex justify-center py-3">
-          <Spinner />
-        </div>
-      ) : !session ? (
-        <>
-          <MotionLink
-           whileHover={{scale:1.05}} transition={{duration:0.5}}
-            href="/sign-up?role=mentor"
-            className="w-full sm:w-auto px-8 py-4 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold rounded-lg transition-colors shadow-md hover:shadow-lg text-base sm:text-lg"
-          >
-            Start as a Mentor
-          </MotionLink>
-          <MotionLink
-           initial={{scale:1}} animate={{scale: 1.03}} transition={{duration:0.5, repeat: Infinity,repeatType: "reverse", ease: "easeInOut"}}
+      {/* Gradient glow at bottom for depth */}
+      <div className="absolute bottom-0 left-0 right-0 h-64 bg-gradient-to-t from-emerald-200/60 via-transparent to-transparent blur-2xl" />
 
-            href="/sign-up?role=student"
-            className="w-full sm:w-auto px-8 py-4 bg-white hover:bg-gray-50 text-emerald-600 font-semibold rounded-lg transition-colors shadow-md hover:shadow-lg border-2 border-emerald-600 text-base sm:text-lg"
-          >
-            Start as a Student
-          </MotionLink>
-        </>
-      ) : (
-        <MotionLink
-           initial={{scale:1}} animate={{scale: 1.03}} transition={{duration:0.5, repeat: Infinity,repeatType: "reverse", ease: "easeInOut"}}
-          
+      {/* Content */}
+      <div className="max-w-5xl mx-auto text-center w-full relative z-10">
+        <h1 className="text-4xl sm:text-5xl sm:mb-0 mb-12 md:text-6xl lg:text-7xl font-bold text-gray-900 leading-tight tracking-tight">
+          Your Trusted Mentor to{" "}
+          <span className="hidden sm:inline">
+            <br className="hidden sm:block" />
+            <span className="block sm:inline">Study </span>
+            <span className="text-emerald-600">Abroad</span>{" "}
+            <span className="block sm:inline">from </span>
+            <span className="text-emerald-600">Nepal</span>
+          </span>
+          <span className="inline sm:hidden">
+            <span className="text-emerald-600">Study Abroad</span> from{" "}
+            <span className="text-emerald-600">Nepal</span>
+          </span>
+        </h1>
 
-          href="/dashboard"
-          className="w-full sm:w-auto px-8 py-4 bg-emerald-50 text-emerald-700 font-semibold rounded-lg hover:bg-emerald-100 transition-colors border-2 border-emerald-400 text-base sm:text-lg"
+        <motion.p
+          whileHover={{ scale: 1.04 }}
+          transition={{ duration: 0.8, ease: "easeInOut" }}
+          className="mt-6 sm:mt-8 text-lg sm:text-xl text-gray-600 max-w-2xl mx-auto leading-relaxed"
         >
-          Go to Dashboard
-        </MotionLink>
-      )}
-    </div>
-  </div>
-</motion.section>
+          Helping Nepali students choose the right college, city, and future —
+          with expert guidance from someone who&apos;s been there.
+        </motion.p>
 
-
+        <div className="flex flex-col sm:flex-row gap-4 justify-center mt-8 sm:mt-12 w-full max-w-sm sm:max-w-none mx-auto">
+          {isPending ? (
+            <div className="flex justify-center py-3">
+              <Spinner />
+            </div>
+          ) : !session ? (
+            <>
+              <MotionLink
+                whileHover={{ scale: 1.05 }}
+                transition={{ duration: 0.5 }}
+                href="/sign-up?role=mentor"
+                className="w-full sm:w-auto px-8 py-4 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold rounded-lg transition-colors shadow-md hover:shadow-lg text-base sm:text-lg"
+              >
+                Start as a Mentor
+              </MotionLink>
+              <MotionLink
+                initial={{ scale: 1 }}
+                animate={{ scale: 1.03 }}
+                transition={{
+                  duration: 0.5,
+                  repeat: Infinity,
+                  repeatType: "reverse",
+                  ease: "easeInOut",
+                }}
+                href="/sign-up?role=student"
+                className="w-full sm:w-auto px-8 py-4 bg-white hover:bg-gray-50 text-emerald-600 font-semibold rounded-lg transition-colors shadow-md hover:shadow-lg border-2 border-emerald-600 text-base sm:text-lg"
+              >
+                Start as a Student
+              </MotionLink>
+            </>
+          ) : (
+            <MotionLink
+              initial={{ scale: 1 }}
+              animate={{ scale: 1.03 }}
+              transition={{
+                duration: 0.5,
+                repeat: Infinity,
+                repeatType: "reverse",
+                ease: "easeInOut",
+              }}
+              href="/dashboard"
+              className="w-full sm:w-auto px-8 py-4 bg-emerald-50 text-emerald-700 font-semibold rounded-lg hover:bg-emerald-100 transition-colors border-2 border-emerald-400 text-base sm:text-lg"
+            >
+              Go to Dashboard
+            </MotionLink>
+          )}
+        </div>
+      </div>
+    </motion.section>
   );
 }
