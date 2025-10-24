@@ -31,6 +31,7 @@ const Page = async () => {
 
   if (!userRecord.role || userRecord.role === "none")
     return redirect("/select-role");
+  if (userRecord.role === "admin") redirect("/admin/dashboard");
 
   if (userRecord.role === "student") {
     const [studentRecord] = await db

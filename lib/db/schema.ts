@@ -393,6 +393,20 @@ export const newsletter = pgTable("newsletter", {
   createdAt: timestamp("created_at").defaultNow(),
 });
 
+export const meetingSession = pgTable("meeting_session", {
+  id: uuid("id").primaryKey().defaultRandom().notNull(),
+  studentId: text("student_id")
+    .references(() => studentProfile.userId, {
+      onDelete: "cascade",
+    })
+    .notNull(),
+  name: text("name").notNull(),
+  city: text("city").notNull(),
+  email: text("email").notNull(),
+  question: text("question"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
 // ==========RELATIONS===============
 
 export const messageAttachmentRelations = relations(
@@ -529,3 +543,6 @@ export type MessageAttachmentsSelectType = InferSelectModel<
 export type MessageAttachmentsInsertType = InferInsertModel<
   typeof messageAttachments
 >;
+
+export type MeetingSessionSelectType = InferSelectModel<typeof meetingSession>;
+export type MeetingSessionInsertType = InferInsertModel<typeof meetingSession>;

@@ -11,12 +11,15 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
 import { resendEmailVerification } from "../../server/actions/email-verification/resendEmailVerification";
+import { authClient } from "../../server/lib/auth/auth-client";
+import { Spinner } from "./ui/spinner";
 
 export default function VerifyEmail({ email }: { email: string }) {
   const params = useSearchParams();
   const router = useRouter();
   const from = params.get("from");
   const [isLoading, setIsLoading] = useState(false);
+  const [isPending, setIsPending] = useState<boolean>(false);
 
   const handleClick = async () => {
     if (!email) {
@@ -34,11 +37,24 @@ export default function VerifyEmail({ email }: { email: string }) {
       } else {
         toast.success(result.message || "Verification email sent!");
       }
-    } catch (error) {
+    } catch {
       toast.error("Something went wrong!");
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handleLogout = async () => {
+    setIsPending(true);
+    await authClient.signOut({
+      fetchOptions: {
+        onSuccess: () => {
+          router.push("/");
+        },
+      },
+    });
+
+    setIsPending(false);
   };
 
   if (from === "signup") {
@@ -65,7 +81,7 @@ export default function VerifyEmail({ email }: { email: string }) {
               Verification email sent! 🎉
             </CardTitle>
             <CardDescription className="text-base text-gray-600">
-              We've sent a link to{" "}
+              We&apos;ve sent a link to{" "}
               <span className="font-medium text-green-700">{email}</span>.
               Please check your inbox and click the link to continue.
             </CardDescription>
@@ -73,7 +89,7 @@ export default function VerifyEmail({ email }: { email: string }) {
           <CardContent className="space-y-4">
             <div className="rounded-lg bg-green-50 border border-green-200 p-4">
               <p className="text-sm text-center text-gray-700">
-                Didn't receive the email?
+                Didn&apos;t receive the email?
               </p>
             </div>
             <Button
@@ -82,6 +98,25 @@ export default function VerifyEmail({ email }: { email: string }) {
               className="w-full bg-green-600 hover:bg-green-700 text-white font-medium"
             >
               {isLoading ? "Sending..." : "Resend Verification Email"}
+            </Button>
+
+            <div className="relative">
+              <div className="absolute inset-0 flex items-center">
+                <span className="w-full border-t border-gray-200" />
+              </div>
+              <div className="relative flex justify-center text-xs uppercase">
+                <span className="bg-white px-2 text-gray-500">
+                  Wrong email address?
+                </span>
+              </div>
+            </div>
+
+            <Button
+              onClick={handleLogout}
+              variant="outline"
+              className="w-full border-gray-300 text-gray-700 hover:bg-gray-50"
+            >
+              Logout and try again
             </Button>
           </CardContent>
         </Card>
@@ -120,22 +155,35 @@ export default function VerifyEmail({ email }: { email: string }) {
         <CardContent className="space-y-4">
           <div className="rounded-lg bg-green-50 border border-green-200 p-4">
             <p className="text-sm text-center text-gray-700">
-              Didn't receive the email?
+              Didn&apos;t receive the email?
             </p>
           </div>
           <Button
             onClick={handleClick}
-            disabled={isLoading}
+            disabled={isLoading || isPending}
             className="w-full bg-green-600 hover:bg-green-700 text-white font-medium"
           >
             {isLoading ? "Sending..." : "Resend Verification Email"}
           </Button>
+
+          <div className="relative">
+            <div className="absolute inset-0 flex items-center">
+              <span className="w-full border-t border-gray-200" />
+            </div>
+            <div className="relative flex justify-center text-xs uppercase">
+              <span className="bg-white px-2 text-gray-500">
+                Wrong email address?
+              </span>
+            </div>
+          </div>
+
           <Button
+            onClick={handleLogout}
             variant="outline"
-            onClick={() => router.push("/")}
             className="w-full border-gray-300 text-gray-700 hover:bg-gray-50"
+            disabled={isPending || isLoading}
           >
-            Back to Home
+            {isPending ? <Spinner /> : "Logout and try again"}
           </Button>
         </CardContent>
       </Card>

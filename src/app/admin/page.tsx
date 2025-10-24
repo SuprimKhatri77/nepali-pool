@@ -4,7 +4,6 @@ import { redirect } from "next/navigation";
 import { db } from "../../../lib/db";
 import { mentorProfile, studentProfile, user } from "../../../lib/db/schema";
 import { eq } from "drizzle-orm";
-import AdminDashboardPage from "./dashboard/page";
 
 export default async function Page() {
   const session = await auth.api.getSession({
@@ -12,7 +11,7 @@ export default async function Page() {
   });
 
   if (!session) {
-    return redirect("/login");
+    redirect("/login");
   }
 
   const [userRecord] = await db
@@ -20,17 +19,17 @@ export default async function Page() {
     .from(user)
     .where(eq(user.id, session.user.id));
   if (!userRecord) {
-    return redirect("/sign-up");
+    redirect("/sign-up");
   }
 
   if (!userRecord.emailVerified) {
-    return redirect(
+    redirect(
       `/sign-up/verify-email?email=${encodeURIComponent(userRecord.email)}`
     );
   }
 
   if (userRecord.role === "none") {
-    return redirect("/select-role");
+    redirect("/select-role");
   }
 
   if (userRecord.role === "student") {
@@ -39,9 +38,9 @@ export default async function Page() {
       .from(studentProfile)
       .where(eq(studentProfile.userId, userRecord.id));
     if (!studentProfileRecord) {
-      return redirect("/sign-up/onboarding/student");
+      redirect("/sign-up/onboarding/student");
     }
-    return redirect("/dashboard/student");
+    redirect("/dashboard/student");
   }
 
   if (userRecord.role === "mentor") {
@@ -50,17 +49,17 @@ export default async function Page() {
       .from(mentorProfile)
       .where(eq(mentorProfile.userId, userRecord.id));
     if (!mentorProfileRecord) {
-      return redirect("/sign-up/onboarding/mentor");
+      redirect("/sign-up/onboarding/mentor");
     }
 
     if (mentorProfileRecord.verifiedStatus === "pending") {
-      return redirect("/waitlist");
+      redirect("/waitlist");
     }
     if (mentorProfileRecord.verifiedStatus === "rejected") {
-      return redirect("/rejected");
+      redirect("/rejected");
     }
-    return redirect("/dashboard/mentor");
+    redirect("/dashboard/mentor");
   }
 
-  return <AdminDashboardPage />;
+  redirect("/admin/dashboard");
 }
