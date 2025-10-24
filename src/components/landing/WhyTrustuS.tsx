@@ -60,7 +60,7 @@ export default function WhyTrustUs() {
             </h2>
             <div className="w-20 h-1 bg-emerald-600 rounded-full mb-8"></div>
 
-            <div className="space-y-6 max-w-[270px] sm:max-w-[800px] w-full">
+            <div className="space-y-6 max-w-[290px] sm:max-w-[800px] w-full pl-6">
               <Carousel className="sm:max-w-1/2 w-full mx-auto">
                 <CarouselContent>
               {testimonials.map((testimonial, index) => (

@@ -47,9 +47,9 @@ export default function SessionForm({
     }
   }, [state.success, state.message, state.timestamp]);
   return (
-    <section className="relative flex py-16 px-6 bg-gray-50">
+    <section className="relative flex lg:flex-row flex-col py-16 px-2 sm:px-6 bg-gray-50">
       {/* LEFT SECTION — SESSION DETAILS */}
-      <div className="w-1/2 flex flex-col items-center justify-start px-8 pt-8 relative">
+      <div className="xl:w-1/2 flex flex-col items-center justify-start px-2 md:px-8 pt-8 relative">
         {/* Decorative Gradient Background */}
         <div className="absolute inset-0 bg-gradient-to-br from-emerald-100 via-white to-blue-50 opacity-50 rounded-3xl blur-2xl -z-10" />
 
@@ -138,14 +138,15 @@ export default function SessionForm({
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7 }}
         >
+          {/* time update for now manual */}
           <SessionCountdown targetDate="2025-10-28T15:00:00+05:45" />
         </motion.div>
       </div>
 
       {/* RIGHT SECTION — FORM */}
-      <div className="w-1/2">
+      <div className="flex-1">
         <motion.h2
-          className="text-3xl sm:text-4xl font-bold text-center text-gray-900 mb-10"
+          className="text-3xl sm:text-4xl font-bold text-center text-gray-900 my-6"
           initial={{ opacity: 0, y: 50 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
@@ -155,7 +156,7 @@ export default function SessionForm({
         {sessionRecord ? (
           <div className="h-full">
             <div className="max-w-md mx-auto my-auto bg-white shadow-lg rounded-2xl p-8 flex flex-col items-center justify-center">
-              <h2 className="text-2xl font-bold text-emerald-600 mb-4">
+              <h2 className="text-xl sm:text-2xl font-bold text-emerald-600 mb-4">
                 ✅ Registration Submitted
               </h2>
               <p className="text-gray-700 text-center mb-2">
