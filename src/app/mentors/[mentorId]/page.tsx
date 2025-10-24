@@ -102,7 +102,6 @@ export default async function MentorDetailPage({
   const role = session && currentUser?.success ? currentUser.role : null;
   const currentUserId =
     session && currentUser?.success ? currentUser.userId : null;
-
   const otherSuggestedMentors = await db.query.mentorProfile.findMany({
     where: (fields, { eq }) =>
       mentorRecord.country
@@ -245,6 +244,7 @@ export default async function MentorDetailPage({
                   <h3 className="text-xl font-bold">Get in Touch</h3>
                 </div>
                 <div className="grid grid-cols-[repeat(auto-fit,_minmax(200px,_1fr))] gap-3 p-4 rounded-xl bg-white border border-gray-200">
+                  
                   <Button
                     asChild
                     className="w-[200px] bg-emerald-50 text-emerald-700 hover:bg-emerald-100 h-12 font-semibold shadow-sm border border-emerald-200 transition-all"
@@ -256,6 +256,27 @@ export default async function MentorDetailPage({
                       Send Email
                     </Link>
                   </Button>
+                  {!currentUser && (
+                   <>
+                    <Button
+                        asChild
+                        className="w-[200px] bg-white text-black border border-gray-300 hover:bg-gray-50 h-12 font-semibold transition-all"
+                      >
+                        <Link href={"/login"}>
+                        
+                        Unlock Chat
+                        </Link>
+                      </Button>
+                    <Button
+                        asChild
+                        className="w-[200px] bg-white text-black border border-gray-300 hover:bg-gray-50 h-12 font-semibold transition-all"
+                      >
+                        <Link href={"/login"}>
+                        Unlock Video
+                        </Link>
+                      </Button>
+                   </>
+                  ) }
 
                   {currentUser && currentUser.role === "student" && (
                     <>
