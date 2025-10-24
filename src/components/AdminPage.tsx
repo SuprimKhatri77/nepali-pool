@@ -4,12 +4,13 @@ import { Button } from "./ui/button";
 
 export default function AdminPage() {
   return (
-    <div className="min-h-screen flex flex-col justify-center items-center gap-3">
-      <div>
-        Who let you come here dwag? You sure don&apos;t look like an admin though!
-        Whatever !!!
-      </div>
-      <SignOutButton />
+    <div className="min-h-screen flex flex-col justify-center">
+      <div className="flex flex-col justify-center items-center gap-3 min-h-full max-w-2xl mx-auto bg-slate-100 py-5 px-7 rounded-lg">
+        <div>
+          Who let you come here dwag? You sure don&apos;t look like an admin
+          though! Whatever !!!
+        </div>
+        <SignOutButton />
 
         <Button asChild>
           <Link href="/admin/mentor-applications">Mentor Applications</Link>
@@ -26,5 +27,6 @@ export default function AdminPage() {
           <Link href="/admin/session-users">Session users list</Link>
         </Button>
       </div>
+    </div>
   );
 }
