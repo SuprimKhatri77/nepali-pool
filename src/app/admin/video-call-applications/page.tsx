@@ -1,6 +1,8 @@
-import VideoCallApplicationsPage from "@/components/VideoCallApplications";
-import { db } from "../../../../lib/db";
-import { VideoCallWithStudentAndMentor } from "../../../../types/all-types";
+import VideoCallApplicationsPage, {
+  VideoCallWithStudentAndMentor,
+} from "@/components/VideoCallApplications";
+import { db } from "../../../../../lib/db";
+import { user, VideoCallSelectType } from "../../../../../lib/db/schema";
 
 export default async function Page() {
   const videoCallRecords = (await db.query.videoCall.findMany({

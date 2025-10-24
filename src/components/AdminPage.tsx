@@ -6,7 +6,7 @@ export default function AdminPage() {
   return (
     <div className="min-h-screen flex flex-col justify-center items-center gap-3">
       <div>
-        Who let you come here dwag? You sure don't look like an admin though!
+        Who let you come here dwag? You sure don&apos;t look like an admin though!
         Whatever !!!
       </div>
       <SignOutButton />

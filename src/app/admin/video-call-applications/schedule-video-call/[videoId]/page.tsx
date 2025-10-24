@@ -1,9 +1,10 @@
-import { db } from "../../../../../../lib/db";
-import { videoCall } from "../../../../../../lib/db/schema";
+import { eq } from "drizzle-orm";
+import { db } from "../../../../../../../lib/db";
+import { videoCall } from "../../../../../../../lib/db/schema";
 import ScheduleVideoCallWithMentor from "@/components/ScheduleVideoCall";
-import { VideoCallWithStudentAndMentor } from "../../../../../../types/all-types";
+import { VideoCallWithStudentAndMentor } from "@/components/VideoCallApplications";
 
-export default async function Page({
+export default async function ({
   params,
 }: {
   params: Promise<{ videoId: string }>;

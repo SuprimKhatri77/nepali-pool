@@ -3,8 +3,8 @@
 import z from "zod";
 
 import { db } from "../../../lib/db";
-import { school, SchoolInsertType, user } from "../../../lib/db/schema";
 import { getCurrentAdmin } from "../../lib/auth/helpers/getCurrentAdmin";
+import { school, SchoolInsertType } from "../../../lib/db/schema";
 
 export type FormState = {
   errors?: {

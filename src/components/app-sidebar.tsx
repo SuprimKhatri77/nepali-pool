@@ -2,22 +2,19 @@
 
 import * as React from "react";
 import {
-  AudioWaveform,
-  BookOpen,
-  Bot,
-  Command,
+
   Frame,
-  GalleryVerticalEnd,
   Map,
   PieChart,
-  Settings2,
-  SquareTerminal,
+  School2Icon,
+  SchoolIcon,
+  UsersRoundIcon,
+  VideoIcon,
 } from "lucide-react";
 
 import { NavMain } from "@/components/nav-main";
 import { NavProjects } from "@/components/nav-projects";
 import { NavUser } from "@/components/nav-user";
-import { TeamSwitcher } from "@/components/team-switcher";
 import {
   Sidebar,
   SidebarContent,
@@ -25,6 +22,8 @@ import {
   SidebarHeader,
   SidebarRail,
 } from "@/components/ui/sidebar";
+import { Home, User, Users, Video, CreditCard, FileText } from "lucide-react";
+import { IconReportAnalytics } from "@tabler/icons-react";
 
 // This is sample data.
 const data = {
@@ -33,110 +32,82 @@ const data = {
     email: "m@example.com",
     avatar: "/avatars/shadcn.jpg",
   },
-  teams: [
-    {
-      name: "Acme Inc",
-      logo: GalleryVerticalEnd,
-      plan: "Enterprise",
-    },
-    {
-      name: "Acme Corp.",
-      logo: AudioWaveform,
-      plan: "Startup",
-    },
-    {
-      name: "Evil Corp.",
-      logo: Command,
-      plan: "Free",
-    },
-  ],
-  navMain: [
-    {
-      title: "Playground",
-      url: "#",
-      icon: SquareTerminal,
-      isActive: true,
-      items: [
-        {
-          title: "History",
-          url: "#",
-        },
-        {
-          title: "Starred",
-          url: "#",
-        },
-        {
-          title: "Settings",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Models",
-      url: "#",
-      icon: Bot,
-      items: [
-        {
-          title: "Genesis",
-          url: "#",
-        },
-        {
-          title: "Explorer",
-          url: "#",
-        },
-        {
-          title: "Quantum",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Documentation",
-      url: "#",
-      icon: BookOpen,
-      items: [
-        {
-          title: "Introduction",
-          url: "#",
-        },
-        {
-          title: "Get Started",
-          url: "#",
-        },
-        {
-          title: "Tutorials",
-          url: "#",
-        },
-        {
-          title: "Changelog",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Settings",
-      url: "#",
-      icon: Settings2,
-      items: [
-        {
-          title: "General",
-          url: "#",
-        },
-        {
-          title: "Team",
-          url: "#",
-        },
-        {
-          title: "Billing",
-          url: "#",
-        },
-        {
-          title: "Limits",
-          url: "#",
-        },
-      ],
-    },
-  ],
+  navMain : [
+  {
+    title: "Dashboard",
+    url: "/admin",
+    icon: Home,
+    isActive: true,
+    items: [
+      {
+        title: "Dashboard",
+    url: "/admin/dashboard",
+    icon: IconReportAnalytics,
+      }
+    ]
+  },
+  {
+    title: "Mentors",
+    url: "/admin/mentors",
+    icon: Users,
+    items: [
+      {
+        title: "All Mentors",
+        url: "/admin/mentors",
+        icon: User,
+      },
+      {
+        title: "Mentor Applications",
+        url: "/admin/mentor-applications",
+        icon: FileText,
+      },
+    ],
+  },
+  {
+    title: "Students",
+    url: "/admin/students",
+    icon: Users,
+    items: [
+      {
+        title: "All Students",
+        url: "/admin/students",
+        icon: User,
+      },
+    ],
+  },
+  {
+    title: "Video Calls",
+    url: "/video-calls",
+    icon: Video,
+  },
+  {
+    title: "Payments",
+    url: "/payments",
+    icon: CreditCard,
+  },
+  {
+    title:"schools",
+    url:"/schools",
+    icon: SchoolIcon,
+    items: [
+      {
+        title: "All Schools",
+        url: "/admin/schools",
+        icon: School2Icon
+      },
+      {
+        title: "Add School",
+        url: "/admin/add-school",
+        icon: SchoolIcon
+      },
+    ]
+  },
+  {
+    title: "Sessions",
+    url: "/admin/session-users",
+    icon: VideoIcon
+  }
+],
   projects: [
     {
       name: "Design Engineering",
@@ -160,7 +131,10 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
-        <TeamSwitcher teams={data.teams} />
+       <div className="flex gap-2">
+         <UsersRoundIcon />
+          <p className="font-bold truncate">NepaliPool</p>
+       </div>
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={data.navMain} />

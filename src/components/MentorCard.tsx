@@ -16,10 +16,13 @@ export default function MentorCard({
   mentor,
   currentUserRole,
   currentUserId,
+  sendTo = "/mentors/",
 }: {
   mentor: MentorProfileWithUser;
   currentUserRole?: "student" | "mentor" | "none" | "admin" | null;
   currentUserId: string | null;
+  sendTo?: string,
+
 }) {
   const router = useRouter();
   const {
@@ -34,12 +37,12 @@ export default function MentorCard({
   } = mentor;
 
   function handleRoute() {
-    router.push(`/mentors/${userId}`);
+    router.push(`${sendTo}${userId}`);
   }
 
   return (
     <Card
-      className="group w-full h-full border border-gray-200 rounded-2xl shadow-sm 
+      className="group max-w-[400px] w-full h-full border border-gray-200 rounded-2xl shadow-sm 
              hover:shadow-lg transition-all duration-300 cursor-pointer 
              hover:border-emerald-400 bg-white hover:scale-105"
       onClick={() => {
@@ -84,7 +87,7 @@ export default function MentorCard({
         </div>
 
         <p className="text-sm text-gray-700 text-center line-clamp-3 italic">
-          “{bio || "This mentor hasn’t added a bio yet."}”
+          “{bio?.slice(0,50)  || "This mentor hasn’t added a bio yet."}...
         </p>
 
         <div className="mt-3 flex justify-center items-center gap-1 text-yellow-500 text-sm font-medium">
