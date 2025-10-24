@@ -58,10 +58,14 @@ export function SignupForm({
 
   useEffect(() => {
     if (state.success && state.message && state.redirectTo) {
-      toast(state.message);
+      toast.success(state.message);
       setTimeout(() => {
         router.replace(state.redirectTo as string);
-      }, 1500);
+      }, 1100);
+    }
+
+    if (!state.success && state.message) {
+      toast.error(state.message);
     }
   }, [state.message, state.success, state.redirectTo, router, state.timestamp]);
 

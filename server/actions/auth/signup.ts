@@ -145,6 +145,13 @@ export async function SignUp(
         inputs: Object.fromEntries(formData),
       };
     }
+
+    return {
+      success: false,
+      message: "Something went wrong",
+      timestamp: Date.now(),
+      inputs: Object.fromEntries(formData),
+    };
     throw error;
   }
 }
