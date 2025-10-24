@@ -71,7 +71,7 @@ export async function SignIn(prevState: FormState, formData: FormData) {
 
     if (!userRecord.emailVerified) {
       return {
-        redirectTo: `/sign-up/verify-email`,
+        redirectTo: `/verify-email`,
         timestamp: Date.now(),
       };
     }
@@ -81,33 +81,12 @@ export async function SignIn(prevState: FormState, formData: FormData) {
     return { success: true, message: "Redirecting...", timestamp: Date.now() };
   } catch (error) {
     if (error instanceof APIError) {
-      switch (error.status) {
-        case "UNPROCESSABLE_ENTITY":
-          return {
-            success: false,
-            message: "Incorrect password",
-            errors: {
-              password: ["Incorrect password"],
-            },
-            timestamp: Date.now(),
-          };
-        case "BAD_REQUEST":
-          return {
-            success: false,
-            message: "Invalid email or password",
-            errors: {
-              email: ["Invalid email or password"],
-            },
-            timestamp: Date.now(),
-          };
-        default:
-          return {
-            success: false,
-            message: error.body?.message ?? "Something went wrong",
-            errors: {},
-            timestamp: Date.now(),
-          };
-      }
+      return {
+        success: false,
+        message: error.message,
+        timestamp: Date.now(),
+        inputs: Object.fromEntries(formData),
+      };
     }
     throw error;
   }

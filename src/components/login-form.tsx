@@ -12,14 +12,19 @@ import { Input } from "@/components/ui/input";
 import { cn } from "./lib/utils";
 import { FormState, SignIn } from "../../server/actions/auth/signin";
 import { useRouter } from "next/navigation";
-import { useActionState, useEffect } from "react";
+import { useActionState, useEffect, useState } from "react";
 import { toast } from "sonner";
 import Link from "next/link";
+import { InputGroup, InputGroupAddon, InputGroupInput } from "./ui/input-group";
+import { Eye, EyeOff } from "lucide-react";
 
 export function LoginForm({
   className,
   ...props
 }: React.ComponentProps<"form">) {
+  const [toggleInputType, setToggleInputType] = useState<"text" | "password">(
+    "password"
+  );
   const initialState: FormState = {
     errors: {},
   };
@@ -78,13 +83,29 @@ export function LoginForm({
               Forgot your password?
             </Link>
           </div>
-          <Input
-            id="password"
-            disabled={isPending}
-            name="password"
-            type="password"
-            required
-          />
+          <InputGroup>
+            <InputGroupInput
+              id="password"
+              disabled={isPending}
+              name="password"
+              defaultValue={state.inputs?.password}
+              type={toggleInputType}
+              required
+            />
+            <InputGroupAddon align="inline-end">
+              {toggleInputType === "password" ? (
+                <EyeOff
+                  className="cursor-default"
+                  onClick={() => setToggleInputType("text")}
+                />
+              ) : (
+                <Eye
+                  className="cursor-default"
+                  onClick={() => setToggleInputType("password")}
+                />
+              )}
+            </InputGroupAddon>
+          </InputGroup>
           {state.errors?.password && (
             <FieldError>{state.errors.password[0]}</FieldError>
           )}
