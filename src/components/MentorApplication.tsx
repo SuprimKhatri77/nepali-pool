@@ -26,7 +26,7 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { MentorProfileWithUser } from "../../types/all-types";
 
-export default function ({
+export default function MentorApplication({
   mentorProfileRecordWithUser,
 }: {
   mentorProfileRecordWithUser: MentorProfileWithUser;

@@ -1,7 +1,5 @@
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { LogOut } from "lucide-react";
-import SignOutButton from "@/components/SignOutButton";
 import Link from "next/link";
 
 export default function NoMentorApplications() {
@@ -23,13 +21,9 @@ export default function NoMentorApplications() {
           </p>
 
           <div className="mt-3 flex gap-2 w-full">
-           <div className="max-w-[200px] w-full">
-             <SignOutButton>
               <Button className="bg-emerald-400 hover:bg-emerald-500 text-white rounded-xl flex items-center gap-2 px-5 py-2">
-                <LogOut className="w-4 h-4" /> Sign Out
+                <Link href={"/admin/students"}>All Students</Link>
               </Button>
-            </SignOutButton>
-           </div>
             <Button><Link href={"/admin/mentors"}>View All Mentors</Link></Button>
           </div>
         </CardContent>

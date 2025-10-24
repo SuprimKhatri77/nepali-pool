@@ -1,7 +1,6 @@
 import { headers } from "next/headers"
 
 import { eq } from "drizzle-orm"
-import SignOutButton from "@/components/SignOutButton"
 import MentorApplications from "@/components/MentorApplications"
 import { auth } from "../../../../server/lib/auth/auth"
 import { redirect } from "next/navigation"
