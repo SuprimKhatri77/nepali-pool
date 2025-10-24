@@ -19,6 +19,12 @@ export default function VideoCallApplicationsPage({
           <h1>Pending video call status</h1>
           <div className="flex gap-5">
             <Link
+              href="/admin/video-call-applications"
+              className="bg-green-400 hover:bg-green-500 transition-all duration-300 py-2 px-5 rounded-lg text-slate-600 font-medium"
+            >
+              All
+            </Link>
+            <Link
               href="/admin/video-call-applications?status=completed"
               className="bg-green-400 hover:bg-green-500 transition-all duration-300 py-2 px-5 rounded-lg text-slate-600 font-medium"
             >
@@ -84,6 +90,12 @@ export default function VideoCallApplicationsPage({
         <div className="flex flex-col gap-5 px-15 py-5">
           <h1>Scheduled video call status</h1>
           <div className="flex gap-5">
+              <Link
+              href="/admin/video-call-applications"
+              className="bg-green-400 hover:bg-green-500 transition-all duration-300 py-2 px-5 rounded-lg text-slate-600 font-medium"
+            >
+              All
+            </Link>
             <Link
               href="/admin/video-call-applications?status=completed"
               className="bg-green-400 hover:bg-green-500 transition-all duration-300 py-2 px-5 rounded-lg text-slate-600 font-medium"
@@ -109,6 +121,12 @@ export default function VideoCallApplicationsPage({
         <div className="flex flex-col gap-5 px-15 py-5">
           <h1>Completed video call status</h1>
           <div className="flex gap-5">
+              <Link
+              href="/admin/video-call-applications"
+              className="bg-green-400 hover:bg-green-500 transition-all duration-300 py-2 px-5 rounded-lg text-slate-600 font-medium"
+            >
+              All
+            </Link>
             <Link
               href="/admin/video-call-applications?status=pending"
               className="bg-green-400 hover:bg-green-500 transition-all duration-300 py-2 px-5 rounded-lg text-slate-600 font-medium"

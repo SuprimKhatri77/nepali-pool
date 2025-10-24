@@ -12,7 +12,7 @@ export default function AdminStudentSpecific({
   studentDetail,
   
 }: 
-  {studentDetail: StudentProfileWithUser}
+  {studentDetail: Omit<StudentProfileWithUser, "videoCall">}
 ) {
   const router = useRouter()
   return (

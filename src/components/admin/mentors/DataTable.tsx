@@ -14,14 +14,14 @@ type Props = {
   openImage: boolean;
   setOpenImage: (val: boolean) => void;
   setImageUrl: (url: string) => void;
-  itemToShow?: number;
+  itemsToShow?: number;
 };
 
-export default function MentorDataTable({ data,  setOpenImage, setImageUrl, itemToShow = 4 }: Props) {
+export default function MentorDataTable({ data,  setOpenImage, setImageUrl, itemsToShow = 4 }: Props) {
   const router = useRouter();
 
   // Pagination
-  const { currentItems, currentPage, visiblePages, setCurrentPage, totalPages } = usePagination(data, itemToShow);
+  const { currentItems, currentPage, visiblePages, setCurrentPage, totalPages } = usePagination(data, itemsToShow);
 
   // Sorting
   const { items, requestSort, sortConfig } = useSortData(currentItems);

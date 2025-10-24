@@ -33,7 +33,7 @@ const chartConfig = {
   },
 } satisfies ChartConfig
 
-export function MentorBarChart({chartData}:{chartData: {date: string, mentors: number, student: number}[]}) {
+export function MentorBarChart({chartData}:{chartData: {date: string, mentors: number, students: number}[]}) {
   const monthlyData = summarizeByMonth(chartData);
   return (
     <Card>
@@ -106,7 +106,7 @@ type MonthlySummary = {
   students: number;
 };
 
-export function summarizeByMonth(data: {date: string, mentors: number, student: number}[]): MonthlySummary[] {
+export function summarizeByMonth(data: {date: string, mentors: number, students: number}[]): MonthlySummary[] {
   const monthMap: Record<string, { mentors: number; students: number }> = {};
 
   data.forEach((item) => {
@@ -118,7 +118,7 @@ export function summarizeByMonth(data: {date: string, mentors: number, student: 
     }
 
     monthMap[monthName].mentors += item.mentors;
-    monthMap[monthName].students += item.student;
+    monthMap[monthName].students += item.students;
   });
 
   return Object.entries(monthMap).map(([month, counts]) => ({

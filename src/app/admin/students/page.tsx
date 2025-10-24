@@ -1,7 +1,6 @@
 
 import { db } from "../../../../lib/db";
-import { MentorProfileWithUser, StudentProfileWithUser } from "../../../../types/all-types";
-import AdminMentors from "@/components/admin/mentors/AdminMentor";
+import {  StudentProfileWithUser } from "../../../../types/all-types";
 import { getCountsByDate } from "../dashboard/page";
 import AdminStudents from "@/components/admin/students/AdminStudents";
 
@@ -13,7 +12,7 @@ export default async function Page() {
   
     
   
-      const studentsForProps: StudentProfileWithUser[] =
+      const studentsForProps: Omit<StudentProfileWithUser, "videoCall">[] | [] =
       await db.query.studentProfile.findMany({
         with: {
           user: true,

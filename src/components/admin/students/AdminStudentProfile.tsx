@@ -16,11 +16,11 @@ import { StudentProfileWithUser } from "../../../../types/all-types";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import ImageViewComponent from "../ImageViewComponent";
-import { capitalizeFirstWord } from "@/app/hooks/useCapitalizeFirstWord";
+import { capitalizeFirstLetter } from "better-auth";
 
 export default function AdminStudentProfile({
   studentDetail,
-}: Readonly<{ studentDetail: StudentProfileWithUser }>) {
+}: Readonly<{ studentDetail: Omit<StudentProfileWithUser, "videoCall"> }>) {
   const router = useRouter();
   const [openImage, setOpenImage] = useState(false);
   const [imageUrl, setImageUrl] = useState("");
@@ -146,7 +146,7 @@ export default function AdminStudentProfile({
           {/* Bio Section */}
           <div className="bg-gray-50 p-4 rounded-xl shadow-inner">
             <h2 className="text-xl font-semibold text-emerald-600 mb-3">Bio</h2>
-            <p className="text-gray-700 leading-relaxed">{studentDetail.bio ? capitalizeFirstWord(studentDetail.bio) : ""}</p>
+            <p className="text-gray-700 leading-relaxed">{studentDetail.bio ? capitalizeFirstLetter(studentDetail.bio) : ""}</p>
 
             <Separator className="my-4 bg-gray-200" />
 
@@ -175,8 +175,8 @@ export default function AdminStudentProfile({
 
         {/* Footer */}
         <CardContent className="flex flex-wrap items-center justify-between text-sm text-gray-700">
-          <p>Profile Created: {new Date(studentDetail.createdAt).toLocaleDateString()}</p>
-          <p>Last Updated: {new Date(studentDetail.updatedAt).toLocaleDateString()}</p>
+          <p>Profile Created: {new Date(studentDetail.createdAt ?? "").toLocaleDateString()}</p>
+          <p>Last Updated: {new Date(studentDetail.updatedAt ?? "").toLocaleDateString()}</p>
         </CardContent>
       </Card>
 

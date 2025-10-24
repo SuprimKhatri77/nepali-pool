@@ -18,7 +18,7 @@ import { StudentProfileWithUser } from "../../../../types/all-types";
 
 
 interface SearchBelowHeroProps {
-  students: StudentProfileWithUser[];
+  students: Omit<StudentProfileWithUser, "videoCall">[] | [];
   sendTo?: string
 }
 

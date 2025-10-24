@@ -1,4 +1,3 @@
-import MentorSpecific from "@/components/mentors/MentorSpecific/MentorSpecific";
 import { db } from "../../../../../lib/db";
 import { mentorProfile } from "../../../../../lib/db/schema";
 import { and,  ne, or } from "drizzle-orm";

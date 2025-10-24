@@ -1,6 +1,7 @@
-import { db } from "../../../../../lib/db";
 import AdminStudentSpecific from "@/components/admin/students/AdminStudentSpecific";
+import { db } from "../../../../../lib/db";
 import { studentProfile } from "../../../../../lib/db/schema";
+import { StudentProfileWithUser } from "../../../../../types/all-types";
 
 export default async function MentorSpecificServer({
   params,
@@ -9,15 +10,13 @@ export default async function MentorSpecificServer({
 }) {
 
       const {studentId} = await params;
-      console.log(studentId)
 
-      const studentDetail = await db.query.studentProfile.findFirst({
+      const studentDetail: Omit<StudentProfileWithUser, "videoCall"> | undefined = await db.query.studentProfile.findFirst({
         where: (fields, {
           eq
         }) => eq(studentProfile.userId, studentId),
           with: {
-            user: true,
-            
+            user: true
           },
           
         

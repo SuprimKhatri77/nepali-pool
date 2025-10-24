@@ -7,7 +7,7 @@ import ImageViewComponent from '../ImageViewComponent'
 import { useState } from 'react'
 
 
-export default function AdminStudents({students, chartData}:{students: StudentProfileWithUser[], chartData: {date: string, mentors: number, students: number}[]}) {
+export default function AdminStudents({students, chartData}:{students: Omit<StudentProfileWithUser, "videoCall">[], chartData: {date: string, mentors: number, students: number}[]}) {
      const [openImage, setOpenImage] = useState(false)
      const [imageUrl, setImageUrl] = useState<string>("");
      console.log(students)

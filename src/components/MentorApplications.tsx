@@ -30,7 +30,7 @@ export default function MentorApplications({
                   <Image
                     width={120}
                     height={120}
-                    src={mentor.imageUrl || mentor.user?.image}
+                    src={mentor.imageUrl  ?? ""}
                     alt={mentor.user?.name}
                     className="w-20 h-20 rounded-full object-cover border-4 border-emerald-400"
                   />

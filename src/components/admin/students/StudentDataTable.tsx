@@ -15,7 +15,7 @@ import { useRouter } from "next/navigation";
 import { usePagination } from "@/hooks/usePaginationHook";
 import { useSortData } from "@/hooks/useSortTable";
 
-export default function StudentDataTable({ data, itemsToShow = 4 }: { data: StudentProfileWithUser[], itemsToShow?: number }) {
+export default function StudentDataTable({ data, itemsToShow = 4 }: { data: Omit<StudentProfileWithUser, "videoCall">[] | [], itemsToShow?: number }) {
   const router = useRouter();
 
   // Pagination
@@ -39,7 +39,7 @@ export default function StudentDataTable({ data, itemsToShow = 4 }: { data: Stud
               <TableCell
                 key={key}
                 className="font-bold capitalize cursor-pointer"
-                onClick={() => requestSort(key)}
+                onClick={() => requestSort(key as keyof Omit<StudentProfileWithUser, "videoCall">)}
               >
                 {key}
                 {sortConfig?.key === key ? (sortConfig.direction === "asc" ? " ▲" : " ▼") : null}
