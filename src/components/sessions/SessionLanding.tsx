@@ -8,13 +8,20 @@ import {
   StudentProfileSelectType,
   UserSelectType,
 } from "../../../lib/db/schema";
+import Link from "next/link";
 
 export default function SessionLandingPage({
   studentProfileRecord,
   sessionRecord,
+  hasSession,
+  role,
+  hasStudentOnboardingData,
 }: {
-  studentProfileRecord: StudentProfileSelectType & { user: UserSelectType };
-  sessionRecord: MeetingSessionSelectType | null;
+  studentProfileRecord?: StudentProfileSelectType & { user: UserSelectType };
+  sessionRecord?: MeetingSessionSelectType | null;
+  hasSession: boolean;
+  role?: "student" | "mentor" | "admin";
+  hasStudentOnboardingData?: boolean;
 }) {
   return (
     <>
@@ -58,20 +65,55 @@ export default function SessionLandingPage({
             access tips, and grow confidently.
           </p>
 
-          <div className="flex gap-4 mt-4">
-            <Button
-              onClick={() => {
-                const el = document.getElementById("bookingForm");
-                if (el) {
-                  el.scrollIntoView({ behavior: "smooth" });
-                }
-              }}
-              className="bg-emerald-500 hover:bg-emerald-600 text-white"
-            >
-              Book a Session
-            </Button>
-            <Button variant="outline">Learn More</Button>
-          </div>
+          {hasSession ? (
+            hasStudentOnboardingData && role === "student" ? (
+              <div className="flex gap-4 mt-4">
+                <Button
+                  onClick={() => {
+                    const el = document.getElementById("bookingForm");
+                    if (el) {
+                      el.scrollIntoView({ behavior: "smooth" });
+                    }
+                  }}
+                  className="bg-emerald-500 hover:bg-emerald-600 text-white"
+                >
+                  Book a Session
+                </Button>
+                <Button variant="outline">Learn More</Button>
+              </div>
+            ) : !hasStudentOnboardingData && role === "student" ? (
+              <div>
+                <h1 className="text-lg font-semibold">
+                  Please fill the{" "}
+                  <Link
+                    href="/onboarding/student"
+                    className="underline hover:no-underline"
+                  >
+                    Student Onboarding
+                  </Link>{" "}
+                  form to register for the session.
+                </h1>
+              </div>
+            ) : (
+              role !== "student" && (
+                <div>
+                  <h1 className="text-lg font-semibold">
+                    Sorry this is only for students
+                  </h1>
+                </div>
+              )
+            )
+          ) : (
+            <div>
+              <h1 className="text-lg font-semibold">
+                Please{" "}
+                <Link href="/login" className="underline hover:no-underline">
+                  Login
+                </Link>{" "}
+                to register for the session
+              </h1>
+            </div>
+          )}
         </motion.div>
 
         {/* Animated Background Elements */}
@@ -93,12 +135,17 @@ export default function SessionLandingPage({
           }}
         />
       </div>
-      <div id="bookingForm">
-        <SessionForm
-          studentProfileRecord={studentProfileRecord}
-          sessionRecord={sessionRecord ?? null}
-        />
-      </div>
+
+      {studentProfileRecord &&
+        hasStudentOnboardingData &&
+        role === "student" && (
+          <div id="bookingForm">
+            <SessionForm
+              studentProfileRecord={studentProfileRecord}
+              sessionRecord={sessionRecord ?? null}
+            />
+          </div>
+        )}
 
       {/* <UpcomingSession /> */}
     </>
