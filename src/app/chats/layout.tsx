@@ -19,7 +19,7 @@ export default async function ChatLayout({
   children: React.ReactNode;
 }) {
   const session = await auth.api.getSession({ headers: await headers() });
-  if (!session) redirect("/login?toast=Please+log+in+to+continue");
+  if (!session) redirect("/login");
 
   const [userRecord] = await db
     .select()
@@ -28,9 +28,9 @@ export default async function ChatLayout({
 
   if (!userRecord) {
     await auth.api.signOut({ headers: await headers() });
-    return redirect("/login?toast=Please+login+to+continue");
+    return redirect("/login?error=invalid_session");
   }
-  if (!userRecord.emailVerified) return redirect("/verify-email?toast=Please+verify+your+email+first");
+  if (!userRecord.emailVerified) return redirect("/verify-email");
   if (!userRecord.role || userRecord.role === "none")
     return redirect("/select-role");
 

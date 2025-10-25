@@ -11,7 +11,7 @@ export async function getStudentProfile(userId: string) {
     .from(studentProfile)
     .where(eq(studentProfile.userId, userId));
   if (!studentRecord) {
-    return redirect("/onboarding/student?toast=Please+complete+your+student+profile+first");
+    return redirect("/onboarding/student");
   }
-  return redirect("/dashboard/student?toast=Welcome+to+your+dashboard!");
+  return redirect("/dashboard/student");
 }

@@ -14,7 +14,7 @@ export async function requireUser(): Promise<User> {
     headers: await headers(),
   });
   if (!session) {
-    return redirect("/login?toast=Please+login+to+continue");
+    return redirect("/login");
   }
 
   const [userRecord] = await db
@@ -23,11 +23,11 @@ export async function requireUser(): Promise<User> {
     .where(eq(user.id, session.user.id));
   if (!userRecord) {
     await auth.api.signOut({ headers: await headers() });
-    return redirect("/login?toast=Please+login+to+continue");
+    return redirect("/login?error=invalid_session");
   }
 
   if (!userRecord.emailVerified) {
-    return redirect("/verify-email?toast=Please+verify+your+email+first");
+    return redirect("/verify-email");
   }
   if (!userRecord.role || userRecord.role === "none") {
     return redirect("/select-role");

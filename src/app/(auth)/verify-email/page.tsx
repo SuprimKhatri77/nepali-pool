@@ -14,7 +14,7 @@ export default async function VerifyEmailPage() {
   });
 
   if (!session) {
-    return redirect("/login?toast=Please+log+in+to+continue");
+    return redirect("/login");
   }
 
   const [userRecord] = await db
@@ -30,7 +30,7 @@ export default async function VerifyEmailPage() {
     await auth.api.signOut({
       headers: await headers(),
     });
-    return redirect("/login?toast=Please+login+to+continue");
+    return redirect("/login?error=invalid_session");
   }
 
   if (!userRecord.emailVerified) {

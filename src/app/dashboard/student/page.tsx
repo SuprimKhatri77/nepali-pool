@@ -31,7 +31,7 @@ export default async function Student() {
       .from(studentProfile)
       .where(eq(studentProfile.userId, userRecord.id));
     if (!studentProfileRecord) {
-      return redirect("/onboarding/student");
+      return redirect("/sign-up/onboarding/student");
     }
 
     const mentorProfiles = await db.query.mentorProfile.findMany({
@@ -60,7 +60,7 @@ export default async function Student() {
     // console.log("Student with User: ", studentRecordWithUser);
 
     if (!studentRecordWithUser) {
-      return redirect("/login?toast=Please+log+in+to+continue");
+      return redirect("/login");
     }
 
     const favoriteMentor =
