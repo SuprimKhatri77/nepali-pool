@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { authClient } from "../../server/lib/auth/auth-client";
 import { useRouter } from "next/navigation";
 import { startTransition, useEffect, useOptimistic, useState } from "react";
@@ -24,6 +24,7 @@ import type {
   MentorProfileWithUserAndChat,
   StudentProfileWithUser,
 } from "../../types/all-types";
+import { capitalizeFirstLetter } from "better-auth";
 
 export default function StudentPage({
   matchingMentors,
@@ -241,10 +242,10 @@ export default function StudentPage({
                             </div>
                             <div>
                               <h3 className="font-semibold text-lg text-gray-900">
-                                {mentor.user.name}
+                                {capitalizeFirstLetter(mentor.user.name)}
                               </h3>
                               <p className="text-sm text-gray-500">
-                                {mentor.country}
+                                {capitalizeFirstLetter(mentor.country ?? "")}
                               </p>
                             </div>
                           </div>
@@ -285,18 +286,21 @@ export default function StudentPage({
                           </div>
                         </div>
 
-                        <p className="text-sm text-gray-600 mb-6 line-clamp-3">
-                          {mentor.bio}
+                        <p className="text-sm text-gray-600 mb-6 line-clamp-3 mt-auto">
+                          {capitalizeFirstLetter(mentor.bio?.slice(0,150) ?? "No Bio")}...
                         </p>
 
-                        <div className="flex flex-col gap-2">
+                        
+                      </CardContent>
+                      <CardFooter className="mt-auto flex flex-col gap-y-4">
+                        <div className="flex gap-4 justify-center  mb-0">
                           {activeChat &&
                           activeChat.status === "active" &&
                           new Date(activeChat.endDate) > new Date() ? (
                             studentChat && studentChat.status === "active" ? (
                               <Link
                                 href={`/chats/${studentChat?.id}`}
-                                className="inline-flex items-center justify-center rounded-md text-sm font-medium bg-emerald-600 text-white hover:bg-emerald-700 h-10 px-4 py-2 transition-colors"
+                                className="inline-flex items-center justify-center rounded-md text-sm font-medium bg-emerald-600 text-white hover:bg-emerald-700 h-10 px-2 sm:px-4 py-2 transition-colors"
                               >
                                 Chat with Mentor
                               </Link>
@@ -356,7 +360,10 @@ export default function StudentPage({
                             </PaymentButton>
                           )}
                         </div>
-                      </CardContent>
+                        <Button className="animate-pulse bg-emerald-700 ">
+                          <Link href={`/mentors/${mentor.userId}`}>Profile</Link>
+                        </Button>
+                      </CardFooter>
                     </Card>
                   );
                 })}
@@ -395,17 +402,22 @@ export default function StudentPage({
                           />
                           <div>
                             <h3 className="font-semibold text-lg text-gray-900">
-                              {matchedMentor.user.name}
+                              {capitalizeFirstLetter(matchedMentor.user.name)}
                             </h3>
                             <p className="text-sm text-gray-500 mt-1">
-                              {matchedMentor.country}
+                              {capitalizeFirstLetter(matchedMentor.country ?? "No Country")}
                             </p>
                           </div>
                           <p className="text-sm text-gray-600 line-clamp-3">
-                            {matchedMentor.bio}
+                            {capitalizeFirstLetter(matchedMentor.bio?.slice(0,150) ?? "No Bio For This Mentor")}...
                           </p>
                         </div>
                       </CardContent>
+                      <CardFooter>
+                        <Button className=" bg-emerald-700 mx-auto">
+                          <Link href={`/mentors/${matchedMentor.userId}`}>View Profile</Link>
+                        </Button>
+                      </CardFooter>
                     </Card>
                   ) : null;
                 })}

@@ -70,7 +70,7 @@ export default function MentorCard({
         </div>
 
         <div className="mt-3 text-center">
-          <h2 className="text-lg font-semibold text-gray-900 flex items-center justify-center gap-1">
+          <h2 className="text-base sm:text-lg font-semibold text-gray-900 flex items-center justify-center gap-1">
             {user.name.charAt(0).toUpperCase() + user.name.slice(1)}
           </h2>
           <p className="text-sm text-gray-500 capitalize">

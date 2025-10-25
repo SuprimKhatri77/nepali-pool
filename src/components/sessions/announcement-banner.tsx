@@ -1,16 +1,30 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { X, Calendar, Clock } from "lucide-react";
 import Link from "next/link";
+import {AnimatePresence, motion} from "framer-motion"
 
 export default function AnnouncementBanner() {
   const [isVisible, setIsVisible] = useState(true);
 
+  useEffect(() => {
+  if (isVisible) {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+}, [isVisible]);
+
   if (!isVisible) return null;
 
+
   return (
-    <div className=" bg-gradient-to-r from-emerald-50 to-green-50 border-b border-emerald-200">
+    <AnimatePresence>
+      {isVisible && (
+
+    <motion.div initial={{ y: -100, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          exit={{ y: -100, opacity: 0 }}
+          transition={{ duration: 0.5, ease: "easeInOut" }} className=" bg-gradient-to-r from-emerald-50 to-green-50 border-b border-emerald-200">
       <div className="max-w-[1350px] mx-auto px-4 sm:px-6 lg:px-8">
         <div className="py-3 sm:py-4">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
@@ -59,6 +73,10 @@ export default function AnnouncementBanner() {
           </div>
         </div>
       </div>
-    </div>
+    </motion.div>
+
+      )}
+
+    </AnimatePresence>
   );
 }

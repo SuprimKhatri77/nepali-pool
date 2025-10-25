@@ -165,7 +165,7 @@ export default async function MentorDetailPage({
               <div className="flex-1 min-w-0">
                 <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-6">
                   <div>
-                    <h1 className="text-4xl font-bold text-slate-900 mb-2">
+                    <h1 className="text-2xl md:text-4xl font-bold text-slate-900 mb-2">
                       {capitalizeFirstLetter(mentorRecord.user.name)}
                     </h1>
                     <div className="flex flex-wrap items-center gap-3 text-slate-600">
@@ -537,7 +537,7 @@ export default async function MentorDetailPage({
                 {mentorRecord.country && (
                   <span className="text-emerald-600">
                     {" "}
-                    from {mentorRecord.country}
+                    from {capitalizeFirstLetter(mentorRecord.country)}
                   </span>
                 )}
               </h2>
