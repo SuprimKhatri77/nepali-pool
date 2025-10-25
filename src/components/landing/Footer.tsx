@@ -49,7 +49,7 @@ export default function Footer() {
             <h3 className="font-semibold text-gray-900 mb-4">Explore</h3>
             <ul className="space-y-2 text-sm text-gray-600">
               {exploreLinks.map((item) => (
-                <motion.li initial={{opacity:0, scaleY:0}} whileInView={{opacity:1,scaleY:1}} transition={{duration: 0.6, }} key={item.id}>
+                <motion.li initial={{opacity:0, scaleY:0.5}} whileInView={{opacity:1,scaleY:1}} transition={{duration: 0.5, }} key={item.id}>
                   <Link href={item.href} className="hover:text-emerald-600">
                     {item.name}
                   </Link>
@@ -63,7 +63,7 @@ export default function Footer() {
             <h3 className="font-semibold text-gray-900 mb-4">Details</h3>
             <ul className="space-y-2 text-sm text-gray-600">
               {detailLinks.map((item) => (
-                <motion.li initial={{opacity:0, scaleY:0}} whileInView={{opacity:1,scaleY:1}} transition={{duration: 0.8, }} key={item.id}>
+                <motion.li initial={{opacity:0, scaleY:0.5}} whileInView={{opacity:1,scaleY:1}} transition={{duration: 0.5, }} key={item.id}>
                   <Link href={item.href} className="hover:text-emerald-600">
                     {item.name}
                   </Link>
@@ -77,7 +77,7 @@ export default function Footer() {
             <h3 className="font-semibold text-gray-900 mb-4">Legal</h3>
             <ul className="space-y-2 text-sm text-gray-600">
               {legalLinks.map((item) => (
-                <motion.li initial={{opacity:0, scaleY:0}} whileInView={{opacity:1,scaleY:1}} transition={{duration: 1, }} key={item.id}>
+                <motion.li initial={{opacity:0, scaleY:0.5}} whileInView={{opacity:1,scaleY:1}} transition={{duration: 0.5, }} key={item.id}>
                   <Link href={item.href} className="hover:text-emerald-600">
                     {item.name}
                   </Link>
