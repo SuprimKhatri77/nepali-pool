@@ -1,7 +1,7 @@
-import UnderConstruction from "@/modules/under-construction/UnderConstruction";
+import AboutPage from "@/components/About";
 
 const page = () => {
-  return <UnderConstruction />;
+  return <AboutPage />
 };
 
 export default page;
