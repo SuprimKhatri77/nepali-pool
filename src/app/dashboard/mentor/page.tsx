@@ -31,13 +31,13 @@ export default async function Mentor() {
       .from(mentorProfile)
       .where(eq(mentorProfile.userId, userRecord.id));
     if (!mentorProfileRecord) {
-      return redirect("/onboarding/mentor?toast=Please+complete+your+onboarding+to+continue");
+      return redirect("/onboarding/mentor");
     }
     if (mentorProfileRecord.verifiedStatus === "pending") {
-      return redirect("/waitlist?toast=Your+mentor+profile+is+under+review");
+      return redirect("/waitlist");
     }
     if (mentorProfileRecord.verifiedStatus === "rejected") {
-      return redirect("/rejected?toast=Your+mentor+profile+was+rejected");
+      return redirect("/rejected");
     }
 
     const [chatCount] = await db

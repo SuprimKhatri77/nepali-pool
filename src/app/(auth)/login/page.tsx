@@ -64,11 +64,11 @@ export default async function Page() {
     await auth.api.signOut({
       headers: await headers(),
     });
-    return redirect("/login??toast=Please+login+to+continue");
+    return redirect("/login?error=invalid_session");
   }
 
   if (!userRecord.emailVerified) {
-    return redirect("/verify-email?toast=Please+verify+your+email+first");
+    return redirect("/verify-email");
   }
 
   if (!userRecord.role || userRecord.role === "none") {

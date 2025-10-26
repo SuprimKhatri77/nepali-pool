@@ -11,7 +11,7 @@ export default async function Onboarding() {
   });
 
   if (!session) {
-    return redirect("/login?toast=Please+log+in+to+continue");
+    return redirect("/login");
   }
 
   const [userRecord] = await db
@@ -19,7 +19,7 @@ export default async function Onboarding() {
     .from(user)
     .where(eq(user.id, session.user.id));
   if (!userRecord) {
-    return redirect("/sign-up?toast=Please+create+an+account+to+continue");
+    return redirect("/sign-up");
   }
 
   if (!userRecord.emailVerified) {
@@ -40,12 +40,12 @@ export default async function Onboarding() {
       return redirect("/sign-up/onboarding/mentor");
     }
     if (mentorProfileRecord.verifiedStatus === "pending") {
-      return redirect("/waitlist?toast=Your+mentor+profile+is+under+review");
+      return redirect("/waitlist");
     }
     if (mentorProfileRecord.verifiedStatus === "rejected") {
-      return redirect("/rejected?toast=Your+mentor+profile+was+rejected");
+      return redirect("/rejected");
     }
-    return redirect("/dashboard/mentor?toast=Welcome+to+your+dashboard!");
+    return redirect("/dashboard/mentor");
   }
 
   const [studentProfileRecord] = await db
@@ -56,7 +56,7 @@ export default async function Onboarding() {
     if (!studentProfileRecord) {
       return redirect("/sign-up/onboarding/student");
     }
-    return redirect("/dashboard/student?toast=Welcome+to+your+dashboard!");
+    return redirect("/dashboard/student");
   }
 
   return notFound();

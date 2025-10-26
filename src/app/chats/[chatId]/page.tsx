@@ -57,7 +57,7 @@ const page = async ({ params }: ParamsType) => {
       .from(studentProfile)
       .where(eq(studentProfile.userId, userRecord.id));
 
-    if (!studentRecord) return redirect("/onboarding/student?toast=Please+complete+your+onboarding+to+continue");
+    if (!studentRecord) return redirect("/onboarding/student");
 
     if (chatRecord.studentId !== userRecord.id) {
       console.warn(
@@ -82,10 +82,10 @@ const page = async ({ params }: ParamsType) => {
       .from(mentorProfile)
       .where(eq(mentorProfile.userId, userRecord.id));
 
-    if (!mentorRecord) return redirect("/onboarding/mentor?toast=Please+complete+your+onboarding+to+continue");
-    if (mentorRecord.verifiedStatus === "pending") return redirect("/waitlist?toast=Your+mentor+profile+is+under+review");
+    if (!mentorRecord) return redirect("/onboarding/mentor");
+    if (mentorRecord.verifiedStatus === "pending") return redirect("/waitlist");
     if (mentorRecord.verifiedStatus === "rejected")
-      return redirect("/rejected?toast=Your+mentor+profile+was+rejected");
+      return redirect("/rejected");
 
     if (chatRecord.mentorId !== userRecord.id) {
       console.warn(

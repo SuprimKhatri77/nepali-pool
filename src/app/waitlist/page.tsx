@@ -18,7 +18,7 @@ export default async function MentorWaitlist() {
   });
 
   if (!session) {
-    return redirect("/login?toast=Please+log+in+to+continue");
+    return redirect("/login");
   }
 
   const [userRecord] = await db
@@ -27,11 +27,11 @@ export default async function MentorWaitlist() {
     .where(eq(user.id, session.user.id));
 
   if (!userRecord) {
-    return redirect("/sign-up?toast=Please+create+an+account+to+continue");
+    return redirect("/sign-up");
   }
 
   if (!userRecord.emailVerified) {
-    return redirect("/verify-email?toast=Please+verify+your+email+first");
+    return redirect("/verify-email");
   }
 
   if (userRecord.role === "student") {
@@ -40,9 +40,9 @@ export default async function MentorWaitlist() {
       .from(studentProfile)
       .where(eq(studentProfile.userId, userRecord.id));
     if (!studentProfileRecord) {
-      return redirect("/onboarding/student?toast=Please+complete+your+onboarding+to+continue");
+      return redirect("/onboarding/student");
     }
-    return redirect("/dashboard/student?toast=Welcome+to+your+dashboard!");
+    return redirect("/dashboard/student");
   }
 
   if (userRecord.role === "none") {
@@ -55,15 +55,15 @@ export default async function MentorWaitlist() {
     .where(eq(mentorProfile.userId, userRecord.id));
 
   if (!mentorProfileRecord && userRecord.role === "mentor") {
-    return redirect("/onboarding/mentor?toast=Please+complete+your+onboarding+to+continue");
+    return redirect("/onboarding/mentor");
   }
 
   if (mentorProfileRecord.verifiedStatus === "rejected") {
-    return redirect("/rejected?toast=Your+mentor+profile+was+rejected");
+    return redirect("/rejected");
   }
 
   if (mentorProfileRecord.verifiedStatus === "accepted") {
-    return redirect("/dashboard/mentor?toast=Welcome+to+your+dashboard!");
+    return redirect("/dashboard/mentor");
   }
 
   return (

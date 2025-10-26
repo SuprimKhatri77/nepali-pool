@@ -12,7 +12,7 @@ export default async function OnboardingMentor() {
   });
 
   if (!session) {
-    return redirect("/login?toast=Please+log+in+to+continue");
+    return redirect("/login");
   }
 
   const [userRecord] = await db
@@ -21,11 +21,11 @@ export default async function OnboardingMentor() {
     .where(eq(user.id, session.user.id));
   if (!userRecord) {
     await auth.api.signOut({ headers: await headers() });
-    return redirect("/login?toast=Please+login+to+continue");
+    return redirect("/login?error=invalid_session");
   }
 
   if (!userRecord.emailVerified) {
-    return redirect("/verify-email?toast=Please+verify+your+email+first");
+    return redirect("/verify-email");
   }
 
   if (!userRecord.role || userRecord.role === "none") {
@@ -44,7 +44,7 @@ export default async function OnboardingMentor() {
     if (!studentProfileRecord) {
       return redirect("/onboading/student");
     }
-    return redirect("/dashboard/student?toast=Welcome+to+your+dashboard!");
+    return redirect("/dashboard/student");
   }
 
   const [mentorProfileRecord] = await db
@@ -53,12 +53,12 @@ export default async function OnboardingMentor() {
     .where(eq(mentorProfile.userId, session.user.id));
   if (mentorProfileRecord) {
     if (mentorProfileRecord.verifiedStatus === "pending") {
-      return redirect("/waitlist?toast=Your+mentor+profile+is+under+review");
+      return redirect("/waitlist");
     }
     if (mentorProfileRecord.verifiedStatus === "rejected") {
-      return redirect("/rejected?toast=Your+mentor+profile+was+rejected");
+      return redirect("/rejected");
     }
-    return redirect("/dashboard/mentor?toast=Welcome+to+your+dashboard!");
+    return redirect("/dashboard/mentor");
   }
 
   return <MentorOnboardingForm currentUserId={userRecord.id} />;
