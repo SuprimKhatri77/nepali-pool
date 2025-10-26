@@ -2,19 +2,33 @@
 import Link from "next/link";
 import { authClient } from "../../../server/lib/auth/auth-client";
 import { Spinner } from "../ui/spinner";
-import { motion } from "framer-motion";
+import {  motion } from "framer-motion";
+import { useEffect, useState } from "react";
+import { useIsMobile } from "@/hooks/use-mobile";
 const MotionLink = motion(Link);
 
 export default function Hero() {
   const { data: session, isPending } = authClient.useSession();
+  const isMobile=useIsMobile()
 
+  const [showCursor, setShowCursor]=useState(true)
+ 
+  useEffect(()=>{
+    if(isMobile){
+      setShowCursor(false)
+      return;
+    }
+      const timerId = setTimeout(() => {
+      setShowCursor(false)
+    }, 9000);
+  return () => clearTimeout(timerId)
+  },[isMobile])
   return (
     <motion.section
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       className="relative overflow-hidden min-h-screen flex items-center justify-center bg-gradient-to-bl from-emerald-50/90 via-white to-emerald-100/80 px-4 sm:px-6 py-16 sm:py-24"
     >
-      {/* Subtle animated background pattern */}
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 0.2, backgroundPosition: ["0% 0%", "100% 100%"] }}
@@ -22,24 +36,31 @@ export default function Hero() {
         className="absolute inset-0 z-0"
       />
 
-      {/* Gradient glow at bottom for depth */}
+      {/* Gradient glow  */}
       <div className="absolute bottom-0 left-0 right-0 h-64 bg-gradient-to-t from-emerald-200/60 via-transparent to-transparent blur-2xl" />
 
       {/* Content */}
       <div className="max-w-5xl mx-auto text-center w-full relative z-10">
-        <h1 className="text-4xl sm:text-5xl sm:mb-0 mb-12 md:text-6xl lg:text-7xl font-bold text-gray-900 leading-tight tracking-tight">
+        <h1  className="text-4xl sm:text-5xl sm:mb-0 mb-12 md:text-6xl lg:text-7xl font-bold text-gray-900 leading-tight tracking-tight">
           Your Trusted Mentor to{" "}
-          <span className="hidden sm:inline">
-            <br className="hidden sm:block" />
+          <motion.span initial={{width: "6ch"}} animate={{width:["6ch", "20ch"] }} transition={{duration: 4, ease: "linear", repeat:1, repeatDelay: 1}} className="hidden sm:inline-block overflow-hidden whitespace-nowrap">
             <span className="block sm:inline">Study </span>
             <span className="text-emerald-600">Abroad</span>{" "}
             <span className="block sm:inline">from </span>
             <span className="text-emerald-600">Nepal</span>
-          </span>
-          <span className="inline sm:hidden">
+          </motion.span>
+         
+          <span   className="inline sm:hidden  ">
             <span className="text-emerald-600">Study Abroad</span> from{" "}
             <span className="text-emerald-600">Nepal</span>
           </span>
+           {showCursor && (
+             <motion.span
+      animate={{ opacity: [0, 1, 0] }}
+      transition={{ duration: 0.8, repeat: Infinity }}
+      className="inline-block w-[4px] h-[1em] bg-emerald-600 ml-1 align-bottom"
+    />
+          )}
         </h1>
 
         <motion.p

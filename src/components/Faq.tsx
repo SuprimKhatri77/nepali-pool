@@ -4,6 +4,9 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import { Button } from "./ui/button";
+import Link from "next/link";
+import {  ArrowRightIcon } from "lucide-react";
 
 interface FaqItem {
   id: string;
@@ -99,6 +102,10 @@ const Faq1 = ({
             </AccordionItem>
           ))}
         </Accordion>
+      <Button className=" bg-emerald-500 text-gray-50 w-full mx-auto">
+        <Link href={"/faq"}>More FAQs</Link>
+        <ArrowRightIcon className=" font-bold size-6" />
+      </Button>
       </div>
     </section>
   );

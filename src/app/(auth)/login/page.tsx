@@ -22,12 +22,13 @@ export default async function Page() {
 
   if (!session) {
     return (
-      <div className="grid min-h-svh lg:grid-cols-2">
-        <div className="flex flex-col gap-4 p-6 md:p-10">
+      <div className="grid min-h-svh lg:grid-cols-1">
+        <div className="flex flex-col gap-4 p-6 md:p-10 bg-gray-50">
           <div className="flex justify-between gap-2 md:justify-between md:items-center">
             <div className="flex items-center gap-2">
               <div className="w-10 h-10 bg-gradient-to-br from-emerald-400 to-emerald-600 rounded-lg flex items-center justify-center text-white font-bold">
-                NP
+              <Link href={"/"}>NP</Link>
+                
               </div>
               <span className="font-semibold text-lg text-gray-900">
                 NepaliPool
@@ -41,14 +42,11 @@ export default async function Page() {
             </Link>
           </div>
           <div className="flex flex-1 items-center justify-center">
-            <div className="w-full max-w-xs">
-              <LoginForm />
+            <div className="w-full max-w-[500px] p-10 shadow-md bg-gray-50 ">
+              <div className="max-w-xs mx-auto">
+                <LoginForm />
+              </div>
             </div>
-          </div>
-        </div>
-        <div className="bg-muted relative hidden lg:flex items-center justify-center">
-          <div className="flex items-center gap-2">
-            <h1 className="font-semibold text-4xl text-gray-900">NepaliPool</h1>
           </div>
         </div>
       </div>
