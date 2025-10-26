@@ -1,7 +1,7 @@
-import UnderConstruction from "@/modules/under-construction/UnderConstruction";
+import ContactSection from "@/components/support/ContactUs";
 
 const page = () => {
-  return <UnderConstruction />;
+  return <ContactSection />;
 };
 
 export default page;
