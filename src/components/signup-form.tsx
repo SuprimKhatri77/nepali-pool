@@ -44,6 +44,12 @@ export function SignupForm({
   const [toggleInputType, setToggleInputType] = useState<"text" | "password">(
     "password"
   );
+  const [toggleConfirmInputType, setToggleConfirmInputType] = useState<"text" | "password">(
+    "password"
+  );
+  const [password,setPassword] = useState(state.inputs?.password || "");
+  const [confirmPassword,setConfirmPassword] = useState("");
+  const [confirmErr,setConfirmErr]=useState<string | null>(null)
 
   const [role, setRole] = useState(() => {
     if (roleFromParams) {
@@ -55,6 +61,21 @@ export function SignupForm({
     if (state.inputs?.role) return state.inputs.role;
     return "";
   });
+
+  useEffect(() => {
+
+  if (!confirmPassword) {
+    setConfirmErr(null); // nothing to chec
+    return;
+  }
+
+  if (password === confirmPassword) {
+    setConfirmErr(null);
+  } else {
+    setConfirmErr("Password doesn't match");
+  }
+}, [confirmPassword,  password]);
+
 
   useEffect(() => {
     if (state.success && state.message && state.redirectTo) {
@@ -132,6 +153,7 @@ export function SignupForm({
           <FieldLabel htmlFor="password">Password</FieldLabel>
           <InputGroup>
             <InputGroupInput
+              onChange={(e) => setPassword(e.target.value)}
               type={toggleInputType}
               name="password"
               defaultValue={state.inputs?.password}
@@ -152,6 +174,32 @@ export function SignupForm({
           </InputGroup>
           {state.errors?.password && (
             <FieldError>{state.errors.password[0]}</FieldError>
+          )}
+        </Field>
+        <Field>
+          <FieldLabel htmlFor="confirmPassword">Confirm Password</FieldLabel>
+          <InputGroup>
+            <InputGroupInput
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              type={toggleConfirmInputType}
+              name="confirmPassword"
+            />
+            <InputGroupAddon align="inline-end">
+              {toggleConfirmInputType === "text" ? (
+                <EyeIcon
+                  onClick={() => setToggleConfirmInputType("password")}
+                  className="cursor-default"
+                />
+              ) : (
+                <EyeOffIcon
+                  onClick={() => setToggleConfirmInputType("text")}
+                  className="cursor-default"
+                />
+              )}
+            </InputGroupAddon>
+          </InputGroup>
+          {confirmErr !== null && (
+            <FieldError>{confirmErr}</FieldError>
           )}
         </Field>
         <Field className="space-y-2">
@@ -179,9 +227,10 @@ export function SignupForm({
         </Field>
         <Field>
           <Button
+            
             type="submit"
             className="bg-green-600 hover:bg-green-700"
-            disabled={isPending}
+            disabled={isPending || confirmErr !== null}
           >
             {isPending ? (
               <div className="inline-block border-white-600 h-5 w-5 animate-spin rounded-full border-2 border-solid border-e-transparent">
