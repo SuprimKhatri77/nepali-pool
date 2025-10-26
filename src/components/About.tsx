@@ -99,11 +99,11 @@ export default function AboutPage() {
           together.
         </p>
         <div className="flex justify-center gap-4">
-          <Button className="bg-white text-green-600 hover:bg-green-50 font-semibold px-6 py-3 rounded-xl">
+          <Button className="bg-white text-black hover:bg-green-50 font-semibold px-6 py-3 rounded-[4px]">
             <Link href={"/sign-up?role=student"}>Start as a Student</Link>
           </Button>
-          <Button className="bg-green-700 text-white hover:bg-green-800 font-semibold px-6 py-3 rounded-xl">
-            <Link href={"/sign-up?role=mentor"}>Become a Mentor</Link>
+          <Button className="bg-green-700 text-white animate-in hover:bg-green-800 font-semibold px-6 py-3 rounded-[4px]">
+            <Link href={"/sign-up?role=mentor"}>Start as a Mentor</Link>
           </Button>
         </div>
       </section>

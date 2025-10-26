@@ -83,11 +83,11 @@ const Faq1 = ({
 }: Faq1Props) => {
   return (
     <section className="py-32 w-full flex justify-center bg-gradient-to-t from-green-50 to-white">
-      <div className="container max-w-3xl">
-        <h1 className="mb-4 text-3xl font-semibold md:mb-11 md:text-4xl">
+      <div className="container max-w-3xl sm:px-0 px-6">
+        <h1 className="mb-4 text-xl sm:text-3xl font-semibold md:mb-11 md:text-4xl">
           {heading}
         </h1>
-        <Accordion type="single" collapsible>
+        <Accordion type="single" collapsible >
           {items.map((item, index) => (
             <AccordionItem key={index} value={`item-${index}`}>
               <AccordionTrigger className="font-semibold hover:no-underline">
