@@ -18,7 +18,7 @@ export type FormState = {
     phoneNumber?: string[];
     sex?: string[];
     resume?: string[];
-    citizenshipPhotoUrl?: string[];
+    // citizenshipPhotoUrl?: string[];
     currentUserId?: string[];
     nationality?: string[];
     bio?: string[];
@@ -34,7 +34,7 @@ export type FormState = {
     phoneNumber?: string;
     sex?: string;
     resume?: string;
-    citizenshipPhotoUrl?: string;
+    // citizenshipPhotoUrl?: string;
     currentUserId?: string;
     nationality?: string;
     bio?: string;
@@ -71,7 +71,8 @@ export async function OnboardingMentor(
       .trim()
       .min(1, "Country is required")
       .nonempty()
-      .regex(/^[A-Za-z]+$/, "Only alphabets A-Z or a-z are allowed"),
+      .regex(/^[A-Za-z ]+$/, "Only alphabets and spaces are allowed"),
+
     city: z
       .string()
       .trim()
@@ -91,7 +92,7 @@ export async function OnboardingMentor(
       .regex(/^\d+$/, "Phone number must contain only digits"),
     sex: sexEnum,
     resume: z.string().nonempty("Resume photo is required"),
-    citizenshipPhotoUrl: z.string().nonempty("Citizenship photo is required"),
+    // citizenshipPhotoUrl: z.string().nonempty("Citizenship photo is required"),
     nationality: z
       .string()
       .trim()
@@ -109,7 +110,7 @@ export async function OnboardingMentor(
     phoneNumber: formData.get("phoneNumber") as string,
     sex: formData.get("sex") as string,
     resume: formData.get("resume") as string,
-    citizenshipPhotoUrl: formData.get("citizenshipPhotoUrl") as string,
+    // citizenshipPhotoUrl: formData.get("citizenshipPhotoUrl") as string,
     currentUserId: formData.get("currentUserId") as string,
     nationality: formData.get("nationality") as string,
     imageUrl: formData.get("imageUrl") as string,
@@ -117,6 +118,10 @@ export async function OnboardingMentor(
   });
 
   if (!validateFields.success) {
+    console.error(
+      "validation error: ",
+      validateFields.error.flatten().fieldErrors
+    );
     return {
       errors: validateFields.error.flatten().fieldErrors,
       message: "Validation Error",
@@ -130,7 +135,7 @@ export async function OnboardingMentor(
     city,
     sex,
     resume,
-    citizenshipPhotoUrl,
+    // citizenshipPhotoUrl,
     currentUserId,
     nationality,
     phoneNumber,
@@ -166,7 +171,7 @@ export async function OnboardingMentor(
     await db.insert(mentorProfile).values({
       nationality: nationality.toLowerCase(),
       country: country.toLowerCase(),
-      citizenshipPhotoUrl,
+      // citizenshipPhotoUrl,
       sex,
       city: city.toLowerCase(),
       phoneNumber,

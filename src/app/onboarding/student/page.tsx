@@ -3,8 +3,9 @@ import { auth } from "../../../../server/lib/auth/auth";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { db } from "../../../../lib/db";
-import { mentorProfile, studentProfile, user } from "../../../../lib/db/schema";
+import { studentProfile, user } from "../../../../lib/db/schema";
 import { eq } from "drizzle-orm";
+import { redirectWithMessage } from "../../../../server/lib/auth/helpers/redirect-with-message";
 
 export default async function Page() {
   const session = await auth.api.getSession({
@@ -12,7 +13,7 @@ export default async function Page() {
   });
 
   if (!session) {
-    return redirect("/login");
+    return redirectWithMessage("/login", "Please login to continue");
   }
 
   const [userRecord] = await db
@@ -21,17 +22,21 @@ export default async function Page() {
     .where(eq(user.id, session.user.id));
 
   if (!userRecord) {
-    return redirect("/sign-up");
+    await auth.api.signOut({
+      headers: await headers(),
+    });
+    return redirectWithMessage("/sign-up", "Please signup to continue");
   }
 
   if (!userRecord.emailVerified) {
-    return redirect(
-      `/sign-up/verify-email?email=${encodeURIComponent(userRecord.email)}`
+    return redirectWithMessage(
+      "/verify-email",
+      "Please verify your email to continue"
     );
   }
 
   if (!userRecord.role || userRecord.role === "none") {
-    return redirect("/select-role");
+    return redirectWithMessage("/select-role", "Please select a valid role");
   }
 
   if (userRecord.role === "admin") {
@@ -39,23 +44,6 @@ export default async function Page() {
   }
 
   if (userRecord.role === "mentor") {
-    const [mentorProfileRecord] = await db
-      .select()
-      .from(mentorProfile)
-      .where(eq(mentorProfile.userId, userRecord.id));
-
-    if (!mentorProfileRecord) {
-      return redirect("/sign-up/onboarding/mentor");
-    }
-
-    if (mentorProfileRecord.verifiedStatus === "pending") {
-      return redirect("/waitlist");
-    }
-
-    if (mentorProfileRecord.verifiedStatus === "rejected") {
-      return redirect("/rejected");
-    }
-
     return redirect("/dashboard/mentor");
   }
 

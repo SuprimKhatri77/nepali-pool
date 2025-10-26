@@ -18,7 +18,7 @@ import studentOnboarding, {
   type FormState,
 } from "../../server/actions/onboarding/onboardingStudent";
 import { toast } from "sonner";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Input } from "./ui/input";
 import {
   Select,
@@ -61,6 +61,20 @@ export default function StudentOnboardingForm({
   );
   const router = useRouter();
 
+  const params = useSearchParams();
+
+  const message = params.get("message");
+
+  useEffect(() => {
+    if (message) {
+      toast.info(decodeURIComponent(message), { position: "top-right" });
+
+      const url = new URL(window.location.href);
+      url.searchParams.delete("message");
+      window.history.replaceState(null, "", url.toString());
+    }
+  }, [message]);
+
   const totalSteps = 3;
   const progress = (currentStep / totalSteps) * 100;
 
@@ -69,12 +83,12 @@ export default function StudentOnboardingForm({
       toast.success(state.message);
       setTimeout(() => {
         router.replace("/dashboard/student");
-      }, 1500);
+      }, 1100);
     }
     if (!state.success && state.message) {
       toast.error(state.message);
     }
-  }, [state.success, router, state.timestamp]);
+  }, [state.success, router, state.timestamp, state.message]);
 
   const canProceedStep1 = profilePicture && formData.bio.trim().length > 0;
   const canProceedStep2 =
@@ -116,7 +130,7 @@ export default function StudentOnboardingForm({
           Welcome aboard
         </h1>
         <p className="text-muted-foreground text-sm">
-          Let's get your profile set up in just a few steps
+          Let&apos;s get your profile set up in just a few steps
         </p>
       </div>
 

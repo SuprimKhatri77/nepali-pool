@@ -8,7 +8,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { resendEmailVerification } from "../../server/actions/email-verification/resendEmailVerification";
 import { authClient } from "../../server/lib/auth/auth-client";
@@ -17,6 +17,8 @@ import { Spinner } from "./ui/spinner";
 export default function VerifyEmail({ email }: { email: string }) {
   const params = useSearchParams();
   const router = useRouter();
+
+  const message = params.get("message");
   const from = params.get("from");
   const [isLoading, setIsLoading] = useState(false);
   const [isPending, setIsPending] = useState<boolean>(false);
@@ -43,6 +45,15 @@ export default function VerifyEmail({ email }: { email: string }) {
       setIsLoading(false);
     }
   };
+  useEffect(() => {
+    if (message) {
+      toast.info(decodeURIComponent(message), { position: "top-right" });
+
+      const url = new URL(window.location.href);
+      url.searchParams.delete("message");
+      window.history.replaceState(null, "", url.toString());
+    }
+  }, [message]);
 
   const handleLogout = async () => {
     setIsPending(true);

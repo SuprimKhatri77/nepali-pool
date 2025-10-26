@@ -18,7 +18,7 @@ import {
   OnboardingMentor,
 } from "../../server/actions/onboarding/onboardingMentor";
 import { toast } from "sonner";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Textarea } from "./ui/textarea";
 import {
   Select,
@@ -29,13 +29,14 @@ import {
 } from "./ui/select";
 import type { MentorOnboardingFormProps } from "../../types/all-types";
 import { Spinner } from "./ui/spinner";
+import { FieldError } from "./ui/field";
 
 export default function MentorOnboardingForm({
   className,
   currentUserId,
   ...props
 }: MentorOnboardingFormProps) {
-  const [citizenshipPhotoUrl, setCitizenshipPhotoUrl] = useState<string>("");
+  // const [citizenshipPhotoUrl, setCitizenshipPhotoUrl] = useState<string>("");
   const [profilePhotoUrl, setProfilePhotoUrl] = useState<string>("");
   const [resumePhotoUrl, setResumePhotoUrl] = useState<string>("");
   const router = useRouter();
@@ -46,6 +47,20 @@ export default function MentorOnboardingForm({
   const initialState: FormState = {
     errors: {},
   } as FormState;
+
+  const params = useSearchParams();
+
+  const message = params.get("message");
+
+  useEffect(() => {
+    if (message) {
+      toast.info(decodeURIComponent(message), { position: "top-right" });
+
+      const url = new URL(window.location.href);
+      url.searchParams.delete("message");
+      window.history.replaceState(null, "", url.toString());
+    }
+  }, [message]);
 
   const [state, formAction, isPending] = useActionState<FormState, FormData>(
     OnboardingMentor,
@@ -65,9 +80,8 @@ export default function MentorOnboardingForm({
   }, [state.redirectTo, router, state.success]);
 
   const canProceedStep1 = profilePhotoUrl && gender;
-  const canProceedStep2 = true; // All location fields have defaults
-  const canSubmit =
-    resumePhotoUrl && citizenshipPhotoUrl && profilePhotoUrl && gender;
+  const canProceedStep2 = true;
+  const canSubmit = resumePhotoUrl && profilePhotoUrl && gender;
 
   const nextStep = () => {
     if (currentStep < totalSteps) {
@@ -145,7 +159,7 @@ export default function MentorOnboardingForm({
 
           <CardContent>
             <form action={formAction}>
-              <div className="relative overflow-hidden">
+              <div className="relative">
                 {/* Step 1: Personal Information */}
                 <div
                   className={cn(
@@ -284,6 +298,9 @@ export default function MentorOnboardingForm({
                           className="border-gray-300 focus:border-green-500 focus:ring-green-500"
                           required
                         />
+                        {state.errors?.country && (
+                          <FieldError>{state.errors.country[0]}</FieldError>
+                        )}
                       </div>
 
                       <div className="grid gap-3">
@@ -450,9 +467,12 @@ export default function MentorOnboardingForm({
                         value={resumePhotoUrl}
                         required
                       />
+                      {state.errors?.resume && (
+                        <FieldError>{state.errors.resume[0]}</FieldError>
+                      )}
                     </div>
 
-                    <div className="grid gap-4">
+                    {/* <div className="grid gap-4">
                       <Label
                         htmlFor="citizenshipPhotoUrl"
                         className="text-sm font-medium text-gray-700"
@@ -472,7 +492,7 @@ export default function MentorOnboardingForm({
                         value={citizenshipPhotoUrl}
                         required
                       />
-                    </div>
+                    </div> */}
                   </div>
                 </div>
               </div>

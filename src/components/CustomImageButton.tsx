@@ -1,10 +1,9 @@
 "use client";
 import type React from "react";
-import { useState, useRef } from "react";
+import { useRef } from "react";
 import Image from "next/image";
 import { useUploadThing } from "@/utils/uploadthing";
 import {
-  ImageIcon,
   Upload,
   FileText,
   IdCard,
@@ -25,7 +24,6 @@ export default function CustomProfileUploader({
   onUploadComplete,
   imageUploadName,
 }: Props) {
-  const [showButton, setShowButton] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const { startUpload, isUploading } = useUploadThing("imageUploader");
 

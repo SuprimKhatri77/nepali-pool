@@ -118,15 +118,14 @@ export default function Header() {
               <Spinner className="size-6 text-green-500" />
             ) : !session ? (
               <div className="flex justify-end pr-8">
-
-              <MotionLink
-                whileHover={{ scale: 1.1 }}
-                transition={{ duration: 0.5 }}
-                href="/login"
-                className="px-4 py-2  bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-medium rounded-md transition-colors"
-              >
-                Login
-              </MotionLink>
+                <MotionLink
+                  whileHover={{ scale: 1.1 }}
+                  transition={{ duration: 0.5 }}
+                  href="/login"
+                  className="px-4 py-2  bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-medium rounded-md transition-colors"
+                >
+                  Login
+                </MotionLink>
               </div>
             ) : (
               <div className="flex items-center justify-end gap-3 pr-4">

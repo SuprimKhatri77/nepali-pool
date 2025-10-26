@@ -11,7 +11,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { cn } from "./lib/utils";
 import { FormState, SignIn } from "../../server/actions/auth/signin";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useActionState, useEffect, useState } from "react";
 import { toast } from "sonner";
 import Link from "next/link";
@@ -30,6 +30,8 @@ export function LoginForm({
   };
 
   const router = useRouter();
+  const params = useSearchParams();
+  const message = params.get("message");
   const [state, formAction, isPending] = useActionState<FormState, FormData>(
     SignIn,
     initialState
@@ -45,6 +47,17 @@ export function LoginForm({
       toast.error(state.message);
     }
   }, [state.timestamp, state.message, state.redirectTo, router, state.success]);
+
+  useEffect(() => {
+    if (message) {
+      toast.info(decodeURIComponent(message), { position: "top-right" });
+
+      const url = new URL(window.location.href);
+      url.searchParams.delete("message");
+      window.history.replaceState(null, "", url.toString());
+    }
+  }, [message]);
+
   return (
     <form
       action={formAction}

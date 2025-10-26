@@ -14,7 +14,7 @@ import {
   UpdateUserRole,
 } from "../../server/actions/select-role/selectRole";
 import { toast } from "sonner";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { UserCircle, GraduationCap, Users } from "lucide-react";
 
 export default function SelectRolePage() {
@@ -30,7 +30,20 @@ export default function SelectRolePage() {
     initialState
   );
   const [role, setRole] = useState("");
+  const params = useSearchParams();
   const router = useRouter();
+
+  const message = params.get("message");
+
+  useEffect(() => {
+    if (message) {
+      toast.info(decodeURIComponent(message), { position: "top-right" });
+
+      const url = new URL(window.location.href);
+      url.searchParams.delete("message");
+      window.history.replaceState(null, "", url.toString());
+    }
+  }, [message]);
 
   useEffect(() => {
     let timeout: ReturnType<typeof setTimeout>;
