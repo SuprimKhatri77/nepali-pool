@@ -13,10 +13,10 @@ export async function getMentorProfile(userId: string) {
 
   switch (mentorRecord.verifiedStatus) {
     case "pending":
-      return redirect("/waitlist");
+      return redirect("/waitlist?toast=Your+mentor+profile+is+under+review");
     case "rejected":
-      return redirect("/rejected");
+      return redirect("/rejected?toast=Your+mentor+profile+was+rejected");
     default:
-      return redirect("/dashboard/mentor");
+      return redirect("/dashboard/mentor?toast=Welcome+to+your+dashboard");
   }
 }

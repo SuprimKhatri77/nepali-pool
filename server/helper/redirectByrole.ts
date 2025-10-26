@@ -17,8 +17,8 @@ export async function redirectByRole(userRecord: UserSelectType) {
         .from(studentProfile)
         .where(eq(studentProfile.userId, userRecord.id));
 
-      if (!studentRecord) return redirect("/onboarding/student");
-      return redirect("/dashboard/student");
+      if (!studentRecord) return redirect("/onboarding/student?toast=Please+complete+your+student+profile+first");
+      return redirect("/dashboard/student?toast=Welcome+to+your+dashboard!");
     }
 
     case "mentor": {
@@ -27,13 +27,13 @@ export async function redirectByRole(userRecord: UserSelectType) {
         .from(mentorProfile)
         .where(eq(mentorProfile.userId, userRecord.id));
 
-      if (!mentorRecord) return redirect("/onboarding/mentor");
+      if (!mentorRecord) return redirect("/onboarding/mentor?toast=Please+complete+your+mentor+profile+first");
       if (mentorRecord.verifiedStatus === "pending")
-        return redirect("/waitlist");
+        return redirect("/waitlist?toast=Your+mentor+profile+is+under+review");
       if (mentorRecord.verifiedStatus === "rejected")
-        return redirect("/rejected");
+        return redirect("/rejected?toast=Your+mentor+profile+was+rejected");
 
-      return redirect("/dashboard/mentor");
+      return redirect("/dashboard/mentor?toast=Welcome+to+your+dashboard");
     }
 
     case "admin":

@@ -16,14 +16,14 @@ export default async function AdminDashboardPage() {
   });
 
   if (!session) {
-    return redirect("/login");
+    return redirect("/login?toast=Please+log+in+to+continue");
   }
   const [userRecord] = await db
     .select()
     .from(user)
     .where(eq(user.id, session.user.id));
   if (!userRecord) {
-    return redirect("/sign-up");
+    return redirect("/sign-up?toast=Please+create+an+account+to+continue");
   }
 
   if (!userRecord.emailVerified) {
@@ -35,10 +35,10 @@ export default async function AdminDashboardPage() {
   }
 
   if (userRecord.role === "student") {
-    return redirect("/dashboard/student");
+    return redirect("/dashboard/student?toast=Welcome+to+your+dashboard!");
   }
   if (userRecord.role === "mentor") {
-    return redirect("/dashboard/mentor");
+    return redirect("/dashboard/mentor?toast=Welcome+to+your+dashboard!");
   }
   const mentorProfiles = await db.query.mentorProfile.findMany({
      with: {

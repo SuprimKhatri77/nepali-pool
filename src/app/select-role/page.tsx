@@ -12,7 +12,7 @@ export default async function SelectRole() {
   });
 
   if (!session) {
-    return redirect("/login");
+    return redirect("/login?toast=Please+log+in+to+continue");
   }
 
   const [userRecord] = await db
@@ -38,7 +38,7 @@ export default async function SelectRole() {
     if (!studentProfileRecord) {
       return redirect("/sign-up/onboarding/student");
     }
-    return redirect("/dashboard/student");
+    return redirect("/dashboard/student?toast=Welcome+to+your+dashboard!");
   }
 
   if (userRecord.role === "mentor") {
@@ -53,9 +53,9 @@ export default async function SelectRole() {
       return redirect("/wailist");
     }
     if (mentorProfileRecord.verifiedStatus === "rejected") {
-      return redirect("/rejected");
+      return redirect("/rejected?toast=Your+mentor+profile+was+rejected");
     }
-    return redirect("/dashboard/mentor");
+    return redirect("/dashboard/mentor?toast=Welcome+to+your+dashboard!");
   }
   return <SelectRolePage />;
 }

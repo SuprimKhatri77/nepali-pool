@@ -20,13 +20,13 @@ export default async function ApplicationPage({
     })
 
     if (!session) {
-        return redirect("/login")
+        return redirect("/login?toast=Please+log+in+to+continue")
     }
 
     const [userRecord] = await db.select().from(user).where(eq(user.id, session.user.id))
 
     if (!userRecord) {
-        return redirect("/sign-up")
+        return redirect("/sign-up?toast=Please+create+an+account+to+continue")
     }
 
     if (!userRecord.emailVerified) {

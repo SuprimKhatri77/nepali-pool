@@ -17,7 +17,7 @@ export async function deleteUserFromDB() {
     if (!result.success) return result;
     const adminRecord = result.adminRecord;
     await db.delete(user).where(eq(user.id, adminRecord.id));
-    return redirect("/sign-up");
+    return redirect("/sign-up?toast=Account+deleted+succesfully");
   } catch (error) {
     console.error("Error deleting user: ", error);
   }

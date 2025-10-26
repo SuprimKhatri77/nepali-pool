@@ -18,7 +18,7 @@ export default async function Page() {
         user: true,
       },
     });
-    if (!studentRecord) return redirect("/onboarding/student");
+    if (!studentRecord) return redirect("/onboarding/student?toast=Please+complete+your+onboarding+to+continue");
     return <StudentProfile studentRecord={studentRecord} />;
   }
 
@@ -29,10 +29,10 @@ export default async function Page() {
         user: true,
       },
     });
-    if (!mentorRecord) return redirect("/onboarding/mentor");
-    if (mentorRecord.verifiedStatus === "pending") return redirect("/waitlist");
+    if (!mentorRecord) return redirect("/onboarding/mentor?toast=Please+complete+your+onboarding+to+continue");
+    if (mentorRecord.verifiedStatus === "pending") return redirect("/waitlist?toast=Your+mentor+profile+is+under+review");
     if (mentorRecord.verifiedStatus === "rejected")
-      return redirect("/rejected");
+      return redirect("/rejected?toast=Your+mentor+profile+was+rejected");
     return <MentorProfile mentorRecord={mentorRecord} />;
   }
 }
