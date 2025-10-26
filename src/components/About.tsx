@@ -2,6 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
+import Link from "next/link";
 
 export default function AboutPage() {
   return (
@@ -99,10 +100,10 @@ export default function AboutPage() {
         </p>
         <div className="flex justify-center gap-4">
           <Button className="bg-white text-green-600 hover:bg-green-50 font-semibold px-6 py-3 rounded-xl">
-            Start as a Student
+            <Link href={"/sign-up?role=student"}>Start as a Student</Link>
           </Button>
           <Button className="bg-green-700 text-white hover:bg-green-800 font-semibold px-6 py-3 rounded-xl">
-            Become a Mentor
+            <Link href={"/sign-up?role=mentor"}>Become a Mentor</Link>
           </Button>
         </div>
       </section>
