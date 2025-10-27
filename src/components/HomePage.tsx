@@ -2,7 +2,6 @@ import Hero from "./landing/Hero";
 import HowItWorks from "./landing/HowItWorks";
 import WhyTrustUs from "./landing/WhyTrustuS";
 // import Pricing from "./landing/Pricing";
-import SubscribeNewsLetter from "./landing/NewsLetter";
 import { Faq1 } from "./Faq";
 
 export default function HomePage() {
@@ -14,7 +13,7 @@ export default function HomePage() {
       <WhyTrustUs />
       {/* <Pricing /> */}
       <Faq1 />
-      <SubscribeNewsLetter />
+      {/* <SubscribeNewsLetter /> */}
     </div>
   );
 }

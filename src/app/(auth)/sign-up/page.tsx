@@ -22,7 +22,7 @@ export default async function SignUp() {
   if (!session) {
     return (
       <div className="grid min-h-svh grid-cols-1">
-        <div className="flex flex-col gap-4 p-2 sm:p-6 md:p-10 bg-gray-50">
+        <div className="flex flex-col gap-4 py-4 px-2 sm:px-6 md:px-10 bg-gray-100">
           <div className="flex justify-between gap-2 md:justify-between md:items-center">
             <div className="flex items-center gap-2">
               <div className="w-10 h-10 bg-gradient-to-br from-emerald-400 to-emerald-600 rounded-lg flex items-center justify-center text-white font-bold">
@@ -34,13 +34,13 @@ export default async function SignUp() {
             </div>
             <Link
               href="/"
-              className="group px-4 py-2 bg-emerald-50 text-emerald-700 text-sm font-medium rounded-md hover:bg-emerald-100 transition-colors "
+              className="sm:hidden block group px-4 py-2 bg-emerald-50 text-emerald-700 text-sm font-medium rounded-md hover:bg-emerald-100 transition-colors "
             >
               <ArrowLeft className="group-hover:-translate-x-1.5 group-hover:text-emerald-900 transition-all duration-300" />
             </Link>
           </div>
           <div className="flex flex-1 items-center justify-center">
-            <div className="w-full max-w-xl px-4 sm:px-12 py-8 shadow-md bg-gray-50 rounded-[6px]">
+            <div className="w-full max-w-xl px-4 sm:px-12 py-8 shadow-md bg-white rounded-[6px]">
               <SignupForm />
             </div>
           </div>

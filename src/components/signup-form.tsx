@@ -97,7 +97,7 @@ export function SignupForm({
   return (
     <form
       action={formAction}
-      className={cn("flex flex-col gap-6", className)}
+      className={cn("flex flex-col gap-x-6 gap-y-4", className)}
       {...props}
     >
       <FieldGroup>

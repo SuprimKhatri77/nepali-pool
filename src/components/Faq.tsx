@@ -1,12 +1,15 @@
+"use client"
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { Button } from "./ui/button";
 import Link from "next/link";
 import {  ArrowRightIcon } from "lucide-react";
+import { motion } from "framer-motion"
+import { Button } from "./ui/button";
+const MotionButton = motion(Button)
 
 interface FaqItem {
   id: string;
@@ -64,48 +67,33 @@ const Faq1 = ({
       answer:
         "Yes! If you are currently studying abroad, you can mentor others while also seeking guidance for higher studies or career planning from other mentors.",
     },
-    {
-      id: "faq-8",
-      question: "How does NepaliPool ensure mentors are genuine?",
-      answer:
-        "Each mentor’s education background and identity are verified by our team before being listed on the platform. We prioritize authenticity, trust, and transparency in all mentor profiles.",
-    },
-    {
-      id: "faq-9",
-      question: "Do mentors help with visa and application processes?",
-      answer:
-        "Yes, mentors can share their personal experience with the application, SOP writing, visa interviews, and documentation process. However, NepaliPool itself is not an agent and does not process visas or university applications directly.",
-    },
-    {
-      id: "faq-10",
-      question: "How can I contact NepaliPool for support?",
-      answer:
-        "You can reach out to us anytime via email at nepalipool77@gmail.com or use the Contact Us form on our website. Our team will respond within 24–48 hours.",
-    },
+   
   ],
 }: Faq1Props) => {
   return (
     <section className="py-32 w-full flex justify-center bg-gradient-to-t from-green-50 to-white">
-      <div className="container max-w-3xl sm:px-0 px-6">
-        <h1 className="mb-4 text-xl sm:text-3xl font-semibold md:mb-11 md:text-4xl">
+      <div className="container w-full sm:max-w-[90%] sm:px-0 px-6">
+        <h1 className="mb-4 text-xl sm:text-3xl text-center text-emerald-500 font-semibold md:mb-11 md:text-5xl">
           {heading}
         </h1>
-        <Accordion type="single" collapsible >
+        <Accordion type="single" collapsible className="grid lg:grid-cols-2 lg:gap-x-12 gap-y-3">
           {items.map((item, index) => (
-            <AccordionItem key={index} value={`item-${index}`}>
-              <AccordionTrigger className="font-semibold hover:no-underline">
+            <AccordionItem key={index} value={`item-${index}`} className="text-base mt-2 py-2 rounded-[4px] px-4 bg-gray-100">
+              <AccordionTrigger className="font-semibold text-base hover:no-underline">
                 {item.question}
               </AccordionTrigger>
-              <AccordionContent className="text-muted-foreground">
+              <AccordionContent className=" text-black">
                 {item.answer}
               </AccordionContent>
             </AccordionItem>
           ))}
         </Accordion>
-      <Button className=" bg-emerald-500 text-gray-50 w-full mx-auto">
-        <Link href={"/faq"}>More FAQs</Link>
-        <ArrowRightIcon className=" font-bold size-6" />
-      </Button>
+         <Link href={"/support"} className="flex items-center justify-center">
+          <MotionButton initial={{scale:1}}  whileHover={{ scale:1.06 }} transition={{duration: 0.6, ease: "linear"}} className=" bg-emerald-600  hover:bg-emerald-700 w-[250px] h-[60px] text-base sm:text-lg  mt-6">
+        Still have a query
+        <ArrowRightIcon className=" font-bold size-4 " />
+      </MotionButton></Link>
+     
       </div>
     </section>
   );

@@ -66,28 +66,24 @@ export default function Header() {
     <>
       <AnnouncementBanner />
       <motion.header
-        initial={{ opacity: 0, y: -10 }}
-        animate={{ opacity: 1, y: 1 }}
-        transition={{ duration: 0.5 }}
+       
         className={cn(
-          "bg-white/90 z-50 border-b border-gray-200 px-6 lg:px-10 py-4",
+          "bg-white/90 z-50 border-b border-gray-200 px-6 lg:px-10 py-4 sm:py-6",
           !pathname.startsWith("/chats") && "sticky top-0"
         )}
         suppressHydrationWarning
       >
-        <div className="max-w-7xl mx-auto flex justify-between items-center">
+        <div className="max-w-[1440px] mx-auto flex justify-between items-center">
           {/* Logo */}
           <Link href="/">
             <motion.div
-              initial={{ opacity: 0, y: -30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
+              
               className="flex items-center gap-2"
             >
               <div className="w-10 h-10 bg-gradient-to-br from-emerald-400 to-emerald-600 rounded-lg flex items-center justify-center text-white font-bold">
                 NP
               </div>
-              <span className="font-semibold text-lg text-gray-900">
+              <span className="font-semibold text-xl text-gray-900">
                 NepaliPool
               </span>
             </motion.div>
@@ -95,15 +91,13 @@ export default function Header() {
 
           {/* Desktop Menu */}
           <nav className="hidden md:flex items-center gap-1">
-            {navLinks.map((item, i) => (
+            {navLinks.map((item) => (
               <MotionLink
-                initial={{ y: -100, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                transition={{ duration: i * 0.5 }}
+               
                 key={item.name}
                 href={item.href}
                 className={cn(
-                  "px-4 py-2 text-sm font-medium text-gray-700 hover:text-emerald-600 hover:bg-emerald-50 rounded-md transition-colors",
+                  "px-4 py-2 text-base font-medium text-gray-700 hover:text-emerald-600 hover:bg-emerald-50 rounded-md transition-colors",
                   pathname === item.href ? "text-emerald-400" : ""
                 )}
               >
@@ -113,18 +107,26 @@ export default function Header() {
           </nav>
 
           {/* Login Button / User Menu */}
-          <div className="hidden md:block w-[300px]">
+          <div className="hidden md:block w-[300px] ">
             {isPending ? (
-              <Spinner className="size-6 text-green-500" />
+              <Spinner className="size-6 text-green-500 w-full ml-auto" />
             ) : !session ? (
-              <div className="flex justify-end pr-8">
+              <div className="flex justify-end pr-8 gap-4">
                 <MotionLink
                   whileHover={{ scale: 1.1 }}
                   transition={{ duration: 0.5 }}
                   href="/login"
-                  className="px-4 py-2  bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-medium rounded-md transition-colors"
+                  className="px-4 py-2   text-base font-medium rounded-md transition-colors"
                 >
                   Login
+                </MotionLink>
+                <MotionLink
+                  whileHover={{ scale: 1.1 }}
+                  transition={{ duration: 0.5 }}
+                  href="/sign-up"
+                  className="px-4 py-2  bg-emerald-600 hover:bg-emerald-700 text-white text-base font-medium rounded-md transition-colors"
+                >
+                  Register
                 </MotionLink>
               </div>
             ) : (
@@ -291,6 +293,7 @@ export default function Header() {
                   <Spinner className="size-6 text-green-500" />
                 </div>
               ) : !session ? (
+                <>
                 <Link
                   href="/login"
                   className="px-4 py-3 bg-emerald-600 text-white text-sm font-medium rounded-md text-center hover:bg-emerald-700 transition-colors"
@@ -298,6 +301,14 @@ export default function Header() {
                 >
                   Login
                 </Link>
+                <Link
+                  href="/sign-up"
+                  className="px-4 py-3 bg-emerald-600 text-white text-sm font-medium rounded-md text-center hover:bg-emerald-700 transition-colors"
+                  onClick={() => setIsOpen(false)}
+                >
+                  Register
+                </Link>
+                </>
               ) : (
                 <div className="flex flex-col gap-2">
                   {!isDashboardRoute && (

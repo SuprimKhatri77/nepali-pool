@@ -78,6 +78,7 @@ export function LoginForm({
             placeholder="m@example.com"
             disabled={isPending}
             required
+            className="border-1 border-black rounded-[8px]"
           />
           {state.errors?.email && (
             <FieldError>{state.errors.email[0]}</FieldError>
@@ -88,7 +89,7 @@ export function LoginForm({
             <FieldLabel htmlFor="password">Password</FieldLabel>
             
           </div>
-          <InputGroup>
+          <InputGroup className="border-1 border-black rounded-[8px]">
             <InputGroupInput
               id="password"
               disabled={isPending}

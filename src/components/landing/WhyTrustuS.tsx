@@ -47,7 +47,7 @@ export default function WhyTrustUs() {
                       />
                     </svg>
                   </div>
-                  <p className="text-gray-700">{point}</p>
+                  <p className="text-gray-700 pr-12">{point}</p>
                 </div>
               ))}
             </div>
@@ -94,6 +94,42 @@ export default function WhyTrustUs() {
                 <CarouselPrevious></CarouselPrevious>
                 <CarouselNext></CarouselNext>
               </Carousel>
+
+              {/* /updating carousel section */}
+
+              {/* <Carousel className="max-w-[290px] sm:max-w-[800px] w-full flex items-start justify-start  mx-auto">
+                <CarouselContent className="my-auto  flex items-start h-[400px]">
+              {testimonials.map((testimonial, index) => (
+                  <CarouselItem key={index}>
+
+                <motion.div
+                  whileHover={{scale:1.02}} transition={{duration: 0.2, ease: "easeIn"}}
+                  className="bg-gradient-to-br from-emerald-50 to-emerald-100 rounded-xl p-6 h-[300px] border border-emerald-200"
+                >
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="w-12 h-12 bg-emerald-600 rounded-full flex items-center justify-center text-white font-bold">
+                      {testimonial.name.charAt(0)}
+                    </div>
+                    <div>
+                      <p className="font-semibold text-gray-900">
+                        {testimonial.name}
+                      </p>
+                      <p className="text-sm text-emerald-700">
+                        Verified Student
+                      </p>
+                    </div>
+                  </div>
+                  <p className="text-gray-700 text-sm leading-relaxed">
+                    {testimonial.text}
+                  </p>
+                </motion.div>
+                  </CarouselItem>
+              ))}
+
+                </CarouselContent>
+                <CarouselPrevious></CarouselPrevious>
+                <CarouselNext></CarouselNext>
+              </Carousel> */}
             </div>
           </div>
         </div>

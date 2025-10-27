@@ -27,7 +27,7 @@ export default function Hero() {
     <motion.section
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      className="relative overflow-hidden min-h-screen flex items-center justify-center bg-gradient-to-bl from-emerald-50/90 via-white to-emerald-100/80 px-4 sm:px-6 py-16 sm:py-24"
+      className="relative overflow-hidden min-h-screen flex items-center justify-center bg-gradient-to-bl from-emerald-50/90 via-white to-emerald-100/80 px-4 sm:px-6  pb-20 sm:pb-24"
     >
       <motion.div
         initial={{ opacity: 0 }}
