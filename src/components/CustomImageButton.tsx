@@ -137,11 +137,11 @@ export default function CustomProfileUploader({
           </div>
         </button>
       ) : (
-        <div className="w-full border border-emerald-200 bg-emerald-50/30 rounded-lg p-4 shadow-sm">
-          <div className="flex items-center gap-3">
+        <div className="w-full border border-emerald-200 bg-emerald-50/30 rounded-lg p-3 sm:p-4 shadow-sm">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
             {/* Thumbnail */}
             <div className="flex-shrink-0">
-              <div className="relative w-16 h-16 rounded-md overflow-hidden border border-emerald-200 bg-white shadow-sm">
+              <div className="relative w-14 h-14 sm:w-16 sm:h-16 rounded-md overflow-hidden border border-emerald-200 bg-white shadow-sm">
                 <Image
                   src={currentImage}
                   alt={imageUploadName || "Uploaded document"}
@@ -153,10 +153,10 @@ export default function CustomProfileUploader({
             </div>
 
             {/* Info and Actions */}
-            <div className="flex-1 min-w-0 flex items-center justify-between gap-3">
+            <div className="flex-1 w-full min-w-0 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-3">
               <div className="flex items-center gap-2 min-w-0">
                 <CheckCircle2 className="h-4 w-4 text-emerald-600 flex-shrink-0" />
-                <div className="min-w-0">
+                <div className="min-w-0 flex-1">
                   <p className="text-sm font-medium text-gray-900 truncate">
                     {imageUploadName}
                   </p>
@@ -171,7 +171,7 @@ export default function CustomProfileUploader({
                   className="inline-flex items-center gap-1 text-xs font-medium text-gray-700 hover:text-gray-900 bg-white hover:bg-gray-50 px-2.5 py-1.5 rounded-md border border-gray-200 transition-colors shadow-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:ring-offset-2"
                 >
                   <ExternalLink className="h-3 w-3" />
-                  View
+                  <span className="hidden xs:inline">View</span>
                 </button>
 
                 <button
@@ -181,7 +181,7 @@ export default function CustomProfileUploader({
                   className="inline-flex items-center gap-1 text-xs font-medium text-gray-700 hover:text-gray-900 bg-white hover:bg-gray-50 px-2.5 py-1.5 rounded-md border border-gray-200 transition-colors shadow-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:ring-offset-2 disabled:opacity-60 disabled:cursor-not-allowed"
                 >
                   <Upload className="h-3 w-3" />
-                  Change
+                  <span className="hidden xs:inline">Change</span>
                 </button>
               </div>
             </div>

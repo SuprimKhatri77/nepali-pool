@@ -15,8 +15,10 @@ export default async function Page({
 }: {
   searchParams: Promise<{ page: string }>;
 }) {
-  const params = await searchParams;
-  let page = Number(params.page) || 1;
+  const page =
+    Number((await searchParams).page) > 0
+      ? Number((await searchParams).page)
+      : 1;
   const limit = 6;
   const [totalResult] = await db
     .select({ count: count() })
@@ -24,13 +26,11 @@ export default async function Page({
     .where(eq(mentorProfile.verifiedStatus, "accepted"));
 
   const total = Number(totalResult.count);
-  const totalPages = Math.ceil(total / limit);
-  if (page < 1) page = 1;
-  if (page > totalPages) page = totalPages;
+  const totalPages = Math.max(Math.ceil(total / limit), 1);
   const offset = (page - 1) * limit;
   const session = await auth.api.getSession({ headers: await headers() });
   const currentUserId = session?.user.id;
-  let currentUserRole: string | null = null;
+  let currentUserRole: "none" | "student" | "mentor" | "admin" | null = null;
 
   if (currentUserId) {
     const [userRecord] = await db
@@ -38,20 +38,31 @@ export default async function Page({
       .from(user)
       .where(eq(user.id, currentUserId));
     if (userRecord.role) {
-      currentUserRole = userRecord.role;
+      currentUserRole = userRecord.role || null;
     }
-    currentUserRole = null;
   }
-  const allMentors: MentorProfileWithUser[] =
-    await db.query.mentorProfile.findMany({
-      where: (fields, { eq }) => eq(mentorProfile.verifiedStatus, "accepted"),
+  let allMentors: MentorProfileWithUser[] = [];
+  try {
+    allMentors = await db.query.mentorProfile.findMany({
+      where: (fields, { eq }) => eq(fields.verifiedStatus, "accepted"),
       limit,
       offset,
-      with: {
-        user: true,
-      },
-      orderBy: (mentorProfile, { asc }) => [asc(mentorProfile.createdAt)],
+      with: { user: true },
+      orderBy: (fields, { asc }) => [asc(fields.createdAt)],
     });
+  } catch (err) {
+    console.error("Error fetching mentors:", err);
+  }
+
+  if (!allMentors || allMentors.length === 0) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <h1 className="text-xl font-semibold text-gray-700">
+          No mentors found
+        </h1>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-white via-emerald-50/30 to-white">
@@ -92,16 +103,22 @@ export default async function Page({
 
         {/* Mentors Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-12 sm:mb-16">
-          {allMentors.map((mentor) => {
-            return (
-              <MentorCard
-                key={mentor.userId}
-                mentor={mentor}
-                currentUserRole={currentUserRole ?? null}
-                currentUserId={currentUserId ?? null}
-              />
-            );
-          })}
+          {allMentors.length > 0 ? (
+            allMentors.map((mentor) => {
+              return (
+                <MentorCard
+                  key={mentor.userId}
+                  mentor={mentor}
+                  currentUserRole={currentUserRole ?? null}
+                  currentUserId={currentUserId ?? null}
+                />
+              );
+            })
+          ) : (
+            <div>
+              <h1>Hello</h1>
+            </div>
+          )}
         </div>
 
         {/* Empty State */}
