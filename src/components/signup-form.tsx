@@ -97,15 +97,18 @@ export function SignupForm({
   return (
     <form
       action={formAction}
-      className={cn("flex flex-col gap-x-6 gap-y-4", className)}
+      className={cn("flex flex-col gap-x-6 gap-y-2", className)}
       {...props}
     >
-      <FieldGroup>
-        <div className="flex flex-col items-center gap-1 text-center">
+      <FieldGroup className="gap-x-2 gap-y-4">
+        <div className="flex flex-col items-center gap-1 text-center mb-2">
           <h1 className="text-2xl font-bold">Create your account</h1>
+          <p className="text-muted-foreground text-sm text-balance">
+            Fill in the form below to create your account
+          </p>
         </div>
         <FieldGroup className="flex-row">
-          <Field>
+          <Field className="gap-1">
             <FieldLabel htmlFor="firstname">First Name</FieldLabel>
             <Input
               id="firstname"
@@ -120,7 +123,7 @@ export function SignupForm({
               <FieldError>{state.errors.firstname[0]}</FieldError>
             )}
           </Field>
-          <Field>
+          <Field className="gap-1">
             <FieldLabel htmlFor="lastname">Last Name</FieldLabel>
             <Input
               id="lastname"
@@ -135,7 +138,7 @@ export function SignupForm({
             )}
           </Field>
         </FieldGroup>
-        <Field>
+        <Field className="gap-1">
           <FieldLabel htmlFor="email">Email</FieldLabel>
           <Input
             id="email"
@@ -149,7 +152,7 @@ export function SignupForm({
             <FieldError>{state.errors.email[0]}</FieldError>
           )}
         </Field>
-        <Field>
+        <Field className="gap-1">
           <FieldLabel htmlFor="password">Password</FieldLabel>
           <InputGroup>
             <InputGroupInput
@@ -176,7 +179,7 @@ export function SignupForm({
             <FieldError>{state.errors.password[0]}</FieldError>
           )}
         </Field>
-        <Field>
+        <Field className="gap-1">
           <FieldLabel htmlFor="confirmPassword">Confirm Password</FieldLabel>
           <InputGroup>
             <InputGroupInput
@@ -202,7 +205,7 @@ export function SignupForm({
             <FieldError>{confirmErr}</FieldError>
           )}
         </Field>
-        <Field className="space-y-2">
+        <Field className="space-y-2 gap-1">
           <FieldLabel htmlFor="role" className="text-title text-sm">
             Role
           </FieldLabel>
@@ -225,7 +228,7 @@ export function SignupForm({
             <FieldError>{state.errors.role[0]}</FieldError>
           )}
         </Field>
-        <Field>
+        <Field className="gap-1">
           <Button
             
             type="submit"
@@ -241,7 +244,7 @@ export function SignupForm({
             )}
           </Button>
         </Field>
-        <Field>
+        <Field className="gap-1">
           <FieldDescription className="px-6 text-center">
             Already have an account? <Link href="/login">Sign in</Link>
           </FieldDescription>
