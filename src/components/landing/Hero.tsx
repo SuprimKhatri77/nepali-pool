@@ -20,7 +20,7 @@ export default function Hero() {
     }
       const timerId = setTimeout(() => {
       setShowCursor(false)
-    }, 9000);
+    }, 8000);
   return () => clearTimeout(timerId)
   },[isMobile])
   return (
@@ -43,7 +43,7 @@ export default function Hero() {
       <div className="max-w-5xl mx-auto text-center w-full relative z-10">
         <h1  className="text-4xl sm:text-5xl sm:mb-0 mb-12 md:text-6xl lg:text-7xl font-bold text-gray-900 leading-tight tracking-tight">
           Your Trusted Mentor to{" "}
-          <motion.span initial={{width: "6ch"}} animate={{width:["6ch", "20ch"] }} transition={{duration: 4, ease: "linear", repeat:1, repeatDelay: 1}} className="hidden sm:inline-block overflow-hidden whitespace-nowrap">
+          <motion.span initial={{width: "6ch"}} animate={{width:["6ch", "20ch","7ch","20ch"] }} transition={{duration: 8, ease: "linear"}} className="hidden sm:inline-block overflow-hidden whitespace-nowrap">
             <span className="block sm:inline">Study </span>
             <span className="text-emerald-600">Abroad</span>{" "}
             <span className="block sm:inline">from </span>

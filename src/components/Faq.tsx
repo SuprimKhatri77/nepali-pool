@@ -71,8 +71,8 @@ const Faq1 = ({
   ],
 }: Faq1Props) => {
   return (
-    <section className="py-32 w-full flex justify-center bg-gradient-to-t from-green-50 to-white">
-      <div className="container w-full sm:max-w-[90%] sm:px-0 px-6">
+    <section className="py-32 w-full px-3 sm:px-6 flex justify-center bg-gradient-to-t from-green-50 to-white">
+      <div className="container w-full sm:max-w-[1440px] sm:px-0 px-6">
         <h1 className="mb-4 text-xl sm:text-3xl text-center text-emerald-500 font-semibold md:mb-11 md:text-5xl">
           {heading}
         </h1>
