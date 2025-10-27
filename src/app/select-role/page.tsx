@@ -12,7 +12,7 @@ export default async function SelectRole() {
   });
 
   if (!session) {
-    return redirect("/login");
+    return redirect("/login?message=Please+login+to+continue");
   }
 
   const [userRecord] = await db

@@ -14,7 +14,7 @@ export default async function VerifyEmailPage() {
   });
 
   if (!session) {
-    return redirect("/login");
+    return redirect("/login?message=Please+login+to+continue");
   }
 
   const [userRecord] = await db

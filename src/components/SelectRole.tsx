@@ -37,7 +37,11 @@ export default function SelectRolePage() {
 
   useEffect(() => {
     if (message) {
-      toast.info(decodeURIComponent(message), { position: "top-right" });
+      toast.info(decodeURIComponent(message), { position: "top-right", action:{
+        label:"X",
+        onClick: () => toast.dismiss()
+      },
+      duration: 3000});
 
       const url = new URL(window.location.href);
       url.searchParams.delete("message");

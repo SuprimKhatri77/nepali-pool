@@ -15,7 +15,7 @@ export default async function Dashboard() {
   });
 
   if (!session) {
-    return redirect("/login");
+    return redirect("/login?message=Please+login+to+continue");
   }
 
   const [userRecord] = await db
@@ -24,7 +24,7 @@ export default async function Dashboard() {
     .where(eq(user.id, session.user.id));
 
   if (!userRecord.emailVerified) {
-    return redirect("/verify-email");
+    return redirect("/verify-email?message=Please+verify+your+email");
   }
 
   await redirectByRole(userRecord);

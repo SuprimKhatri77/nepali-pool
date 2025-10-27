@@ -31,7 +31,7 @@ export default async function Mentor() {
       .from(mentorProfile)
       .where(eq(mentorProfile.userId, userRecord.id));
     if (!mentorProfileRecord) {
-      return redirect("/onboarding/mentor");
+      return redirect("/onboarding/mentor?message=Please+complete+the+onboarding+to+continue!");
     }
     if (mentorProfileRecord.verifiedStatus === "pending") {
       return redirect("/waitlist");

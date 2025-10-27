@@ -66,7 +66,7 @@ export default async function Page() {
   }
 
   if (!userRecord.emailVerified) {
-    return redirect("/verify-email");
+    return redirect("/verify-email?message=Please+verify+your+email");
   }
 
   if (!userRecord.role || userRecord.role === "none") {

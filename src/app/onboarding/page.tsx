@@ -11,7 +11,7 @@ export default async function Onboarding() {
   });
 
   if (!session) {
-    return redirect("/login");
+    return redirect("/login?message=Please+login+to+continue");
   }
 
   const [userRecord] = await db
@@ -19,7 +19,7 @@ export default async function Onboarding() {
     .from(user)
     .where(eq(user.id, session.user.id));
   if (!userRecord) {
-    return redirect("/sign-up");
+    return redirect("/login?message=Please+login+to+continue");
   }
 
   if (!userRecord.emailVerified) {

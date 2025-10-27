@@ -60,7 +60,7 @@ export default async function Student() {
     // console.log("Student with User: ", studentRecordWithUser);
 
     if (!studentRecordWithUser) {
-      return redirect("/login");
+      return redirect("/login?message=Please+login+to+continue");
     }
 
     const favoriteMentor =

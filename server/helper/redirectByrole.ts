@@ -17,7 +17,7 @@ export async function redirectByRole(userRecord: UserSelectType) {
         .from(studentProfile)
         .where(eq(studentProfile.userId, userRecord.id));
 
-      if (!studentRecord) return redirect("/onboarding/student");
+      if (!studentRecord) return redirect("/onboarding/student?message=Please+complete+the+onboarding+to+continue!");
       return redirect("/dashboard/student");
     }
 
@@ -27,7 +27,7 @@ export async function redirectByRole(userRecord: UserSelectType) {
         .from(mentorProfile)
         .where(eq(mentorProfile.userId, userRecord.id));
 
-      if (!mentorRecord) return redirect("/onboarding/mentor");
+      if (!mentorRecord) return redirect("/onboarding/mentor?message=Please+complete+the+onboarding+to+continue!");
       if (mentorRecord.verifiedStatus === "pending")
         return redirect("/waitlist");
       if (mentorRecord.verifiedStatus === "rejected")

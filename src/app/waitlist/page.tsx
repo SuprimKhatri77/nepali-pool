@@ -18,7 +18,7 @@ export default async function MentorWaitlist() {
   });
 
   if (!session) {
-    return redirect("/login");
+    return redirect("/login?message=Please+login+to+continue");
   }
 
   const [userRecord] = await db
@@ -27,11 +27,11 @@ export default async function MentorWaitlist() {
     .where(eq(user.id, session.user.id));
 
   if (!userRecord) {
-    return redirect("/sign-up");
+    return redirect("/login?message=Please+login+to+continue");
   }
 
   if (!userRecord.emailVerified) {
-    return redirect("/verify-email");
+    return redirect("/verify-email?message=Please+verify+your+email");
   }
 
   if (userRecord.role === "student") {
@@ -40,7 +40,7 @@ export default async function MentorWaitlist() {
       .from(studentProfile)
       .where(eq(studentProfile.userId, userRecord.id));
     if (!studentProfileRecord) {
-      return redirect("/onboarding/student");
+      return redirect("/onboarding/student?message=Please+complete+the+onboarding+to+continue!");
     }
     return redirect("/dashboard/student");
   }
@@ -55,7 +55,7 @@ export default async function MentorWaitlist() {
     .where(eq(mentorProfile.userId, userRecord.id));
 
   if (!mentorProfileRecord && userRecord.role === "mentor") {
-    return redirect("/onboarding/mentor");
+    return redirect("/onboarding/mentor?message=Please+complete+the+onboarding+to+continue!");
   }
 
   if (mentorProfileRecord.verifiedStatus === "rejected") {

@@ -14,7 +14,7 @@ export async function requireUser(): Promise<User> {
     headers: await headers(),
   });
   if (!session) {
-    return redirect("/login");
+    return redirect("/login?message=Please+login+to+continue");
   }
 
   const [userRecord] = await db
@@ -27,7 +27,7 @@ export async function requireUser(): Promise<User> {
   }
 
   if (!userRecord.emailVerified) {
-    return redirect("/verify-email");
+    return redirect("/verify-email?message=Please+verify+your+email");
   }
   if (!userRecord.role || userRecord.role === "none") {
     return redirect("/select-role");

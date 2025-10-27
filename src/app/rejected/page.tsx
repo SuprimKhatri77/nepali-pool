@@ -20,7 +20,7 @@ export default async function RejectedMentor() {
   });
 
   if (!session) {
-    return redirect("/login");
+    return redirect("/login?message=Please+login+to+continue");
   }
 
   const [userRecord] = await db
@@ -29,7 +29,7 @@ export default async function RejectedMentor() {
     .where(eq(user.id, session.user.id));
 
   if (!userRecord) {
-    return redirect("/sign-up");
+    return redirect("/login?message=Please+login+to+continue");
   }
 
   if (!userRecord.emailVerified) {
@@ -42,7 +42,7 @@ export default async function RejectedMentor() {
       .from(studentProfile)
       .where(eq(studentProfile.userId, userRecord.id));
     if (!studentProfileRecord) {
-      return redirect("/onboarding/student");
+      return redirect("/onboarding/student?message=Please+complete+the+onboarding+to+continue!");
     }
     return redirect("/dashboard/student");
   }
@@ -57,7 +57,7 @@ export default async function RejectedMentor() {
     .where(eq(mentorProfile.userId, userRecord.id));
 
   if (!mentorProfileRecord && userRecord.role === "mentor") {
-    return redirect("/onboarding/mentor");
+    return redirect("/onboarding/mentor?message=Please+complete+the+onboarding+to+continue!");
   }
 
   if (mentorProfileRecord.verifiedStatus === "pending") {

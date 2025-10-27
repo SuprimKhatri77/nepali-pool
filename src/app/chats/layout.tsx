@@ -19,7 +19,7 @@ export default async function ChatLayout({
   children: React.ReactNode;
 }) {
   const session = await auth.api.getSession({ headers: await headers() });
-  if (!session) redirect("/login");
+  if (!session) redirect("/login?message=Please+login+to+continue");
 
   const [userRecord] = await db
     .select()
@@ -30,7 +30,7 @@ export default async function ChatLayout({
     await auth.api.signOut({ headers: await headers() });
     return redirect("/login?error=invalid_session");
   }
-  if (!userRecord.emailVerified) return redirect("/verify-email");
+  if (!userRecord.emailVerified) return redirect("/verify-email?message=Please+verify+your+email");
   if (!userRecord.role || userRecord.role === "none")
     return redirect("/select-role");
 

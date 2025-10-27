@@ -18,7 +18,7 @@ export default async function Page() {
         user: true,
       },
     });
-    if (!studentRecord) return redirect("/onboarding/student");
+    if (!studentRecord) return redirect("/onboarding/student?message=Please+complete+the+onboarding+to+continue!");
     return <StudentProfile studentRecord={studentRecord} />;
   }
 
@@ -29,7 +29,7 @@ export default async function Page() {
         user: true,
       },
     });
-    if (!mentorRecord) return redirect("/onboarding/mentor");
+    if (!mentorRecord) return redirect("/onboarding/mentor?message=Please+complete+the+onboarding+to+continue!");
     if (mentorRecord.verifiedStatus === "pending") return redirect("/waitlist");
     if (mentorRecord.verifiedStatus === "rejected")
       return redirect("/rejected");

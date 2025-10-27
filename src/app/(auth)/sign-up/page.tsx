@@ -61,11 +61,11 @@ export default async function SignUp() {
     .where(eq(user.id, session.user.id));
 
   if (!userRecord) {
-    return redirect("/sign-up");
+    return redirect("/login?message=Please+login+to+continue");
   }
 
   if (!userRecord.emailVerified) {
-    return redirect("/verify-email");
+    return redirect("/verify-email?message=Please+verify+your+email");
   }
 
   if (!userRecord.role || userRecord.role === "none") {
