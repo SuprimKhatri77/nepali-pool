@@ -2,57 +2,58 @@
 import Link from "next/link";
 import { authClient } from "../../../server/lib/auth/auth-client";
 import { Spinner } from "../ui/spinner";
-import {  motion } from "framer-motion";
+import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { useIsMobile } from "@/hooks/use-mobile";
 const MotionLink = motion(Link);
 
 export default function Hero() {
   const { data: session, isPending } = authClient.useSession();
-  const isMobile=useIsMobile()
+  const isMobile = useIsMobile();
 
-  const [showCursor, setShowCursor]=useState(true)
- 
-  useEffect(()=>{
-    if(isMobile){
-      setShowCursor(false)
+  const [showCursor, setShowCursor] = useState(true);
+
+  useEffect(() => {
+    if (isMobile) {
+      setShowCursor(false);
       return;
     }
-      const timerId = setTimeout(() => {
-      setShowCursor(false)
+    const timerId = setTimeout(() => {
+      setShowCursor(false);
     }, 8000);
-  return () => clearTimeout(timerId)
-  },[isMobile])
+    return () => clearTimeout(timerId);
+  }, [isMobile]);
   return (
     <motion.section
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       className="relative overflow-hidden min-h-screen flex items-center justify-center bg-emerald-200/80 px-4 sm:px-6  pb-20 sm:pb-24"
     >
-   
-
-
       {/* Content */}
       <div className="max-w-5xl mx-auto text-center w-full relative z-10">
-        <h1  className="text-4xl sm:text-5xl sm:mb-0 mb-12 md:text-6xl lg:text-7xl font-bold text-gray-900 leading-tight tracking-tight">
+        <h1 className="text-4xl sm:text-5xl sm:mb-0 mb-12 md:text-6xl lg:text-7xl font-bold text-gray-900 leading-tight tracking-tight">
           Your Trusted Mentor to{" "}
-          <motion.span initial={{width: "6ch"}} animate={{width:["6ch", "20ch","7ch","20ch"] }} transition={{duration: 8, ease: "linear"}} className="hidden sm:inline-block overflow-hidden whitespace-nowrap">
+          <motion.span
+            initial={{ width: "6ch" }}
+            animate={{ width: ["6ch", "21ch", "7ch", "21ch"] }}
+            transition={{ duration: 8, ease: "linear" }}
+            className="hidden sm:inline-block overflow-hidden whitespace-nowrap"
+          >
             <span className="block sm:inline">Study </span>
             <span className="text-emerald-600">Abroad</span>{" "}
             <span className="block sm:inline">from </span>
             <span className="text-emerald-600">Nepal</span>
           </motion.span>
-         
-          <span   className="inline sm:hidden  ">
+          <span className="inline sm:hidden  ">
             <span className="text-emerald-600">Study Abroad</span> from{" "}
             <span className="text-emerald-600">Nepal</span>
           </span>
-           {showCursor && (
-             <motion.span
-      animate={{ opacity: [0, 1, 0] }}
-      transition={{ duration: 0.8, repeat: Infinity }}
-      className="inline-block w-[4px] h-[1em] bg-emerald-600 ml-1 align-bottom"
-    />
+          {showCursor && (
+            <motion.span
+              animate={{ opacity: [0, 1, 0] }}
+              transition={{ duration: 0.8, repeat: Infinity }}
+              className="inline-block w-[4px] h-[1em] bg-emerald-600 ml-1 align-bottom"
+            />
           )}
         </h1>
 

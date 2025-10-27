@@ -66,9 +66,12 @@ export default function MentorOnboardingForm({
     OnboardingMentor,
     initialState
   );
- 
-  const [location, setLocation] = useState({city:"", country: "", zipCode: ""})
- 
+
+  const [location, setLocation] = useState({
+    city: "",
+    country: "",
+    zipCode: "",
+  });
 
   // navigator is a browser api so, we have to run in use clinet page.
   const fillInputs = () => {
@@ -77,47 +80,50 @@ export default function MentorOnboardingForm({
       return;
     }
 
-    navigator.geolocation.getCurrentPosition(async (position) => {
-      const { latitude, longitude } = position.coords;
+    navigator.geolocation.getCurrentPosition(
+      async (position) => {
+        const { latitude, longitude } = position.coords;
 
-      try {
-        // reverse geo coding for country, zip and city location.
-        const res = await fetch(
-          `https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json`
-        );
-        const data = await res.json();
+        try {
+          // reverse geo coding for country, zip and city location.
+          const res = await fetch(
+            `https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json`
+          );
+          const data = await res.json();
 
-        const country = data.address.country || "";
-        const city =
-          data.address.city || data.address.town || data.address.village || "";
-        const zip = data.address.postcode || "";
+          const country = data.address.country || "";
+          const city =
+            data.address.city ||
+            data.address.town ||
+            data.address.village ||
+            "";
+          const zip = data.address.postcode || "";
 
-        setLocation({
-          city: city,
-          country: country,
-          zipCode: zip
-        }) // to update ui state when value change i used another state location.
-      } catch (err) {
-        console.error("Failed to fetch location data", err);
+          setLocation({
+            city: city,
+            country: country,
+            zipCode: zip,
+          }); // to update ui state when value change i used another state location.
+        } catch (err) {
+          console.error("Failed to fetch location data", err);
+        }
+      },
+      (err) => {
+        console.error(err);
+        alert("Could not get your location");
       }
-    }, (err) => {
-      console.error(err);
-      alert("Could not get your location");
-    });
+    );
   };
-
-
-
 
   useEffect(() => {
     if (state.message) {
       toast(state.message);
     }
   }, [state.message]);
-  
-  useEffect(()=>{
-    fillInputs()
-  },[])
+
+  useEffect(() => {
+    fillInputs();
+  }, []);
 
   useEffect(() => {
     if (state.success && state.redirectTo) {
@@ -140,7 +146,6 @@ export default function MentorOnboardingForm({
       setCurrentStep(currentStep - 1);
     }
   };
-
 
   return (
     <div
@@ -235,15 +240,13 @@ export default function MentorOnboardingForm({
                       >
                         Profile Picture *
                       </Label>
-                      <div className="max-w-[90%] w-full">
-                        <CustomProfileUploader
+                      <CustomProfileUploader
                         currentImage={profilePhotoUrl}
                         onUploadComplete={(url: string) =>
                           setProfilePhotoUrl(url)
                         }
                         imageUploadName="Upload Your Photo"
                       />
-                      </div>
                       <Input
                         type="hidden"
                         name="imageUrl"
@@ -326,7 +329,8 @@ export default function MentorOnboardingForm({
                         Location Details
                       </h3>
                       <p className="text-gray-600">
-                         Please enter your current living location, not your place of origin.
+                        Please enter your current living location, not your
+                        place of origin.
                       </p>
                     </div>
 
@@ -336,7 +340,7 @@ export default function MentorOnboardingForm({
                           htmlFor="country"
                           className="text-sm font-medium text-gray-700"
                         >
-                         Country *
+                          Country *
                         </Label>
                         <Input
                           defaultValue={location.country}
@@ -502,15 +506,13 @@ export default function MentorOnboardingForm({
                       >
                         Resume *
                       </Label>
-                      <div className="max-w-[90%] w-full">
-                        <CustomProfileUploader
+                      <CustomProfileUploader
                         currentImage={resumePhotoUrl}
                         onUploadComplete={(url: string) =>
                           setResumePhotoUrl(url)
                         }
                         imageUploadName="Upload Resume Photo"
                       />
-                      </div>
                       <Input
                         type="hidden"
                         name="resume"

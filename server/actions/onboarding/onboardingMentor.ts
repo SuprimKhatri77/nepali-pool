@@ -78,7 +78,11 @@ export async function OnboardingMentor(
       .trim()
       .min(1, "City is required")
       .nonempty()
-      .regex(/^[A-Za-z]+$/, "Only alphabets A-Z or a-z are allowed"),
+      .regex(
+        /^[A-Za-z]+(?: [A-Za-z]+)*$/,
+        "Only alphabets and spaces are allowed"
+      ),
+
     zipCode: z
       .string()
       .trim()
