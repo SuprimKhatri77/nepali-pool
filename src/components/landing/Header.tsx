@@ -8,7 +8,7 @@ import SignOutButton from "../SignOutButton";
 import { usePathname } from "next/navigation";
 import { cn } from "../lib/utils";
 import Image from "next/image";
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import AnnouncementBanner from "../sessions/announcement-banner";
 const MotionLink = motion(Link);
 
@@ -16,6 +16,7 @@ const navLinks = [
   { name: "Home", href: "/" },
   { name: "Schools", href: "/schools" },
   { name: "Mentors", href: "/mentors" },
+  { name: "Scholarships", href: "/scholarships" },
   { name: "Guides", href: "/guides" },
 ];
 
@@ -27,6 +28,7 @@ export default function Header() {
   const pathname = usePathname();
   const isDashboardRoute = pathname.startsWith("/dashboard");
   const isChatRoute = pathname.startsWith("/chats");
+  const [navBarTop, setNavBarTop]=useState(false)
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -52,6 +54,10 @@ export default function Header() {
     };
   }, [isOpen]);
 
+  useEffect(()=>{
+    setNavBarTop(true)
+  },[])
+
   const initials =
     session &&
     session.user?.name
@@ -68,12 +74,12 @@ export default function Header() {
       <motion.header
        
         className={cn(
-          "bg-white/90 z-50 border-b border-gray-200 px-6 lg:px-10 py-4 sm:py-6",
+          "bg-white/30 backdrop-blur-3xl z-40 border-b border-gray-200 px-6 lg:px-10 py-4 sm:py-6  ",
           !pathname.startsWith("/chats") && "sticky top-0"
         )}
         suppressHydrationWarning
       >
-        <div className="max-w-[1440px] mx-auto flex justify-between items-center">
+        <div className="max-w-[1440px] mx-auto flex justify-between items-center z-50">
           {/* Logo */}
           <Link href="/">
             <motion.div
@@ -263,19 +269,18 @@ export default function Header() {
         </div>
       </motion.header>
 
-      {/* Mobile Menu Overlay */}
-      {isOpen && (
-        <>
-          {/* Backdrop */}
-          {/* <div
-            className="fixed inset-0 bg-black/50 z-40 md:hidden"
-            onClick={() => setIsOpen(false)}
-          /> */}
+      {/* Mobile Menu Overlay , animate presense for exit animaton*/}
+          <AnimatePresence>  
 
-          {/* Mobile Menu Panel */}
-          <div className="fixed top-[73px] left-0 right-0 bg-white  md:hidden overflow-y-auto z-70">
+      {isOpen && (
+        
+
+          <motion.div key="mobile-menu"  initial={{ y: -300, opacity: 0 }}   // start above screen
+            animate={{ y: 0, opacity: 1 }}      // slide down into view
+             exit={{ y: -300, opacity: 0, transition: { type: "spring", stiffness: 250, damping: 25 } }}    // slide up when closing
+             transition={{ duration: 0.5, ease: "easeOut" }} className={`fixed top-[73px]  left-0 right-0 bg-white  md:hidden overflow-y-auto z-70`}>
             <div className="flex flex-col gap-2 p-6">
-              {["Home", "Schools", "Mentors", "Guides"].map((item) => (
+              {["Home", "Schools", "Mentors","scholarships", "Guides"].map((item) => (
                 <Link
                   key={item}
                   href={item === "Home" ? "/" : `/${item.toLowerCase()}`}
@@ -370,9 +375,9 @@ export default function Header() {
                 </div>
               )}
             </div>
-          </div>
-        </>
+          </motion.div>
       )}
+      </AnimatePresence>
     </>
   );
 }

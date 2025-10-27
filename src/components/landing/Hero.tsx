@@ -27,17 +27,10 @@ export default function Hero() {
     <motion.section
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      className="relative overflow-hidden min-h-screen flex items-center justify-center bg-gradient-to-bl from-emerald-50/90 via-white to-emerald-100/80 px-4 sm:px-6  pb-20 sm:pb-24"
+      className="relative overflow-hidden min-h-screen flex items-center justify-center bg-emerald-200/80 px-4 sm:px-6  pb-20 sm:pb-24"
     >
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 0.2, backgroundPosition: ["0% 0%", "100% 100%"] }}
-        transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-        className="absolute inset-0 z-0"
-      />
+   
 
-      {/* Gradient glow  */}
-      <div className="absolute bottom-0 left-0 right-0 h-64 bg-gradient-to-t from-emerald-200/60 via-transparent to-transparent blur-2xl" />
 
       {/* Content */}
       <div className="max-w-5xl mx-auto text-center w-full relative z-10">

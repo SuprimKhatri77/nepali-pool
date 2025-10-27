@@ -21,7 +21,7 @@ const testimonials = [
 ];
 export default function WhyTrustUs() {
   return (
-    <section className="py-20 px-6 bg-white">
+    <section className="py-20 px-6 ">
       <div className="max-w-7xl mx-auto">
         <div className="grid md:grid-cols-2 gap-12">
           {/* Trust Points */}
@@ -47,7 +47,7 @@ export default function WhyTrustUs() {
                       />
                     </svg>
                   </div>
-                  <p className="text-gray-700 pr-12">{point}</p>
+                  <p className=" sm:pr-12">{point}</p>
                 </div>
               ))}
             </div>
@@ -67,8 +67,7 @@ export default function WhyTrustUs() {
                   <CarouselItem key={index}>
 
                 <motion.div
-                  whileHover={{scale:1.02}} transition={{duration: 0.2, ease: "easeIn"}}
-                  className="bg-gradient-to-br from-emerald-50 to-emerald-100 rounded-xl p-6 border border-emerald-200"
+                  className="border-emerald-900 rounded-xl p-6 border bg-emerald-300/30"
                 >
                   <div className="flex items-center gap-3 mb-4">
                     <div className="w-12 h-12 bg-emerald-600 rounded-full flex items-center justify-center text-white font-bold">
@@ -83,7 +82,7 @@ export default function WhyTrustUs() {
                       </p>
                     </div>
                   </div>
-                  <p className="text-gray-700 text-sm leading-relaxed">
+                  <p className="text-gray-700 text-sm  text-justify">
                     {testimonial.text}
                   </p>
                 </motion.div>
@@ -91,8 +90,8 @@ export default function WhyTrustUs() {
               ))}
 
                 </CarouselContent>
-                <CarouselPrevious></CarouselPrevious>
-                <CarouselNext></CarouselNext>
+                <CarouselPrevious className="bg-emerald-300/30"></CarouselPrevious>
+                <CarouselNext className="bg-emerald-300/30"></CarouselNext>
               </Carousel>
 
               {/* /updating carousel section */}

@@ -21,7 +21,7 @@ export default function AnnouncementBanner() {
     <AnimatePresence>
       {isVisible && (
 
-    <motion.div initial={{ y: -100, opacity: 0 }}
+    <motion.div id="announ" key={"announcement"} initial={{ y: -100, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           exit={{ y: -100, opacity: 0 }}
           transition={{ duration: 0.5, ease: "easeInOut" }} className=" bg-gradient-to-r from-emerald-50 to-green-50 border-b border-emerald-200">

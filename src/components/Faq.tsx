@@ -71,14 +71,14 @@ const Faq1 = ({
   ],
 }: Faq1Props) => {
   return (
-    <section className="py-32 w-full px-3 sm:px-6 flex justify-center bg-gradient-to-t from-green-50 to-white">
+    <section className="py-32 w-full px-3 sm:px-6 flex justify-center">
       <div className="container w-full sm:max-w-[1440px] sm:px-0 px-6">
-        <h1 className="mb-4 text-xl sm:text-3xl text-center text-emerald-500 font-semibold md:mb-11 md:text-5xl">
+        <h1 className="mb-4 text-xl sm:text-3xl text-center  font-semibold md:mb-11 md:text-5xl">
           {heading}
         </h1>
         <Accordion type="single" collapsible className="grid lg:grid-cols-2 lg:gap-x-12 gap-y-3">
           {items.map((item, index) => (
-            <AccordionItem key={index} value={`item-${index}`} className="text-base mt-2 py-2 rounded-[4px] px-4 bg-gray-100">
+            <AccordionItem key={index} value={`item-${index}`} className="text-base mt-2 py-2  px-4 bg-white  border-emerald-900 border-2 rounded-2xl">
               <AccordionTrigger className="font-semibold text-base hover:no-underline">
                 {item.question}
               </AccordionTrigger>
@@ -89,7 +89,7 @@ const Faq1 = ({
           ))}
         </Accordion>
          <Link href={"/support"} className="flex items-center justify-center">
-          <MotionButton initial={{scale:1}}  whileHover={{ scale:1.06 }} transition={{duration: 0.6, ease: "linear"}} className=" bg-emerald-600  hover:bg-emerald-700 w-[250px] h-[60px] text-base sm:text-lg  mt-6">
+          <MotionButton initial={{scale:1}}  whileHover={{ scale:1.06 }} transition={{duration: 0.6, ease: "linear"}} className=" bg-emerald-600  text-white font-semibold  hover:bg-emerald-700/30 w-[250px] h-[60px] text-base sm:text-lg  mt-6">
         Still have a query
         <ArrowRightIcon className=" font-bold size-4 " />
       </MotionButton></Link>
