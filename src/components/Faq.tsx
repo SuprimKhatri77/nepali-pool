@@ -78,7 +78,7 @@ const Faq1 = ({
         </h1>
         <Accordion type="single" collapsible className="grid lg:grid-cols-2 lg:gap-x-12 gap-y-3">
           {items.map((item, index) => (
-            <AccordionItem key={index} value={`item-${index}`} className="text-base mt-2 py-2  px-4 bg-white  border-emerald-900 border-2 rounded-2xl">
+            <AccordionItem key={item.id} value={`item-${item.id}`} className="text-base mt-2 py-2  px-4 bg-white  border-emerald-900 border-[1.5px] rounded-2xl">
               <AccordionTrigger className="font-semibold text-base hover:no-underline">
                 {item.question}
               </AccordionTrigger>

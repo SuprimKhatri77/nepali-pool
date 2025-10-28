@@ -75,7 +75,7 @@ export default function SearchBarSchool({ schools }: SearchBelowHeroProps) {
             isFocused ?  <CommandList className="absolute z-50 mt-12 sm:w-1/2 bg-white border border-gray-200 rounded-md shadow-lg max-h-64">
           {results.length === 0 ? (
             <CommandEmpty className="px-4 py-3 text-sm text-gray-500">
-              No results — try &quot;Suprim&quot;, &quot;Roshan&quot;, or a real name
+              No results — try other!
             </CommandEmpty>
           ) : (
            <CommandGroup>
