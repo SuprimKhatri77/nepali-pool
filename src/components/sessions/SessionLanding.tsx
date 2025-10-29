@@ -9,7 +9,9 @@ import {
   UserSelectType,
 } from "../../../lib/db/schema";
 import Link from "next/link";
-
+import { ArrowDownIcon, HomeIcon } from "lucide-react";
+import { useRouter } from "next/navigation";
+const MotionLink = motion(Link)
 export default function SessionLandingPage({
   studentProfileRecord,
   sessionRecord,
@@ -23,9 +25,11 @@ export default function SessionLandingPage({
   role?: "student" | "mentor" | "admin";
   hasStudentOnboardingData?: boolean;
 }) {
+  const router = useRouter()
+
   return (
     <>
-      <div className="relative min-h-screen w-full bg-gradient-to-br from-gray-100 to-gray-200 flex flex-col items-center justify-center px-6 py-16">
+      <div className="relative min-h-screen w-full bg-emerald-200/80 flex flex-col items-center justify-center px-6 py-16">
         <motion.h1
           className="text-4xl sm:text-5xl md:text-6xl font-bold text-gray-900 text-center mb-6"
           initial={{ y: -50, opacity: 0 }}
@@ -48,15 +52,15 @@ export default function SessionLandingPage({
         </motion.p>
 
         <motion.div
-          className="bg-white rounded-2xl shadow-xl p-8 max-w-lg w-full flex flex-col items-center gap-6"
+          className="bg-white   border-2 border-emerald-700 rounded-2xl shadow-xl p-8 max-w-lg w-full flex flex-col items-center gap-6"
           initial={{ scale: 0.8, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           transition={{ delay: 0.5, duration: 0.8 }}
         >
-          <h2 className="text-2xl font-semibold text-gray-900">
-            Weekly Mentorship Session
+          <h2 className="text-xl sm:text-2xl font-semibold text-gray-900">
+            Mentorship Session
           </h2>
-          <p className="text-gray-700 text-center">
+          <p className="text-gray-700  text-justify md:text-center text-balance">
             Join a personalized 1:1 session with a mentor. Sessions are designed
             to help you achieve your goals faster. Pay the mentor directly,
             access tips, and grow confidently.
@@ -104,35 +108,47 @@ export default function SessionLandingPage({
             <div>
               <h1 className="text-lg font-semibold">
                 Please{" "}
-                <Link href="/login" className="underline hover:no-underline">
+                <MotionLink initial={{scale:1.1}} whileHover={{scale:0.9}} transition={{duration: 0.4, ease: "linear"}} href="/login" className=" px-4 py-1 rounded-[6px] bg-emerald-600 text-white">
                   Login
-                </Link>{" "}
+                </MotionLink>{" "}
                 to register for the session
               </h1>
             </div>
           )}
         </motion.div>
+        
+        {
+          hasSession ? 
+          hasStudentOnboardingData && role === "student" ? (
+            <motion.div className="flex justify-center animate-bounce"  onClick={() => {
+                    const el = document.getElementById("bookingForm");
+                    if (el) {
+                      el.scrollIntoView({ behavior: "smooth" });
+                    }
+                  }}>
+          <ArrowDownIcon className="rounded-full bg-emerald-300 p-1"/>
+        </motion.div>
+          ):<motion.div onClickCapture={()=> router.push("/")} className="flex justify-center animate-bounce"  onClick={() => {
+                    const el = document.getElementById("bookingForm");
+                    if (el) {
+                      el.scrollIntoView({ behavior: "smooth" });
+                    }
+                  }}>
+          <HomeIcon className="rounded-full bg-emerald-300 p-1"/>
+        </motion.div> : <motion.div onClickCapture={()=> router.push("/")} className="flex justify-center animate-bounce"  onClick={() => {
+                    const el = document.getElementById("bookingForm");
+                    if (el) {
+                      el.scrollIntoView({ behavior: "smooth" });
+                    }
+                  }}>
+          <HomeIcon className="rounded-full bg-emerald-300 p-1"/>
+        </motion.div>
+        }
+        
 
-        <motion.div
-          className="absolute top-0 left-0 w-64 h-64 bg-emerald-200 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-pulse"
-          initial={{ scale: 0 }}
-          animate={{ scale: 1 }}
-          transition={{ duration: 2, repeat: Infinity, repeatType: "mirror" }}
-        />
-        <motion.div
-          className="absolute bottom-0 right-0 w-64 h-64 bg-purple-200 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-pulse"
-          initial={{ scale: 0 }}
-          animate={{ scale: 1 }}
-          transition={{
-            duration: 2,
-            repeat: Infinity,
-            repeatType: "mirror",
-            delay: 1,
-          }}
-        />
+       
       </div>
-
-      {studentProfileRecord &&
+    {studentProfileRecord &&
         hasStudentOnboardingData &&
         role === "student" && (
           <div id="bookingForm">
@@ -142,6 +158,9 @@ export default function SessionLandingPage({
             />
           </div>
         )}
+    
+
+      
 
       {/* <UpcomingSession /> */}
     </>

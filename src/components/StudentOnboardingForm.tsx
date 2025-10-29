@@ -94,6 +94,7 @@ export default function StudentOnboardingForm({
     }
   }, [state.success, router, state.timestamp, state.message]);
 
+  // 
   const canProceedStep1 = profilePicture && formData.bio.trim().length > 0;
   const canProceedStep2 =
     formData.district.trim().length > 0 &&
@@ -121,6 +122,60 @@ export default function StudentOnboardingForm({
     { number: 3, title: "Preferences" },
   ];
 
+    const [location, setLocation] = useState({
+    city: "",
+    district: "",
+  });
+
+    // navigator is a browser api so, we have to run in use clinet page.
+  const fillInputs = () => {
+    if (!navigator.geolocation) {
+      alert("Geolocation not supported");
+      return;
+    }
+
+    navigator.geolocation.getCurrentPosition(
+      async (position) => {
+        const { latitude, longitude } = position.coords;
+
+        try {
+          // reverse geo coding for country,  and city location.
+          const res = await fetch(
+            `https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json`
+          );
+          const data = await res.json();
+
+          const city =
+            data.address.city ||
+            data.address.town ||
+            data.address.village ||
+            "";
+          const district = data.address.county || "" // county == district in response;
+
+          setLocation({
+            city: city,
+            district: district
+          }); // to update ui state when value change i used another state location.
+        } catch (err) {
+          console.error("Failed to fetch location data", err);
+        }
+      },
+      (err) => {
+        console.error(err);
+        toast("Could not get your location",{position: "bottom-center"});
+      }
+    );
+  };
+
+  useEffect(() => {
+    if (state.message) {
+      toast(state.message);
+    }
+  }, [state.message]);
+
+  useEffect(() => {
+    fillInputs();
+  }, []);
   return (
     <div
       className={cn(
@@ -277,7 +332,7 @@ export default function StudentOnboardingForm({
                       id="district"
                       name="district"
                       placeholder="e.g., Rupandehi"
-                      value={formData.district}
+                      defaultValue={location.district}
                       onChange={(e) =>
                         setFormData({ ...formData, district: e.target.value })
                       }
@@ -300,7 +355,7 @@ export default function StudentOnboardingForm({
                       id="city"
                       name="city"
                       placeholder="e.g., Butwal"
-                      value={formData.city}
+                      defaultValue={location.city}
                       onChange={(e) =>
                         setFormData({ ...formData, city: e.target.value })
                       }

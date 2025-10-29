@@ -47,7 +47,7 @@ export default function SessionForm({
     }
   }, [state.success, state.message, state.timestamp]);
   return (
-    <section className="relative flex lg:flex-row flex-col py-16 px-2 sm:px-6 bg-gray-50">
+    <section className="relative flex lg:flex-row flex-col py-16 px-2 sm:px-6 bg-emerald-200/60">
       {/* LEFT SECTION — SESSION DETAILS */}
       <div className="xl:w-1/2 flex flex-col items-center justify-start px-2 md:px-8 pt-8 relative">
         {/* Decorative Gradient Background */}
@@ -139,7 +139,7 @@ export default function SessionForm({
           transition={{ duration: 0.7 }}
         >
           {/* time update for now manual */}
-          <SessionCountdown targetDate="2025-10-28T15:00:00+05:45" />
+          <SessionCountdown targetDate="2025-11-06T15:00:00+05:45" />
         </motion.div>
       </div>
 
@@ -239,7 +239,7 @@ export default function SessionForm({
               <textarea
                 id="question"
                 name="question"
-                placeholder="Any questions or notes for your mentor..."
+                placeholder="Any questions to mentor...? Ask Here!"
                 className="border border-gray-300 rounded-lg p-3 resize-none"
                 rows={4}
                 defaultValue={state.inputs?.question}

@@ -28,7 +28,9 @@ export default function Header() {
   const pathname = usePathname();
   const isDashboardRoute = pathname.startsWith("/dashboard");
   const isChatRoute = pathname.startsWith("/chats");
-  const [navBarTop, setNavBarTop]=useState(false)
+  const [topGap, setTopGap]=useState<"73px" | "180px">("73px")
+    const [isVisible, setIsVisible] = useState(true);
+  
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -55,8 +57,14 @@ export default function Header() {
   }, [isOpen]);
 
   useEffect(()=>{
-    setNavBarTop(true)
-  },[])
+   if(isVisible){
+    setTopGap("180px")
+   }
+   else{
+    setTopGap("73px")
+   }
+  },[isVisible])
+
 
   const initials =
     session &&
@@ -70,7 +78,7 @@ export default function Header() {
 
   return (
     <>
-      <AnnouncementBanner />
+        <AnnouncementBanner  isVisible={isVisible} setIsVisible={setIsVisible}/>
       <motion.header
        
         className={cn(
@@ -96,7 +104,7 @@ export default function Header() {
           </Link>
 
           {/* Desktop Menu */}
-          <nav className="hidden md:flex items-center gap-1">
+          <nav className="hidden lg:flex items-center gap-1">
             {navLinks.map((item) => (
               <MotionLink
                
@@ -113,7 +121,7 @@ export default function Header() {
           </nav>
 
           {/* Login Button / User Menu */}
-          <div className="hidden md:block w-[300px] ">
+          <div className="hidden lg:block w-[300px] ">
             {isPending ? (
               <Spinner className="size-6 text-green-500 w-full ml-auto" />
             ) : !session ? (
@@ -241,7 +249,7 @@ export default function Header() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
             onClick={() => setIsOpen(!isOpen)}
-            className="md:hidden p-2 text-gray-700 hover:bg-gray-100 rounded-md z-50 relative"
+            className="lg:hidden p-2 text-gray-700 hover:bg-gray-100 rounded-md z-50 relative"
           >
             <svg
               className="w-6 h-6"
@@ -278,9 +286,9 @@ export default function Header() {
           <motion.div key="mobile-menu"  initial={{ y: -300, opacity: 0 }}   // start above screen
             animate={{ y: 0, opacity: 1 }}      // slide down into view
              exit={{ y: -300, opacity: 0, transition: { type: "spring", stiffness: 250, damping: 25 } }}    // slide up when closing
-             transition={{ duration: 0.5, ease: "easeOut" }} className={`fixed top-[73px]  left-0 right-0 bg-white  md:hidden overflow-y-auto z-70`}>
+             transition={{ duration: 0.5, ease: "easeOut" }} style={{top: topGap}} className={`fixed   left-0 right-0 bg-white   overflow-y-auto z-70`}>
             <div className="flex flex-col gap-2 p-6">
-              {["Home", "Schools", "Mentors","scholarships", "Guides"].map((item) => (
+              {["Home", "Schools", "Mentors","Scholarships", "Guides"].map((item) => (
                 <Link
                   key={item}
                   href={item === "Home" ? "/" : `/${item.toLowerCase()}`}

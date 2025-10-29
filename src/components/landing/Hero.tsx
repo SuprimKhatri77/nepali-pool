@@ -58,8 +58,6 @@ export default function Hero() {
         </h1>
 
         <motion.p
-          whileHover={{ scale: 1.04 }}
-          transition={{ duration: 0.8, ease: "easeInOut" }}
           className="mt-6 sm:mt-8 text-lg sm:text-xl text-gray-600 max-w-2xl mx-auto leading-relaxed"
         >
           Helping Nepali students choose the right college, city, and future —
@@ -68,7 +66,7 @@ export default function Hero() {
 
         <div className="flex flex-col sm:flex-row gap-4 justify-center mt-8 sm:mt-12 w-full max-w-sm sm:max-w-none mx-auto">
           {isPending ? (
-            <div className="flex justify-center py-3">
+            <div className="flex justify-center h-[40px] py-3">
               <Spinner />
             </div>
           ) : !session ? (
@@ -98,7 +96,8 @@ export default function Hero() {
             </>
           ) : (
             <MotionLink
-              initial={{ scale: 1 }}
+              whileInView={{scale:1}}
+              initial={{ scale: 1}}
               animate={{ scale: 1.03 }}
               transition={{
                 duration: 0.5,

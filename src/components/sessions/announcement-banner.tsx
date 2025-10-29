@@ -1,12 +1,11 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { X, Calendar, Clock } from "lucide-react";
 import Link from "next/link";
 import {AnimatePresence, motion} from "framer-motion"
 
-export default function AnnouncementBanner() {
-  const [isVisible, setIsVisible] = useState(true);
+export default function AnnouncementBanner({isVisible, setIsVisible}:{isVisible: boolean, setIsVisible: (visible: boolean) => void}) {
 
   useEffect(() => {
   if (isVisible) {
@@ -59,7 +58,7 @@ export default function AnnouncementBanner() {
                 href="/sessions"
                 className="px-5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-medium rounded-lg transition-all duration-200 shadow-sm hover:shadow-md active:scale-95"
               >
-                Join Session
+                Book Session
               </Link>
 
               <button

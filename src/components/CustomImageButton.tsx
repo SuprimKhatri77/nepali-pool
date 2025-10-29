@@ -63,9 +63,8 @@ export default function CustomProfileUploader({
                 "https://vbteadl6m3.ufs.sh/f/DDJ5nPL6Yp1sHfAviE2zasoidYb10Mu7JGNQFZWgVmCrRHPE"
               }
               alt="Profile Picture"
-              width={96}
-              height={96}
-              className="rounded-full object-cover"
+              fill
+              className="rounded-full object-cover object-center"
             />
             <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center justify-center backdrop-blur-[2px]">
               {isUploading ? (
@@ -79,7 +78,12 @@ export default function CustomProfileUploader({
 
         <div className="">
           <p className="text-sm font-medium text-gray-700">
-            {isUploading ? "Uploading..." : "Upload photo"}
+            {isUploading ? (
+              <span className="flex gap-2">
+                {"Uploading..."}
+                <Loader2 className="animate-spin" />
+              </span>
+            ) : "Upload photo"}
           </p>
           <p className="text-xs text-gray-500 mt-0.5">Click to change</p>
         </div>
@@ -145,9 +149,8 @@ export default function CustomProfileUploader({
                 <Image
                   src={currentImage}
                   alt={imageUploadName || "Uploaded document"}
-                  width={64}
-                  height={64}
-                  className="object-cover"
+                  fill
+                  className="object-cover object-center"
                 />
               </div>
             </div>
