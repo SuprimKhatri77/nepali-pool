@@ -119,7 +119,7 @@ export default function ForgotPasswordPage() {
           </Button>
           <div className="rounded-lg bg-green-50 border border-green-200 p-4">
             <p className="text-sm text-center text-gray-700">
-              We&aposll send you a link to reset your password.
+              We&apos;ll send you a link to reset your password.
             </p>
           </div>
         </CardContent>

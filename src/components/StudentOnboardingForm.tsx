@@ -94,7 +94,6 @@ export default function StudentOnboardingForm({
     }
   }, [state.success, router, state.timestamp, state.message]);
 
-  // 
   const canProceedStep1 = profilePicture && formData.bio.trim().length > 0;
   const canProceedStep2 =
     formData.district.trim().length > 0 &&
@@ -176,6 +175,25 @@ export default function StudentOnboardingForm({
   useEffect(() => {
     fillInputs();
   }, []);
+
+  useEffect(()=>{
+     if(location){
+      formData.city = location.city;
+      formData.district = location.district
+     }
+  },[location])
+  // local storage data save.
+    // useEffect(()=>{
+    //   // console.log(formData.bio)
+    //    const getBio = localStorage.getItem("bio") ?? "";
+    //   if(getBio && formData.bio?.length === 0){
+        
+    //     formData.bio = getBio
+    //   }
+    //   if(formData.bio){
+    //     localStorage.setItem("bio",formData.bio)
+    //   }
+    // },[formData, state, handleNext])
   return (
     <div
       className={cn(
