@@ -1,8 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getSessionCookie } from "better-auth/cookies";
 
-export async function middleware(request: NextRequest) {
-  // console.log("🔹 Middleware hit:", request.nextUrl.pathname);
+export async function proxy(request: NextRequest) {
   const cookies = getSessionCookie(request);
   if (!cookies) {
     return NextResponse.redirect(new URL("/login", request.url));

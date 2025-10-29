@@ -1,10 +1,10 @@
 "use server";
 
 import z from "zod";
-import { getCurrentStudent } from "../../lib/auth/helpers/getCurrentStudent";
 import { db } from "../../../lib/db";
 import { meetingSession } from "../../../lib/db/schema";
 import { revalidatePath } from "next/cache";
+import { getCurrentUser } from "../../lib/auth/helpers/getCurrentUser";
 
 export type SessionFormState = {
   errors?: {
@@ -29,7 +29,7 @@ export async function joinSession(
   prevState: SessionFormState,
   formData: FormData
 ): Promise<SessionFormState> {
-  const result = await getCurrentStudent();
+  const result = await getCurrentUser();
   if (!result.success) {
     return {
       success: false,
@@ -39,10 +39,17 @@ export async function joinSession(
   }
 
   const userId = formData.get("userId") as string;
-  if (userId !== result.studentRecord.userId) {
+  if (userId !== result.userRecord.id) {
     return {
       success: false,
       message: "Unauthorized",
+      timestamp: Date.now(),
+    };
+  }
+  if (result.userRecord.role !== "student") {
+    return {
+      success: false,
+      message: "Invalid role",
       timestamp: Date.now(),
     };
   }
@@ -74,7 +81,7 @@ export async function joinSession(
   const { name, email, city, question } = validateFields.data;
 
   try {
-    await db.insert(meetingSession).values({
+    const sessionData = await db.insert(meetingSession).values({
       name,
       email,
       city,
@@ -82,7 +89,7 @@ export async function joinSession(
       question: question ?? null,
     });
 
-    revalidatePath("/sessions");
+    // revalidatePath("/sessions");
     return {
       success: true,
       message: "Signed up for session succesfully",

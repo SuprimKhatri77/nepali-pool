@@ -41,11 +41,15 @@ export default async function Page() {
           />
         );
       } else {
+        const sessionRecord = await db.query.meetingSession.findFirst({
+          where: (fields, { eq }) => eq(fields.studentId, userRecord.id),
+        });
         return (
           <SessionLandingPage
             hasSession={true}
             role={userRecord.role}
             hasStudentOnboardingData={false}
+            sessionRecord={sessionRecord ?? null}
           />
         );
       }

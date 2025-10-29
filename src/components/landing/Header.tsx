@@ -28,9 +28,8 @@ export default function Header() {
   const pathname = usePathname();
   const isDashboardRoute = pathname.startsWith("/dashboard");
   const isChatRoute = pathname.startsWith("/chats");
-  const [topGap, setTopGap]=useState<"73px" | "180px">("73px")
-    const [isVisible, setIsVisible] = useState(true);
-  
+  const [topGap, setTopGap] = useState<"73px" | "180px">("73px");
+  const [isVisible, setIsVisible] = useState(true);
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -56,15 +55,13 @@ export default function Header() {
     };
   }, [isOpen]);
 
-  useEffect(()=>{
-   if(isVisible){
-    setTopGap("180px")
-   }
-   else{
-    setTopGap("73px")
-   }
-  },[isVisible])
-
+  useEffect(() => {
+    if (isVisible) {
+      setTopGap("180px");
+    } else {
+      setTopGap("73px");
+    }
+  }, [isVisible]);
 
   const initials =
     session &&
@@ -78,9 +75,8 @@ export default function Header() {
 
   return (
     <>
-        <AnnouncementBanner  isVisible={isVisible} setIsVisible={setIsVisible}/>
+      <AnnouncementBanner isVisible={isVisible} setIsVisible={setIsVisible} />
       <motion.header
-       
         className={cn(
           "bg-white/30 backdrop-blur-3xl z-40 border-b border-gray-200 px-6 lg:px-10 py-4 sm:py-6  ",
           !pathname.startsWith("/chats") && "sticky top-0"
@@ -90,10 +86,7 @@ export default function Header() {
         <div className="max-w-[1440px] mx-auto flex justify-between items-center z-50">
           {/* Logo */}
           <Link href="/">
-            <motion.div
-              
-              className="flex items-center gap-2"
-            >
+            <motion.div className="flex items-center gap-2">
               <div className="w-10 h-10 bg-gradient-to-br from-emerald-400 to-emerald-600 rounded-lg flex items-center justify-center text-white font-bold">
                 NP
               </div>
@@ -107,7 +100,6 @@ export default function Header() {
           <nav className="hidden lg:flex items-center gap-1">
             {navLinks.map((item) => (
               <MotionLink
-               
                 key={item.name}
                 href={item.href}
                 className={cn(
@@ -175,6 +167,7 @@ export default function Header() {
                       <Image
                         src={session.user.image}
                         fill
+                        sizes=""
                         alt={session.user?.name || "User"}
                         className="w-full h-full object-cover"
                       />
@@ -278,26 +271,34 @@ export default function Header() {
       </motion.header>
 
       {/* Mobile Menu Overlay , animate presense for exit animaton*/}
-          <AnimatePresence>  
-
-      {isOpen && (
-        
-
-          <motion.div key="mobile-menu"  initial={{ y: -300, opacity: 0 }}   // start above screen
-            animate={{ y: 0, opacity: 1 }}      // slide down into view
-             exit={{ y: -300, opacity: 0, transition: { type: "spring", stiffness: 250, damping: 25 } }}    // slide up when closing
-             transition={{ duration: 0.5, ease: "easeOut" }} style={{top: topGap}} className={`fixed   left-0 right-0 bg-white   overflow-y-auto z-70`}>
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            key="mobile-menu"
+            initial={{ y: -300, opacity: 0 }} // start above screen
+            animate={{ y: 0, opacity: 1 }} // slide down into view
+            exit={{
+              y: -300,
+              opacity: 0,
+              transition: { type: "spring", stiffness: 250, damping: 25 },
+            }} // slide up when closing
+            transition={{ duration: 0.5, ease: "easeOut" }}
+            style={{ top: topGap }}
+            className={`fixed   left-0 right-0 bg-white   overflow-y-auto z-70`}
+          >
             <div className="flex flex-col gap-2 p-6">
-              {["Home", "Schools", "Mentors","Scholarships", "Guides"].map((item) => (
-                <Link
-                  key={item}
-                  href={item === "Home" ? "/" : `/${item.toLowerCase()}`}
-                  className="px-4 py-3 text-sm font-medium text-gray-700 hover:bg-emerald-50 hover:text-emerald-600 rounded-md transition-colors"
-                  onClick={() => setIsOpen(false)}
-                >
-                  {item}
-                </Link>
-              ))}
+              {["Home", "Schools", "Mentors", "Scholarships", "Guides"].map(
+                (item) => (
+                  <Link
+                    key={item}
+                    href={item === "Home" ? "/" : `/${item.toLowerCase()}`}
+                    className="px-4 py-3 text-sm font-medium text-gray-700 hover:bg-emerald-50 hover:text-emerald-600 rounded-md transition-colors"
+                    onClick={() => setIsOpen(false)}
+                  >
+                    {item}
+                  </Link>
+                )
+              )}
 
               <div className="border-t border-gray-200 my-2" />
 
@@ -307,20 +308,20 @@ export default function Header() {
                 </div>
               ) : !session ? (
                 <>
-                <Link
-                  href="/login"
-                  className="px-4 py-3 bg-emerald-600 text-white text-sm font-medium rounded-md text-center hover:bg-emerald-700 transition-colors"
-                  onClick={() => setIsOpen(false)}
-                >
-                  Login
-                </Link>
-                <Link
-                  href="/sign-up"
-                  className="px-4 py-3 bg-emerald-600 text-white text-sm font-medium rounded-md text-center hover:bg-emerald-700 transition-colors"
-                  onClick={() => setIsOpen(false)}
-                >
-                  Register
-                </Link>
+                  <Link
+                    href="/login"
+                    className="px-4 py-3 bg-emerald-600 text-white text-sm font-medium rounded-md text-center hover:bg-emerald-700 transition-colors"
+                    onClick={() => setIsOpen(false)}
+                  >
+                    Login
+                  </Link>
+                  <Link
+                    href="/sign-up"
+                    className="px-4 py-3 bg-emerald-600 text-white text-sm font-medium rounded-md text-center hover:bg-emerald-700 transition-colors"
+                    onClick={() => setIsOpen(false)}
+                  >
+                    Register
+                  </Link>
                 </>
               ) : (
                 <div className="flex flex-col gap-2">
@@ -384,7 +385,7 @@ export default function Header() {
               )}
             </div>
           </motion.div>
-      )}
+        )}
       </AnimatePresence>
     </>
   );
