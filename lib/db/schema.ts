@@ -393,19 +393,23 @@ export const newsletter = pgTable("newsletter", {
   createdAt: timestamp("created_at").defaultNow(),
 });
 
-export const meetingSession = pgTable("meeting_session", {
-  id: uuid("id").primaryKey().defaultRandom().notNull(),
-  studentId: text("student_id")
-    .references(() => studentProfile.userId, {
-      onDelete: "cascade",
-    })
-    .notNull(),
-  name: text("name").notNull(),
-  city: text("city").notNull(),
-  email: text("email").notNull(),
-  question: text("question"),
-  createdAt: timestamp("created_at").defaultNow(),
-});
+export const meetingSession = pgTable(
+  "meeting_session",
+  {
+    id: uuid("id").primaryKey().defaultRandom().notNull(),
+    studentId: text("student_id")
+      .references(() => user.id, {
+        onDelete: "cascade",
+      })
+      .notNull(),
+    name: text("name").notNull(),
+    city: text("city").notNull(),
+    email: text("email").notNull(),
+    question: text("question"),
+    createdAt: timestamp("created_at").defaultNow(),
+  },
+  (table) => [uniqueIndex("unique_student_session").on(table.studentId)]
+);
 
 // ==========RELATIONS===============
 

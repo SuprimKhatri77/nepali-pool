@@ -11,7 +11,7 @@ import {
 import Link from "next/link";
 import { ArrowDownIcon, HomeIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
-const MotionLink = motion(Link)
+const MotionLink = motion(Link);
 export default function SessionLandingPage({
   studentProfileRecord,
   sessionRecord,
@@ -25,7 +25,7 @@ export default function SessionLandingPage({
   role?: "student" | "mentor" | "admin";
   hasStudentOnboardingData?: boolean;
 }) {
-  const router = useRouter()
+  const router = useRouter();
 
   return (
     <>
@@ -82,19 +82,6 @@ export default function SessionLandingPage({
                 </Button>
                 <Button variant="outline">Learn More</Button>
               </div>
-            ) : !hasStudentOnboardingData && role === "student" ? (
-              <div>
-                <h1 className="text-lg font-semibold">
-                  Please fill the{" "}
-                  <Link
-                    href="/onboarding/student"
-                    className="underline hover:no-underline"
-                  >
-                    Student Onboarding
-                  </Link>{" "}
-                  form to register for the session.
-                </h1>
-              </div>
             ) : (
               role !== "student" && (
                 <div>
@@ -108,7 +95,13 @@ export default function SessionLandingPage({
             <div>
               <h1 className="text-lg font-semibold">
                 Please{" "}
-                <MotionLink initial={{scale:1.1}} whileHover={{scale:0.9}} transition={{duration: 0.4, ease: "linear"}} href="/login" className=" px-4 py-1 rounded-[6px] bg-emerald-600 text-white">
+                <MotionLink
+                  initial={{ scale: 1.1 }}
+                  whileHover={{ scale: 0.9 }}
+                  transition={{ duration: 0.4, ease: "linear" }}
+                  href="/login"
+                  className=" px-4 py-1 rounded-[6px] bg-emerald-600 text-white"
+                >
                   Login
                 </MotionLink>{" "}
                 to register for the session
@@ -116,51 +109,52 @@ export default function SessionLandingPage({
             </div>
           )}
         </motion.div>
-        
-        {
-          hasSession ? 
-          hasStudentOnboardingData && role === "student" ? (
-            <motion.div className="flex justify-center animate-bounce"  onClick={() => {
-                    const el = document.getElementById("bookingForm");
-                    if (el) {
-                      el.scrollIntoView({ behavior: "smooth" });
-                    }
-                  }}>
-          <ArrowDownIcon className="rounded-full bg-emerald-300 p-1"/>
-        </motion.div>
-          ):<motion.div onClickCapture={()=> router.push("/")} className="flex justify-center animate-bounce"  onClick={() => {
-                    const el = document.getElementById("bookingForm");
-                    if (el) {
-                      el.scrollIntoView({ behavior: "smooth" });
-                    }
-                  }}>
-          <HomeIcon className="rounded-full bg-emerald-300 p-1"/>
-        </motion.div> : <motion.div onClickCapture={()=> router.push("/")} className="flex justify-center animate-bounce"  onClick={() => {
-                    const el = document.getElementById("bookingForm");
-                    if (el) {
-                      el.scrollIntoView({ behavior: "smooth" });
-                    }
-                  }}>
-          <HomeIcon className="rounded-full bg-emerald-300 p-1"/>
-        </motion.div>
-        }
-        
 
-       
-      </div>
-    {studentProfileRecord &&
-        hasStudentOnboardingData &&
-        role === "student" && (
-          <div id="bookingForm">
-            <SessionForm
-              studentProfileRecord={studentProfileRecord}
-              sessionRecord={sessionRecord ?? null}
-            />
-          </div>
+        {hasSession ? (
+          role === "student" && !sessionRecord ? (
+            <motion.div
+              className="flex justify-center animate-bounce"
+              onClick={() => {
+                const el = document.getElementById("bookingForm");
+                if (el) {
+                  el.scrollIntoView({ behavior: "smooth" });
+                }
+              }}
+            >
+              <ArrowDownIcon className="rounded-full bg-emerald-300 p-1" />
+            </motion.div>
+          ) : (
+            sessionRecord && (
+              <div className="py-4">
+                <h1 className="text-xl font-bold bg-gradient-to-r from-blue-500 to-purple-600 bg-clip-text text-transparent">
+                  You've signed up for the session successfully
+                </h1>
+              </div>
+            )
+          )
+        ) : (
+          <motion.div
+            onClickCapture={() => router.push("/")}
+            className="flex justify-center animate-bounce"
+            onClick={() => {
+              const el = document.getElementById("bookingForm");
+              if (el) {
+                el.scrollIntoView({ behavior: "smooth" });
+              }
+            }}
+          >
+            <HomeIcon className="rounded-full bg-emerald-300 p-1" />
+          </motion.div>
         )}
-    
-
-      
+      </div>
+      {role === "student" && !sessionRecord && (
+        <div id="bookingForm">
+          <SessionForm
+            studentProfileRecord={studentProfileRecord ?? null}
+            sessionRecord={sessionRecord ?? null}
+          />
+        </div>
+      )}
 
       {/* <UpcomingSession /> */}
     </>

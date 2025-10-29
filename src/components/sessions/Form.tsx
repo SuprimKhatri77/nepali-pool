@@ -17,18 +17,23 @@ import {
   joinSession,
   SessionFormState,
 } from "../../../server/actions/session/join-session";
-import { useActionState, useEffect } from "react";
+import { useActionState, useEffect, useState } from "react";
 import { Spinner } from "../ui/spinner";
 import { toast } from "sonner";
 import { FieldError } from "../ui/field";
+import { authClient } from "../../../server/lib/auth/auth-client";
+import { useRouter } from "next/navigation";
 
 export default function SessionForm({
   studentProfileRecord,
   sessionRecord,
 }: {
-  studentProfileRecord: StudentProfileSelectType & { user: UserSelectType };
+  studentProfileRecord:
+    | (StudentProfileSelectType & { user: UserSelectType })
+    | null;
   sessionRecord: MeetingSessionSelectType | null;
 }) {
+  const router = useRouter();
   const initialState: SessionFormState = {
     message: "",
     success: false,
@@ -41,11 +46,42 @@ export default function SessionForm({
   useEffect(() => {
     if (state.success && state.message) {
       toast.success(state.message, { position: "top-right" });
+      setTimeout(() => {
+        router.refresh();
+      }, 1050);
     }
     if (!state.success && state.message) {
       toast.error(state.message, { position: "top-right" });
     }
   }, [state.success, state.message, state.timestamp]);
+  const { data: session } = authClient.useSession();
+  const [city, setCity] = useState<string | null>(null);
+
+  useEffect(() => {
+    if ("geolocation" in navigator) {
+      navigator.geolocation.getCurrentPosition(
+        async (position) => {
+          const { latitude, longitude } = position.coords;
+
+          try {
+            const response = await fetch(
+              `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${latitude}&longitude=${longitude}&localityLanguage=en`
+            );
+            const data = await response.json();
+            console.log("City:", data.city);
+            setCity(data.city);
+          } catch (error) {
+            console.error("Error fetching city:", error);
+          }
+        },
+        (error) => {
+          console.error("Geolocation error:", error);
+        }
+      );
+    } else {
+      console.warn("Geolocation not supported by this browser.");
+    }
+  }, []);
   return (
     <section className="relative flex lg:flex-row flex-col py-16 px-2 sm:px-6 bg-emerald-200/60">
       {/* LEFT SECTION — SESSION DETAILS */}
@@ -160,12 +196,13 @@ export default function SessionForm({
                 ✅ Registration Submitted
               </h2>
               <p className="text-gray-700 text-center mb-2">
-                Thank you <strong>{studentProfileRecord.user.name}</strong> for
+                Thank you{" "}
+                <strong>{studentProfileRecord?.user.name || ""}</strong> for
                 joining!
               </p>
               <p className="text-gray-700 text-center mb-4">
                 Your registration email:{" "}
-                <strong>{studentProfileRecord.user.email}</strong>
+                <strong>{studentProfileRecord?.user.email || ""}</strong>
               </p>
               <p className="text-gray-700 text-center">
                 The meeting link will be sent to your email within 24 hours.
@@ -188,7 +225,9 @@ export default function SessionForm({
                 name="name"
                 placeholder="John Doe"
                 defaultValue={
-                  state.inputs?.name || studentProfileRecord.user.name
+                  state.inputs?.name ||
+                  studentProfileRecord?.user.name ||
+                  session?.user.name
                 }
                 required
               />
@@ -206,7 +245,9 @@ export default function SessionForm({
                 type="email"
                 placeholder="john@example.com"
                 defaultValue={
-                  state.inputs?.email || studentProfileRecord.user.email
+                  state.inputs?.email ||
+                  studentProfileRecord?.user.email ||
+                  session?.user.email
                 }
                 required
               />
@@ -224,7 +265,9 @@ export default function SessionForm({
                 placeholder="Kathmandu"
                 defaultValue={
                   state.inputs?.city ||
-                  capitalizeFirstLetter(studentProfileRecord.city ?? "")
+                  capitalizeFirstLetter(studentProfileRecord?.city ?? "") ||
+                  city ||
+                  ""
                 }
                 required
               />
@@ -259,7 +302,7 @@ export default function SessionForm({
             <input
               type="hidden"
               name="userId"
-              value={studentProfileRecord.userId}
+              value={studentProfileRecord?.userId || session?.user.id || ""}
             />
           </motion.form>
         )}

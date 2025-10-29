@@ -1,7 +1,7 @@
 import React from "react";
 import { auth } from "../../../server/lib/auth/auth";
 import { headers } from "next/headers";
-import { redirect } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { db } from "../../../lib/db";
 import {
   chatSubscription,
@@ -105,7 +105,7 @@ const Page = async () => {
     return <SelectChatPlaceholder />;
   }
 
-  return redirect("/");
+  return notFound();
 };
 
 export default Page;

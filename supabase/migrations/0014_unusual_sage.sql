@@ -1,0 +1,1 @@
+CREATE UNIQUE INDEX "unique_student_session" ON "meeting_session" USING btree ("student_id");
