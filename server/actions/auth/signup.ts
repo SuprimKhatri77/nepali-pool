@@ -123,8 +123,17 @@ export async function SignUp(
           userRecord.role !== "none"
             ? userRecord.role === "admin"
               ? "/admin"
-              : `/onboarding/${userRecord.role}`
+              : userRecord.role === "mentor"
+                ? "/dashboard/mentor"
+                : "/sessions"
             : "/select-role",
+
+        // to be set after the session
+        // userRecord.role !== "none"
+        //   ? userRecord.role === "admin"
+        //     ? "/admin"
+        //     : `/onboarding/${userRecord.role}`
+        //   : "/select-role",
       },
     });
 

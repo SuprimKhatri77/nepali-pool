@@ -44,12 +44,11 @@ export function SignupForm({
   const [toggleInputType, setToggleInputType] = useState<"text" | "password">(
     "password"
   );
-  const [toggleConfirmInputType, setToggleConfirmInputType] = useState<"text" | "password">(
-    "password"
-  );
-  const [password,setPassword] = useState(state.inputs?.password || "");
-  const [confirmPassword,setConfirmPassword] = useState("");
-  const [confirmErr,setConfirmErr]=useState<string | null>(null)
+  const [toggleConfirmInputType, setToggleConfirmInputType] = useState<
+    "text" | "password"
+  >("password");
+  const [password, setPassword] = useState(state.inputs?.password || "");
+  const [confirmPassword, setConfirmPassword] = useState("");
 
   const [role, setRole] = useState(() => {
     if (roleFromParams) {
@@ -62,27 +61,17 @@ export function SignupForm({
     return "";
   });
 
-  useEffect(() => {
-
-  if (!confirmPassword) {
-    setConfirmErr(null); // nothing to chec
-    return;
-  }
-
-  if (password === confirmPassword) {
-    setConfirmErr(null);
-  } else {
-    setConfirmErr("Password doesn't match");
-  }
-}, [confirmPassword,  password]);
-
+  const confirmErr =
+    password && confirmPassword && password !== confirmPassword
+      ? "Password doesn't match"
+      : null;
 
   useEffect(() => {
     if (state.success && state.message && state.redirectTo) {
       toast.success(state.message);
       setTimeout(() => {
         router.replace(state.redirectTo as string);
-      }, 1100);
+      }, 500);
     }
 
     if (!state.success && state.message) {
@@ -178,6 +167,7 @@ export function SignupForm({
           {state.errors?.password && (
             <FieldError>{state.errors.password[0]}</FieldError>
           )}
+          {confirmErr && <FieldError>{confirmErr}</FieldError>}
         </Field>
         <Field className="gap-1">
           <FieldLabel htmlFor="confirmPassword">Confirm Password</FieldLabel>
@@ -201,9 +191,7 @@ export function SignupForm({
               )}
             </InputGroupAddon>
           </InputGroup>
-          {confirmErr !== null && (
-            <FieldError>{confirmErr}</FieldError>
-          )}
+          {confirmErr && <FieldError>{confirmErr}</FieldError>}
         </Field>
         <Field className="space-y-2 gap-1">
           <FieldLabel htmlFor="role" className="text-title text-sm">
@@ -230,7 +218,6 @@ export function SignupForm({
         </Field>
         <Field className="gap-1">
           <Button
-            
             type="submit"
             className="bg-green-600 hover:bg-green-700"
             disabled={isPending || confirmErr !== null}

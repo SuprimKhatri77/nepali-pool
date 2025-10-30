@@ -47,12 +47,14 @@ export default function VerifyEmail({ email }: { email: string }) {
   };
   useEffect(() => {
     if (message) {
-      toast.info(decodeURIComponent(message), { position: "top-right", action:{
-        label:"X",
-        onClick: () => toast.dismiss()
-      },
-      duration: 3000, // 3 seconds
-    });
+      toast.info(decodeURIComponent(message), {
+        position: "top-right",
+        action: {
+          label: "X",
+          onClick: () => toast.dismiss(),
+        },
+        duration: 3000,
+      });
 
       const url = new URL(window.location.href);
       url.searchParams.delete("message");

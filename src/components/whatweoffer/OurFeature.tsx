@@ -1,30 +1,16 @@
-"use client"
-import Link from 'next/link'
-import React from 'react'
-import { motion } from 'framer-motion'
-const MotionLink = motion(Link)
+"use client";
+import Link from "next/link";
+import React from "react";
+import { motion } from "framer-motion";
+const MotionLink = motion(Link);
 
 export default function OurFeature() {
-  return (
-    <section className="bg-white py-20 px-6">
-  <div className="max-w-6xl mx-auto text-center mb-12">
-    <h2 className="text-4xl font-bold mb-4 text-black">What We Offer</h2>
-    <p className="text-lg text-gray-700">
-      Personalized guidance to help you achieve your study abroad goals.
-    </p>
-  </div>
-
-  <motion.div whileHover={{scale:1.06}} transition={{duration: 0.5, ease: "linear"}} className="max-w-6xl mx-auto grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-    {/* 1: One-to-One Chat */}
-    <motion.div 
-        whileHover={{scale:0.9}} transition={{duration: 0.5, ease: "easeInOut"}}
-    
-    className="border rounded-xl p-8 shadow-md hover:shadow-xl  flex flex-col items-center text-center">
-      <div className="mb-6">
-        {/* Icon: chat bubble */}
+  const features = [
+    {
+      icon: (
         <svg
           xmlns="http://www.w3.org/2000/svg"
-          className="h-16 w-16 text-emerald-500 mx-auto"
+          className="h-12 w-12"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
@@ -36,28 +22,18 @@ export default function OurFeature() {
             d="M8 10h.01M12 10h.01M16 10h.01M21 12c0 4.418-4.03 8-9 8a9.77 9.77 0 01-4.917-1.373L3 20l1.373-4.083A9.77 9.77 0 013 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
           />
         </svg>
-      </div>
-      <h3 className="text-2xl font-semibold mb-4">One-to-One Chat</h3>
-      <p className="text-gray-700 mb-6">
-        Get personal guidance from mentors who are already studying abroad.
-      </p>
-      <MotionLink 
-        href="/mentors"
-        className="bg-emerald-500 text-white px-6 py-3 rounded-lg font-semibold hover:bg-emerald-600 transition"
-      >
-        Connect with Mentor
-      </MotionLink>
-    </motion.div>
-
-    {/* 2: Group Sessions */}
-    <motion.div
-    whileHover={{scale:0.9}} transition={{duration: 0.5, ease: "easeInOut"}}
-    className="border rounded-xl p-8 shadow-md hover:shadow-xl  flex flex-col items-center text-center">
-      <div className="mb-6">
-        {/* Icon: group */}
+      ),
+      title: "One-to-One Chat",
+      description:
+        "Get personal guidance from mentors who are already studying abroad.",
+      link: "/mentors",
+      linkText: "Connect with Mentor",
+    },
+    {
+      icon: (
         <svg
           xmlns="http://www.w3.org/2000/svg"
-          className="h-16 w-16 text-emerald-500 mx-auto"
+          className="h-12 w-12"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
@@ -69,28 +45,18 @@ export default function OurFeature() {
             d="M17 20h5v-2a4 4 0 00-4-4h-1M9 20H4v-2a4 4 0 014-4h1M12 12a4 4 0 100-8 4 4 0 000 8z"
           />
         </svg>
-      </div>
-      <h3 className="text-2xl font-semibold mb-4">Weekly Group Sessions</h3>
-      <p className="text-gray-700 mb-6">
-        Join interactive weekly sessions led by experienced mentors to learn together.
-      </p>
-      <Link
-        href="/sessions"
-        className="bg-emerald-500 text-white px-6 py-3 rounded-lg font-semibold hover:bg-emerald-600 transition"
-      >
-        Check Sessions
-      </Link>
-    </motion.div>
-
-    {/* 3: Mentors */}
-    <motion.div 
-    whileHover={{scale:0.9}} transition={{duration: 0.5, ease: "easeInOut"}}
-    className="border rounded-xl p-8 shadow-md hover:shadow-xl  flex flex-col items-center text-center">
-      <div className="mb-6">
-        {/* Icon: user */}
+      ),
+      title: "Weekly Group Sessions",
+      description:
+        "Join interactive weekly sessions led by experienced mentors to learn together.",
+      link: "/sessions",
+      linkText: "Check Sessions",
+    },
+    {
+      icon: (
         <svg
           xmlns="http://www.w3.org/2000/svg"
-          className="h-16 w-16 text-emerald-500 mx-auto"
+          className="h-12 w-12"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
@@ -102,19 +68,120 @@ export default function OurFeature() {
             d="M5.121 17.804A4.992 4.992 0 0112 15c1.657 0 3.156.81 4.121 2.045M12 12a4 4 0 100-8 4 4 0 000 8z"
           />
         </svg>
+      ),
+      title: "Explore Mentors",
+      description:
+        "Browse mentors who have studied abroad and find the right guidance for you.",
+      link: "/mentors",
+      linkText: "View Mentors",
+    },
+  ];
+
+  return (
+    <section className="relative py-20 px-6 overflow-hidden">
+      {/* Background */}
+      <div className="absolute inset-0 bg-gradient-to-b from-white via-green-50/30 to-white" />
+
+      {/* Grid Pattern */}
+      <div className="absolute inset-0 bg-[linear-gradient(to_right,#10b98110_1px,transparent_1px),linear-gradient(to_bottom,#10b98110_1px,transparent_1px)] bg-[size:48px_48px]" />
+
+      {/* Decorative Elements */}
+      <motion.div
+        animate={{
+          scale: [1, 1.2, 1],
+          opacity: [0.15, 0.25, 0.15],
+        }}
+        transition={{
+          duration: 10,
+          repeat: Infinity,
+          ease: "easeInOut",
+        }}
+        className="absolute top-20 left-10 w-80 h-80 bg-emerald-300/30 rounded-full blur-3xl"
+      />
+      <motion.div
+        animate={{
+          scale: [1, 1.1, 1],
+          opacity: [0.1, 0.2, 0.1],
+        }}
+        transition={{
+          duration: 12,
+          repeat: Infinity,
+          ease: "easeInOut",
+        }}
+        className="absolute bottom-20 right-10 w-96 h-96 bg-green-300/20 rounded-full blur-3xl"
+      />
+
+      <div className="max-w-6xl mx-auto relative z-10">
+        {/* Header */}
+        <div className="text-center mb-16">
+          <h2 className="text-3xl md:text-4xl font-bold mb-4 text-gray-900">
+            What We Offer
+          </h2>
+          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+            Personalized guidance to help you achieve your study abroad goals.
+          </p>
+        </div>
+
+        {/* Features Grid */}
+        <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {features.map((feature, index) => (
+            <motion.div
+              key={index}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: index * 0.1 }}
+              whileHover={{ y: -8 }}
+              className="relative group"
+            >
+              {/* Hover Glow */}
+              <div className="absolute -inset-1 bg-gradient-to-r from-emerald-500 to-green-600 rounded-2xl opacity-0 group-hover:opacity-20 blur-xl transition-opacity duration-500" />
+
+              <div className="relative bg-white/90 backdrop-blur-sm border border-gray-200 rounded-2xl p-8 shadow-lg hover:shadow-2xl hover:border-emerald-300 transition-all duration-300 flex flex-col items-center text-center h-full">
+                {/* Icon */}
+                <div className="mb-6 w-16 h-16 bg-gradient-to-br from-emerald-500 to-green-600 rounded-xl flex items-center justify-center text-white shadow-lg group-hover:scale-110 transition-transform duration-300">
+                  {feature.icon}
+                </div>
+
+                {/* Title */}
+                <h3 className="text-xl font-semibold mb-4 text-gray-900 group-hover:text-emerald-600 transition-colors">
+                  {feature.title}
+                </h3>
+
+                {/* Description */}
+                <p className="text-gray-600 mb-6 flex-grow leading-relaxed">
+                  {feature.description}
+                </p>
+
+                {/* CTA */}
+                <MotionLink
+                  href={feature.link}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="inline-flex items-center gap-2 bg-emerald-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-emerald-700 transition-colors shadow-md hover:shadow-lg"
+                >
+                  {feature.linkText}
+                  <svg
+                    className="w-4 h-4"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M9 5l7 7-7 7"
+                    />
+                  </svg>
+                </MotionLink>
+
+                {/* Bottom Accent */}
+                <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-emerald-500 to-green-600 rounded-b-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+              </div>
+            </motion.div>
+          ))}
+        </div>
       </div>
-      <h3 className="text-2xl font-semibold mb-4">Explore Mentors</h3>
-      <p className="text-gray-700 mb-6">
-        Browse mentors who have studied abroad and find the right guidance for you.
-      </p>
-      <Link
-        href="/mentors"
-        className="bg-emerald-500 text-white px-6 py-3 rounded-lg font-semibold hover:bg-emerald-600 transition"
-      >
-        View Mentors
-      </Link>
-    </motion.div>
-  </motion.div>
-</section>
-  )
+    </section>
+  );
 }
