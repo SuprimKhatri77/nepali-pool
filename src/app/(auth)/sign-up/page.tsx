@@ -20,7 +20,8 @@ export default async function SignUp() {
   });
 
   if (!session) {
-    return (  <div className="grid min-h-svh lg:grid-cols-2">
+    return (
+      <div className="grid min-h-svh lg:grid-cols-2">
         <div className="flex flex-col gap-4 p-6 md:p-10">
           <div className="flex justify-between gap-2 md:justify-between md:items-center">
             <div className="flex items-center gap-2">
@@ -39,7 +40,7 @@ export default async function SignUp() {
             </Link>
           </div>
           <div className="flex flex-1 items-center justify-center">
-            <div className="w-full max-w-[500px] mx-auto">
+            <div className="w-full max-w-[400px] mx-auto">
               <SignupForm />
             </div>
           </div>
@@ -49,8 +50,6 @@ export default async function SignUp() {
             <h1 className="font-semibold text-4xl text-gray-900">NepaliPool</h1>
           </div>
         </div>
-
-
       </div>
     );
   }

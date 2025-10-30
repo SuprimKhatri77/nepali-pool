@@ -50,11 +50,14 @@ export function LoginForm({
 
   useEffect(() => {
     if (message) {
-      toast.info(decodeURIComponent(message), { position: "top-right", action:{
-        label:"X",
-        onClick: () => toast.dismiss()
-      },
-      duration: 3000});
+      toast.info(decodeURIComponent(message), {
+        position: "top-right",
+        action: {
+          label: "X",
+          onClick: () => toast.dismiss(),
+        },
+        duration: 3000,
+      });
 
       const url = new URL(window.location.href);
       url.searchParams.delete("message");
@@ -71,6 +74,9 @@ export function LoginForm({
       <FieldGroup>
         <div className="flex flex-col items-center gap-1 text-center">
           <h1 className="text-2xl font-bold">Login to your account</h1>
+          <p className="text-muted-foreground text-sm text-balance">
+            Enter your email below to login to your account
+          </p>
         </div>
         <Field>
           <FieldLabel htmlFor="email">Email</FieldLabel>
@@ -82,7 +88,6 @@ export function LoginForm({
             placeholder="m@example.com"
             disabled={isPending}
             required
-            className="border-1 border-black rounded-[8px]"
           />
           {state.errors?.email && (
             <FieldError>{state.errors.email[0]}</FieldError>
@@ -91,15 +96,20 @@ export function LoginForm({
         <Field>
           <div className="flex items-center">
             <FieldLabel htmlFor="password">Password</FieldLabel>
-            
+            <Link
+              href="/forgot-password"
+              className="ml-auto text-sm underline-offset-4 hover:underline"
+            >
+              Forgot your password?
+            </Link>
           </div>
-          <InputGroup className="border-1 border-black rounded-[8px]">
+          <InputGroup>
             <InputGroupInput
+              type={toggleInputType}
               id="password"
               disabled={isPending}
               name="password"
               defaultValue={state.inputs?.password}
-              type={toggleInputType}
               required
             />
             <InputGroupAddon align="inline-end">
@@ -116,19 +126,13 @@ export function LoginForm({
               )}
             </InputGroupAddon>
           </InputGroup>
-          <div className="relative mb-1">
-            <Link
-              href="/forgot-password"
-              className="absolute right-0 text-sm underline-offset-4 hover:underline"
-            >
-              Forgot your password?
-            </Link>
-         </div>
           {state.errors?.password && (
             <FieldError>{state.errors.password[0]}</FieldError>
           )}
-         
         </Field>
+        {!state.success && state.message && (
+          <FieldError>{state.message}</FieldError>
+        )}
         <Field>
           <Button
             type="submit"
@@ -145,7 +149,7 @@ export function LoginForm({
           </Button>
         </Field>
         <Field>
-          <FieldDescription className="sm:px-6 text-center">
+          <FieldDescription className="px-6 text-center">
             Don&apos;t have an account? <Link href="/sign-up">Sign up</Link>
           </FieldDescription>
         </Field>

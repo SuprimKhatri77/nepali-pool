@@ -28,8 +28,7 @@ export default async function Page() {
           <div className="flex justify-between gap-2 md:justify-between md:items-center">
             <div className="flex items-center gap-2">
               <div className="w-10 h-10 bg-gradient-to-br from-emerald-400 to-emerald-600 rounded-lg flex items-center justify-center text-white font-bold">
-              <Link href={"/"}>NP</Link>
-                
+                <Link href={"/"}>NP</Link>
               </div>
               <span className="font-semibold text-lg text-gray-900">
                 NepaliPool
@@ -43,13 +42,12 @@ export default async function Page() {
             </Link>
           </div>
           <div className="flex flex-1 items-center justify-center">
-             <div className="w-full max-w-xs">
+            <div className="w-full max-w-[400px] mx-auto">
               <LoginForm />
-            
             </div>
           </div>
         </div>
-      <div className="bg-muted relative hidden lg:flex items-center justify-center">
+        <div className="bg-muted relative hidden lg:flex  items-center justify-center">
           <div className="flex items-center gap-2">
             <h1 className="font-semibold text-4xl text-gray-900">NepaliPool</h1>
           </div>

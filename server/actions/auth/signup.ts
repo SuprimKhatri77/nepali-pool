@@ -14,6 +14,7 @@ export type FormState = {
     email?: string[];
     password?: string[];
     role?: string[];
+    confirmPassword?: string[];
   };
   message?: string;
   success?: boolean;
@@ -24,6 +25,7 @@ export type FormState = {
     email?: string;
     password?: string;
     role?: string;
+    confirmPassword?: string;
   };
   timestamp: number;
 };
@@ -68,7 +70,7 @@ export async function SignUp(
         /[^a-zA-Z0-9]/,
         "Password must contain at least one special character eg: @, #"
       ),
-
+    confirmPassword: z.string(),
     role: roleEnum,
   });
 
@@ -78,6 +80,7 @@ export async function SignUp(
     lastname: formData.get("lastname") as string,
     password: formData.get("password") as string,
     role: formData.get("role") as string,
+    confirmPassword: formData.get("confirmPassword") as string,
   });
 
   if (!validateFields.success) {
@@ -91,8 +94,17 @@ export async function SignUp(
     };
   }
 
-  const { firstname, lastname, email, password, role } = validateFields.data;
+  const { firstname, lastname, email, password, role, confirmPassword } =
+    validateFields.data;
 
+  if (password !== confirmPassword) {
+    return {
+      success: false,
+      message: "Password didn't match.",
+      inputs: Object.fromEntries(formData),
+      timestamp: Date.now(),
+    };
+  }
   try {
     await auth.api.signUpEmail({
       body: {

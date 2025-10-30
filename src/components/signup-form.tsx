@@ -175,6 +175,7 @@ export function SignupForm({
             <InputGroupInput
               onChange={(e) => setConfirmPassword(e.target.value)}
               type={toggleConfirmInputType}
+              defaultValue={state.inputs?.confirmPassword}
               name="confirmPassword"
             />
             <InputGroupAddon align="inline-end">
