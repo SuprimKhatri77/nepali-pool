@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import {
   Accordion,
   AccordionContent,
@@ -6,10 +6,8 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import Link from "next/link";
-import {  ArrowRightIcon } from "lucide-react";
-import { motion } from "framer-motion"
-import { Button } from "./ui/button";
-const MotionButton = motion(Button)
+import { ArrowRight } from "lucide-react";
+import { motion } from "framer-motion";
 
 interface FaqItem {
   id: string;
@@ -49,51 +47,124 @@ const Faq1 = ({
       answer:
         "Creating a student account and browsing mentors is completely free. However, booking a one-on-one session with a mentor may have a small fee, which goes directly to the mentor for their time and support.",
     },
-    {
-      id: "faq-5",
-      question: "What countries can mentors help me with?",
-      answer:
-        "Our mentors come from a variety of countries including Australia, Canada, the USA, the UK, and Japan — with more being added regularly as our mentor community grows.",
-    },
-    {
-      id: "faq-6",
-      question: "How do I book a session with a mentor?",
-      answer:
-        "After logging in as a student, you can visit the mentor’s profile and click on the 'Book Session' button. Choose a date and time, make the payment (if applicable), and you’ll receive a confirmation email with session details.",
-    },
-    {
-      id: "faq-7",
-      question: "Can I become both a student and a mentor?",
-      answer:
-        "Yes! If you are currently studying abroad, you can mentor others while also seeking guidance for higher studies or career planning from other mentors.",
-    },
-   
   ],
 }: Faq1Props) => {
+  // Show only first 4 items
+  const displayedItems = items.slice(0, 4);
+
   return (
-    <section className="py-32 w-full px-3 sm:px-6 flex justify-center">
-      <div className="container w-full sm:max-w-[1440px] sm:px-0 px-6">
-        <h1 className="mb-4 text-xl sm:text-3xl text-center  font-semibold md:mb-11 md:text-5xl">
-          {heading}
-        </h1>
-        <Accordion type="single" collapsible className="grid lg:grid-cols-2 lg:gap-x-12 gap-y-3">
-          {items.map((item, index) => (
-            <AccordionItem key={item.id} value={`item-${item.id}`} className="text-base mt-2 py-2  px-4 bg-white  border-emerald-900 border-[1.5px] rounded-2xl">
-              <AccordionTrigger className="font-semibold text-base hover:no-underline">
-                {item.question}
-              </AccordionTrigger>
-              <AccordionContent className=" text-black">
-                {item.answer}
-              </AccordionContent>
-            </AccordionItem>
-          ))}
-        </Accordion>
-         <Link href={"/support"} className="flex items-center justify-center">
-          <MotionButton initial={{scale:1}}  whileHover={{ scale:1.06 }} transition={{duration: 0.6, ease: "linear"}} className=" bg-emerald-600  text-white font-semibold  hover:bg-emerald-700/30 w-[250px] h-[60px] text-base sm:text-lg  mt-6">
-        Still have a query
-        <ArrowRightIcon className=" font-bold size-4 " />
-      </MotionButton></Link>
-     
+    <section className="relative py-24 w-full px-6 overflow-hidden">
+      {/* Background */}
+      <div className="absolute inset-0 bg-gradient-to-b from-white via-green-50/40 to-white" />
+
+      {/* Grid Pattern */}
+      <div className="absolute inset-0 bg-[linear-gradient(to_right,#10b98110_1px,transparent_1px),linear-gradient(to_bottom,#10b98110_1px,transparent_1px)] bg-[size:48px_48px]" />
+
+      {/* Decorative Elements */}
+      <motion.div
+        animate={{
+          scale: [1, 1.15, 1],
+          opacity: [0.15, 0.25, 0.15],
+        }}
+        transition={{
+          duration: 12,
+          repeat: Infinity,
+          ease: "easeInOut",
+        }}
+        className="absolute top-1/4 right-10 w-96 h-96 bg-emerald-300/20 rounded-full blur-3xl"
+      />
+      <motion.div
+        animate={{
+          scale: [1, 1.2, 1],
+          opacity: [0.1, 0.2, 0.1],
+        }}
+        transition={{
+          duration: 15,
+          repeat: Infinity,
+          ease: "easeInOut",
+        }}
+        className="absolute bottom-1/4 left-10 w-96 h-96 bg-green-300/15 rounded-full blur-3xl"
+      />
+
+      <div className="container max-w-4xl mx-auto relative z-10">
+        {/* Header */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="text-center mb-12"
+        >
+          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+            {heading}
+          </h2>
+          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+            Everything you need to know about NepaliPool
+          </p>
+        </motion.div>
+
+        {/* FAQ Accordion */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.2 }}
+        >
+          <Accordion type="single" collapsible className="space-y-4">
+            {displayedItems.map((item, index) => (
+              <motion.div
+                key={item.id}
+                initial={{ opacity: 0, y: 10 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.4, delay: index * 0.1 }}
+              >
+                <AccordionItem
+                  value={`item-${item.id}`}
+                  className="bg-white/80 backdrop-blur-sm border border-gray-200 rounded-xl px-6 py-2 hover:border-emerald-300 hover:shadow-lg transition-all duration-300"
+                >
+                  <AccordionTrigger className="font-semibold text-base text-left text-gray-900 hover:text-emerald-600 hover:no-underline py-4">
+                    {item.question}
+                  </AccordionTrigger>
+                  <AccordionContent className="text-gray-600 leading-relaxed pb-4">
+                    {item.answer}
+                  </AccordionContent>
+                </AccordionItem>
+              </motion.div>
+            ))}
+          </Accordion>
+        </motion.div>
+
+        {/* View All Link */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.4 }}
+          className="flex justify-center mt-12"
+        >
+          <Link
+            href="/faq"
+            className="group inline-flex items-center gap-2 px-6 py-3 bg-white border-2 border-emerald-600 text-emerald-600 font-semibold rounded-lg hover:bg-emerald-600 hover:text-white transition-all duration-300 shadow-md hover:shadow-lg"
+          >
+            View all FAQs
+            <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-300" />
+          </Link>
+        </motion.div>
+
+        {/* Optional: Still have questions CTA */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          transition={{ duration: 0.6, delay: 0.6 }}
+          className="text-center mt-8"
+        >
+          <p className="text-gray-600">
+            Still have questions?{" "}
+            <Link
+              href="/support"
+              className="text-emerald-600 font-medium hover:text-emerald-700 underline underline-offset-4"
+            >
+              Contact our support team
+            </Link>
+          </p>
+        </motion.div>
       </div>
     </section>
   );
