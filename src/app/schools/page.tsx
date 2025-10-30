@@ -12,16 +12,18 @@ export default async function AllSchools({
 }: {
   searchParams: Promise<{ page: string }>;
 }) {
-  const params = await searchParams;
-  let page = Number(params.page) || 1;
+  const page =
+    Number((await searchParams).page) > 0
+      ? Number((await searchParams).page)
+      : 1;
   const limit = 6;
   const [totalResult] = await db.select({ count: count() }).from(school);
 
   const total = Number(totalResult.count);
   const totalPages = Math.ceil(total / limit);
 
-  if (page < 1) page = 1;
-  if (page > totalPages) page = totalPages;
+  // if (page < 1) page = 1;
+  // if (page > totalPages) page = totalPages;
 
   const offset = (page - 1) * limit;
 
@@ -34,9 +36,8 @@ export default async function AllSchools({
   return (
     <>
       <div className="min-h-screen bg-white">
-      
-      <HeroSection total={total} schools={schools} />
-       
+        <HeroSection total={total} schools={schools} />
+
         {/* Main Content */}
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
           {schools.length === 0 ? (

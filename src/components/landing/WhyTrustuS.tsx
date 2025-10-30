@@ -5,7 +5,7 @@ import {
   CarouselItem,
   CarouselNext,
   CarouselPrevious,
-} from "../ui/carousel";
+} from "@/components/ui/carousel";
 import { motion } from "framer-motion";
 
 const trustPoints = [
@@ -29,7 +29,7 @@ const testimonials = [
 
 export default function WhyTrustUs() {
   return (
-    <section className="relative py-20 px-6 overflow-hidden">
+    <section className="relative py-12 sm:py-16 md:py-20 px-4 sm:px-6 overflow-hidden">
       {/* Background Gradient */}
       <div className="absolute inset-0 bg-gradient-to-b from-white via-emerald-50/50 to-white" />
 
@@ -48,7 +48,7 @@ export default function WhyTrustUs() {
           repeat: Infinity,
           ease: "easeInOut",
         }}
-        className="absolute top-1/4 left-0 w-96 h-96 bg-emerald-300/20 rounded-full blur-3xl"
+        className="absolute top-1/4 left-0 w-64 h-64 sm:w-80 sm:h-80 md:w-96 md:h-96 bg-emerald-300/20 rounded-full blur-3xl"
       />
       <motion.div
         animate={{
@@ -61,23 +61,23 @@ export default function WhyTrustUs() {
           repeat: Infinity,
           ease: "easeInOut",
         }}
-        className="absolute bottom-1/4 right-0 w-96 h-96 bg-green-300/20 rounded-full blur-3xl"
+        className="absolute bottom-1/4 right-0 w-64 h-64 sm:w-80 sm:h-80 md:w-96 md:h-96 bg-green-300/20 rounded-full blur-3xl"
       />
 
       <div className="max-w-7xl mx-auto relative z-10">
-        <div className="grid md:grid-cols-2 gap-12 lg:gap-16">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 sm:gap-10 md:gap-12 lg:gap-16">
           {/* Trust Points */}
           <motion.div
             initial={{ opacity: 0, x: -20 }}
             whileInView={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.6 }}
           >
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-3">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 mb-3">
               Why Trust Us?
             </h2>
-            <div className="w-20 h-1 bg-gradient-to-r from-emerald-500 to-green-600 rounded-full mb-8"></div>
+            <div className="w-16 sm:w-20 h-1 bg-gradient-to-r from-emerald-500 to-green-600 rounded-full mb-6 sm:mb-8"></div>
 
-            <div className="space-y-4">
+            <div className="space-y-3 sm:space-y-4">
               {trustPoints.map((point, index) => (
                 <motion.div
                   key={index}
@@ -87,9 +87,9 @@ export default function WhyTrustUs() {
                   className="flex items-start gap-3 group"
                 >
                   <div className="mt-1 flex-shrink-0">
-                    <div className="w-6 h-6 bg-gradient-to-br from-emerald-500 to-green-600 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                    <div className="w-5 h-5 sm:w-6 sm:h-6 bg-gradient-to-br from-emerald-500 to-green-600 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
                       <svg
-                        className="w-4 h-4 text-white"
+                        className="w-3 h-3 sm:w-4 sm:h-4 text-white"
                         fill="currentColor"
                         viewBox="0 0 20 20"
                       >
@@ -101,7 +101,9 @@ export default function WhyTrustUs() {
                       </svg>
                     </div>
                   </div>
-                  <p className="text-gray-700 leading-relaxed">{point}</p>
+                  <p className="text-sm sm:text-base text-gray-700 leading-relaxed">
+                    {point}
+                  </p>
                 </motion.div>
               ))}
             </div>
@@ -113,25 +115,25 @@ export default function WhyTrustUs() {
             whileInView={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.6 }}
           >
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-3">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 mb-3">
               Testimonials
             </h2>
-            <div className="w-20 h-1 bg-gradient-to-r from-emerald-500 to-green-600 rounded-full mb-8"></div>
+            <div className="w-16 sm:w-20 h-1 bg-gradient-to-r from-emerald-500 to-green-600 rounded-full mb-6 sm:mb-8"></div>
 
-            <div className="max-w-full">
+            <div className="w-full px-8 sm:px-0">
               <Carousel className="w-full">
                 <CarouselContent>
                   {testimonials.map((testimonial, index) => (
                     <CarouselItem key={index}>
-                      <div className="relative group">
+                      <div className="relative group px-1 sm:px-0">
                         {/* Glow Effect */}
                         <div className="absolute -inset-1 bg-gradient-to-r from-emerald-500 to-green-600 rounded-2xl opacity-0 group-hover:opacity-20 blur-xl transition-opacity duration-500" />
 
-                        <div className="relative bg-white/90 backdrop-blur-sm border border-gray-200 rounded-2xl p-8 hover:border-emerald-300 hover:shadow-xl transition-all duration-300">
+                        <div className="relative bg-white/90 backdrop-blur-sm border border-gray-200 rounded-xl sm:rounded-2xl p-6 sm:p-8 hover:border-emerald-300 hover:shadow-xl transition-all duration-300">
                           {/* Quote Icon */}
-                          <div className="absolute top-6 right-6 opacity-10">
+                          <div className="absolute top-4 right-4 sm:top-6 sm:right-6 opacity-10">
                             <svg
-                              className="w-16 h-16 text-emerald-600"
+                              className="w-10 h-10 sm:w-12 sm:h-12 md:w-16 md:h-16 text-emerald-600"
                               fill="currentColor"
                               viewBox="0 0 32 32"
                             >
@@ -140,31 +142,31 @@ export default function WhyTrustUs() {
                           </div>
 
                           {/* User Info */}
-                          <div className="flex items-center gap-4 mb-6">
-                            <div className="w-14 h-14 bg-gradient-to-br from-emerald-500 to-green-600 rounded-full flex items-center justify-center text-white font-bold text-xl shadow-lg">
+                          <div className="flex items-center gap-3 sm:gap-4 mb-4 sm:mb-6">
+                            <div className="w-12 h-12 sm:w-14 sm:h-14 bg-gradient-to-br from-emerald-500 to-green-600 rounded-full flex items-center justify-center text-white font-bold text-lg sm:text-xl shadow-lg flex-shrink-0">
                               {testimonial.name.charAt(0)}
                             </div>
                             <div>
-                              <p className="font-semibold text-gray-900 text-lg">
+                              <p className="font-semibold text-gray-900 text-base sm:text-lg">
                                 {testimonial.name}
                               </p>
-                              <p className="text-sm text-emerald-600 font-medium">
+                              <p className="text-xs sm:text-sm text-emerald-600 font-medium">
                                 Verified Student
                               </p>
                             </div>
                           </div>
 
                           {/* Testimonial Text */}
-                          <p className="text-gray-700 leading-relaxed relative z-10">
+                          <p className="text-sm sm:text-base text-gray-700 leading-relaxed relative z-10">
                             &quot;{testimonial.text}&quot;
                           </p>
 
                           {/* Star Rating */}
-                          <div className="flex gap-1 mt-6">
+                          <div className="flex gap-0.5 sm:gap-1 mt-4 sm:mt-6">
                             {[...Array(5)].map((_, i) => (
                               <svg
                                 key={i}
-                                className="w-5 h-5 text-yellow-400"
+                                className="w-4 h-4 sm:w-5 sm:h-5 text-yellow-400"
                                 fill="currentColor"
                                 viewBox="0 0 20 20"
                               >
@@ -177,8 +179,8 @@ export default function WhyTrustUs() {
                     </CarouselItem>
                   ))}
                 </CarouselContent>
-                <CarouselPrevious className="bg-white/90 backdrop-blur-sm border-gray-200 hover:bg-emerald-50 hover:border-emerald-300 -left-4" />
-                <CarouselNext className="bg-white/90 backdrop-blur-sm border-gray-200 hover:bg-emerald-50 hover:border-emerald-300 -right-4" />
+                <CarouselPrevious className="flex bg-white/90 backdrop-blur-sm border-gray-200 hover:bg-emerald-50 hover:border-emerald-300 -left-4 lg:-left-6" />
+                <CarouselNext className="flex bg-white/90 backdrop-blur-sm border-gray-200 hover:bg-emerald-50 hover:border-emerald-300 -right-4 lg:-right-6" />
               </Carousel>
             </div>
           </motion.div>
