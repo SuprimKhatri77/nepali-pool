@@ -183,9 +183,9 @@ export default function Scholarships() {
             )}
             <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {countryData.sites.map((site) => (
-                <div
-                  onClick={() => router.push(site.url)}
+                <a
                   key={site.name}
+                  href={site.url}
                   className="border bg-emerald-200/90 rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300 flex flex-col"
                 >
                   <div className="relative h-48 w-full">
@@ -218,7 +218,7 @@ export default function Scholarships() {
                       </button>
                     </div>
                   </div>
-                </div>
+                </a>
               ))}
             </div>
           </section>

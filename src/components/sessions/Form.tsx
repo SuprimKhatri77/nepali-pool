@@ -23,6 +23,7 @@ import { toast } from "sonner";
 import { FieldError } from "../ui/field";
 import { authClient } from "../../../server/lib/auth/auth-client";
 import { useRouter } from "next/navigation";
+import { IconBrandFacebook, IconBrandTiktok, IconBrandYoutube } from "@tabler/icons-react";
 
 export default function SessionForm({
   studentProfileRecord,
@@ -96,54 +97,74 @@ export default function SessionForm({
           transition={{ duration: 0.7 }}
           className="w-full max-w-lg mt-8 bg-white/70 backdrop-blur-md border border-gray-200 shadow-xl rounded-2xl p-6 text-center"
         >
-          {/* Mentor Info */}
-          <div className="flex flex-col items-center">
-            <Image
-              src="https://yt3.googleusercontent.com/AgHRTctkokHk0TyCz9-g2Eczv6HL949n050Id0muKqmTDqTILN15ttI9WPqHLgw-vJHmhKdsADo=s160-c-k-c0x00ffffff-no-rj"
-              width={80}
-              height={80}
-              alt="Mentor"
-              className="rounded-full shadow-md mb-3"
-            />
-            <h2 className="text-2xl font-semibold text-gray-900">
-              Bigyan Lama
-            </h2>
-            <p className="text-gray-500 text-sm mb-2">
-              Japan | Education Consultant
-            </p>
+{/* Mentor Info Section */}
+<div className="flex flex-row flex-wrap justify-center gap-8 mt-6">
 
-            {/* Social Icons */}
-            <div className="flex gap-4 mt-2">
-              <a
-                href="https://youtube.com/@bigyan_lama?si=2vrs-gyvAg-JfN2I"
-                className="text-red-500 hover:text-red-600 transition-transform hover:scale-110"
-                aria-label="YouTube"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="currentColor"
-                  viewBox="0 0 24 24"
-                  className="w-6 h-6"
-                >
-                  <path d="M19.615 3.184a3.001 3.001 0 0 1 2.12 2.121C22 6.78 22 12 22 12s0 5.22-.265 6.695a3.001 3.001 0 0 1-2.12 2.121C18.12 21 12 21 12 21s-6.12 0-7.615-.184a3.001 3.001 0 0 1-2.12-2.121C2 17.22 2 12 2 12s0-5.22.265-6.695a3.001 3.001 0 0 1 2.12-2.121C5.88 3 12 3 12 3s6.12 0 7.615.184zM10 15.5l6-3.5-6-3.5v7z" />
-                </svg>
-              </a>
-              <a
-                href="https://www.tiktok.com/@bigyan.lama95?_t=ZS-90hYx4JTXKZ&_r=1"
-                className="text-pink-500 hover:text-pink-600 transition-transform hover:scale-110"
-                aria-label="TikTok"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="currentColor"
-                  viewBox="0 0 24 24"
-                  className="w-6 h-6"
-                >
-                  <path d="M12.2 2h3.1a4.8 4.8 0 0 0 4.8 4.8V9a7.3 7.3 0 0 1-4.8-1.7v6.3A5.4 5.4 0 1 1 9.9 8v2.8a2.6 2.6 0 1 0 1.8 2.5V2z" />
-                </svg>
-              </a>
-            </div>
-          </div>
+  {/* --- Mentor Card Component --- */}
+  <div className="flex flex-col items-center bg-white/80 backdrop-blur-md border border-gray-200 shadow-lg rounded-2xl p-6 w-64 hover:scale-105 transition-transform">
+    <Image
+      src="https://yt3.googleusercontent.com/AgHRTctkokHk0TyCz9-g2Eczv6HL949n050Id0muKqmTDqTILN15ttI9WPqHLgw-vJHmhKdsADo=s160-c-k-c0x00ffffff-no-rj"
+      width={80}
+      height={80}
+      alt="Bigyan Lama"
+      className="rounded-full shadow-md mb-3"
+    />
+    <h2 className="text-2xl font-semibold text-gray-900">Bigyan Lama</h2>
+    <p className="text-gray-500 text-sm mb-3 text-center">Japan | Education Consultant</p>
+
+    {/* Social Icons */}
+    <div className="flex gap-4">
+      <a
+        href="https://youtube.com/@bigyan_lama?si=2vrs-gyvAg-JfN2I"
+        className="flex items-center gap-1 text-red-500 hover:text-red-600 transition-transform hover:scale-110"
+        aria-label="YouTube"
+      >
+        <IconBrandYoutube className="w-5 h-5" /> <span className="text-sm font-medium">13K+</span>
+      </a>
+      <a
+        href="https://www.tiktok.com/@bigyan.lama95?_t=ZS-90hYx4JTXKZ&_r=1"
+        className="flex items-center gap-1 text-pink-500 hover:text-pink-600 transition-transform hover:scale-110"
+        aria-label="TikTok"
+      >
+        <IconBrandTiktok className="w-5 h-5" /> <span className="text-sm font-medium">22K+</span>
+      </a>
+    </div>
+  </div>
+
+  {/* --- Mentor Card Component --- */}
+  <div className="flex flex-col items-center bg-white/80 backdrop-blur-md border border-gray-200 shadow-lg rounded-2xl p-6 w-64 hover:scale-105 transition-transform">
+    <Image
+      src="/mentorImage/rakeshDai.jpeg"
+      width={80}
+      height={80}
+      alt="Rakesh Dai"
+      className="rounded-full shadow-md mb-3"
+    />
+    <h2 className="text-2xl font-semibold text-gray-900">Rakesh Dai</h2>
+    <p className="text-gray-500 text-sm mb-3 text-center">Social Media Mentor</p>
+
+    {/* Social Icons */}
+    <div className="flex gap-4">
+      <a
+        href="https://facebook.com" // replace with real link
+        className="flex items-center gap-1 text-blue-600 hover:text-blue-700 transition-transform hover:scale-110"
+        aria-label="Facebook"
+      >
+        <IconBrandFacebook className="w-5 h-5" /> <span className="text-sm font-medium">6K+</span>
+      </a>
+      <a
+        href="https://www.tiktok.com" // replace with real link
+        className="flex items-center gap-1 text-pink-500 hover:text-pink-600 transition-transform hover:scale-110"
+        aria-label="TikTok"
+      >
+        <IconBrandTiktok className="w-5 h-5" /> <span className="text-sm font-medium">24K+</span>
+      </a>
+    </div>
+  </div>
+
+</div>
+
+
 
           {/* Divider */}
           <div className="border-t border-gray-200 my-4"></div>

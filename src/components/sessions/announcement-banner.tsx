@@ -36,16 +36,16 @@ export default function AnnouncementBanner({isVisible, setIsVisible}:{isVisible:
               <div className="flex flex-col sm:flex-row sm:items-center gap-2">
                 <div>
                   <span className="text-sm sm:text-base font-semibold text-emerald-900">
-                    Upcoming Meeting Session
+                    Upcoming Japan Session
                   </span>
                   <div className="flex items-center justify-center sm:justify-start gap-4 mt-1 text-xs sm:text-sm text-emerald-700">
                     <div className="flex items-center gap-1">
                       <Calendar className="w-4 h-4" />
-                      <span>October 30, 2025</span>
+                      <span>November 06, 2025</span>
                     </div>
                     <div className="flex items-center gap-1">
                       <Clock className="w-4 h-4" />
-                      <span>10:00 AM</span>
+                      <span>04:00 PM</span>
                     </div>
                   </div>
                 </div>

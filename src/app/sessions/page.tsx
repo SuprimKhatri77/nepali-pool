@@ -57,5 +57,6 @@ export default async function Page() {
 
     return <SessionLandingPage hasSession={true} role={userRecord.role} />;
   }
+  
   return <SessionLandingPage hasSession={false} />;
 }
