@@ -49,7 +49,6 @@ export function SignupForm({
   >("password");
   const [password, setPassword] = useState(state.inputs?.password || "");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [confirmErr, setConfirmErr] = useState<string | null>(null);
 
   const [role, setRole] = useState(() => {
     if (roleFromParams) {
@@ -62,9 +61,10 @@ export function SignupForm({
     return "";
   });
 
-  if (password !== confirmPassword) {
-    setConfirmErr("Password doesn't match");
-  }
+  const confirmErr =
+    password && confirmPassword && password !== confirmPassword
+      ? "Password doesn't match"
+      : null;
 
   useEffect(() => {
     if (state.success && state.message && state.redirectTo) {
@@ -167,6 +167,7 @@ export function SignupForm({
           {state.errors?.password && (
             <FieldError>{state.errors.password[0]}</FieldError>
           )}
+          {confirmErr && <FieldError>{confirmErr}</FieldError>}
         </Field>
         <Field className="gap-1">
           <FieldLabel htmlFor="confirmPassword">Confirm Password</FieldLabel>
@@ -190,7 +191,7 @@ export function SignupForm({
               )}
             </InputGroupAddon>
           </InputGroup>
-          {confirmErr !== null && <FieldError>{confirmErr}</FieldError>}
+          {confirmErr && <FieldError>{confirmErr}</FieldError>}
         </Field>
         <Field className="space-y-2 gap-1">
           <FieldLabel htmlFor="role" className="text-title text-sm">
