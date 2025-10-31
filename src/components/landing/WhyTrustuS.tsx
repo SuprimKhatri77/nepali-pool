@@ -37,7 +37,7 @@ export default function WhyTrustUs() {
       <div className="absolute inset-0 bg-[linear-gradient(to_right,#10b98112_1px,transparent_1px),linear-gradient(to_bottom,#10b98112_1px,transparent_1px)] bg-[size:40px_40px]" />
 
       {/* Decorative Blobs */}
-      <motion.div
+      {/* <motion.div
         animate={{
           x: [0, 30, 0],
           y: [0, -30, 0],
@@ -49,8 +49,8 @@ export default function WhyTrustUs() {
           ease: "easeInOut",
         }}
         className="absolute top-1/4 left-0 w-64 h-64 sm:w-80 sm:h-80 md:w-96 md:h-96 bg-emerald-300/20 rounded-full blur-3xl"
-      />
-      <motion.div
+      /> */}
+      {/* <motion.div
         animate={{
           x: [0, -30, 0],
           y: [0, 30, 0],
@@ -62,14 +62,14 @@ export default function WhyTrustUs() {
           ease: "easeInOut",
         }}
         className="absolute bottom-1/4 right-0 w-64 h-64 sm:w-80 sm:h-80 md:w-96 md:h-96 bg-green-300/20 rounded-full blur-3xl"
-      />
+      /> */}
 
       <div className="max-w-7xl mx-auto relative z-10">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 sm:gap-10 md:gap-12 lg:gap-16">
           {/* Trust Points */}
           <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            whileInView={{ opacity: 1, x: 0 }}
+            initial={{ opacity: 0, }}
+            whileInView={{ opacity: 1 }}
             transition={{ duration: 0.6 }}
           >
             <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 mb-3">
@@ -81,8 +81,8 @@ export default function WhyTrustUs() {
               {trustPoints.map((point, index) => (
                 <motion.div
                   key={index}
-                  initial={{ opacity: 0, x: -10 }}
-                  whileInView={{ opacity: 1, x: 0 }}
+                  initial={{ opacity: 0 }}
+                  whileInView={{ opacity: 1 }}
                   transition={{ duration: 0.4, delay: index * 0.1 }}
                   className="flex items-start gap-3 group"
                 >
@@ -111,16 +111,16 @@ export default function WhyTrustUs() {
 
           {/* Testimonials */}
           <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.6 }}
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            transition={{ duration: 0.6, ease: "linear" }}
           >
             <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 mb-3">
               Testimonials
             </h2>
             <div className="w-16 sm:w-20 h-1 bg-gradient-to-r from-emerald-500 to-green-600 rounded-full mb-6 sm:mb-8"></div>
 
-            <div className="w-full px-8 sm:px-0">
+            <motion.div initial={{scale:0}} animate={{scale:1}} transition={{duration: 0.4}}  className="w-full px-8 sm:px-0">
               <Carousel className="w-full">
                 <CarouselContent>
                   {testimonials.map((testimonial, index) => (
@@ -182,7 +182,7 @@ export default function WhyTrustUs() {
                 <CarouselPrevious className="flex bg-white/90 backdrop-blur-sm border-gray-200 hover:bg-emerald-50 hover:border-emerald-300 -left-4 lg:-left-6" />
                 <CarouselNext className="flex bg-white/90 backdrop-blur-sm border-gray-200 hover:bg-emerald-50 hover:border-emerald-300 -right-4 lg:-right-6" />
               </Carousel>
-            </div>
+            </motion.div>
           </motion.div>
         </div>
       </div>

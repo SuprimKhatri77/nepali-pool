@@ -86,7 +86,7 @@ export default function OurFeature() {
       <div className="absolute inset-0 bg-[linear-gradient(to_right,#10b98110_1px,transparent_1px),linear-gradient(to_bottom,#10b98110_1px,transparent_1px)] bg-[size:48px_48px]" />
 
       {/* Decorative Elements */}
-      <motion.div
+      {/* <motion.div
         animate={{
           scale: [1, 1.2, 1],
           opacity: [0.15, 0.25, 0.15],
@@ -97,8 +97,8 @@ export default function OurFeature() {
           ease: "easeInOut",
         }}
         className="absolute top-20 left-10 w-80 h-80 bg-emerald-300/30 rounded-full blur-3xl"
-      />
-      <motion.div
+      /> */}
+      {/* <motion.div
         animate={{
           scale: [1, 1.1, 1],
           opacity: [0.1, 0.2, 0.1],
@@ -109,7 +109,7 @@ export default function OurFeature() {
           ease: "easeInOut",
         }}
         className="absolute bottom-20 right-10 w-96 h-96 bg-green-300/20 rounded-full blur-3xl"
-      />
+      /> */}
 
       <div className="max-w-6xl mx-auto relative z-10">
         {/* Header */}
@@ -127,10 +127,9 @@ export default function OurFeature() {
           {features.map((feature, index) => (
             <motion.div
               key={index}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: index * 0.1 }}
-              whileHover={{ y: -8 }}
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              transition={{ duration: 0.3 , delay: 0.3 * index, ease: "linear" }}
               className="relative group"
             >
               {/* Hover Glow */}
@@ -153,10 +152,8 @@ export default function OurFeature() {
                 </p>
 
                 {/* CTA */}
-                <MotionLink
+                <Link
                   href={feature.link}
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
                   className="inline-flex items-center gap-2 bg-emerald-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-emerald-700 transition-colors shadow-md hover:shadow-lg"
                 >
                   {feature.linkText}
@@ -173,7 +170,7 @@ export default function OurFeature() {
                       d="M9 5l7 7-7 7"
                     />
                   </svg>
-                </MotionLink>
+                </Link>
 
                 {/* Bottom Accent */}
                 <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-emerald-500 to-green-600 rounded-b-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />

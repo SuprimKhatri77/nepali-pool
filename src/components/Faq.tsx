@@ -61,7 +61,7 @@ const Faq1 = ({
       <div className="absolute inset-0 bg-[linear-gradient(to_right,#10b98110_1px,transparent_1px),linear-gradient(to_bottom,#10b98110_1px,transparent_1px)] bg-[size:48px_48px]" />
 
       {/* Decorative Elements */}
-      <motion.div
+      {/* <motion.div
         animate={{
           scale: [1, 1.15, 1],
           opacity: [0.15, 0.25, 0.15],
@@ -72,8 +72,9 @@ const Faq1 = ({
           ease: "easeInOut",
         }}
         className="absolute top-1/4 right-10 w-96 h-96 bg-emerald-300/20 rounded-full blur-3xl"
-      />
-      <motion.div
+      /> */}
+      {/* <motion.div
+        initial={{scale: [1,1,1]}}
         animate={{
           scale: [1, 1.2, 1],
           opacity: [0.1, 0.2, 0.1],
@@ -84,13 +85,13 @@ const Faq1 = ({
           ease: "easeInOut",
         }}
         className="absolute bottom-1/4 left-10 w-96 h-96 bg-green-300/15 rounded-full blur-3xl"
-      />
+      /> */}
 
       <div className="container max-w-4xl mx-auto relative z-10">
         {/* Header */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
+          initial={{ opacity: 0, x: 20 }}
+          whileInView={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.6 }}
           className="text-center mb-12"
         >
@@ -104,16 +105,14 @@ const Faq1 = ({
 
         {/* FAQ Accordion */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.2 }}
+          
         >
           <Accordion type="single" collapsible className="space-y-4">
             {displayedItems.map((item, index) => (
               <motion.div
                 key={item.id}
-                initial={{ opacity: 0, y: 10 }}
-                whileInView={{ opacity: 1, y: 0 }}
+                initial={{ opacity: 0, }}
+                whileInView={{ opacity: 1,  }}
                 transition={{ duration: 0.4, delay: index * 0.1 }}
               >
                 <AccordionItem
@@ -134,9 +133,9 @@ const Faq1 = ({
 
         {/* View All Link */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.4 }}
+          // initial={{ opacity: 0, y: 20 }}
+          // whileInView={{ opacity: 1, y: 0 }}
+          // transition={{ duration: 0.6, delay: 0.4 }}
           className="flex justify-center mt-12"
         >
           <Link
@@ -150,9 +149,9 @@ const Faq1 = ({
 
         {/* Optional: Still have questions CTA */}
         <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          transition={{ duration: 0.6, delay: 0.6 }}
+          // initial={{ opacity: 0 }}
+          // whileInView={{ opacity: 1 }}
+          // transition={{ duration: 0.6 }}
           className="text-center mt-8"
         >
           <p className="text-gray-600">

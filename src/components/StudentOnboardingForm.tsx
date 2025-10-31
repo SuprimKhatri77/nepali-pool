@@ -455,7 +455,7 @@ export default function StudentOnboardingForm({
                     Favorite Destinations
                   </Label>
                   <p className="text-sm text-muted-foreground">
-                    Select the countries you dream of exploring
+                    Select the countries where you want to study.
                   </p>
                   <MultiSelectCountries
                     countries={countries}
