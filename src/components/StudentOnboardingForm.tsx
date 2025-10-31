@@ -178,8 +178,8 @@ export default function StudentOnboardingForm({
 
   useEffect(()=>{
      if(location){
-      formData.city = location.city;
-      formData.district = location.district
+      formData.city = state.inputs?.city || location.city || "";
+      formData.district = state.inputs?.district || location.district || ""
      }
   },[location])
   // local storage data save.
@@ -350,7 +350,7 @@ export default function StudentOnboardingForm({
                       id="district"
                       name="district"
                       placeholder="e.g., Rupandehi"
-                      defaultValue={location.district}
+                      defaultValue={state.inputs?.district || location.district || ""}
                       onChange={(e) =>
                         setFormData({ ...formData, district: e.target.value })
                       }
@@ -373,7 +373,7 @@ export default function StudentOnboardingForm({
                       id="city"
                       name="city"
                       placeholder="e.g., Butwal"
-                      defaultValue={location.city}
+                      defaultValue={state.inputs?.city || location.city || ""}
                       onChange={(e) =>
                         setFormData({ ...formData, city: e.target.value })
                       }

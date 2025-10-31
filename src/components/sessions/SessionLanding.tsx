@@ -115,7 +115,11 @@ export default function SessionLandingPage({
               </div>
 
               <h2 className="text-2xl font-semibold text-gray-900 mb-3">
-                Reserve your spot
+                {hasSession && role === "student" ? (
+                  "Spot reserved"
+                ):(
+                  "Reserve your spot"
+  )}
               </h2>
 
               <p className="text-gray-600 mb-6 leading-relaxed">

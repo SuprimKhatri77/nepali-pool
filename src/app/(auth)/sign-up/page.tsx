@@ -9,6 +9,7 @@ import { getMentorProfile } from "../../../../server/lib/auth/helpers/getMentorP
 import { ArrowLeft } from "lucide-react";
 import { SignupForm } from "@/components/signup-form";
 import Link from "next/link";
+import Image from "next/image";
 
 export const metadata = {
   title: "Sign up | Nepali Pool",
@@ -47,7 +48,12 @@ export default async function SignUp() {
         </div>
         <div className="bg-muted relative hidden lg:flex items-center justify-center">
           <div className="flex items-center gap-2">
-            <h1 className="font-semibold text-4xl text-gray-900">NepaliPool</h1>
+             <div
+                                     className="  rounded-lg flex items-center justify-center text-white font-bold shadow-sm group-hover:shadow-md transition-all duration-200"
+                                  
+                                   >
+                                     <Image src={"/logoTransparent.png"} alt="NepaliPool Transparent Logo" width={150} height={70} />
+                                   </div>
           </div>
         </div>
       </div>

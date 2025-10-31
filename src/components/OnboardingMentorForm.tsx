@@ -393,7 +393,7 @@ export default function MentorOnboardingForm({
                           City *
                         </Label>
                         <Input
-                          defaultValue={location.city}
+                          defaultValue={state.inputs?.city || location.city || ""}
                           type="text"
                           id="city"
                           name="city"

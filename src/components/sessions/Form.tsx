@@ -160,7 +160,7 @@ export default function SessionForm({
                   <Calendar className="w-5 h-5 text-green-600 mt-0.5" />
                   <div>
                     <p className="font-medium text-gray-900">
-                      October 25, 2025
+                      November 06, 2025
                     </p>
                     <p className="text-sm text-gray-500">Mark your calendar</p>
                   </div>
@@ -179,9 +179,9 @@ export default function SessionForm({
                 <div className="flex items-start gap-3">
                   <MapPin className="w-5 h-5 text-green-600 mt-0.5" />
                   <div>
-                    <p className="font-medium text-gray-900">Online via Zoom</p>
+                    <p className="font-medium text-gray-900">Online via Google Meet</p>
                     <p className="text-sm text-gray-500">
-                      Link sent to your email
+                      Link will be sent to your email
                     </p>
                   </div>
                 </div>

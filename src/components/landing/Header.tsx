@@ -29,9 +29,12 @@ export default function Header() {
   const pathname = usePathname();
   const isDashboardRoute = pathname.startsWith("/dashboard");
   const isChatRoute = pathname.startsWith("/chats");
-
+  const isSessionPage = pathname.includes("/sessions")
+  
   const { data: session, isPending } = authClient.useSession();
-
+  
+  const sessionRecord = session?.session ?? null
+  console.log(sessionRecord)
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (
@@ -68,7 +71,10 @@ export default function Header() {
 
   return (
     <>
-      <AnnouncementBanner isVisible={isVisible} setIsVisible={setIsVisible} />
+    {/* make the banner dynamic:  */}
+      {!isSessionPage && (
+        <AnnouncementBanner isAlreadyBooked={sessionRecord ?? null} isVisible={isVisible} setIsVisible={setIsVisible} />
+      )}
       <motion.header
         className={cn(
           "bg-white/80 backdrop-blur-xl z-40 border-b border-gray-200/50 px-4 sm:px-6 lg:px-10 py-3 sm:py-4 shadow-sm",
