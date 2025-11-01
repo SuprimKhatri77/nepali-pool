@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardFooter } from "@/components/ui/card";
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { authClient } from "../../server/lib/auth/auth-client";
 import { useRouter } from "next/navigation";
 import { startTransition, useEffect, useOptimistic, useState } from "react";
@@ -14,7 +14,7 @@ import {
   addToFavorite,
   type FormState,
 } from "../../server/actions/add-remove-favorite/addToFavorite";
-import { Star } from "lucide-react";
+import { EyeIcon, HeartIcon, Star } from "lucide-react";
 import { removeFavorite } from "../../server/actions/add-remove-favorite/removeFavorite";
 import { PaymentButton } from "@/components/PaymentButton";
 import Link from "next/link";
@@ -229,10 +229,10 @@ export default function StudentPage({
                       key={mentor.userId}
                       className="overflow-hidden hover:shadow-lg transition-shadow border-gray-200"
                     >
-                      <CardContent className="p-6">
+                      <CardHeader className="flex justify-between items-start">
                         <div className="flex items-start justify-between mb-4">
-                          <div className="flex items-center gap-4">
-                            <div className="relative h-20 w-20">
+                          <div className="flex flex-1 items-center gap-2">
+                            <div className="relative h-16 sm:h-20 w-16 sm:w-20">
                               <Image
                                 src={mentor.imageUrl! || "/placeholder.svg"}
                                 alt={mentor.user.name || "Mentor"}
@@ -241,7 +241,7 @@ export default function StudentPage({
                               />
                             </div>
                             <div>
-                              <h3 className="font-semibold text-lg text-gray-900">
+                              <h3 className="font-semibold text-base md:text-lg text-gray-900">
                                 {capitalizeFirstLetter(mentor.user.name)}
                               </h3>
                               <p className="text-sm text-gray-500">
@@ -249,7 +249,9 @@ export default function StudentPage({
                               </p>
                             </div>
                           </div>
-                          <div>
+                          
+                        </div>
+                        <div className="flex gap-1 pt-1">
                             {isFavorited(mentor.userId) ? (
                               <Button
                                 type="submit"
@@ -260,7 +262,7 @@ export default function StudentPage({
                                 }
                                 className="hover:bg-emerald-50"
                               >
-                                <Star className="w-5 h-5 text-yellow-500 fill-yellow-500" />
+                                <HeartIcon className="w-5 h-5 text-yellow-500 fill-yellow-500" />
                               </Button>
                             ) : (
                               <Button
@@ -270,7 +272,7 @@ export default function StudentPage({
                                 onClick={() => handleClick(mentor.userId)}
                                 className="hover:bg-emerald-50"
                               >
-                                <Star className="w-5 h-5 text-gray-400" />
+                                <HeartIcon className="w-5 h-5 text-gray-400" />
                               </Button>
                             )}
                             <input
@@ -283,8 +285,16 @@ export default function StudentPage({
                               name="studentId"
                               value={studentRecordWithUser.userId}
                             />
-                          </div>
+  <Link href={`/mentors/${mentor.userId}`}>
+    <Button variant="ghost" size="icon" className="text-emerald-700 hover:bg-emerald-100">
+      <EyeIcon className="w-5 h-5" /> {/* from lucide-react */}
+    </Button>
+  </Link>
                         </div>
+</CardHeader>
+
+                      <CardContent className="px-6">
+                        
 
                         <p className="text-sm text-gray-600 mb-6 line-clamp-3 mt-auto">
                           {capitalizeFirstLetter(mentor.bio?.slice(0,150) ?? "No Bio")}...
@@ -293,7 +303,7 @@ export default function StudentPage({
                         
                       </CardContent>
                       <CardFooter className="mt-auto flex flex-col gap-y-4">
-                        <div className="flex gap-4 justify-center  mb-0">
+                        <div className="grid grid-cols-2 gap-4 justify-center  mb-0">
                           {activeChat &&
                           activeChat.status === "active" &&
                           new Date(activeChat.endDate) > new Date() ? (
@@ -302,7 +312,7 @@ export default function StudentPage({
                                 href={`/chats/${studentChat?.id}`}
                                 className="inline-flex items-center justify-center rounded-md text-sm font-medium bg-emerald-600 text-white hover:bg-emerald-700 h-10 px-2 sm:px-4 py-2 transition-colors"
                               >
-                                Chat with Mentor
+                                Chat
                               </Link>
                             ) : (
                               studentChat &&
@@ -360,9 +370,6 @@ export default function StudentPage({
                             </PaymentButton>
                           )}
                         </div>
-                        <Button className="animate-pulse bg-emerald-700 ">
-                          <Link href={`/mentors/${mentor.userId}`}>Profile</Link>
-                        </Button>
                       </CardFooter>
                     </Card>
                   );

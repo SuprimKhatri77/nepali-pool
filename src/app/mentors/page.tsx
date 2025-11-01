@@ -9,6 +9,7 @@ import { headers } from "next/headers";
 import SearchBelowHero from "@/components/SearchBelowHero";
 import MentorCard from "@/components/MentorCard";
 import { Sparkles } from "lucide-react";
+import MentorHero from "@/components/mentors/MentorHero";
 
 export default async function Page({
   searchParams,
@@ -65,26 +66,20 @@ export default async function Page({
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-white via-emerald-50/30 to-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 lg:py-16">
+    <main className="overflow-hidden relative">
+      {/* Gradient Background */}
+      <div className="absolute inset-0 bg-gradient-to-br from-emerald-100 via-white to-green-100" />
+
+      {/* Grid Pattern Overlay */}
+      <div className="absolute inset-0 bg-[linear-gradient(to_right,#10b98120_1px,transparent_1px),linear-gradient(to_bottom,#10b98120_1px,transparent_1px)] bg-[size:48px_48px]" />
+
+      {/* Radial Gradient Accent */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[800px] bg-gradient-radial from-emerald-100/40 via-transparent to-transparent blur-3xl" />
+    <div className="min-h-screen relative z-10">
+      
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 lg:py-16 ">
         {/* Hero Section */}
-        <div className="text-center mb-12 sm:mb-16 space-y-4">
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-emerald-50 border border-emerald-200 rounded-full mb-4">
-            <Sparkles className="w-4 h-4 text-emerald-600" />
-            <span className="text-xs sm:text-sm font-medium text-emerald-700">
-              Connect with Expert Mentors
-            </span>
-          </div>
-
-          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-slate-900 tracking-tight px-4">
-            Find Your Perfect <span className="text-emerald-600">Mentor</span>
-          </h1>
-
-          <p className="text-base sm:text-lg text-slate-600 max-w-2xl mx-auto leading-relaxed px-4">
-            Browse through our curated list of experienced mentors ready to
-            guide you on your journey to success
-          </p>
-        </div>
+       <MentorHero />
 
         <SearchBelowHero mentors={allMentors} />
 
@@ -150,5 +145,6 @@ export default async function Page({
         )}
       </div>
     </div>
+    </main>
   );
 }

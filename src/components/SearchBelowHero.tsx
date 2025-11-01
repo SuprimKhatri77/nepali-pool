@@ -65,7 +65,7 @@ export default function SearchBelowHero({ mentors, sendTo = "/mentors/" }: Searc
            onFocus={() => setIsFocused(true)}
             value={query}
             onValueChange={(value)=> setQuery(value)}
-            placeholder="Search for mentors..."
+            placeholder="Search for mentor with city, name..."
             className="bg-transparent outline-none text-sm md:text-base  sm:w-1/2 py-4"
           />
           
