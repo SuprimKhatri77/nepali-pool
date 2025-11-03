@@ -42,7 +42,7 @@ export default function MentorCard({
 
   return (
     <Card
-      className="group max-w-[400px] w-full h-full border border-gray-200 rounded-2xl shadow-sm 
+      className="group max-w-[400px] w-full h-full border border-emerald-200 rounded-2xl shadow-sm 
              hover:shadow-lg transition-all duration-300 cursor-pointer 
              hover:border-emerald-400 bg-white hover:scale-105"
       onClick={() => {

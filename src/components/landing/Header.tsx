@@ -29,9 +29,12 @@ export default function Header() {
   const pathname = usePathname();
   const isDashboardRoute = pathname.startsWith("/dashboard");
   const isChatRoute = pathname.startsWith("/chats");
+  const isSessionPage = pathname.includes("/sessions");
 
   const { data: session, isPending } = authClient.useSession();
 
+  const sessionRecord = session?.session ?? null;
+  console.log(sessionRecord);
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (
@@ -82,11 +85,16 @@ export default function Header() {
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2 group">
             <motion.div
-              className="w-9 h-9 sm:w-10 sm:h-10 bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-lg flex items-center justify-center text-white font-bold shadow-sm group-hover:shadow-md transition-all duration-200"
+              className="w-9 h-9 sm:w-10 sm:h-10  rounded-lg flex items-center justify-center text-white font-bold shadow-sm group-hover:shadow-md transition-all duration-200"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
-              NP
+              <Image
+                src={"/logoTransparent.png"}
+                alt="NepaliPool Transparent Logo"
+                width={150}
+                height={70}
+              />
             </motion.div>
             <span className="font-semibold text-lg sm:text-xl text-gray-900 group-hover:text-emerald-600 transition-colors duration-200">
               NepaliPool
@@ -305,9 +313,9 @@ export default function Header() {
               animate={{ x: 0 }}
               exit={{ x: "100%" }}
               transition={{ type: "spring", damping: 25, stiffness: 200 }}
-              className="fixed top-0 right-0 bottom-0 w-[280px] sm:w-[320px] bg-white shadow-2xl z-40 overflow-y-auto"
+              className="fixed top-0 right-0 bottom-0 w-[280px] sm:w-[320px] bg-white shadow-2xl z-50 overflow-y-auto"
             >
-              <div className="flex flex-col h-full">
+              <div className="flex flex-col justify-around h-full">
                 {/* Header */}
                 <div className="flex items-center justify-between p-4 border-b border-gray-200">
                   <span className="font-semibold text-lg text-gray-900">
@@ -342,7 +350,11 @@ export default function Header() {
                       key={item.name}
                       initial={{ opacity: 0, x: 20 }}
                       animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: index * 0.05 }}
+                      transition={{
+                        duration: 0.3,
+                        delay: index * 0.05,
+                        ease: "linear",
+                      }}
                     >
                       <Link
                         href={item.href}
@@ -363,7 +375,7 @@ export default function Header() {
                 <div className="h-px bg-gray-200 mx-4" />
 
                 {/* Auth Section */}
-                <div className="flex flex-col gap-2 p-4 mt-auto">
+                <div className="flex flex-col gap-2 p-4 mb-auto">
                   {isPending ? (
                     <div className="flex justify-center py-3">
                       <Spinner className="size-6 text-emerald-500" />
@@ -446,6 +458,28 @@ export default function Header() {
                     </>
                   )}
                 </div>
+
+                {/* Logo */}
+                <Link
+                  href="/"
+                  className="flex flex-col items-center justify-center mb-2 gap-2 group"
+                >
+                  <motion.div
+                    className="w-9 h-9 sm:w-10 sm:h-10  rounded-lg flex items-center justify-center text-white font-bold shadow-sm group-hover:shadow-md transition-all duration-200"
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    <Image
+                      src={"/logoTransparent.png"}
+                      alt="NepaliPool Transparent Logo"
+                      width={150}
+                      height={70}
+                    />
+                  </motion.div>
+                  <span className="text-sm font-bold ">
+                    Your Dream, Our Success
+                  </span>
+                </Link>
               </div>
             </motion.div>
           </>

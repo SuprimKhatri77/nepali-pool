@@ -10,6 +10,8 @@ import {
   CheckCircle2,
   ExternalLink,
   Loader2,
+  UploadIcon,
+  ArrowUp,
 } from "lucide-react";
 import { cn } from "./lib/utils";
 
@@ -56,7 +58,7 @@ export default function CustomProfileUploader({
           disabled={isUploading}
           className="relative group focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:ring-offset-2 rounded-full disabled:opacity-60 disabled:cursor-not-allowed"
         >
-          <div className="relative w-24 h-24 rounded-full overflow-hidden border-2 border-emerald-200 group-hover:border-emerald-400 transition-all duration-200 shadow-sm">
+          <div className={`relative w-24 h-24 rounded-full overflow-hidden ${currentImage ? "border-2 border-emerald-200 group-hover:border-emerald-400":""} transition-all duration-200 shadow-sm`}>
             <Image
               src={
                 currentImage ||
@@ -76,16 +78,18 @@ export default function CustomProfileUploader({
           </div>
         </button>
 
-        <div className="">
+        <div>
           <p className="text-sm font-medium text-gray-700">
             {isUploading ? (
               <span className="flex gap-2">
                 {"Uploading..."}
-                <Loader2 className="animate-spin" />
+                <Loader2 className="animate-spin h-[16px]" />
               </span>
-            ) : "Upload photo"}
+            ) : (
+              <span onClick={() => inputRef.current?.click()} className="flex gap-2">Upload photo <UploadIcon className="h-[16px]"/></span>
+            ) }
           </p>
-          <p className="text-xs text-gray-500 mt-0.5">Click to change</p>
+          {currentImage && <p className="text-xs text-center text-gray-500 mt-0.5 flex items-center justify-start">Click to change <ArrowUp className="h-[16px]" /></p>}
         </div>
 
         <input

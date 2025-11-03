@@ -22,9 +22,20 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        {/* Required for Facebook */}
-        <meta property="fb:app_id" content="4071033779812681" />
-      </head>
+  {/* { Facebook } */}
+  <meta property="fb:app_id" content="4071033779812681" />
+
+  {/* { Open Graph } */}
+  <meta property="og:image" content="https://nepalipool.com/homepage-preview.png" />
+  <meta property="og:image:type" content="image/jpeg" />
+  <meta property="og:image:alt" content="Your Website Logo" />
+
+  {/* { Twitter } */}
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:image" content="https://nepalipool.com/homepage-preview.png" />
+  <meta name="twitter:image:alt" content="Our Website Logo" />
+</head>
+
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen`}
       >

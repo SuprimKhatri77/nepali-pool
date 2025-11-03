@@ -1,6 +1,7 @@
 "use client"
 import Link from "next/link";
 import {motion} from "framer-motion"
+import Image from "next/image";
 
 const exploreLinks = [
   { href: "/", name: "Home", id: 1 },
@@ -31,9 +32,13 @@ export default function Footer() {
           {/* Logo & Social */}
           <div className="md:col-span-1">
             <div className="flex items-center gap-2 mb-4">
-              <div className="px-2 py-2 sm:px-0 sm:py-0 sm:w-10 sm:h-10 bg-gradient-to-br from-emerald-400 to-emerald-600 rounded-lg flex items-center justify-center text-white font-bold">
-                NP
-              </div>
+                  <motion.div
+                            className="w-9 h-9 sm:w-10 sm:h-10  rounded-lg flex items-center justify-center text-white font-bold shadow-sm group-hover:shadow-md transition-all duration-200"
+                            whileHover={{ scale: 1.05 }}
+                            whileTap={{ scale: 0.95 }}
+                          >
+                            <Image src={"/logoTransparent.png"} alt="NepaliPool Transparent Logo" width={150} height={70} />
+                          </motion.div>
               <span className="font-semibold text-lg text-gray-900">
                 NepaliPool
               </span>

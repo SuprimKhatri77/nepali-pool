@@ -37,8 +37,8 @@ export default function HowItWorks() {
   return (
     <motion.section
       initial={{ opacity: 0 }}
-      whileInView={{ opacity: 1 }}
-      transition={{ duration: 0.8 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.6, ease: "easeIn" }}
       className="relative py-20 px-6 overflow-hidden"
     >
       {/* Background Gradient */}
@@ -48,7 +48,7 @@ export default function HowItWorks() {
       <div className="absolute inset-0 bg-[linear-gradient(to_right,#10b98115_1px,transparent_1px),linear-gradient(to_bottom,#10b98115_1px,transparent_1px)] bg-[size:40px_40px]" />
 
       {/* Decorative Blob Top */}
-      <motion.div
+      {/* <motion.div
         animate={{
           scale: [1, 1.1, 1],
           opacity: [0.3, 0.4, 0.3],
@@ -59,10 +59,10 @@ export default function HowItWorks() {
           ease: "easeInOut",
         }}
         className="absolute top-0 right-1/4 w-96 h-96 bg-emerald-200/20 rounded-full blur-3xl"
-      />
+      /> */}
 
       {/* Decorative Blob Bottom */}
-      <motion.div
+      {/* <motion.div
         animate={{
           scale: [1, 1.2, 1],
           opacity: [0.2, 0.3, 0.2],
@@ -73,7 +73,7 @@ export default function HowItWorks() {
           ease: "easeInOut",
         }}
         className="absolute bottom-0 left-1/4 w-96 h-96 bg-green-200/20 rounded-full blur-3xl"
-      />
+      /> */}
 
       <div className="max-w-7xl mx-auto relative z-10">
         <h2 className="text-3xl md:text-4xl font-bold text-center text-gray-900 mb-3">

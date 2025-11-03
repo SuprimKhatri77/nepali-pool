@@ -5,8 +5,10 @@ import { motion } from "framer-motion";
 export default function HowItWorksCard({ Header, Content, step }: Props) {
   return (
     <motion.div
-      whileHover={{ scale: 1.05, y: -5 }}
-      transition={{ duration: 0.3 }}
+      initial={{ opacity:0}}
+      whileInView={{opacity:1}}
+      whileHover={{ scale: 1.05}}
+      transition={{ duration: 0.3, delay: 0.1 * step }}
       className="relative group"
     >
       {/* Glow Effect on Hover */}
