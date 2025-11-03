@@ -5,6 +5,7 @@ import { Button } from "./ui/button";
 import { authClient } from "../../server/lib/auth/auth-client";
 import { useState } from "react";
 import { Spinner } from "./ui/spinner";
+import { toast } from "sonner";
 
 export default function SignOutButton({
   children,
@@ -24,13 +25,12 @@ export default function SignOutButton({
     // console.log("trying to logout");
     await authClient.signOut({
       fetchOptions: {
-        baseURL:
-          process.env.NODE_ENV === "production"
-            ? `${process.env.NEXT_PUBLIC_BETTER_AUTH_URL}`
-            : "http://localhost:3000",
         onSuccess: () => {
           router.push("/");
         },
+        // onError: ({ error }) => {
+        //   toast.error(error.message);
+        // },
       },
     });
 
