@@ -3,7 +3,7 @@
 import z from "zod";
 import { db } from "../../../lib/db";
 import { meetingSession } from "../../../lib/db/schema";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 import { getCurrentUser } from "../../lib/auth/helpers/getCurrentUser";
 
 export type SessionFormState = {
@@ -81,7 +81,7 @@ export async function joinSession(
   const { name, email, city, question } = validateFields.data;
 
   try {
-    const sessionData = await db.insert(meetingSession).values({
+    await db.insert(meetingSession).values({
       name,
       email,
       city,
@@ -89,7 +89,7 @@ export async function joinSession(
       question: question ?? null,
     });
 
-    // revalidatePath("/sessions");
+    revalidateTag("user_meeting_data_tag", "max");
     return {
       success: true,
       message: "Signed up for session succesfully",

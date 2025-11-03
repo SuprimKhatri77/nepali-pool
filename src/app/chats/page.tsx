@@ -34,8 +34,7 @@ const Page = async () => {
       "Please verify your email to continue."
     );
 
-  if (!userRecord.role || userRecord.role === "none")
-    return redirect("/select-role");
+  if (!userRecord.role || userRecord.role === "none") redirect("/select-role");
   if (userRecord.role === "admin") redirect("/admin/dashboard");
 
   if (userRecord.role === "student") {

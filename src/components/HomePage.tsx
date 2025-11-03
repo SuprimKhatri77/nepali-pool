@@ -8,7 +8,6 @@ import OurFeature from "./whatweoffer/OurFeature";
 export default function HomePage() {
   return (
     <div className="min-h-screen bg-emerald-200/90 min-w-full overflow-x-hidden">
-      {/* <AnnouncementBanner /> */}
       <Hero />
       <HowItWorks />
       <OurFeature />

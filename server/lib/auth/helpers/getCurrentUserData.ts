@@ -59,6 +59,9 @@ export async function getCurrentUserData(
         eq(chatSubscription.mentorId, mentorId),
         eq(chatSubscription.status, "active")
       ),
+    with: {
+      chat: true,
+    },
   });
 
   const videoCallRecord = await db.query.videoCall.findFirst({
@@ -81,7 +84,7 @@ export async function getCurrentUserData(
 
   return {
     success: true,
-    chatId: chatRecord?.id ?? null,
+    chatId: chatRecord?.chat.id ?? null,
     videoCallId: videoCallRecord?.id ?? null,
     role: userRecord.role,
     videoCallStatus: videoCallRecord?.status ?? null,
