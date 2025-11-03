@@ -23,7 +23,7 @@ export default function AnnouncementBanner({
     const fetchUserMeetingData = async () => {
       setLoading(true);
       const result = await getCurrentUserMeetingData();
-      console.log("result ab: ", result);
+      // console.log("result ab: ", result);
       if (result.success && result.meetingRecord) {
         setMeetingData(result.meetingRecord);
       } else {
@@ -41,7 +41,7 @@ export default function AnnouncementBanner({
   }, [isVisible]);
 
   if (!isVisible) return null;
-  console.log("meeting record: ", meetingData);
+  // console.log("meeting record: ", meetingData);
 
   return (
     <AnimatePresence>

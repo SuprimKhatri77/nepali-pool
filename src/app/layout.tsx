@@ -27,13 +27,13 @@ export default function RootLayout({
 
   {/* { Open Graph } */}
   <meta property="og:image" content="https://nepalipool.com/homepage-preview.png" />
-  <meta property="og:image:type" content="image/jpeg" />
-  <meta property="og:image:alt" content="Your Website Logo" />
+  <meta property="og:image:type" content="image/png" />
+  <meta property="og:image:alt" content="Our Website Home Page" />
 
   {/* { Twitter } */}
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:image" content="https://nepalipool.com/homepage-preview.png" />
-  <meta name="twitter:image:alt" content="Our Website Logo" />
+  <meta name="twitter:image:alt" content="Our Website Home Page" />
 </head>
 
       <body
