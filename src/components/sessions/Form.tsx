@@ -278,7 +278,7 @@ export default function SessionForm({
             </div>
 
             {/* Countdown */}
-            <SessionCountdown targetDate="2025-11-06T15:00:00+05:45" />
+            <SessionCountdown targetDate="2025-11-06T18:00:00+05:45" />
           </motion.div>
 
           {/* Right: Registration Form */}
