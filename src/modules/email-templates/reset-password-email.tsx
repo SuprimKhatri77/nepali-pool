@@ -1,11 +1,11 @@
 import Head from "next/head";
 
-interface EmailVerificationProps {
+interface PasswordResetProps {
   url: string;
   name?: string;
 }
 
-export const EmailVerification = ({ url, name }: EmailVerificationProps) => {
+export const PasswordReset = ({ url, name }: PasswordResetProps) => {
   return (
     <html>
       <Head>
@@ -56,7 +56,7 @@ export const EmailVerification = ({ url, name }: EmailVerificationProps) => {
                         fontWeight: 600,
                       }}
                     >
-                      Verify Your Email Address
+                      Reset Your Password
                     </h1>
                   </td>
                 </tr>
@@ -85,8 +85,8 @@ export const EmailVerification = ({ url, name }: EmailVerificationProps) => {
                         lineHeight: "24px",
                       }}
                     >
-                      Thank you for signing up! Please verify your email address
-                      by clicking the button below.
+                      We received a request to reset your password. Click the
+                      button below to create a new password.
                     </p>
 
                     <p
@@ -97,7 +97,7 @@ export const EmailVerification = ({ url, name }: EmailVerificationProps) => {
                         lineHeight: "24px",
                       }}
                     >
-                      This link will expire in 1 hours.
+                      This link will expire in 5 minutes for security reasons.
                     </p>
 
                     {/* Button */}
@@ -109,7 +109,7 @@ export const EmailVerification = ({ url, name }: EmailVerificationProps) => {
                             style={{
                               display: "inline-block",
                               padding: "14px 32px",
-                              backgroundColor: "#2563eb",
+                              backgroundColor: "#dc2626",
                               color: "#ffffff",
                               textDecoration: "none",
                               borderRadius: "6px",
@@ -117,7 +117,7 @@ export const EmailVerification = ({ url, name }: EmailVerificationProps) => {
                               fontWeight: 500,
                             }}
                           >
-                            Verify Email Address
+                            Reset Password
                           </a>
                         </td>
                       </tr>
@@ -137,7 +137,7 @@ export const EmailVerification = ({ url, name }: EmailVerificationProps) => {
                     <p
                       style={{
                         margin: "10px 0 0 0",
-                        color: "#2563eb",
+                        color: "#dc2626",
                         fontSize: "14px",
                         wordBreak: "break-all",
                       }}
@@ -159,6 +159,18 @@ export const EmailVerification = ({ url, name }: EmailVerificationProps) => {
                   >
                     <p
                       style={{
+                        margin: "0 0 10px 0",
+                        color: "#6b7280",
+                        fontSize: "14px",
+                        lineHeight: "20px",
+                        textAlign: "center",
+                      }}
+                    >
+                      If you didn&apos;t request a password reset, please ignore
+                      this email or contact support if you have concerns.
+                    </p>
+                    <p
+                      style={{
                         margin: 0,
                         color: "#6b7280",
                         fontSize: "14px",
@@ -166,8 +178,8 @@ export const EmailVerification = ({ url, name }: EmailVerificationProps) => {
                         textAlign: "center",
                       }}
                     >
-                      If you didn&apos;t create an account, you can safely
-                      ignore this email.
+                      Your password won&apos;t change until you create a new
+                      one.
                     </p>
                   </td>
                 </tr>

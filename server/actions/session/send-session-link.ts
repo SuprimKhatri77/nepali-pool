@@ -4,6 +4,8 @@ import z from "zod";
 import { getCurrentAdmin } from "../../lib/auth/helpers/getCurrentAdmin";
 import { db } from "../../../lib/db";
 import { sendEmail } from "../../lib/send-email";
+import { Resend } from "resend";
+import { MeetingInvite } from "@/modules/email-templates/meeting-invite-email";
 
 export type SendSessionLinkFormstate = {
   errors?: {
@@ -16,6 +18,7 @@ export type SendSessionLinkFormstate = {
     meetingLink?: string;
   };
 };
+const resend = new Resend(process.env.RESEND_API_KEY as string);
 
 export async function sendSessionLink(
   prevState: SendSessionLinkFormstate,
@@ -62,10 +65,25 @@ export async function sendSessionLink(
 
     await Promise.all(
       allSessionUsers.map((user) =>
-        sendEmail({
+        // sendEmail({
+        //   to: user.email,
+        //   subject: "Zoom Meeting Link",
+        //   html: `Click on the link to join the meeting: ${meetingLink}`,
+        // })
+        resend.emails.send({
+          from: "Nepalipool <noreply@nepalipool.com>",
           to: user.email,
-          subject: "Zoom Meeting Link",
-          html: `Click on the link to join the meeting: ${meetingLink}`,
+          subject:
+            "Meeting Invitation: Get to know what's It's like to be in Japan.",
+          react: MeetingInvite({
+            url: meetingLink,
+            hostName: "Bigyan Lama",
+            attendeeEmail: user.email,
+            duration: "40minutes",
+            date: "November 7 2025",
+            time: "4:00 pm",
+            meetingTitle: "Japan query session",
+          }),
         })
       )
     );
