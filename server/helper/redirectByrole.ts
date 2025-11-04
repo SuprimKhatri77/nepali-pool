@@ -16,7 +16,7 @@ export async function redirectByRole(userRecord: UserSelectType) {
         .select()
         .from(studentProfile)
         .where(eq(studentProfile.userId, userRecord.id));
-
+      return redirect("/sessions")
       if (!studentRecord) return redirect("/onboarding/student?message=Please+complete+the+onboarding+to+continue!");
       return redirect("/dashboard/student");
     }

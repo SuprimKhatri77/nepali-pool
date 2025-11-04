@@ -139,13 +139,13 @@ export default function SessionForm({
   }
 
   return (
-    <section className="relative py-24 px-6 bg-gradient-to-b from-white to-green-50/30">
+    <section className="relative py-24 sm:px-6 bg-gradient-to-b from-white to-green-50/30">
       <div className="max-w-7xl mx-auto">
         <div className="grid lg:grid-cols-2 gap-12 items-start">
           {/* Left: Session Details */}
           <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            whileInView={{ opacity: 1, x: 0 }}
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1}}
             transition={{ duration: 0.6 }}
             className="space-y-8"
           >
@@ -198,7 +198,7 @@ export default function SessionForm({
 
             {/* Mentors */}
             <div className="space-y-4">
-              <h3 className="text-xl font-semibold text-gray-900">
+              <h3 className="text-xl sm:text-start text-center font-semibold text-gray-900">
                 Your mentor
               </h3>
 
@@ -289,8 +289,8 @@ export default function SessionForm({
           {/* Right: Registration Form */}
           <motion.div
           id="bookingForm"
-            initial={{ opacity: 0, x: 20 }}
-            whileInView={{ opacity: 1, x: 0 }}
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
             transition={{ duration: 0.6 }}
           >
             <div  className="bg-white border border-gray-200 rounded-2xl p-8 shadow-sm sticky top-8">
