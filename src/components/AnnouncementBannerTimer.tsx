@@ -3,7 +3,7 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { useEffect, useState } from "react";
 
-export default function SessionCountdown({
+export default function AnnouncementBannerTimer({
   targetDate,
 }: {
   targetDate: string;
@@ -41,32 +41,33 @@ export default function SessionCountdown({
       : ["hours", "minutes", "seconds"];
 
   return (
-    <div className="flex flex-col items-center justify-center mt-6">
-      <h3 className="text-lg text-gray-600 mb-2 font-medium">
-        ⏳ Session starts in
-      </h3>
-      <div className="flex gap-4 text-4xl font-bold text-emerald-600">
-        {units.map((unit) => (
-          <AnimatePresence mode="popLayout" key={unit}>
-            <motion.span
-              suppressHydrationWarning
-              key={(timeLeft as any)[unit]}
-              initial={{  opacity: 0 }}
-              animate={{  opacity: 1 }}
-              exit={{  opacity: 0 }}
-              transition={{ duration: 0.3 }}
-              className="tabular-nums min-w-[60px] text-center"
-            >
-              {(timeLeft as any)[unit].toString().padStart(2, "0")}
-            </motion.span>
-          </AnimatePresence>
-        ))}
+ <div className="flex items-center justify-center gap-3 bg-emerald-50 text-emerald-700 text-sm font-semibold h-[38px] px-3">
+  <span className="text-gray-700 mr-1">Session starts in:</span>
+  
+  <div className="flex items-end gap-2">
+    {units.map((unit) => (
+      <div key={unit} className="flex flex-col items-center leading-none">
+        <AnimatePresence mode="popLayout">
+          <motion.span
+            suppressHydrationWarning
+            key={(timeLeft as any)[unit]}
+            initial={{ y: -10, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            exit={{ y: 10, opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="tabular-nums text-sm font-mono"
+          >
+            {(timeLeft as any)[unit].toString().padStart(2, "0")}
+          </motion.span>
+        </AnimatePresence>
+        <span className="text-[10px] text-gray-500">
+          {unit.charAt(0).toUpperCase()}
+        </span>
       </div>
-      <div className="flex gap-6 text-sm text-gray-500 mt-1">
-        {units.map((unit) => (
-          <span key={unit}>{unit.charAt(0).toUpperCase() + unit.slice(1)}</span>
-        ))}
-      </div>
-    </div>
+    ))}
+  </div>
+</div>
+
+
   );
 }

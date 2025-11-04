@@ -139,13 +139,13 @@ export default function SessionForm({
   }
 
   return (
-    <section className="relative py-24 px-6 bg-gradient-to-b from-white to-green-50/30">
+    <section className="relative py-24 sm:px-6 bg-gradient-to-b from-white to-green-50/30">
       <div className="max-w-7xl mx-auto">
         <div className="grid lg:grid-cols-2 gap-12 items-start">
           {/* Left: Session Details */}
           <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            whileInView={{ opacity: 1, x: 0 }}
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1}}
             transition={{ duration: 0.6 }}
             className="space-y-8"
           >
@@ -160,7 +160,7 @@ export default function SessionForm({
                   <Calendar className="w-5 h-5 text-green-600 mt-0.5" />
                   <div>
                     <p className="font-medium text-gray-900">
-                      November 06, 2025
+                      November 07, 2025
                     </p>
                     <p className="text-sm text-gray-500">Mark your calendar</p>
                   </div>
@@ -169,7 +169,7 @@ export default function SessionForm({
                 <div className="flex items-start gap-3">
                   <Clock className="w-5 h-5 text-green-600 mt-0.5" />
                   <div>
-                    <p className="font-medium text-gray-900">45 minutes</p>
+                    <p className="font-medium text-gray-900">45 | 60 minutes</p>
                     <p className="text-sm text-gray-500">
                       Live interactive session
                     </p>
@@ -198,13 +198,13 @@ export default function SessionForm({
 
             {/* Mentors */}
             <div className="space-y-4">
-              <h3 className="text-xl font-semibold text-gray-900">
-                Your mentors
+              <h3 className="text-xl sm:text-start text-center font-semibold text-gray-900">
+                Your mentor
               </h3>
 
               <div className="grid sm:grid-cols-2 gap-4">
                 {/* Mentor 1 */}
-                <div className="bg-white border border-gray-200 rounded-xl p-6 hover:shadow-md transition-shadow">
+                {/* <div className="bg-white border border-gray-200 rounded-xl p-6 hover:shadow-md transition-shadow">
                   <div className="flex flex-col items-center text-center">
                     <Image
                       src="https://yt3.googleusercontent.com/AgHRTctkokHk0TyCz9-g2Eczv6HL949n050Id0muKqmTDqTILN15ttI9WPqHLgw-vJHmhKdsADo=s160-c-k-c0x00ffffff-no-rj"
@@ -237,57 +237,63 @@ export default function SessionForm({
                       </a>
                     </div>
                   </div>
-                </div>
+                </div> */}
 
                 {/* Mentor 2 */}
-                <div className="bg-white border border-gray-200 rounded-xl p-6 hover:shadow-md transition-shadow">
-                  <div className="flex flex-col items-center text-center">
-                    <Image
-                      src="/mentorImage/rakeshDai.jpeg"
-                      width={72}
-                      height={72}
-                      alt="Rakesh Dai"
-                      className="rounded-full mb-3 border-2 border-gray-100"
-                    />
-                    <h4 className="font-semibold text-gray-900 mb-1">
-                      Rakesh Dai
-                    </h4>
-                    <p className="text-sm text-gray-500 mb-3">
-                      Social Media Mentor
-                    </p>
+               <div className="bg-white md:col-span-2 border border-gray-200 rounded-xl p-6 hover:shadow-md transition-shadow">
+  <div className="flex flex-col items-center text-center">
+    <Image
+      src="/mentorImage/rakeshDai.jpeg"
+      width={72}
+      height={72}
+      alt="Rakesh Thapa"
+      className="rounded-full mb-3 border-2 border-gray-100"
+    />
+    <h4 className="font-semibold text-gray-900 mb-1">Rakesh Thapa</h4>
+    <p className="text-sm text-gray-500 mb-3">Social Media Mentor</p>
 
-                    <div className="flex items-center gap-3">
-                      <a
-                        href="https://facebook.com"
-                        className="flex items-center gap-1.5 text-xs text-gray-600 hover:text-blue-600 transition-colors"
-                      >
-                        <IconBrandFacebook className="w-4 h-4" />
-                        <span>6K</span>
-                      </a>
-                      <a
-                        href="https://www.tiktok.com"
-                        className="flex items-center gap-1.5 text-xs text-gray-600 hover:text-pink-600 transition-colors"
-                      >
-                        <IconBrandTiktok className="w-4 h-4" />
-                        <span>24K</span>
-                      </a>
-                    </div>
-                  </div>
-                </div>
+    <div className="flex items-center gap-3">
+      <a
+        href="https://www.facebook.com/share/19yJy6Y9tN/"
+        target="_blank"
+        className="flex items-center gap-1.5 text-xs text-gray-600 hover:text-blue-600 transition-colors"
+      >
+        <IconBrandFacebook className="w-4 h-4" />
+        <span>7K <sub>+</sub></span>
+      </a>
+      <a
+        target="_blank"
+        href="https://www.tiktok.com/@rakeshthapa_04?is_from_webapp=1&sender_device=pc"
+        className="flex items-center gap-1.5 text-xs text-gray-600 hover:text-pink-600 transition-colors"
+      >
+        <IconBrandTiktok className="w-4 h-4" />
+        <span>24.5K<sub>+</sub></span>
+      </a>
+    </div>
+
+    {/* Mentor message (visible only on medium screens and above) */}
+    <div className="block mt-4 bg-gray-50 border border-gray-100 rounded-lg p-4 text-sm text-gray-700 italic">
+      “Social media isn’t just about followers — it’s about building trust and
+      connection. Let’s create something meaningful together.”
+    </div>
+  </div>
+</div>
+
               </div>
             </div>
 
             {/* Countdown */}
-            <SessionCountdown targetDate="2025-11-06T15:00:00+05:45" />
+            {/* <SessionCountdown targetDate="2025-11-07T17:00:00+05:45" /> */}
           </motion.div>
 
           {/* Right: Registration Form */}
           <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            whileInView={{ opacity: 1, x: 0 }}
+          id="bookingForm"
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
             transition={{ duration: 0.6 }}
           >
-            <div className="bg-white border border-gray-200 rounded-2xl p-8 shadow-sm sticky top-8">
+            <div  className="bg-white border border-gray-200 rounded-2xl p-8 shadow-sm sticky top-8">
               <h3 className="text-2xl font-semibold text-gray-900 mb-6">
                 Complete your registration
               </h3>
@@ -414,6 +420,7 @@ export default function SessionForm({
                   email. No payment required—sessions are completely free.
                 </p>
               </form>
+              <SessionCountdown targetDate="2025-11-07T17:00:00+05:45" />
             </div>
           </motion.div>
         </div>

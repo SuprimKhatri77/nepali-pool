@@ -8,6 +8,8 @@ import { getCurrentUserMeetingData } from "../../../server/lib/dal/get-current-u
 import { MeetingSessionSelectType } from "../../../lib/db/schema";
 import { Button } from "../ui/button";
 import { Spinner } from "../ui/spinner";
+import { useTargetDate } from "@/hooks/useTargetDate";
+import AnnouncementBannerTimer from "../AnnouncementBannerTimer";
 
 export default function AnnouncementBanner({
   isVisible,
@@ -17,6 +19,7 @@ export default function AnnouncementBanner({
   setIsVisible: (visible: boolean) => void;
 }) {
   const [loading, setLoading] = useState<boolean>(false);
+  const isTimeReached = useTargetDate("2025-11-07T17:00:00+05:45")
   const [meetingData, setMeetingData] =
     useState<MeetingSessionSelectType | null>(null);
   useEffect(() => {
@@ -67,16 +70,16 @@ export default function AnnouncementBanner({
                   <div className="flex flex-col sm:flex-row sm:items-center gap-2">
                     <div>
                       <span className="text-sm sm:text-base font-semibold text-emerald-900">
-                        Upcoming Japan Session
+                        {meetingData ? "Japan Session by Rakhesh Thapa":"Upcoming Japan Session"}
                       </span>
                       <div className="flex items-center justify-center sm:justify-start gap-4 mt-1 text-xs sm:text-sm text-emerald-700">
                         <div className="flex items-center gap-1">
                           <Calendar className="w-4 h-4" />
-                          <span>November 06, 2025</span>
+                          <span>November 07, 2025</span>
                         </div>
                         <div className="flex items-center gap-1">
                           <Clock className="w-4 h-4" />
-                          <span>04:00 PM</span>
+                          <span>05:00 PM</span>
                         </div>
                       </div>
                     </div>
@@ -86,9 +89,10 @@ export default function AnnouncementBanner({
                 <div className="flex items-center gap-3">
                   {loading ? (
                     <Spinner />
-                  ) : meetingData ? (
+                  ) : meetingData ? isTimeReached ? (
+
                     <Button variant="outline">Join session</Button>
-                  ) : (
+                  ): <AnnouncementBannerTimer targetDate="2025-11-07T17:00:00+05:45" /> : (
                     <Link
                       href="/sessions"
                       className="px-5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-medium rounded-lg transition-all duration-200 shadow-sm hover:shadow-md active:scale-95"

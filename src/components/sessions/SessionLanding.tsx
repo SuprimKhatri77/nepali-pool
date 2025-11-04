@@ -196,7 +196,7 @@ export default function SessionLandingPage({
 
       {/* Form Section */}
       {role === "student" && !sessionRecord && (
-        <div id="bookingForm" className="scroll-mt-8">
+        <div  className="scroll-mt-8">
           <SessionForm
             studentProfileRecord={studentProfileRecord ?? null}
             sessionRecord={sessionRecord ?? null}
