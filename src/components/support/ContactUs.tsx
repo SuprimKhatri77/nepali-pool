@@ -45,9 +45,9 @@ export default function ContactSection() {
       <div className="w-full max-w-6xl relative z-10">
         {/* Header */}
         <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
+          // initial={{ opacity: 0, y: -20 }}
+          // whileInView={{ opacity: 1, y: 0 }}
+          // transition={{ duration: 0.6 }}
           className="text-center mb-12 sm:mb-16"
         >
           <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-4">
@@ -62,14 +62,14 @@ export default function ContactSection() {
 
         {/* Main Card */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.2 }}
+          // initial={{ opacity: 0, y: 20 }}
+          // whileInView={{ opacity: 1, y: 0 }}
+          // transition={{ duration: 0.6, delay: 0.2 }}
         >
           <Card className="border border-gray-200/50 shadow-xl rounded-2xl overflow-hidden backdrop-blur-sm bg-white/80">
             <CardContent className="grid grid-cols-1 lg:grid-cols-2 p-0 gap-0">
               {/* Left Section - Contact Info */}
-              <div className="relative bg-gradient-to-br from-emerald-500 to-emerald-600 p-8 sm:p-10 md:p-12 flex flex-col justify-center overflow-hidden">
+              <div className="relative bg-gradient-to-tr from-emerald-400 to-emerald-700 p-8 sm:p-10 md:p-12 flex flex-col justify-center overflow-hidden">
                 {/* Decorative Elements */}
                 <div className="absolute top-0 right-0 w-40 h-40 bg-white/10 rounded-full blur-3xl" />
                 <div className="absolute bottom-0 left-0 w-32 h-32 bg-white/10 rounded-full blur-2xl" />
@@ -120,7 +120,7 @@ export default function ContactSection() {
                           Email
                         </p>
                         <a
-                          href="mailto:nepalipool77@gmail.com"
+                          href="mailto:support@nepalipool.com"
                           className="text-white font-semibold text-sm sm:text-base hover:underline break-all"
                         >
                           nepalipool77@gmail.com
@@ -149,35 +149,67 @@ export default function ContactSection() {
                   </div>
 
                   {/* Social Links */}
-                  <div className="mt-10 sm:mt-12 pt-8 border-t border-white/20">
-                    <p className="text-emerald-100 text-sm mb-4">
-                      Follow us on social media
-                    </p>
-                    <div className="flex gap-3">
-                      {["facebook", "twitter", "instagram"].map(
-                        (social, index) => (
-                          <motion.a
-                            key={social}
-                            href="#"
-                            whileHover={{ scale: 1.1, y: -2 }}
-                            whileTap={{ scale: 0.95 }}
-                            className="w-10 h-10 bg-white/20 backdrop-blur-sm rounded-lg flex items-center justify-center hover:bg-white/30 transition-all duration-300"
-                          >
-                            <span className="text-white text-xs font-bold uppercase">
-                              {social[0]}
-                            </span>
-                          </motion.a>
-                        )
-                      )}
-                    </div>
-                  </div>
+<div className="mt-10 sm:mt-12 pt-8 border-t border-white/20">
+  <p className="text-emerald-100 text-sm mb-4">
+    Follow us
+  </p>
+  {/* Social Media */}
+  <div className="mt-6">
+    <h3 className="text-sm font-semibold text-gray-900 mb-3">Follow Us</h3>
+    <div className="flex gap-3">
+      <a 
+        href="https://www.facebook.com/nepalipooldotcom" 
+        target="_blank" 
+        rel="noopener noreferrer"
+        className="w-9 h-9 bg-gray-100 hover:bg-emerald-600 rounded-lg flex items-center justify-center transition-colors duration-200 group"
+      >
+        <svg className="w-5 h-5 text-gray-600 group-hover:text-white transition-colors" fill="currentColor" viewBox="0 0 24 24">
+          <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+        </svg>
+      </a>
+      
+      <a 
+        href="https://www.youtube.com/@nepalipooldotcom" 
+        target="_blank" 
+        rel="noopener noreferrer"
+        className="w-9 h-9 bg-gray-100 hover:bg-emerald-600 rounded-lg flex items-center justify-center transition-colors duration-200 group"
+      >
+        <svg className="w-5 h-5 text-gray-600 group-hover:text-white transition-colors" fill="currentColor" viewBox="0 0 24 24">
+          <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+        </svg>
+      </a>
+      
+      <a 
+        href="https://www.tiktok.com/@nepalipool.com" 
+        target="_blank" 
+        rel="noopener noreferrer"
+        className="w-9 h-9 bg-gray-100 hover:bg-emerald-600 rounded-lg flex items-center justify-center transition-colors duration-200 group"
+      >
+        <svg className="w-5 h-5 text-gray-600 group-hover:text-white transition-colors" fill="currentColor" viewBox="0 0 24 24">
+          <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z"/>
+        </svg>
+      </a>
+
+      <a 
+        href="https://m.me/cm/AbYCo2T6A-3kPC0K/?send_source=cm%3Acopy_invite_link" 
+        target="_blank" 
+        rel="noopener noreferrer"
+        className="w-9 h-9 bg-gray-100 hover:bg-emerald-600 rounded-lg flex items-center justify-center transition-colors duration-200 group"
+      >
+        <svg className="w-5 h-5 text-gray-600 group-hover:text-white transition-colors" fill="currentColor" viewBox="0 0 24 24">
+          <path d="M12 0C5.373 0 0 4.975 0 11.111c0 3.497 1.745 6.616 4.472 8.652V24l4.086-2.242c1.09.301 2.246.464 3.442.464 6.627 0 12-4.974 12-11.111C24 4.975 18.627 0 12 0zm1.191 14.963l-3.055-3.26-5.963 3.26L10.732 8l3.131 3.259L19.752 8l-6.561 6.963z"/>
+        </svg>
+      </a>
+    </div>
+  </div>
+</div>
                 </div>
               </div>
 
               {/* Right Section - Form */}
               <div className="p-6 sm:p-8 md:p-10 lg:p-12">
                 <motion.form
-                  initial={{ opacity: 0 }}
+                  initial={{ opacity: 0, }}
                   whileInView={{ opacity: 1 }}
                   transition={{ duration: 0.6, delay: 0.3 }}
                   className="space-y-5 sm:space-y-6"
@@ -240,6 +272,8 @@ export default function ContactSection() {
                   </div>
 
                   <motion.div
+                    initial={{scaleX:0}}
+                    whileInView={{scaleX:1, animationDuration: 0.5, transitionDuration: 0.4}}
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
                   >

@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 
 /**
  * useTargetDate
- * @param targetDateISO ISO string of target date, e.g., "2025-11-06T18:00:00+05:45"
+ * @param targetDateISO ISO string of target date, e.g., "2025-11-07T17:00:00+05:45"
  * @returns boolean — true if current time >= target date, false otherwise
  */
 export function useTargetDate(targetDateISO: string) {
