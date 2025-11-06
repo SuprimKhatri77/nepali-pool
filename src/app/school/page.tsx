@@ -32,7 +32,7 @@ export default async function SchoolDetailPage(props: SchoolDetailPageProps) {
   // Try to fetch school from database if schoolId is provided
   if (params?.schoolId) {
     try {
-      school = await db.query.schools.findFirst({
+      school = await db.query.school.findFirst({
         where: (s, { eq }) => eq(s.id, params.schoolId!),
       });
 
