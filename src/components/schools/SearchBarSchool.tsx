@@ -85,7 +85,7 @@ export default function SearchBarSchool({ schools }: SearchBelowHeroProps) {
       const data = await res.json();
       if (data.result?.geometry?.location) {
         const { lat, lng } = data.result.geometry.location;
-        router.push(`/school?lat=${lat}&lon=${lng}&description=${query}`);
+        router.push(`/nearby-mentors?lat=${lat}&lon=${lng}&description=${query}`);
       } else {
         console.log("No location found for this place.");
       }

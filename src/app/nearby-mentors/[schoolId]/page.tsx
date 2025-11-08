@@ -10,6 +10,8 @@ import { capitalizeFirstLetter } from "better-auth";
 import { z } from "zod/v4";
 import MapWithMentors from "@/components/map";
 import { getDistance } from "../page";
+import MapLoader from "@/components/nearby-mentors/MapContainer";
+import MapContainer from "@/components/nearby-mentors/MapContainer";
 
 
 const uuidCheck = z.string().uuid();
@@ -94,7 +96,7 @@ export default async function Page({
 
     {/* map */}
     <div className="max-w-3xl mx-auto mb-10 h-96 relative z-10">
-         <MapWithMentors mentors={nearbyMentors} schoolName={school?.name ?? "School Name"} schoolCoords={schoolCoords} />
+         <MapContainer nearbyMentors={nearbyMentors} school={{name: school.name ?? "School Name"}} schoolCoords={schoolCoords} />
         </div>
 
     {/* Nearby Mentors */}
@@ -183,7 +185,7 @@ export default async function Page({
     </p>
   </CardContent>
 
-  <CardFooter className="relative z-10 px-6 pb-6">
+  <CardFooter className="relative z-10 px-6 pb-6 mt-auto">
     {/* Chat Button */}
     <Link
       href={`/chats/${mentor.userId}`}

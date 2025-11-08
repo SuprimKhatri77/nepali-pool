@@ -7,7 +7,10 @@ import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import Link from "next/link";
 import { geocodeAddress } from "../../../hooks/useGeoCode";
-import MapWithMentors, { NearbyMentorsList } from "@/components/map";
+import  { NearbyMentorsList } from "@/components/map";
+import MapContainer from "@/components/nearby-mentors/MapContainer";
+
+
 
 const floatCheck = z.preprocess((v) => parseFloat(v as string), z.number());
 
@@ -163,13 +166,7 @@ export default async function SchoolDetailPage(props: SchoolDetailPageProps) {
 
       {/* Map Section */}
       {schoolCoords && (
-        <div className="max-w-3xl mx-auto mb-10 h-96 relative z-10">
-          <MapWithMentors
-            mentors={nearbyMentors}
-            schoolName={school?.name || "Selected Location"}
-            schoolCoords={schoolCoords}
-          />
-        </div>
+        <MapContainer nearbyMentors={nearbyMentors} school={school} schoolCoords={schoolCoords} />
       )}
 
       {/* Nearby Mentors Section */}
@@ -279,7 +276,7 @@ export default async function SchoolDetailPage(props: SchoolDetailPageProps) {
                   </p>
                 </CardContent>
 
-                <CardFooter className="relative z-10 px-6 pb-6">
+                <CardFooter className="relative z-10 px-6 pb-6 mt-auto">
                   {/* Chat Button */}
                   <Link href={`/chats/${mentor.userId}`} className="w-full group/btn">
                     <Button className="w-full inline-flex items-center justify-center gap-2 rounded-xl text-sm font-semibold bg-gradient-to-r from-emerald-600 to-emerald-500 text-white hover:from-emerald-700 hover:to-emerald-600 h-11 px-6 shadow-lg shadow-emerald-600/30 hover:shadow-xl hover:shadow-emerald-600/40 transition-all duration-300 hover:-translate-y-0.5">
