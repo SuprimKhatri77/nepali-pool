@@ -62,7 +62,7 @@ export default function Header() {
       ?.split(" ")
       .filter(Boolean)
       .slice(0, 2)
-      .map((n) => n[0])
+      .map((n:any) => n[0])
       .join("")
       .toUpperCase();
 
