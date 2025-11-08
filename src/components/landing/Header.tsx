@@ -68,9 +68,9 @@ export default function Header() {
 
   return (
     <>
-      {!pathname.startsWith("/sessions") && !pathname.startsWith("/chats") && (
+      {/* {!pathname.startsWith("/sessions") && !pathname.startsWith("/chats") && (
         <AnnouncementBanner isVisible={isVisible} setIsVisible={setIsVisible} />
-      )}
+      )} */}
       <motion.header
         className={cn(
           "bg-white/80 backdrop-blur-xl z-40 border-b border-gray-200/50 px-4 sm:px-6 lg:px-10 py-3 sm:py-4 shadow-sm",

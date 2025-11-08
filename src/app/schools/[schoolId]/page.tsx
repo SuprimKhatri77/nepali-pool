@@ -93,7 +93,7 @@ export default async function SchoolDetailPage({
       <div className="min-h-screen bg-white">
         {/* Breadcrumb */}
         <div className="border-b border-slate-200 bg-slate-50/50">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex flex-col sm:flex-row items-center justify-between gap-2 sm:gap-0">
             <div className="flex items-center gap-2 text-sm text-slate-600">
               <Link
                 href="/schools"
@@ -106,6 +106,29 @@ export default async function SchoolDetailPage({
                 {specificSchool.name}
               </span>
             </div>
+            <Link
+              href={`/nearby-mentors/${schoolId}`}
+              className="
+        inline-block
+        bg-green-600
+        hover:bg-green-700
+        text-white
+        font-semibold
+        px-6
+        py-3
+        rounded-lg
+        shadow-lg
+        transition
+        duration-300
+        ease-in-out
+        focus:outline-none
+        focus:ring-2
+        focus:ring-green-500
+        focus:ring-offset-2
+      "
+            >
+              View nearby mentors
+            </Link>
           </div>
         </div>
 
