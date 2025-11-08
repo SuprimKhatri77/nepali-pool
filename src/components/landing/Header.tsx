@@ -29,12 +29,9 @@ export default function Header() {
   const pathname = usePathname();
   const isDashboardRoute = pathname.startsWith("/dashboard");
   const isChatRoute = pathname.startsWith("/chats");
-  const isSessionPage = pathname.includes("/sessions");
 
   const { data: session, isPending } = authClient.useSession();
 
-  const sessionRecord = session?.session ?? null;
-  console.log(sessionRecord);
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (

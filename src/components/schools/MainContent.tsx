@@ -10,7 +10,7 @@ const MotionLink = motion(Link)
 export default function SchoolShortCard({school, sendTo = "/schools/"}:{school: SchoolSelectType, sendTo?: string}) {
   return (
     <MotionLink
-                        href={`${sendTo}${school.id}`}
+                        href={`/school/${school.id}`}
                         key={school.id}
                         whileHover={{scale: 1.03}}
                         transition={{duration: 0.5}}
