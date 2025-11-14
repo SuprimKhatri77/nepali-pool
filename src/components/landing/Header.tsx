@@ -19,6 +19,7 @@ const navLinks = [
   { name: "Mentors", href: "/mentors" },
   { name: "Scholarships", href: "/scholarships" },
   { name: "Guides", href: "/guides" },
+  {name: "Group Calls", href: "/group-calls"}
 ];
 
 export default function Header() {
