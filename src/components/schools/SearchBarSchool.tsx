@@ -1,18 +1,10 @@
 "use client";
 import { motion } from "framer-motion";
 import React, { useEffect, useRef, useState } from "react";
-import {
-  Command,
-  CommandInput,
-} from "@/components/ui/command";
+import { Command, CommandInput } from "@/components/ui/command";
 import { useRouter } from "next/navigation";
-import { SchoolSelectType } from "../../../lib/db/schema";
 
-interface SearchBelowHeroProps {
-  schools?: SchoolSelectType[];
-}
-
-export default function SearchBarSchool({ schools }: SearchBelowHeroProps) {
+export default function SearchBarSchool() {
   const router = useRouter();
   const [query, setQuery] = useState("");
   const [isFocused, setIsFocused] = useState(false);
@@ -32,9 +24,11 @@ export default function SearchBarSchool({ schools }: SearchBelowHeroProps) {
       setIsLoading(true);
 
       try {
-        const res = await fetch(`/api/places?input=${encodeURIComponent(query)}`);
+        const res = await fetch(
+          `/api/places?input=${encodeURIComponent(query)}`
+        );
         const data = await res.json();
-        
+
         if (data.predictions) {
           const filtered = data.predictions.filter((p: any) =>
             /(school|college|university|institute)/i.test(p.description)
@@ -67,7 +61,10 @@ export default function SearchBarSchool({ schools }: SearchBelowHeroProps) {
   // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (wrapperRef.current && !wrapperRef.current.contains(event.target as Node)) {
+      if (
+        wrapperRef.current &&
+        !wrapperRef.current.contains(event.target as Node)
+      ) {
         setIsFocused(false);
       }
     };
@@ -85,7 +82,9 @@ export default function SearchBarSchool({ schools }: SearchBelowHeroProps) {
       const data = await res.json();
       if (data.result?.geometry?.location) {
         const { lat, lng } = data.result.geometry.location;
-        router.push(`/nearby-mentors?lat=${lat}&lon=${lng}&description=${query}`);
+        router.push(
+          `/nearby-mentors?lat=${lat}&lon=${lng}&description=${query}`
+        );
       } else {
         console.log("No location found for this place.");
       }
@@ -117,9 +116,7 @@ export default function SearchBarSchool({ schools }: SearchBelowHeroProps) {
         {isFocused && (
           <div className="absolute z-50 top-full mt-2 w-full bg-white border border-gray-200 rounded-md shadow-lg max-h-64 overflow-auto">
             {isLoading ? (
-              <div className="px-4 py-3 text-sm text-gray-500">
-                Loading...
-              </div>
+              <div className="px-4 py-3 text-sm text-gray-500">Loading...</div>
             ) : suggestions.length > 0 ? (
               <div className="py-1">
                 {suggestions.map((s) => (

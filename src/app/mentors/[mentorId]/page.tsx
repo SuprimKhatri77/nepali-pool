@@ -30,10 +30,10 @@ import { Card, CardContent } from "@/components/ui/card";
 import { auth } from "../../../../server/lib/auth/auth";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
-import { getCurrentUserData } from "../../../../server/lib/auth/helpers/getCurrentUserData";
 import { PaymentButton } from "@/components/PaymentButton";
 import { capitalizeFirstLetter } from "better-auth";
 import MentorCard from "@/components/MentorCard";
+import { getChatStatus } from "../../../../server/lib/auth/helpers/free/getChatStatus";
 
 export default async function MentorDetailPage({
   params,
@@ -91,12 +91,8 @@ export default async function MentorDetailPage({
   }
 
   let currentUser;
-
   if (session) {
-    currentUser = await getCurrentUserData(
-      session.user.id,
-      mentorRecord.userId
-    );
+    currentUser = await getChatStatus(mentorId, session.user.id);
   }
 
   const role = session && currentUser?.success ? currentUser.role : null;
@@ -244,7 +240,6 @@ export default async function MentorDetailPage({
                   <h3 className="text-xl font-bold">Get in Touch</h3>
                 </div>
                 <div className="grid grid-cols-[repeat(auto-fit,_minmax(200px,_1fr))] gap-3 p-4 rounded-xl bg-white border border-gray-200">
-                  
                   <Button
                     asChild
                     className="w-[200px] bg-emerald-50 text-emerald-700 hover:bg-emerald-100 h-12 font-semibold shadow-sm border border-emerald-200 transition-all"
@@ -256,86 +251,44 @@ export default async function MentorDetailPage({
                       Send Email
                     </Link>
                   </Button>
-                  {!currentUser && (
-                   <>
-                    <Button
-                        asChild
-                        className="w-[200px] bg-white text-black border border-gray-300 hover:bg-gray-50 h-12 font-semibold transition-all"
-                      >
-                        <Link href={"/login"}>
-                        
-                        Unlock Chat
-                        </Link>
-                      </Button>
-                    <Button
-                        asChild
-                        className="w-[200px] bg-white text-black border border-gray-300 hover:bg-gray-50 h-12 font-semibold transition-all"
-                      >
-                        <Link href={"/login"}>
-                        Unlock Video
-                        </Link>
-                      </Button>
-                   </>
-                  ) }
-
-                  {currentUser && currentUser.role === "student" && (
+                  {!session && (
                     <>
                       <Button
                         asChild
                         className="w-[200px] bg-white text-black border border-gray-300 hover:bg-gray-50 h-12 font-semibold transition-all"
                       >
-                        {currentUser.success && currentUser.chatId ? (
+                        <Link href={"/login"}>Login to Chat</Link>
+                      </Button>
+                    </>
+                  )}
+
+                  {currentUser?.success && currentUser.role === "student" ? (
+                    <>
+                      <Button
+                        asChild
+                        className="w-[200px] bg-white text-black border border-gray-300 hover:bg-gray-50 h-12 font-semibold transition-all"
+                      >
+                        {currentUser.success && currentUser.chatId && (
                           <Link href={`/chats/${currentUser.chatId}`}>
                             <MessageCircleIcon className="w-5 h-5 mr-2 text-emerald-600" />
-                            Start Chat
+                            Chat
                           </Link>
-                        ) : (
-                          <PaymentButton
-                            mentorId={mentorRecord.userId}
-                            userId={currentUser.userId}
-                            userEmail={currentUser.email}
-                            paymentType="chat_subscription"
-                            className="flex items-center justify-center gap-2 text-emerald-700 hover:text-emerald-800"
-                          >
-                            <LockIcon className="w-4 h-4 text-emerald-700" />
-                            Unlock Chat
-                          </PaymentButton>
                         )}
                       </Button>
-
-                      {currentUser.success &&
-                      currentUser.videoCallStatus === "pending" &&
-                      currentUser.videoCallId ? (
-                        <Link
-                          href={`/video-call/schedule/${currentUser.videoCallId}`}
-                        >
-                          <Button className="w-[200px] bg-amber-50 text-amber-700 hover:bg-amber-100 border border-amber-200 h-12 font-semibold transition-all">
-                            <Calendar className="w-5 h-5 mr-2" />
-                            Video Pending
-                          </Button>
-                        </Link>
-                      ) : currentUser.success &&
-                        currentUser.videoCallStatus === "scheduled" ? (
-                        <Button
-                          className="w-[200px] bg-gray-100 text-gray-500 border border-gray-300 h-12 font-semibold cursor-not-allowed"
-                          disabled
-                        >
-                          <Calendar className="w-5 h-5 mr-2" />
-                          Scheduled
-                        </Button>
-                      ) : (
-                        <PaymentButton
-                          mentorId={mentorRecord.userId}
-                          userId={currentUser.userId}
-                          userEmail={currentUser.email}
-                          paymentType="video_call"
-                          className="w-[200px] bg-white text-emerald-700 hover:bg-emerald-50 border border-emerald-200 h-12 font-semibold transition-all"
-                        >
-                          <LockIcon className="w-4 h-4 mr-2 text-emerald-700" />
-                          Unlock Video Call
-                        </PaymentButton>
-                      )}
                     </>
+                  ) : (
+                    !currentUser?.success &&
+                    currentUser?.errorType === "no_student_profile" && (
+                      <Button
+                        asChild
+                        className="w-[400px] bg-white text-black border border-gray-300 hover:bg-gray-50 h-12 font-semibold transition-all"
+                      >
+                        <Link href="/onboarding/student">
+                          <MessageCircleIcon className="w-5 h-5 mr-2 text-emerald-600" />
+                          Complete onboarding to chat
+                        </Link>
+                      </Button>
+                    )
                   )}
                 </div>
               </div>

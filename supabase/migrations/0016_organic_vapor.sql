@@ -1,0 +1,1 @@
+ALTER TABLE "chats" ALTER COLUMN "subscription_id" SET DEFAULT '5a550946-5dce-429a-b760-fe7b29516d71';

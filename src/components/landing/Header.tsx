@@ -7,9 +7,10 @@ import SignOutButton from "@/components/SignOutButton";
 import { usePathname } from "next/navigation";
 import Image from "next/image";
 import { AnimatePresence, motion } from "framer-motion";
-import AnnouncementBanner from "@/components/sessions/announcement-banner";
-import { authClient } from "../../../server/lib/auth/auth-client";
+// import AnnouncementBanner from "@/components/sessions/announcement-banner";
 import { cn } from "../lib/utils";
+import { useQuery } from "@tanstack/react-query";
+import { getCurrentUser } from "../../../server/lib/auth/helpers/getCurrentUser";
 
 const MotionLink = motion(Link);
 
@@ -19,19 +20,29 @@ const navLinks = [
   { name: "Mentors", href: "/mentors" },
   { name: "Scholarships", href: "/scholarships" },
   { name: "Guides", href: "/guides" },
-  {name: "Group Calls", href: "/group-calls"}
+  { name: "Group Calls", href: "/group-calls" },
 ];
 
 export default function Header() {
   const [isOpen, setIsOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [isVisible, setIsVisible] = useState(true);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const pathname = usePathname();
   const isDashboardRoute = pathname.startsWith("/dashboard");
   const isChatRoute = pathname.startsWith("/chats");
 
-  const { data: session, isPending } = authClient.useSession();
+  const { data: user, isPending } = useQuery({
+    queryKey: ["user"],
+    queryFn: async () => {
+      const result = await getCurrentUser();
+      if (!result.success) return;
+
+      return {
+        user: result.userRecord,
+      };
+    },
+    staleTime: 1000 * 60 * 60,
+  });
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -58,12 +69,12 @@ export default function Header() {
   }, [isOpen]);
 
   const initials =
-    session &&
-    session.user?.name
+    user &&
+    user.user.name
       ?.split(" ")
       .filter(Boolean)
       .slice(0, 2)
-      .map((n:any) => n[0])
+      .map((n) => n[0])
       .join("")
       .toUpperCase();
 
@@ -130,7 +141,7 @@ export default function Header() {
           <div className="hidden lg:flex items-center justify-end w-[300px]">
             {isPending ? (
               <Spinner className="size-6 text-emerald-500" />
-            ) : !session ? (
+            ) : !user ? (
               <div className="flex gap-3">
                 <MotionLink
                   whileHover={{ scale: 1.03, y: -2 }}
@@ -155,7 +166,7 @@ export default function Header() {
                   <MotionLink
                     whileHover={{ scale: 1.03, y: -2 }}
                     whileTap={{ scale: 0.98 }}
-                    href="/dashboard"
+                    href={`/dashboard/${user.user.role}`}
                     className="px-4 py-2 bg-emerald-50 text-emerald-700 text-sm font-medium rounded-lg hover:bg-emerald-100 transition-all duration-200"
                   >
                     Dashboard
@@ -178,12 +189,12 @@ export default function Header() {
                     onClick={() => setIsDropdownOpen(!isDropdownOpen)}
                     className="relative w-10 h-10 bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-full flex items-center justify-center text-white font-semibold text-sm shadow-sm hover:shadow-md transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 overflow-hidden"
                   >
-                    {session?.user?.image ? (
+                    {user.user.image ? (
                       <Image
-                        src={session.user.image}
+                        src={user.user.image}
                         fill
                         sizes="40px"
-                        alt={session.user?.name || "User"}
+                        alt={user.user?.name || "User"}
                         className="object-cover"
                       />
                     ) : (
@@ -202,10 +213,10 @@ export default function Header() {
                       >
                         <div className="px-4 py-3 border-b border-gray-100">
                           <p className="text-sm font-medium text-gray-900 truncate">
-                            {session?.user?.name || "User"}
+                            {user.user?.name || "User"}
                           </p>
                           <p className="text-xs text-gray-500 truncate">
-                            {session?.user?.email}
+                            {user.user?.email}
                           </p>
                         </div>
                         <Link
@@ -378,7 +389,7 @@ export default function Header() {
                     <div className="flex justify-center py-3">
                       <Spinner className="size-6 text-emerald-500" />
                     </div>
-                  ) : !session ? (
+                  ) : !user ? (
                     <>
                       <Link
                         href="/login"

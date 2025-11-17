@@ -84,7 +84,8 @@ export async function getCurrentUserData(
 
   return {
     success: true,
-    chatId: chatRecord?.chat.id ?? null,
+    // the below key's value was changed from chatRecord?.chat.id ?? null
+    chatId: chatRecord?.id ?? null,
     videoCallId: videoCallRecord?.id ?? null,
     role: userRecord.role,
     videoCallStatus: videoCallRecord?.status ?? null,

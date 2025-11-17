@@ -1,44 +1,51 @@
 "use client";
 import { motion } from "framer-motion";
-import { Clipboard, GraduationCap, Handshake, MessageCircle, Watch, Globe } from "lucide-react";
+import {
+  Clipboard,
+  GraduationCap,
+  Handshake,
+  MessageCircle,
+  Watch,
+  Globe,
+} from "lucide-react";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 
 const countries = [
-  { 
-    name: "UK", 
+  {
+    name: "UK",
     code: "gb",
     flag: "https://flagcdn.com/gb.svg",
     meetingLink: "https://meet.google.com/foh-bfoj-atr",
-    chatLink: "https://m.me/ch/AbaTeAj-1emyPCEe/"
+    chatLink: "https://m.me/ch/AbaTeAj-1emyPCEe/",
   },
-  { 
-    name: "USA", 
+  {
+    name: "USA",
     code: "us",
     flag: "https://flagcdn.com/us.svg",
     meetingLink: "https://meet.google.com/foh-bfoj-atr",
-    chatLink: "https://m.me/ch/AbaTeAj-1emyPCEe/"
+    chatLink: "https://m.me/ch/AbaTeAj-1emyPCEe/",
   },
-  { 
-    name: "Japan", 
+  {
+    name: "Japan",
     code: "jp",
     flag: "https://flagcdn.com/jp.svg",
     meetingLink: "https://meet.google.com/foh-bfoj-atr",
-    chatLink: "https://m.me/ch/AbaTeAj-1emyPCEe/"
+    chatLink: "https://m.me/ch/AbaTeAj-1emyPCEe/",
   },
-  { 
-    name: "South Korea", 
+  {
+    name: "South Korea",
     code: "kr",
     flag: "https://flagcdn.com/kr.svg",
     meetingLink: "https://meet.google.com/foh-bfoj-atr",
-    chatLink: "https://m.me/ch/AbaTeAj-1emyPCEe/"
+    chatLink: "https://m.me/ch/AbaTeAj-1emyPCEe/",
   },
-  { 
-    name: "Australia", 
+  {
+    name: "Australia",
     code: "au",
     flag: "https://flagcdn.com/au.svg",
     meetingLink: "https://meet.google.com/foh-bfoj-atr",
-    chatLink: "https://m.me/ch/AbaTeAj-1emyPCEe/"
+    chatLink: "https://m.me/ch/AbaTeAj-1emyPCEe/",
   },
 ];
 
@@ -111,7 +118,9 @@ export default function GroupCalls() {
             transition={{ duration: 0.8, delay: 0.4 }}
             className="text-lg sm:text-xl md:text-2xl text-gray-700 mb-10 font-medium max-w-3xl mx-auto"
           >
-            Join daily group calls with students heading to the <span className="text-emerald-600 font-bold">same country</span> as you.
+            Join daily group calls with students heading to the{" "}
+            <span className="text-emerald-600 font-bold">same country</span> as
+            you.
           </motion.p>
 
           {/* Flag Showcase */}
@@ -156,9 +165,21 @@ export default function GroupCalls() {
             className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-16 max-w-5xl mx-auto"
           >
             {[
-              { icon: MessageCircle, title: "Daily Group Calls", desc: "Talk live with peers every day at 4 PM" },
-              { icon: GraduationCap, title: "Share Knowledge", desc: "Visas, universities, scholarships & more" },
-              { icon: Handshake, title: "Build Friendships", desc: "Meet your future classmates early" },
+              {
+                icon: MessageCircle,
+                title: "Daily Group Calls",
+                desc: "Talk live with peers every day at 4 PM",
+              },
+              {
+                icon: GraduationCap,
+                title: "Share Knowledge",
+                desc: "Visas, universities, scholarships & more",
+              },
+              {
+                icon: Handshake,
+                title: "Build Friendships",
+                desc: "Meet your future classmates early",
+              },
             ].map((feature, i) => (
               <motion.div
                 key={i}
@@ -168,14 +189,15 @@ export default function GroupCalls() {
                 <div className="w-12 h-12 mx-auto mb-4 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-500 flex items-center justify-center text-white">
                   <feature.icon className="w-7 h-7" />
                 </div>
-                <h3 className="text-lg font-bold text-gray-800 mb-2">{feature.title}</h3>
-                <p className="text-gray-600 text-sm leading-relaxed">{feature.desc}</p>
+                <h3 className="text-lg font-bold text-gray-800 mb-2">
+                  {feature.title}
+                </h3>
+                <p className="text-gray-600 text-sm leading-relaxed">
+                  {feature.desc}
+                </p>
               </motion.div>
             ))}
           </motion.div>
-
-          
-           
         </div>
 
         {/* Scroll Indicator */}
@@ -191,15 +213,27 @@ export default function GroupCalls() {
             className="flex flex-col items-center gap-2 text-emerald-600"
           >
             <span className="text-sm font-medium">Explore Groups</span>
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round"  strokeWidth={2.5} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+            <svg
+              className="w-5 h-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeWidth={2.5}
+                d="M19 14l-7 7m0 0l-7-7m7 7V3"
+              />
             </svg>
           </motion.div>
         </motion.div>
       </section>
 
       {/* Country Groups Section */}
-      <section id="group-call-list" className="px-6 py-20 bg-gradient-to-b from-white to-emerald-50">
+      <section
+        id="group-call-list"
+        className="px-6 py-20 bg-gradient-to-b from-white to-emerald-50"
+      >
         <div className="max-w-7xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -212,7 +246,10 @@ export default function GroupCalls() {
               Pick Your Destination
             </h2>
             <p className="text-gray-600 text-lg max-w-2xl mx-auto">
-              Join the daily group call for students moving to <span className="font-semibold text-emerald-600">your country</span>
+              Join the daily group call for students moving to{" "}
+              <span className="font-semibold text-emerald-600">
+                your country
+              </span>
             </p>
           </motion.div>
 
@@ -224,7 +261,17 @@ export default function GroupCalls() {
 }
 
 // === Country Cards Component ===
-function CountryCards({ countries }: { countries: typeof countries }) {
+function CountryCards({
+  countries,
+}: {
+  countries: {
+    name: string;
+    code: string;
+    flag: string;
+    meetingLink: string;
+    chatLink: string;
+  }[];
+}) {
   const [copied, setCopied] = useState<string | null>(null);
 
   const handleCopy = (link: string, code: string) => {
@@ -287,7 +334,8 @@ function CountryCards({ countries }: { countries: typeof countries }) {
               {country.name}
             </h3>
             <p className="text-gray-600 text-sm mb-6 leading-relaxed">
-              Daily group call for students moving to <strong>{country.name}</strong>
+              Daily group call for students moving to{" "}
+              <strong>{country.name}</strong>
             </p>
 
             <div className="flex flex-col gap-3">
@@ -313,7 +361,7 @@ function CountryCards({ countries }: { countries: typeof countries }) {
 }
 
 // === Live Call Button with Smart Countdown ===
-function LiveCallButton({ country }: { country: typeof countries[0] }) {
+function LiveCallButton({ country }: { country: (typeof countries)[0] }) {
   const [isLive, setIsLive] = useState(false);
   const [countdown, setCountdown] = useState("");
 
@@ -328,8 +376,8 @@ function LiveCallButton({ country }: { country: typeof countries[0] }) {
 
       const isCallTime =
         (hours === 15 && minutes >= 59) || // 3:59 PM NPT
-        hours === 16 || 
-        (hours === 17 && minutes <= 1);   // 5:01 PM NPT
+        hours === 16 ||
+        (hours === 17 && minutes <= 1); // 5:01 PM NPT
 
       if (isCallTime) {
         setIsLive(true);

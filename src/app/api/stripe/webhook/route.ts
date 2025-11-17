@@ -144,8 +144,9 @@ async function handleCheckoutSessionCompleted(
         .where(
           and(
             eq(chats.studentId, userId),
-            eq(chats.mentorId, mentorId),
-            eq(chats.subscriptionId, updatedSubscriptionRecord.id)
+            eq(chats.mentorId, mentorId)
+            // this has been commented currently will be uncommented when we switch to pro plan
+            // eq(chats.subscriptionId, updatedSubscriptionRecord.id)
           )
         );
 
@@ -194,14 +195,19 @@ async function handleCheckoutSessionCompleted(
     await db
       .insert(chats)
       .values({
-        subscriptionId: subscriptionRecord.id,
+        // this has been commented currently will be uncommented when we switch to pro plan
+        // subscriptionId: subscriptionRecord.id,
         studentId: userId,
         mentorId,
         status: "active",
       })
       .onConflictDoUpdate({
         target: [chats.studentId, chats.mentorId],
-        set: { status: "active", subscriptionId: subscriptionRecord.id },
+        set: {
+          status: "active",
+          // this has been commented currently will be uncommented when we switch to pro plan
+          //subscriptionId: subscriptionRecord.id
+        },
       });
     console.log(
       `Chat row inserted for student ${userId} and mentor ${mentorId} with subscription ${subscriptionRecord.id}`
@@ -255,7 +261,8 @@ async function handleSubscriptionDeleted(subscription: Stripe.Subscription) {
   await db
     .update(chats)
     .set({
-      subscriptionId: subscriptionRecord.id,
+      // this has been commented currently will be uncommented when we switch to pro plan
+      // subscriptionId: subscriptionRecord.id,
       status: "expired",
     })
     .where(

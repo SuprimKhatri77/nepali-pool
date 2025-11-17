@@ -1,0 +1,1 @@
+ALTER TABLE "chats" ALTER COLUMN "subscription_id" SET DEFAULT 'free-plan';

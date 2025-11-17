@@ -54,11 +54,14 @@ export default function MentorOnboardingForm({
 
   useEffect(() => {
     if (message) {
-      toast.info(decodeURIComponent(message), { position: "top-right", action:{
-        label:"X",
-        onClick: () => toast.dismiss()
-      },
-      duration: 3000});
+      toast.info(decodeURIComponent(message), {
+        position: "top-right",
+        action: {
+          label: "X",
+          onClick: () => toast.dismiss(),
+        },
+        duration: 3000,
+      });
 
       const url = new URL(window.location.href);
       url.searchParams.delete("message");
@@ -112,8 +115,8 @@ export default function MentorOnboardingForm({
           console.error("Failed to fetch location data", err);
         }
       },
-      (err) => {
-        console.error(err);
+      () => {
+        // console.error(err);
         alert("Could not get your location");
       }
     );
@@ -393,7 +396,9 @@ export default function MentorOnboardingForm({
                           City *
                         </Label>
                         <Input
-                          defaultValue={state.inputs?.city || location.city || ""}
+                          defaultValue={
+                            state.inputs?.city || location.city || ""
+                          }
                           type="text"
                           id="city"
                           name="city"

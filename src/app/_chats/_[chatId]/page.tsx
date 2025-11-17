@@ -57,10 +57,7 @@ const page = async ({ params }: ParamsType) => {
       .from(studentProfile)
       .where(eq(studentProfile.userId, userRecord.id));
 
-    if (!studentRecord)
-      return redirect(
-        "/onboarding/student?message=Please+complete+the+onboarding+to+continue!"
-      );
+    if (!studentRecord) return redirect("/onboarding/student?message=Please+complete+the+onboarding+to+continue!");
 
     if (chatRecord.studentId !== userRecord.id) {
       console.warn(
@@ -85,10 +82,7 @@ const page = async ({ params }: ParamsType) => {
       .from(mentorProfile)
       .where(eq(mentorProfile.userId, userRecord.id));
 
-    if (!mentorRecord)
-      return redirect(
-        "/onboarding/mentor?message=Please+complete+the+onboarding+to+continue!"
-      );
+    if (!mentorRecord) return redirect("/onboarding/mentor?message=Please+complete+the+onboarding+to+continue!");
     if (mentorRecord.verifiedStatus === "pending") return redirect("/waitlist");
     if (mentorRecord.verifiedStatus === "rejected")
       return redirect("/rejected");

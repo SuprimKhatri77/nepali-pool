@@ -326,9 +326,9 @@ export const chats = pgTable(
   "chats",
   {
     id: uuid("id").primaryKey().defaultRandom().notNull(),
-    subscriptionId: uuid("subscription_id")
-      .references(() => chatSubscription.id, { onDelete: "cascade" })
-      .notNull(),
+    // subscriptionId: uuid("subscription_id")
+    //   .references(() => chatSubscription.id, { onDelete: "cascade" })
+    //   .notNull(),
     studentId: text("student_id")
       .references(() => studentProfile.userId, {
         onDelete: "cascade",
@@ -361,7 +361,9 @@ export const messages = pgTable(
     senderId: text("sender_id").references(() => user.id, {
       onDelete: "cascade",
     }),
-    chatId: uuid("chat_id").references(() => chats.id, { onDelete: "cascade" }),
+    chatId: uuid("chat_id")
+      .references(() => chats.id, { onDelete: "cascade" })
+      .notNull(),
     message: text("message"),
     isEdited: boolean("is_edited").default(false),
     updatedAt: timestamp("updated_at").defaultNow(),
@@ -432,20 +434,22 @@ export const chatRelations = relations(chats, ({ one }) => ({
     fields: [chats.studentId],
     references: [studentProfile.userId],
   }),
-  chatSubscription: one(chatSubscription, {
-    fields: [chats.subscriptionId],
-    references: [chatSubscription.id],
-  }),
+  // will uncomment this one's we start paid plans
+  // chatSubscription: one(chatSubscription, {
+  //   fields: [chats.subscriptionId],
+  //   references: [chatSubscription.id],
+  // }),
 }));
-export const chatSubscriptionRelations = relations(
-  chatSubscription,
-  ({ one }) => ({
-    chat: one(chats, {
-      fields: [chatSubscription.id],
-      references: [chats.subscriptionId],
-    }),
-  })
-);
+// will uncomment this one's we start paid plans
+// export const chatSubscriptionRelations = relations(
+//   chatSubscription,
+//   ({ one }) => ({
+//     chat: one(chats, {
+//       fields: [chatSubscription.id],
+//       references: [chats.subscriptionId],
+//     }),
+//   })
+// );
 
 export const messageRelations = relations(messages, ({ one, many }) => ({
   chats: one(chats, {

@@ -35,6 +35,7 @@
     "@supabase/ssr": "^0.7.0",
     "@supabase/supabase-js": "^2.58.0",
     "@tabler/icons-react": "^3.35.0",
+    "@tanstack/react-query": "^5.90.10",
     "@uploadthing/react": "^7.3.2",
     "@upstash/ratelimit": "^2.0.6",
     "@vercel/kv": "^3.0.0",
@@ -71,6 +72,8 @@
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
+    "@tanstack/eslint-plugin-query": "^5.91.2",
+    "@tanstack/react-query-devtools": "^5.90.2",
     "@types/leaflet": "^1.9.21",
     "@types/node": "^20",
     "@types/nodemailer": "^6.4.17",
