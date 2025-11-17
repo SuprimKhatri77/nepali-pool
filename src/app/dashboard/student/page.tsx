@@ -31,7 +31,7 @@ export default async function Student() {
       .from(studentProfile)
       .where(eq(studentProfile.userId, userRecord.id));
     if (!studentProfileRecord) {
-      return redirect("/sign-up/onboarding/student");
+      return redirect("/onboarding/student");
     }
 
     const mentorProfiles = await db.query.mentorProfile.findMany({
@@ -76,18 +76,17 @@ export default async function Student() {
         },
       })) || [];
 
-    const studentChatSubscriptions: ChatSubscriptionSelectType[] =
-      await db.query.chatSubscription.findMany({
-        where: (fields, { eq }) =>
-          eq(chatSubscription.studentId, studentRecordWithUser.userId),
-      });
+    // const studentChatSubscriptions: ChatSubscriptionSelectType[] =
+    //   await db.query.chatSubscription.findMany({
+    //     where: (fields, { eq }) =>
+    //       eq(chatSubscription.studentId, studentRecordWithUser.userId),
+    //   });
 
     return (
       <StudentPage
         matchingMentors={macthingMentors}
         studentRecordWithUser={studentRecordWithUser}
         favoriteMentor={favoriteMentor}
-        chatSubscriptions={studentChatSubscriptions}
       />
     );
   }

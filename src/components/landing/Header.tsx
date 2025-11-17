@@ -35,7 +35,7 @@ export default function Header() {
     queryKey: ["user"],
     queryFn: async () => {
       const result = await getCurrentUser();
-      if (!result.success) return;
+      if (!result.success) return null;
 
       return {
         user: result.userRecord,

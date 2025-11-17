@@ -6,12 +6,14 @@ import { authClient } from "../../server/lib/auth/auth-client";
 import { useState } from "react";
 import { Spinner } from "./ui/spinner";
 import { toast } from "sonner";
+import { useQueryClient } from "@tanstack/react-query";
 
 export default function SignOutButton({
   children,
 }: {
   children?: React.ReactNode;
 }) {
+  const queryClient = useQueryClient();
   const [isPending, setIsPending] = useState<boolean>(false);
   const router = useRouter();
 
@@ -26,11 +28,12 @@ export default function SignOutButton({
     await authClient.signOut({
       fetchOptions: {
         onSuccess: () => {
+          queryClient.invalidateQueries({ queryKey: ["user"] });
           router.push("/");
         },
-        // onError: ({ error }) => {
-        //   toast.error(error.message);
-        // },
+        onError: ({ error }) => {
+          toast.error(error.message);
+        },
       },
     });
 

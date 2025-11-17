@@ -1,81 +1,51 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { authClient } from "../../server/lib/auth/auth-client";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+} from "@/components/ui/card";
 import { useRouter } from "next/navigation";
 import { startTransition, useEffect, useOptimistic, useState } from "react";
-import type {
-  ChatSubscriptionSelectType,
-  FavoriteSelectType,
-} from "../../lib/db/schema";
+import type { FavoriteSelectType } from "../../lib/db/schema";
 import Image from "next/image";
 import {
   addToFavorite,
   type FormState,
 } from "../../server/actions/add-remove-favorite/addToFavorite";
-import { EyeIcon, HeartIcon, Star } from "lucide-react";
+import { EyeIcon, HeartIcon } from "lucide-react";
 import { removeFavorite } from "../../server/actions/add-remove-favorite/removeFavorite";
-import { PaymentButton } from "@/components/PaymentButton";
 import Link from "next/link";
-import ScheduleCall from "./ScheduleCall";
 import { toast } from "sonner";
 import type {
   MentorProfileWithUserAndChat,
   StudentProfileWithUser,
 } from "../../types/all-types";
 import { capitalizeFirstLetter } from "better-auth";
+import { getOrCreateChat } from "../../server/lib/auth/helpers/free/get-or-create-chat";
+import { Spinner } from "./ui/spinner";
 
 export default function StudentPage({
   matchingMentors,
   studentRecordWithUser,
   favoriteMentor,
-  chatSubscriptions,
 }: {
   matchingMentors: MentorProfileWithUserAndChat[];
   studentRecordWithUser: StudentProfileWithUser;
   favoriteMentor: FavoriteSelectType[];
-  chatSubscriptions: ChatSubscriptionSelectType[];
 }) {
-  const [click, setClick] = useState(false);
   const [isFavoritesShown, setIsFavoriteShown] = useState<boolean>(false);
   const router = useRouter();
-  const [success, setSuccess] = useState<boolean>(false);
-  let timeout: number;
-  useEffect(() => {
-    if (success) {
-      timeout = window.setTimeout(() => {
-        toast.message(
-          "Preferred time sent for evaluation to mentor, successfully!"
-        );
-      }, 3000);
-    }
-    return () => clearTimeout(timeout);
-  }, [success]);
+  const [loadingChatMentorId, setLoadingChatMentorId] = useState<string | null>(
+    null
+  );
 
   const initialFavorites = favoriteMentor
     .map((fav) => fav.mentorId)
     .filter((id): id is string => id !== null);
 
-  const isChatUnlocked = (mentorId: string) => {
-    return chatSubscriptions.find(
-      (sub) =>
-        sub.mentorId === mentorId &&
-        sub.studentId === studentRecordWithUser.userId
-    );
-  };
-
-  const getChatWithStudent = (mentorId: string) => {
-    for (const mentor of matchingMentors) {
-      const chat = mentor.chats.find(
-        (chat) =>
-          chat.studentId === studentRecordWithUser.userId &&
-          chat.mentorId === mentorId
-      );
-      if (chat) return chat;
-    }
-    return null;
-  };
   const [optimisticFavorites, setOptimisticFavorites] = useOptimistic(
     initialFavorites,
     (currentFavorite: string[], mentorId: string) => {
@@ -123,34 +93,17 @@ export default function StudentPage({
   const isFavorited = (mentorId: string) =>
     optimisticFavorites.includes(mentorId);
 
-  const handleLogout = async () => {
-    setClick(true);
-    await authClient.signOut({
-      fetchOptions: {
-        onSuccess: () => {
-          router.push("/");
-        },
-      },
-    });
-    setClick(false);
-  };
+  const handleChat = async (mentorId: string) => {
+    setLoadingChatMentorId(mentorId);
+    const result = await getOrCreateChat(mentorId);
 
-  const calls = studentRecordWithUser.videoCall ?? [];
-  const firstUnscheduledCall = calls.find(
-    (vc) => vc.status === "pending" && !vc.preferredTime?.studentPreferredTime
-  );
+    if (!result.success) {
+      toast.error("Unable to start chat. Please try again.");
+      return;
+    }
 
-  const isVideoCallUnlocked = (mentorId: string) => {
-    return studentRecordWithUser.videoCall.find(
-      (sub) =>
-        sub.mentorId === mentorId &&
-        sub.studentId === studentRecordWithUser.userId
-    );
-  };
-
-  const handleSuccess = () => {
-    // console.log("REFRESHING /DASHBOARD/STUDENT");
-    router.refresh();
+    router.push(`/chats/${result.chatId}`);
+    setLoadingChatMentorId(null);
   };
 
   return (
@@ -205,14 +158,6 @@ export default function StudentPage({
               Favorites
             </button>
           </div>
-          <Link href="/video-call?status=pending">
-            <Button
-              variant="outline"
-              className="border-emerald-200 hover:bg-emerald-50 bg-transparent"
-            >
-              Video Calls
-            </Button>
-          </Link>
         </div>
 
         {!isFavoritesShown && (
@@ -220,10 +165,6 @@ export default function StudentPage({
             {matchingMentors.length > 0 ? (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {matchingMentors.map((mentor) => {
-                  const activeCall = isVideoCallUnlocked(mentor.userId);
-                  const activeChat = isChatUnlocked(mentor.userId);
-                  const studentChat = getChatWithStudent(mentor.userId);
-
                   return (
                     <Card
                       key={mentor.userId}
@@ -249,126 +190,75 @@ export default function StudentPage({
                               </p>
                             </div>
                           </div>
-                          
                         </div>
                         <div className="flex gap-1 pt-1">
-                            {isFavorited(mentor.userId) ? (
-                              <Button
-                                type="submit"
-                                variant="ghost"
-                                size="icon"
-                                onClick={() =>
-                                  handleRemoveFavorite(mentor.userId)
-                                }
-                                className="hover:bg-emerald-50"
-                              >
-                                <HeartIcon className="w-5 h-5 text-yellow-500 fill-yellow-500" />
-                              </Button>
-                            ) : (
-                              <Button
-                                type="submit"
-                                variant="ghost"
-                                size="icon"
-                                onClick={() => handleClick(mentor.userId)}
-                                className="hover:bg-emerald-50"
-                              >
-                                <HeartIcon className="w-5 h-5 text-gray-400" />
-                              </Button>
-                            )}
-                            <input
-                              type="hidden"
-                              name="mentorId"
-                              value={mentor.userId}
-                            />
-                            <input
-                              type="hidden"
-                              name="studentId"
-                              value={studentRecordWithUser.userId}
-                            />
-  <Link href={`/mentors/${mentor.userId}`}>
-    <Button variant="ghost" size="icon" className="text-emerald-700 hover:bg-emerald-100">
-      <EyeIcon className="w-5 h-5" /> {/* from lucide-react */}
-    </Button>
-  </Link>
+                          {isFavorited(mentor.userId) ? (
+                            <Button
+                              type="submit"
+                              variant="ghost"
+                              size="icon"
+                              onClick={() =>
+                                handleRemoveFavorite(mentor.userId)
+                              }
+                              className="hover:bg-emerald-50"
+                            >
+                              <HeartIcon className="w-5 h-5 text-yellow-500 fill-yellow-500" />
+                            </Button>
+                          ) : (
+                            <Button
+                              type="submit"
+                              variant="ghost"
+                              size="icon"
+                              onClick={() => handleClick(mentor.userId)}
+                              className="hover:bg-emerald-50"
+                            >
+                              <HeartIcon className="w-5 h-5 text-gray-400" />
+                            </Button>
+                          )}
+                          <input
+                            type="hidden"
+                            name="mentorId"
+                            value={mentor.userId}
+                          />
+                          <input
+                            type="hidden"
+                            name="studentId"
+                            value={studentRecordWithUser.userId}
+                          />
+                          <Link href={`/mentors/${mentor.userId}`}>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className="text-emerald-700 hover:bg-emerald-100"
+                            >
+                              <EyeIcon className="w-5 h-5" />{" "}
+                              {/* from lucide-react */}
+                            </Button>
+                          </Link>
                         </div>
-</CardHeader>
+                      </CardHeader>
 
                       <CardContent className="px-6">
-                        
-
                         <p className="text-sm text-gray-600 mb-6 line-clamp-3 mt-auto">
-                          {capitalizeFirstLetter(mentor.bio?.slice(0,150) ?? "No Bio")}...
+                          {capitalizeFirstLetter(
+                            mentor.bio?.slice(0, 150) ?? "No Bio"
+                          )}
+                          ...
                         </p>
-
-                        
                       </CardContent>
                       <CardFooter className="mt-auto flex flex-col gap-y-4">
                         <div className="grid grid-cols-2 gap-4 justify-center  mb-0">
-                          {activeChat &&
-                          activeChat.status === "active" &&
-                          new Date(activeChat.endDate) > new Date() ? (
-                            studentChat && studentChat.status === "active" ? (
-                              <Link
-                                href={`/chats/${studentChat?.id}`}
-                                className="inline-flex items-center justify-center rounded-md text-sm font-medium bg-emerald-600 text-white hover:bg-emerald-700 h-10 px-2 sm:px-4 py-2 transition-colors"
-                              >
-                                Chat
-                              </Link>
+                          <Button
+                            onClick={() => handleChat(mentor.userId)}
+                            disabled={loadingChatMentorId === mentor.userId}
+                            className="inline-flex items-center justify-center rounded-md text-sm font-medium bg-emerald-600 text-white hover:bg-emerald-700 h-10 px-2 sm:px-4 py-2 transition-colors"
+                          >
+                            {loadingChatMentorId === mentor.userId ? (
+                              <Spinner />
                             ) : (
-                              studentChat &&
-                              studentChat.status === "expired" && (
-                                <PaymentButton
-                                  paymentType="chat_subscription"
-                                  userId={studentRecordWithUser.userId}
-                                  mentorId={mentor.userId}
-                                  userEmail={studentRecordWithUser.user.email!}
-                                  className="bg-gray-900 text-white hover:bg-gray-800 h-10 px-4 py-2 rounded-md transition-colors"
-                                >
-                                  Renew Chat Subscription
-                                </PaymentButton>
-                              )
-                            )
-                          ) : (
-                            <PaymentButton
-                              paymentType="chat_subscription"
-                              userId={studentRecordWithUser.userId}
-                              mentorId={mentor.userId}
-                              userEmail={studentRecordWithUser.user.email!}
-                              className="bg-gray-900 text-white hover:bg-gray-800 h-10 px-4 py-2 rounded-md transition-colors"
-                            >
-                              Unlock Chat
-                            </PaymentButton>
-                          )}
-
-                          {activeCall &&
-                          activeCall.status !== "cancelled" &&
-                          activeCall?.status !== "completed" ? (
-                            activeCall.status !== "scheduled" ? (
-                              <Link
-                                href={`/video-call/schedule/${activeCall.id}`}
-                                className="inline-flex items-center justify-center rounded-md text-sm font-medium bg-emerald-600 text-white hover:bg-emerald-700 h-10 px-4 py-2 transition-colors"
-                              >
-                                Schedule Call
-                              </Link>
-                            ) : (
-                              <Button
-                                disabled
-                                className="bg-emerald-100 text-emerald-700"
-                              >
-                                Scheduled
-                              </Button>
-                            )
-                          ) : (
-                            <PaymentButton
-                              paymentType="video_call"
-                              userId={studentRecordWithUser.userId}
-                              mentorId={mentor.userId}
-                              userEmail={studentRecordWithUser.user.email!}
-                              className="bg-gray-900 text-white hover:bg-gray-800 h-10 px-4 py-2 rounded-md transition-colors"
-                            >
-                              Unlock Video Call
-                            </PaymentButton>
-                          )}
+                              "Chat"
+                            )}
+                          </Button>
                         </div>
                       </CardFooter>
                     </Card>
@@ -412,17 +302,25 @@ export default function StudentPage({
                               {capitalizeFirstLetter(matchedMentor.user.name)}
                             </h3>
                             <p className="text-sm text-gray-500 mt-1">
-                              {capitalizeFirstLetter(matchedMentor.country ?? "No Country")}
+                              {capitalizeFirstLetter(
+                                matchedMentor.country ?? "No Country"
+                              )}
                             </p>
                           </div>
                           <p className="text-sm text-gray-600 line-clamp-3">
-                            {capitalizeFirstLetter(matchedMentor.bio?.slice(0,150) ?? "No Bio For This Mentor")}...
+                            {capitalizeFirstLetter(
+                              matchedMentor.bio?.slice(0, 150) ??
+                                "No Bio For This Mentor"
+                            )}
+                            ...
                           </p>
                         </div>
                       </CardContent>
                       <CardFooter>
                         <Button className=" bg-emerald-700 mx-auto">
-                          <Link href={`/mentors/${matchedMentor.userId}`}>View Profile</Link>
+                          <Link href={`/mentors/${matchedMentor.userId}`}>
+                            View Profile
+                          </Link>
                         </Button>
                       </CardFooter>
                     </Card>
@@ -437,20 +335,6 @@ export default function StudentPage({
           </div>
         )}
       </main>
-
-      {firstUnscheduledCall && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
-          <Card className="w-full max-w-md mx-4 shadow-2xl">
-            <CardContent className="p-8">
-              <ScheduleCall
-                videoId={firstUnscheduledCall.id}
-                onSuccess={handleSuccess}
-                role="student"
-              />
-            </CardContent>
-          </Card>
-        </div>
-      )}
     </div>
   );
 }

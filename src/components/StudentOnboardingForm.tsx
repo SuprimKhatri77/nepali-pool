@@ -67,11 +67,14 @@ export default function StudentOnboardingForm({
 
   useEffect(() => {
     if (message) {
-      toast.info(decodeURIComponent(message), { position: "top-right", action:{
-        label:"X",
-        onClick: () => toast.dismiss()
-      },
-      duration: 3000});
+      toast.info(decodeURIComponent(message), {
+        position: "top-right",
+        action: {
+          label: "X",
+          onClick: () => toast.dismiss(),
+        },
+        duration: 3000,
+      });
 
       const url = new URL(window.location.href);
       url.searchParams.delete("message");
@@ -121,12 +124,12 @@ export default function StudentOnboardingForm({
     { number: 3, title: "Preferences" },
   ];
 
-    const [location, setLocation] = useState({
+  const [location, setLocation] = useState({
     city: "",
     district: "",
   });
 
-    // navigator is a browser api so, we have to run in use clinet page.
+  // navigator is a browser api so, we have to run in use clinet page.
   const fillInputs = () => {
     if (!navigator.geolocation) {
       alert("Geolocation not supported");
@@ -149,11 +152,11 @@ export default function StudentOnboardingForm({
             data.address.town ||
             data.address.village ||
             "";
-          const district = data.address.county || "" // county == district in response;
+          const district = data.address.county || ""; // county == district in response;
 
           setLocation({
             city: city,
-            district: district
+            district: district,
           }); // to update ui state when value change i used another state location.
         } catch (err) {
           console.error("Failed to fetch location data", err);
@@ -161,39 +164,33 @@ export default function StudentOnboardingForm({
       },
       (err) => {
         console.error(err);
-        toast("Could not get your location",{position: "bottom-center"});
+        toast("Could not get your location", { position: "bottom-center" });
       }
     );
   };
 
   useEffect(() => {
-    if (state.message) {
-      toast(state.message);
-    }
-  }, [state.message]);
-
-  useEffect(() => {
     fillInputs();
   }, []);
 
-  useEffect(()=>{
-     if(location){
+  useEffect(() => {
+    if (location) {
       formData.city = state.inputs?.city || location.city || "";
-      formData.district = state.inputs?.district || location.district || ""
-     }
-  },[location])
+      formData.district = state.inputs?.district || location.district || "";
+    }
+  }, [location]);
   // local storage data save.
-    // useEffect(()=>{
-    //   // console.log(formData.bio)
-    //    const getBio = localStorage.getItem("bio") ?? "";
-    //   if(getBio && formData.bio?.length === 0){
-        
-    //     formData.bio = getBio
-    //   }
-    //   if(formData.bio){
-    //     localStorage.setItem("bio",formData.bio)
-    //   }
-    // },[formData, state, handleNext])
+  // useEffect(()=>{
+  //   // console.log(formData.bio)
+  //    const getBio = localStorage.getItem("bio") ?? "";
+  //   if(getBio && formData.bio?.length === 0){
+
+  //     formData.bio = getBio
+  //   }
+  //   if(formData.bio){
+  //     localStorage.setItem("bio",formData.bio)
+  //   }
+  // },[formData, state, handleNext])
   return (
     <div
       className={cn(
@@ -350,7 +347,9 @@ export default function StudentOnboardingForm({
                       id="district"
                       name="district"
                       placeholder="e.g., Rupandehi"
-                      defaultValue={state.inputs?.district || location.district || ""}
+                      defaultValue={
+                        state.inputs?.district || location.district || ""
+                      }
                       onChange={(e) =>
                         setFormData({ ...formData, district: e.target.value })
                       }
