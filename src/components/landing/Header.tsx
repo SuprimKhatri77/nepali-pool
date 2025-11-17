@@ -41,7 +41,8 @@ export default function Header() {
         user: result.userRecord,
       };
     },
-    staleTime: 1000 * 60 * 60,
+    staleTime: 0,
+    refetchOnWindowFocus: false,
   });
 
   useEffect(() => {

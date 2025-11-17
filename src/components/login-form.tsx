@@ -17,11 +17,13 @@ import { toast } from "sonner";
 import Link from "next/link";
 import { InputGroup, InputGroupAddon, InputGroupInput } from "./ui/input-group";
 import { Eye, EyeOff } from "lucide-react";
+import { useQueryClient } from "@tanstack/react-query";
 
 export function LoginForm({
   className,
   ...props
 }: React.ComponentProps<"form">) {
+  const queryClient = useQueryClient();
   const [toggleInputType, setToggleInputType] = useState<"text" | "password">(
     "password"
   );
@@ -39,6 +41,7 @@ export function LoginForm({
 
   useEffect(() => {
     if (state.success && state.message && state.redirectTo) {
+      queryClient.invalidateQueries({ queryKey: ["user"] });
       toast(state.message);
       router.push(state.redirectTo);
     }

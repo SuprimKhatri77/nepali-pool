@@ -24,11 +24,13 @@ import {
 } from "./ui/select";
 import { InputGroup, InputGroupAddon, InputGroupInput } from "./ui/input-group";
 import { EyeIcon, EyeOffIcon } from "lucide-react";
+import { useQueryClient } from "@tanstack/react-query";
 
 export function SignupForm({
   className,
   ...props
 }: React.ComponentProps<"form">) {
+  const queryClient = useQueryClient();
   const initialState: FormState = {
     errors: {},
   } as FormState;
@@ -68,6 +70,7 @@ export function SignupForm({
 
   useEffect(() => {
     if (state.success && state.message && state.redirectTo) {
+      queryClient.invalidateQueries({ queryKey: ["user"] });
       toast.success(state.message);
       setTimeout(() => {
         router.replace(state.redirectTo as string);
