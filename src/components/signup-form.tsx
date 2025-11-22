@@ -145,11 +145,12 @@ export function SignupForm({
           )}
         </Field>
         <Field className="gap-1">
-          <FieldLabel htmlFor="password">Password</FieldLabel>
+          <FieldLabel htmlFor="password">Create New Password</FieldLabel>
           <InputGroup>
             <InputGroupInput
               onChange={(e) => setPassword(e.target.value)}
               type={toggleInputType}
+              placeholder="Atleast 8 characters password"
               name="password"
               defaultValue={state.inputs?.password}
             />

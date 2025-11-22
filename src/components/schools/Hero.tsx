@@ -4,8 +4,9 @@ import { motion } from "framer-motion";
 import { Badge } from "@/components/ui/badge";
 import { GraduationCap, Building2, MapPin } from "lucide-react";
 import SearchBarSchool from "./SearchBarSchool";
+import { SchoolSelectType } from "../../../lib/db/schema";
 
-export default function HeroSection({ total }: { total: number }) {
+export default function HeroSection({ total, schools }: { total: number, schools: SchoolSelectType[] }) {
   return (
     <>
       <motion.section
@@ -73,7 +74,8 @@ export default function HeroSection({ total }: { total: number }) {
           </div>
         </div>
       </motion.section>
-      <SearchBarSchool />
+      {/* search bar for schools page */}
+      <SearchBarSchool schools={schools}/>
     </>
   );
 }

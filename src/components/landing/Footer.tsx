@@ -104,7 +104,8 @@ export default function Footer() {
             <h3 className="font-semibold text-gray-900 mb-4">Explore</h3>
             <ul className="space-y-2 text-sm text-gray-600">
               {exploreLinks.map((item) => (
-                <motion.li initial={{opacity:0, scaleY:0.5}} whileInView={{opacity:1,scaleY:1}} transition={{duration: 0.5, }} key={item.id}>
+                
+                <motion.li  key={item.id}>
                   <Link href={item.href} className="hover:text-emerald-600">
                     {item.name}
                   </Link>
@@ -118,7 +119,7 @@ export default function Footer() {
             <h3 className="font-semibold text-gray-900 mb-4">Details</h3>
             <ul className="space-y-2 text-sm text-gray-600">
               {detailLinks.map((item) => (
-                <motion.li initial={{opacity:0, scaleY:0.5}} whileInView={{opacity:1,scaleY:1}} transition={{duration: 0.5, }} key={item.id}>
+                <motion.li  key={item.id}>
                   <Link href={item.href} className="hover:text-emerald-600">
                     {item.name}
                   </Link>
@@ -132,7 +133,8 @@ export default function Footer() {
             <h3 className="font-semibold text-gray-900 mb-4">Legal</h3>
             <ul className="space-y-2 text-sm text-gray-600">
               {legalLinks.map((item) => (
-                <motion.li initial={{opacity:0, scaleY:0.5}} whileInView={{opacity:1,scaleY:1}} transition={{duration: 0.5, }} key={item.id}>
+              
+                <motion.li  key={item.id}>
                   <Link href={item.href} className="hover:text-emerald-600">
                     {item.name}
                   </Link>
@@ -167,11 +169,10 @@ export default function Footer() {
 
         {/* Disclaimer */}
         <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-8">
-          <p className="text-sm text-center text-red-800">
-            <span className="font-semibold">Disclaimer:</span> We do not
-            guarantee visa approval; final decisions rest with the respective
-            embassy/immigration office.
-          </p>
+       <p className="text-sm text-center text-red-800">
+  <span className="font-semibold">महत्वपूर्ण:</span> यो प्लेटफर्म विद्यार्थीहरूलाई mentor सँग जोडेर आफैं application गर्न सिकाउने शैक्षिक माध्यम हो। हामी कन्सल्टेन्सी वा भिसा एजेन्सी होइनौं। भिसा पाउने कि नपाउने भन्ने कुरा पूर्ण रूपमा embassy र immigration को निर्णयमा निर्भर गर्दछ।
+</p>
+
         </div>
 
         {/* Copyright */}

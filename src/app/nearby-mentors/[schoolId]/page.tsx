@@ -1,32 +1,26 @@
 
 import { db } from "../../../../lib/db";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
-import { Eye,  Heart,  MapPin, MessageCircle } from "lucide-react";
+import { Eye,  Heart,  MapPin, MessageCircle, Globe, Mail, CheckCircle2, XCircle } from "lucide-react";
+
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import Link from "next/link";
 import { geocodeAddress } from "../../../../hooks/useGeoCode";
 import { capitalizeFirstLetter } from "better-auth";
 import { z } from "zod/v4";
-import MapWithMentors from "@/components/map";
-import { getDistance } from "../page";
-import MapLoader from "@/components/nearby-mentors/MapContainer";
 import MapContainer from "@/components/nearby-mentors/MapContainer";
 
 
 const uuidCheck = z.string().uuid();
 export default async function Page({
   params,
-  searchParams,
 }: {
   params: Promise<{ schoolId: string,}>
-  searchParams: Promise<{ lat: string, lon:string }>
   ;
 }) {
   //  Extract and validate school idd
   const { schoolId } = await params;
-  const {lat, lon}= await searchParams
-  console.log(lat,lon)
   const parsed = uuidCheck.safeParse(schoolId);
   if (!parsed.success) return <p>Invalid school ID</p>;
 
@@ -36,9 +30,17 @@ export default async function Page({
   });
   if (!school) return <p>School not found</p>;
 
+  // console.log(school.address) // checking is school address available
+
   //  Geocode school address
-  const schoolCoords = await geocodeAddress(school.address ?? "");
-  if (!schoolCoords) return <p>Could not determine school location</p>;
+  let schoolCoords = await geocodeAddress(school.address ?? "Japan"); //school.addres
+  // console.log(schoolCoords) // is school cord coming
+  if (!schoolCoords) {
+  schoolCoords = await geocodeAddress("Japan");
+  if (!schoolCoords) {
+    return <p>Unable to determine school location</p>;
+  }
+}
 
   //  Fetch mentors with accepted status
   const mentors = await db.query.mentorProfile.findMany({
@@ -54,49 +56,126 @@ export default async function Page({
     })
   );
 
-  //  Find nearby mentors under 10 km 
-  const nearbyMentors = mentorsWithCoords
-    .filter((m) => m.lat && m.lng) // ignore mentors without coords
-    .map((m) => ({
-      ...m,
-      distance: getDistance(
-        schoolCoords.lat,
-        schoolCoords.lng,
-        m.lat!,
-        m.lng!
-      ),
-    }))
-    .filter((m) => m.distance <= 10) // only within 10 km
-    .sort((a, b) => a.distance - b.distance);
+
+  let nearbyMentors = mentorsWithCoords
+  .filter((m) => m.lat && m.lng) // ignore mentors without coords
+  .map((m) => ({
+    ...m,
+    distance: getDistance(
+      schoolCoords.lat,
+      schoolCoords.lng,
+      m.lat!,
+      m.lng!
+    ),
+  }))
+  .filter((m) => m.distance <= 50) // only within 50 km
+  .sort((a, b) => a.distance - b.distance);
+
+// Fallback  If no nearby mentors by distance, match by city
+if (nearbyMentors.length <= 10 && school?.city) {
+  // Create a Set of existing userIds for fast lookup
+  const existingUserIds = new Set(nearbyMentors.map((m) => m.userId));
+  
+  const addedMentors = mentorsWithCoords
+  // update the school schema to accept country then update the below || Japan to school.country
+    .filter((m) => m.city?.toLowerCase() || m.country?.toLowerCase() === school.city?.toLowerCase() || "Japan" || "japan")
+    .filter((m) => !existingUserIds.has(m.userId)) // Exclude duplicates
+    .map((m) => ({ 
+      ...m, 
+      distance: getDistance(schoolCoords.lat, schoolCoords.lng, m.lat!, m.lng!) 
+    }));
+  
+  nearbyMentors = [...nearbyMentors, ...addedMentors];
+}
+
+
 
   //  Render school + nearby mentors
  return (
   <div className="min-h-screen bg-white text-black p-6 md:p-12 font-sans">
     {/* School Card */}
-    <div className="max-w-3xl mx-auto bg-emerald-50 border border-emerald-300 rounded-xl shadow-lg p-6 mb-10">
-      <h1 className="text-3xl font-bold text-emerald-800 mb-2">{school.name}</h1>
-      <p className="text-gray-700 mb-4">{school.address}</p>
+<div className="max-w-3xl mx-auto bg-white border border-emerald-200 rounded-2xl shadow-md p-6 mb-10">
 
-      <div className="flex flex-wrap gap-4">
-        <a
-          href={school.websiteUrl ?? "https://nepalipool.com"}
-          target="_blank"
-          className="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg shadow transition"
-        >
-          Visit Website
-        </a>
-        <a
-          href={`mailto:${school.email}`}
-          className="bg-white border border-emerald-600 text-emerald-600 hover:bg-emerald-50 px-4 py-2 rounded-lg shadow transition"
-        >
-          Email
-        </a>
+  {/* Header Section */}
+  <div className="flex items-start gap-4">
+    {/* School Image */}
+    <Image
+      src={school.imageUrl ?? "https://via.placeholder.com/120"}
+      alt={school.name ?? "School"}
+      className="w-24 h-24 rounded-xl object-cover border"
+      width={24}
+      height={24}
+    />
+
+    <div>
+      <h1 className="text-2xl font-bold text-emerald-800">
+        {school.name}
+      </h1>
+
+      {/* City + Prefecture */}
+      <div className="flex items-center text-gray-600 mt-1 gap-1">
+        <MapPin size={16} />
+        <span>
+          {school.city ?? "Unknown"}, {school.prefecture ?? "Japan"}
+        </span>
       </div>
     </div>
+  </div>
+
+  {/* Address */}
+  {school.address && (
+    <p className="text-gray-700 mt-4">
+      {school.address}
+    </p>
+  )}
+
+  {/* International Student Support */}
+  <div className="mt-4 flex items-center gap-2">
+    {school.supportInternationalStudents ? (
+      <>
+        <CheckCircle2 size={18} className="text-emerald-600" />
+        <span className="text-emerald-700 font-medium">
+          Supports International Students
+        </span>
+      </>
+    ) : (
+      <>
+        <XCircle size={18} className="text-red-500" />
+        <span className="text-red-600 font-medium">
+          No International Student Support
+        </span>
+      </>
+    )}
+  </div>
+
+  {/* Buttons */}
+  <div className="flex flex-wrap gap-3 mt-6">
+    <a
+      href={school.websiteUrl ?? "#"}
+      target="_blank"
+      className="flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 
+                 text-white px-4 py-2 rounded-lg shadow transition"
+    >
+      <Globe size={18} />
+      Visit Website
+    </a>
+
+    {school.email && (
+      <a
+        href={`mailto:${school.email}`}
+        className="flex items-center gap-2 bg-white border border-emerald-600 
+                   text-emerald-700 hover:bg-emerald-50 px-4 py-2 rounded-lg shadow transition"
+      >
+        <Mail size={18} />
+        Email School
+      </a>
+    )}
+  </div>
+</div>
 
     {/* map */}
     <div className="max-w-3xl mx-auto mb-10 h-96 relative z-10">
-         <MapContainer nearbyMentors={nearbyMentors} school={{name: school.name ?? "School Name"}} schoolCoords={schoolCoords} />
+         <MapContainer nearbyMentors={nearbyMentors} school={school} schoolCoords={schoolCoords} />
         </div>
 
     {/* Nearby Mentors */}
@@ -208,6 +287,27 @@ export default async function Page({
   </div>
 );
 
+}
+
+
+
+// Haversine formula to calculate distance between two coordinates
+export function getDistance(
+  lat1: number,
+  lon1: number,
+  lat2: number,
+  lon2: number
+): number {
+  const R = 6371; // Earth's radius in kilometers
+  const dLat = ((lat2 - lat1) * Math.PI) / 180;
+  const dLon = ((lon2 - lon1) * Math.PI) / 180;
+  const a =
+    Math.sin(dLat / 2) ** 2 +
+    Math.cos((lat1 * Math.PI) / 180) *
+      Math.cos((lat2 * Math.PI) / 180) *
+      Math.sin(dLon / 2) ** 2;
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  return R * c;
 }
 
 

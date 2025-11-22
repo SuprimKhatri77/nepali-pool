@@ -20,6 +20,11 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "yt3.googleusercontent.com",
       },
+      {
+        protocol: "https",
+        hostname: "scontent-lhr8-2.xx.fbcdn.net",
+      },
+
     ],
   },
   // cacheComponents: true,

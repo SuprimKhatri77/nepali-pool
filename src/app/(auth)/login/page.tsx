@@ -11,6 +11,7 @@ import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import NotFound from "@/app/not-found";
 import Image from "next/image";
+import BackButton from "@/components/landing/resuable/BackButton";
 
 export const metadata = {
   title: "Login | Nepali Pool",
@@ -27,20 +28,24 @@ export default async function Page() {
         <div className="flex flex-col gap-4 p-6 md:p-10">
       
           <div className="flex justify-between gap-2 md:justify-between md:items-center">
-            <div className="flex items-center gap-2">
-              <div className="w-10 h-10 bg-gradient-to-br from-emerald-400 to-emerald-600 rounded-lg flex items-center justify-center text-white font-bold">
-                <Link href={"/"}>NP</Link>
-              </div>
-              <span className="font-semibold text-lg text-gray-900">
-                NepaliPool
-              </span>
-            </div>
-            <Link
-              href="/"
-              className="group px-4 py-2 bg-emerald-50 text-emerald-700 text-sm font-medium rounded-md hover:bg-emerald-100 transition-colors "
+            {/* Logo */}
+          <Link href="/" className="flex items-center gap-2 group">
+            <div
+              className="w-9 h-9 sm:w-10 sm:h-10  rounded-lg flex items-center justify-center text-white font-bold shadow-sm group-hover:shadow-md transition-all duration-200"
+             
             >
-              <ArrowLeft className="group-hover:-translate-x-1.5 group-hover:text-emerald-900 transition-all duration-300" />
-            </Link>
+              <Image
+                src={"/logoTransparent.png"}
+                alt="NepaliPool Transparent Logo"
+                width={150}
+                height={70}
+              />
+            </div>
+            <span className="font-semibold text-lg sm:text-xl text-gray-900 group-hover:text-emerald-600 transition-colors duration-200">
+              NepaliPool
+            </span>
+          </Link>
+          <BackButton />
           </div>
           <div className="flex flex-1 items-center justify-center">
             <div className="w-full max-w-[400px] mx-auto">
@@ -69,7 +74,7 @@ export default async function Page() {
     await auth.api.signOut({
       headers: await headers(),
     });
-    return redirect("/login?error=invalid_session");
+    return redirect("/login?error=login+expired");
   }
 
   if (!userRecord.emailVerified) {

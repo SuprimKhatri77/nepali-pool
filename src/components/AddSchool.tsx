@@ -9,7 +9,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
-import { useActionState, useEffect } from "react";
+import { useActionState, useEffect, useState } from "react";
 import { toast } from "sonner";
 import { Input } from "./ui/input";
 
@@ -18,6 +18,8 @@ import {
   addSchool,
 } from "../../server/actions/add-school/addSchool";
 import { AddSchoolType } from "../../types/all-types";
+import CustomProfileUploader from "./CustomImageButton";
+import Router from "next/router";
 
 export default function AddSchool({
   className,
@@ -33,11 +35,14 @@ export default function AddSchool({
     initialState
   );
 
+    const [profilePhotoUrl, setProfilePhotoUrl] = useState<string>("");
+  
+
   useEffect(() => {
     if (state.success) {
-      toast(state.message);
+      toast(state.message,{position: "top-right"});
       setTimeout(() => {
-        // router.replace("/dashboard/student");
+        Router.replace("/dashboard/mentor");
       }, 1500);
     }
     if (!state.success && state.message) {
@@ -55,8 +60,8 @@ export default function AddSchool({
 >
   <Card>
     <CardHeader>
-      <CardTitle>Add New School</CardTitle>
-      <CardDescription>
+      <CardTitle className="text-center">Add New Language School</CardTitle>
+      <CardDescription className="text-center">
         Add a new school to provide students with more options.
       </CardDescription>
     </CardHeader>
@@ -64,6 +69,33 @@ export default function AddSchool({
     <CardContent>
       <form action={formAction}>
         <div className="flex flex-col gap-6">
+
+           <div className="grid gap-4">
+                                <Label
+                                  htmlFor="profilePhotoUrl"
+                                  className="text-sm font-medium text-gray-700"
+                                >
+                                  Image of school*
+                                </Label>
+                                <CustomProfileUploader
+                                  currentImage={profilePhotoUrl}
+                                  onUploadComplete={(url: string) =>
+                                    setProfilePhotoUrl(url)
+                                  }
+                                  imageUploadName="Upload School Photo"
+                                />
+                                <Input
+                                  type="hidden"
+                                  name="imageUrl"
+                                  value={profilePhotoUrl}
+                                  required
+                                />
+                                {state.errors?.imageUrl && (
+                                  <p className="text-red-500 text-sm">
+                                    {state.errors.imageUrl[0]}
+                                  </p>
+                                )}
+                              </div>
 
           {/* School Info */}
           <div className="grid gap-3">
@@ -80,10 +112,12 @@ export default function AddSchool({
             )}
           </div>
 
+          
+
           {/* Address Section */}
           <div className="grid gap-3 sm:grid-cols-2 sm:gap-6">
             <div className="flex flex-col gap-3">
-              <Label htmlFor="address">Address</Label>
+              <Label htmlFor="address">Street Address</Label>
               <Input
                 type="text"
                 id="address"
@@ -128,7 +162,7 @@ export default function AddSchool({
           {/* Contact Info */}
           <div className="grid gap-3 sm:grid-cols-2 sm:gap-6">
             <div className="flex flex-col gap-3">
-              <Label htmlFor="email">Email</Label>
+              <Label htmlFor="email">Email of School</Label>
               <Input
                 type="email"
                 id="email"
@@ -156,20 +190,6 @@ export default function AddSchool({
             </div>
           </div>
 
-          {/* Image */}
-          <div className="grid gap-3">
-            <Label htmlFor="imageUrl">Image URL</Label>
-            <Input
-              type="url"
-              id="imageUrl"
-              name="imageUrl"
-              required
-              defaultValue={state.inputs?.imageUrl}
-            />
-            {state.errors?.imageUrl && (
-              <p className="text-sm text-destructive">{state.errors.imageUrl[0]}</p>
-            )}
-          </div>
 
           {/* Submit Section */}
           <div className="flex flex-col gap-3 mt-4">

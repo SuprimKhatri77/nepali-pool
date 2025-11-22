@@ -1,8 +1,6 @@
 "use client";
 import Link from "next/link";
-import React from "react";
 import { motion } from "framer-motion";
-const MotionLink = motion(Link);
 
 export default function OurFeature() {
   const features = [
@@ -85,31 +83,7 @@ export default function OurFeature() {
       {/* Grid Pattern */}
       <div className="absolute inset-0 bg-[linear-gradient(to_right,#10b98110_1px,transparent_1px),linear-gradient(to_bottom,#10b98110_1px,transparent_1px)] bg-[size:48px_48px]" />
 
-      {/* Decorative Elements */}
-      {/* <motion.div
-        animate={{
-          scale: [1, 1.2, 1],
-          opacity: [0.15, 0.25, 0.15],
-        }}
-        transition={{
-          duration: 10,
-          repeat: Infinity,
-          ease: "easeInOut",
-        }}
-        className="absolute top-20 left-10 w-80 h-80 bg-emerald-300/30 rounded-full blur-3xl"
-      /> */}
-      {/* <motion.div
-        animate={{
-          scale: [1, 1.1, 1],
-          opacity: [0.1, 0.2, 0.1],
-        }}
-        transition={{
-          duration: 12,
-          repeat: Infinity,
-          ease: "easeInOut",
-        }}
-        className="absolute bottom-20 right-10 w-96 h-96 bg-green-300/20 rounded-full blur-3xl"
-      /> */}
+    
 
       <div className="max-w-6xl mx-auto relative z-10">
         {/* Header */}
@@ -129,7 +103,7 @@ export default function OurFeature() {
               key={index}
               initial={{ opacity: 0 }}
               whileInView={{ opacity: 1 }}
-              transition={{ duration: 0.3 , delay: 0.3 * index, ease: "linear" }}
+              transition={{ duration: 0.3 , delay: 0.1 * index, ease: "linear" }}
               className="relative group"
             >
               {/* Hover Glow */}

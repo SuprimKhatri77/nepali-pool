@@ -68,7 +68,7 @@ export async function SignUp(
       .regex(/[0-9]/, "Password must contain at least one number")
       .regex(
         /[^a-zA-Z0-9]/,
-        "Password must contain at least one special character eg: @, #"
+        "Use  at least one special character eg: @, # in Password"
       ),
     confirmPassword: z.string(),
     role: roleEnum,

@@ -25,7 +25,7 @@ export default function Hero() {
     <motion.section
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      transition={{duration:0.6, ease: "easeIn"}}
+      transition={{duration:0.2, ease: "easeIn"}}
       className="relative overflow-hidden min-h-screen flex items-center justify-center px-4 sm:px-6 pb-20 sm:pb-24"
     >
       {/* Gradient Background */}
@@ -37,31 +37,6 @@ export default function Hero() {
       {/* Radial Gradient Accent */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[800px] bg-gradient-radial from-emerald-100/40 via-transparent to-transparent blur-3xl" />
 
-      {/* Floating Orbs */}
-      {/* <motion.div
-        animate={{
-          y: [0, -20, 0],
-          opacity: [0.3, 0.5, 0.3],
-        }}
-        transition={{
-          duration: 8,
-          repeat: Infinity,
-          ease: "easeInOut",
-        }}
-        className="absolute top-20 left-10 w-72 h-72 bg-emerald-200/30 rounded-full blur-3xl"
-      />
-      <motion.div
-        animate={{
-          y: [0, 20, 0],
-          opacity: [0.2, 0.4, 0.2],
-        }}
-        transition={{
-          duration: 10,
-          repeat: Infinity,
-          ease: "easeInOut",
-        }}
-        className="absolute bottom-20 right-10 w-96 h-96 bg-green-200/20 rounded-full blur-3xl"
-      /> */}
 
       {/* Content */}
       <div className="max-w-5xl mx-auto text-center w-full relative z-10">

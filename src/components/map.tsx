@@ -1,15 +1,15 @@
 "use client";
 import React from "react";
-import { MapContainer, Marker, Popup, TileLayer, LayersControl, useMap } from "react-leaflet";
+import { MapContainer, Marker, Popup, TileLayer,  useMap } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
-import { UserSelectType } from "../../lib/db/schema";
+import { SchoolSelectType, UserSelectType } from "../../lib/db/schema";
 import { capitalizeFirstLetter } from "better-auth";
 import Link from "next/link";
 import Image from "next/image";
+import { ArrowRight } from "lucide-react";
 
 // Fix marker icons (Next.js + Leaflet issue)
-// Tell TypeScript to ignore the type check
 (delete (L.Icon.Default.prototype as any)._getIconUrl);
 
 L.Icon.Default.mergeOptions({
@@ -20,11 +20,9 @@ L.Icon.Default.mergeOptions({
 
 interface MapProps {
   schoolCoords: { lat: number; lng: number };
-  schoolName?: string;
-  mentors?:NearbyMentorsList
+  mentors?:NearbyMentorsList,
+   school: SchoolSelectType,
 }
-
-
 
 export type NearbyMentor = {
   distance?: number;
@@ -61,29 +59,53 @@ function ZoomOnClick({ position }: { position: [number, number] }) {
   return null;
 }
 
-
 export default function MapWithMentors({
   schoolCoords,
-  schoolName = "Selected School",
+  school,
   mentors = [],
 }: MapProps) {
-    const seenCoords = new Set<string>();
+  // Improved offset logic for overlapping markers
+  const adjustedMentors = mentors.map((m, index) => {
+    
+    // Check if mentor is at the exact same location as school (0 km distance)
+    const isAtSchool = m.distance !== undefined && m.distance < 0.1; // Less than 100 meters
+    
+    if (isAtSchool) {
+      // Create a circle pattern around the school
+      const angle = (index * (360 / mentors.length)) * (Math.PI / 180);
+      const radius = 0.009; // ~900 meters offset
+      
+      const offsetLat = m.lat! + Math.cos(angle) * radius;
+      const offsetLng = m.lng! + Math.sin(angle) * radius;
+      
+      return { ...m, lat: offsetLat, lng: offsetLng };
+    }
+    
+    // For other duplicate coordinates
+    const duplicates = mentors.filter(
+      (other, otherIndex) => 
+        otherIndex < index && 
+        other.lat?.toFixed(6) === m.lat?.toFixed(6) && 
+        other.lng?.toFixed(6) === m.lng?.toFixed(6)
+    );
+    
+    if (duplicates.length > 0) {
+      // Offset in a spiral pattern
+      const offsetIndex = duplicates.length;
+      const angle = offsetIndex * 90 * (Math.PI / 180); // 90 degrees apart
+      const radius = 0.002 * (Math.floor(offsetIndex / 6) + 1);
+      
+      const offsetLat = m.lat! + Math.cos(angle) * radius;
+      const offsetLng = m.lng! + Math.sin(angle) * radius;
+      
+      return { ...m, lat: offsetLat, lng: offsetLng };
+    }
+    
+    return m;
+  });
 
-const adjustedMentors = mentors.map((m) => {
-  const key = `${m.lat},${m.lng}`;
-  if (seenCoords.has(key)) {
-    // Shift duplicates slightly
-    const offsetLat = m.lat! + (1 - 0.5) * 0.001;
-    const offsetLng = m.lng! + (1 - 0.5) * 0.001;
-    return { ...m, lat: offsetLat, lng: offsetLng };
-  }
-  seenCoords.add(key);
-  return m;
-});
+  const [activePosition, setActivePosition] = React.useState<[number, number] | null>(null);
 
-    // console.log(mentors)
-    const [activePosition, setActivePosition] = React.useState<[number, number] | null>(null);
-    // console.log(mentors)
   return (
     <div className="h-[500px] w-full rounded-xl overflow-hidden shadow-lg z-0">
       <MapContainer
@@ -93,78 +115,100 @@ const adjustedMentors = mentors.map((m) => {
         className="h-full w-full"
       >
         {/*  Map Layers (Normal + Satellite Switcher) */}
-        <LayersControl position="topright">
-          <LayersControl.BaseLayer checked name="Normal View">
             <TileLayer
-              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+              url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png"
               attribution='&copy; OpenStreetMap contributors'
             />
-          </LayersControl.BaseLayer>
-          <LayersControl.BaseLayer name="Satellite View">
-            <TileLayer
-              url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
-              attribution="Tiles © Esri — Source: Esri, USGS, GeoEye"
-            />
-          </LayersControl.BaseLayer>
-        </LayersControl>
 
-        {/*  School Marker */}
+        {/* School Marker */}
         <Marker position={[schoolCoords.lat, schoolCoords.lng]}>
-          <Popup>
-            <strong>{schoolName}</strong>
-            <br />
-            School Location
+          <Popup maxWidth={300} minWidth={200}>
+            <div className="space-y-2">
+              {/* School Name */}
+              <div className="font-bold text-lg text-blue-600">
+                {school?.name || "School Name"}
+              </div>
+              
+       
+              
+              {school?.city && school?.prefecture && (
+                <div className="text-sm text-gray-600">
+                  {school.city}, {school.prefecture}
+                </div>
+              )}
+              
+              {/* International Student Support */}
+              {school?.supportInternationalStudents && (
+                <div className="text-sm bg-green-50 text-green-700 px-2 py-1 rounded">
+                  ✓ Supports International Students
+                </div>
+              )}
+              
+              {/* Website Link */}
+              {school?.websiteUrl && (
+                <a  
+                  href={school.websiteUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className=" text-sm text-blue-500 hover:underline inline-flex items-center gap-1"
+                >
+                  Visit Website <ArrowRight />
+                </a>
+              )}
+            </div>
           </Popup>
         </Marker>
 
         {/*  Mentor Markers */}
-        {adjustedMentors
-          .map((m) => (
-            <Marker key={m.userId} position={[m.lat!, m.lng!]} 
+        {adjustedMentors.map((m) => (
+          <Marker 
+            key={m.userId} 
+            position={[m.lat!, m.lng!]} 
             eventHandlers={{
               click: () => setActivePosition([m.lat!, m.lng!]),
-            }}>
-         <Popup>
-  <div className="p-3 rounded-lg bg-white shadow-md min-w-[160px] text-center">
-    {/*  Profile Image */}
-    <div className="flex justify-center mb-2">
-      <Image
-       width={16}
-       height={16}
-        src={m.user.image || "https://cdn-icons-png.flaticon.com/512/3135/3135715.png"}
-        alt={m.user.name}
-        className="w-12 h-12 rounded-full object-cover border border-gray-300"
-      />
-    </div>
+            }}
+          >
+            <Popup>
+              <div className="p-3 rounded-lg bg-white shadow-md min-w-[160px] text-center">
+                {/*  Profile Image */}
+                <div className="flex justify-center mb-2">
+                  <Image
+                    width={48}
+                    height={48}
+                    src={m.user.image || "https://cdn-icons-png.flaticon.com/512/3135/3135715.png"}
+                    alt={m.user.name}
+                    className="w-12 h-12 rounded-full object-cover border border-gray-300"
+                  />
+                </div>
 
-    {/*  Mentor Info */}
-    <strong>{capitalizeFirstLetter(m.user.name) ?? "Mentor"}</strong>
-    <br />
-    <span className="text-sm text-gray-600">
-      {capitalizeFirstLetter(m.city ?? "City")}, {capitalizeFirstLetter(m.country ?? "Country")}
-    </span>
-    <br />
-    {m.distance && (
-      <span className="text-xs text-gray-500">
-        {m.distance.toFixed(2)} km away
-      </span>
-    )}
-    <br />
+                {/*  Mentor Info */}
+                <strong>{capitalizeFirstLetter(m.user.name) ?? "Mentor"}</strong>
+                <br />
+                <span className="text-sm text-gray-600">
+                  {capitalizeFirstLetter(m.city ?? "City")}, {capitalizeFirstLetter(m.country ?? "Country")}
+                </span>
+                <br />
+                { m.distance !== undefined && m.distance !== 0  && (
+                  <span className="text-xs text-gray-500">
+                    { m.distance.toFixed(2)} km away
+                  </span>
+                )}
+                <br />
 
-    {/*  View Profile */}
-    <Link
-      href={`/mentors/${m.user.id}`}
-      className="inline-block mt-2 px-3 py-1 bg-emerald-600 !text-white text-sm rounded-md hover:bg-emerald-700 transition"
-    >
-      View Profile
-    </Link>
-  </div>
-</Popup>
-
-            </Marker>
-          ))}
-          {/*  Trigger zoom on click on mapp icon */}
-      {activePosition && <ZoomOnClick position={activePosition} />}
+                {/*  View Profile */}
+                <Link
+                  href={`/mentors/${m.user.id}`}
+                  className="inline-block mt-2 px-3 py-1 bg-emerald-600 !text-white text-sm rounded-md hover:bg-emerald-700 transition"
+                >
+                  View Profile
+                </Link>
+              </div>
+            </Popup>
+          </Marker>
+        ))}
+        
+        {/*  Trigger zoom on click on map icon */}
+        {activePosition && <ZoomOnClick position={activePosition} />}
       </MapContainer>
     </div>
   );

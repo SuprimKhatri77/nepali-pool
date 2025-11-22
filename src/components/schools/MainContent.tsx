@@ -19,7 +19,7 @@ export default function SchoolShortCard({
       key={school.id}
       whileHover={{ scale: 1.03 }}
       transition={{ duration: 0.5 }}
-      className="group bg-white rounded-xl overflow-hidden border border-slate-200 hover:border-emerald-300 hover:shadow-lg hover:shadow-emerald-100/50 transition-all duration-300"
+      className="group bg-emerald-50 rounded-xl overflow-hidden border border-slate-200 hover:border-emerald-300 hover:shadow-lg hover:shadow-emerald-100/50 transition-all duration-300"
     >
       <div className="relative overflow-hidden bg-slate-100">
         <Image

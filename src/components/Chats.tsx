@@ -69,16 +69,23 @@ const Chats = ({ role, currentUser }: Props) => {
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton size="lg" asChild>
-              <Link href="/">
-                <div className="flex items-center gap-2">
-                  <div className="w-10 h-10 bg-gradient-to-br from-emerald-400 to-emerald-600 rounded-lg flex items-center justify-center text-white font-bold">
-                    NP
-                  </div>
-                  <span className="font-semibold text-lg text-gray-900">
-                    NepaliPool
-                  </span>
-                </div>
-              </Link>
+              {/* Logo */}
+          <Link href="/" className="flex items-center gap-2 group">
+            <div
+              className="w-9 h-9 sm:w-10 sm:h-10  rounded-lg flex items-center justify-center text-white font-bold shadow-sm group-hover:shadow-md transition-all duration-200"
+             
+            >
+              <Image
+                src={"/logoTransparent.png"}
+                alt="NepaliPool Transparent Logo"
+                width={150}
+                height={70}
+              />
+            </div>
+            <span className="font-semibold text-lg sm:text-xl text-gray-900 group-hover:text-emerald-600 transition-colors duration-200">
+              NepaliPool
+            </span>
+          </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>

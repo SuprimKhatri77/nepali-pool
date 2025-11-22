@@ -1,5 +1,5 @@
 import { db } from "../../../lib/db";
-import { school } from "../../../lib/db/schema";
+import { mentorProfile, school } from "../../../lib/db/schema";
 import { count } from "drizzle-orm";
 import { getAllSchools } from "../../../server/lib/dal/get-all-schools";
 import { Schools } from "@/modules/schools/schools";

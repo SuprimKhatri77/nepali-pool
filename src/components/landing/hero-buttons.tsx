@@ -18,7 +18,7 @@ const HeroButtons = () => {
     return <div className="min-h-[52px] min-w-[200px] w-full sm:w-auto"></div>;
   }
 
-  if (isPending) return <Spinner />;
+  if (isPending) return <Spinner className="w-full mx-auto"/>;
 
   if (!session) {
     return (

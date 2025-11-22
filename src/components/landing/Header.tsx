@@ -20,7 +20,7 @@ const navLinks = [
   { name: "Mentors", href: "/mentors" },
   { name: "Scholarships", href: "/scholarships" },
   { name: "Guides", href: "/guides" },
-  { name: "Group Calls", href: "/group-calls" },
+  // { name: "Group Calls", href: "/group-calls" }, 
 ];
 
 export default function Header() {
@@ -117,10 +117,10 @@ export default function Header() {
               <MotionLink
                 key={item.name}
                 href={item.href}
-                whileHover={{ y: -2 }}
+                whileHover={{  }}
                 whileTap={{ scale: 0.98 }}
                 className={cn(
-                  "relative px-4 py-2 text-sm font-medium text-gray-700 rounded-lg transition-all duration-200 overflow-hidden group",
+                  "relative px-2 xl:px-4 py-2 text-sm font-medium text-gray-700 rounded-lg transition-all duration-200 overflow-hidden group",
                   pathname === item.href
                     ? "text-emerald-600 bg-emerald-50"
                     : "hover:text-emerald-600 hover:bg-emerald-50/50"
@@ -145,7 +145,7 @@ export default function Header() {
             ) : !user ? (
               <div className="flex gap-3">
                 <MotionLink
-                  whileHover={{ scale: 1.03, y: -2 }}
+                  whileHover={{ scale: 1.03,  }}
                   whileTap={{ scale: 0.98 }}
                   href="/login"
                   className="px-4 py-2 text-sm font-medium text-gray-700 hover:text-emerald-600 rounded-lg hover:bg-emerald-50/50 transition-all duration-200"
@@ -153,7 +153,7 @@ export default function Header() {
                   Login
                 </MotionLink>
                 <MotionLink
-                  whileHover={{ scale: 1.03, y: -2 }}
+                  whileHover={{ scale: 1.03,  }}
                   whileTap={{ scale: 0.98 }}
                   href="/sign-up"
                   className="px-4 py-2 bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white text-sm font-medium rounded-lg shadow-sm hover:shadow-md transition-all duration-200"
@@ -165,7 +165,7 @@ export default function Header() {
               <div className="flex items-center gap-2">
                 {!isDashboardRoute && (
                   <MotionLink
-                    whileHover={{ scale: 1.03, y: -2 }}
+                    whileHover={{ scale: 1.03,  }}
                     whileTap={{ scale: 0.98 }}
                     href={`/dashboard/${user.user.role}`}
                     className="px-4 py-2 bg-emerald-50 text-emerald-700 text-sm font-medium rounded-lg hover:bg-emerald-100 transition-all duration-200"
@@ -175,7 +175,7 @@ export default function Header() {
                 )}
                 {!isChatRoute && (
                   <MotionLink
-                    whileHover={{ scale: 1.03, y: -2 }}
+                    whileHover={{ scale: 1.03,  }}
                     whileTap={{ scale: 0.98 }}
                     href="/chats"
                     className="px-4 py-2 bg-emerald-50 text-emerald-700 text-sm font-medium rounded-lg hover:bg-emerald-100 transition-all duration-200"
@@ -206,9 +206,9 @@ export default function Header() {
                   <AnimatePresence>
                     {isDropdownOpen && (
                       <motion.div
-                        initial={{ opacity: 0, y: -10, scale: 0.95 }}
-                        animate={{ opacity: 1, y: 0, scale: 1 }}
-                        exit={{ opacity: 0, y: -10, scale: 0.95 }}
+                        initial={{ opacity: 0,  scale: 0.95 }}
+                        animate={{ opacity: 1,  scale: 1 }}
+                        exit={{ opacity: 0,  scale: 0.95 }}
                         transition={{ duration: 0.15 }}
                         className="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-lg border border-gray-200/50 py-1 z-50 overflow-hidden"
                       >
@@ -387,8 +387,8 @@ export default function Header() {
                 {/* Auth Section */}
                 <div className="flex flex-col gap-2 p-4 mb-auto">
                   {isPending ? (
-                    <div className="flex justify-center py-3">
-                      <Spinner className="size-6 text-emerald-500" />
+                    <div className="flex justify-center items-center py-3">
+                      <Spinner className="size-6 text-emerald-500 " />
                     </div>
                   ) : !user ? (
                     <>

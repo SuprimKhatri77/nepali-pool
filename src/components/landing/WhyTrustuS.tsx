@@ -7,6 +7,7 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 import { motion } from "framer-motion";
+import Image from "next/image";
 
 const trustPoints = [
   "Affordable mentorship by real Nepali students who've successfully navigated the process",
@@ -18,12 +19,14 @@ const trustPoints = [
 
 const testimonials = [
   {
-    name: "Roshan Pokharel",
-    text: "I was skeptical at first, but the mentorship program turned out to be a game-changer. The guidance and support I received were invaluable, and I'm grateful for the opportunity to learn from someone who's been there.",
+    name: "Gokul Bhattarai",
+    image: "https://scontent-lhr8-2.xx.fbcdn.net/v/t39.30808-1/518713485_2246319272456738_8647015476533809278_n.jpg?stp=cp6_dst-jpg_s200x200_tt6&_nc_cat=103&ccb=1-7&_nc_sid=e99d92&_nc_ohc=XIkrTYjwZ2EQ7kNvwGJAxhr&_nc_oc=AdkocFUgdSvWwiCMk6pE_hTSK5_ggs0JJSmuHaTjesQPZHvDrR3rRfNshuJf-icFk8ik8gZSssDjc7miqh6xxL9t&_nc_zt=24&_nc_ht=scontent-lhr8-2.xx&_nc_gid=7hIevohEGQ-1s0Gl26ieAg&oh=00_Afj_GAXVOleiGV_qJfUZG1GFDgLFAmzTBAyc3SGEkOqslw&oe=69221862",
+    text: "The guidance and support I received were invaluable, and I'm grateful for the opportunity to learn from someone who's been there.",
   },
   {
-    name: "Bhupendra Thapa",
-    text: "The mentor assigned to me understood exactly what I was going through. Their firsthand experience made all the difference in my application success.",
+    name: "Sunil Pariyar",
+    image: "https://scontent-lhr8-2.xx.fbcdn.net/v/t39.30808-1/574488733_1303294938217247_2968228497102152063_n.jpg?stp=cp6_dst-jpg_s74x74_tt6&_nc_cat=106&ccb=1-7&_nc_sid=9a2c5d&_nc_ohc=w0LYT-GlIqwQ7kNvwEumze8&_nc_oc=AdmB20_cda_A8OPi1vnFHcrl6l0bLGY5zSjO2wXj7HB7azGPyqeHtFXEmT-a8HChsxzc3h6xPFMqoWls4g_Et1wW&_nc_zt=24&_nc_ht=scontent-lhr8-2.xx&_nc_gid=5__wUkUL-kdGiqvJGMVBDA&oh=00_AfiTB_sfLAjOVfW_-YKI6NPRr13_QQdT9e2cL0zJ0woSug&oe=6921FE6C",
+    text: "Mentor firsthand experience made all my journey easier. If you are coming to Japan. I recommend you to talk with mentor.",
   },
 ];
 
@@ -36,41 +39,15 @@ export default function WhyTrustUs() {
       {/* Grid Pattern */}
       <div className="absolute inset-0 bg-[linear-gradient(to_right,#10b98112_1px,transparent_1px),linear-gradient(to_bottom,#10b98112_1px,transparent_1px)] bg-[size:40px_40px]" />
 
-      {/* Decorative Blobs */}
-      {/* <motion.div
-        animate={{
-          x: [0, 30, 0],
-          y: [0, -30, 0],
-          opacity: [0.2, 0.3, 0.2],
-        }}
-        transition={{
-          duration: 15,
-          repeat: Infinity,
-          ease: "easeInOut",
-        }}
-        className="absolute top-1/4 left-0 w-64 h-64 sm:w-80 sm:h-80 md:w-96 md:h-96 bg-emerald-300/20 rounded-full blur-3xl"
-      /> */}
-      {/* <motion.div
-        animate={{
-          x: [0, -30, 0],
-          y: [0, 30, 0],
-          opacity: [0.15, 0.25, 0.15],
-        }}
-        transition={{
-          duration: 18,
-          repeat: Infinity,
-          ease: "easeInOut",
-        }}
-        className="absolute bottom-1/4 right-0 w-64 h-64 sm:w-80 sm:h-80 md:w-96 md:h-96 bg-green-300/20 rounded-full blur-3xl"
-      /> */}
+   
 
       <div className="max-w-7xl mx-auto relative z-10">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 sm:gap-10 md:gap-12 lg:gap-16">
           {/* Trust Points */}
           <motion.div
-            initial={{ opacity: 0, }}
-            whileInView={{ opacity: 1 }}
-            transition={{ duration: 0.6 }}
+                   initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.4 }}
           >
             <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 mb-3">
               Why Trust Us?
@@ -81,9 +58,7 @@ export default function WhyTrustUs() {
               {trustPoints.map((point, index) => (
                 <motion.div
                   key={index}
-                  initial={{ opacity: 0 }}
-                  whileInView={{ opacity: 1 }}
-                  transition={{ duration: 0.4, delay: index * 0.1 }}
+                  
                   className="flex items-start gap-3 group"
                 >
                   <div className="mt-1 flex-shrink-0">
@@ -111,21 +86,19 @@ export default function WhyTrustUs() {
 
           {/* Testimonials */}
           <motion.div
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            transition={{ duration: 0.6, ease: "linear" }}
+           
           >
             <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 mb-3">
               Testimonials
             </h2>
             <div className="w-16 sm:w-20 h-1 bg-gradient-to-r from-emerald-500 to-green-600 rounded-full mb-6 sm:mb-8"></div>
 
-            <motion.div initial={{scale:0}} animate={{scale:1}} transition={{duration: 0.4}}  className="w-full px-8 sm:px-0">
+            <motion.div  className="w-full px-8 sm:px-0">
               <Carousel className="w-full">
                 <CarouselContent>
                   {testimonials.map((testimonial, index) => (
                     <CarouselItem key={index}>
-                      <div className="relative group px-1 sm:px-0">
+                      <motion.div initial={{scale:0}} whileInView={{scale:1}} transition={{duration: 0.4}}  className="relative group px-1 sm:px-0">
                         {/* Glow Effect */}
                         <div className="absolute -inset-1 bg-gradient-to-r from-emerald-500 to-green-600 rounded-2xl opacity-0 group-hover:opacity-20 blur-xl transition-opacity duration-500" />
 
@@ -143,8 +116,8 @@ export default function WhyTrustUs() {
 
                           {/* User Info */}
                           <div className="flex items-center gap-3 sm:gap-4 mb-4 sm:mb-6">
-                            <div className="w-12 h-12 sm:w-14 sm:h-14 bg-gradient-to-br from-emerald-500 to-green-600 rounded-full flex items-center justify-center text-white font-bold text-lg sm:text-xl shadow-lg flex-shrink-0">
-                              {testimonial.name.charAt(0)}
+                            <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-full overflow-hidden flex items-center justify-center font-bold text-lg sm:text-xl shadow-lg flex-shrink-0">
+                              <Image width={48} height={48} src={testimonial.image} alt={"Image of" + testimonial.name} />
                             </div>
                             <div>
                               <p className="font-semibold text-gray-900 text-base sm:text-lg">
@@ -175,7 +148,7 @@ export default function WhyTrustUs() {
                             ))}
                           </div>
                         </div>
-                      </div>
+                      </motion.div>
                     </CarouselItem>
                   ))}
                 </CarouselContent>
