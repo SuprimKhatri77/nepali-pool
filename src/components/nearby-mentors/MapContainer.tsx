@@ -13,7 +13,7 @@ const MapWithMentors = dynamic(() => import("@/components/map"), {
 interface MapLoaderProps {
   nearbyMentors: NearbyMentorsList;
   schoolCoords: { lat: number; lng: number };
-   school: SchoolSelectType,
+  school: SchoolSelectType;
 }
 
 export default function MapContainer({

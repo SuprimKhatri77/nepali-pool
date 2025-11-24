@@ -1,8 +1,8 @@
 "use client";
 import React from "react";
-import { MapContainer, Marker, Popup, TileLayer,  useMap } from "react-leaflet";
+import { MapContainer, Marker, Popup, TileLayer, useMap } from "react-leaflet";
 import L from "leaflet";
-import "leaflet/dist/leaflet.css";
+// import "leaflet/dist/leaflet.css";
 import { SchoolSelectType, UserSelectType } from "../../lib/db/schema";
 import { capitalizeFirstLetter } from "better-auth";
 import Link from "next/link";
@@ -10,18 +10,19 @@ import Image from "next/image";
 import { ArrowRight } from "lucide-react";
 
 // Fix marker icons (Next.js + Leaflet issue)
-(delete (L.Icon.Default.prototype as any)._getIconUrl);
+// delete (L.Icon.Default.prototype as any)._getIconUrl;
 
 L.Icon.Default.mergeOptions({
-  iconRetinaUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png",
+  iconRetinaUrl:
+    "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png",
   iconUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
   shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
 });
 
 interface MapProps {
   schoolCoords: { lat: number; lng: number };
-  mentors?:NearbyMentorsList,
-   school: SchoolSelectType,
+  mentors?: NearbyMentorsList;
+  school: SchoolSelectType;
 }
 
 export type NearbyMentor = {
@@ -39,8 +40,7 @@ export type NearbyMentor = {
   country: string | null;
   zipCode: string | null;
   nationality: string | null;
-  resume: string | null;
-  citizenshipPhotoUrl: string | null;
+  zyroCard: string | null;
   verifiedStatus: "pending" | "accepted" | "rejected" | null;
   user: UserSelectType;
 };
@@ -66,45 +66,46 @@ export default function MapWithMentors({
 }: MapProps) {
   // Improved offset logic for overlapping markers
   const adjustedMentors = mentors.map((m, index) => {
-    
     // Check if mentor is at the exact same location as school (0 km distance)
     const isAtSchool = m.distance !== undefined && m.distance < 0.1; // Less than 100 meters
-    
+
     if (isAtSchool) {
       // Create a circle pattern around the school
-      const angle = (index * (360 / mentors.length)) * (Math.PI / 180);
+      const angle = index * (360 / mentors.length) * (Math.PI / 180);
       const radius = 0.009; // ~900 meters offset
-      
+
       const offsetLat = m.lat! + Math.cos(angle) * radius;
       const offsetLng = m.lng! + Math.sin(angle) * radius;
-      
+
       return { ...m, lat: offsetLat, lng: offsetLng };
     }
-    
+
     // For other duplicate coordinates
     const duplicates = mentors.filter(
-      (other, otherIndex) => 
-        otherIndex < index && 
-        other.lat?.toFixed(6) === m.lat?.toFixed(6) && 
+      (other, otherIndex) =>
+        otherIndex < index &&
+        other.lat?.toFixed(6) === m.lat?.toFixed(6) &&
         other.lng?.toFixed(6) === m.lng?.toFixed(6)
     );
-    
+
     if (duplicates.length > 0) {
       // Offset in a spiral pattern
       const offsetIndex = duplicates.length;
       const angle = offsetIndex * 90 * (Math.PI / 180); // 90 degrees apart
       const radius = 0.002 * (Math.floor(offsetIndex / 6) + 1);
-      
+
       const offsetLat = m.lat! + Math.cos(angle) * radius;
       const offsetLng = m.lng! + Math.sin(angle) * radius;
-      
+
       return { ...m, lat: offsetLat, lng: offsetLng };
     }
-    
+
     return m;
   });
 
-  const [activePosition, setActivePosition] = React.useState<[number, number] | null>(null);
+  const [activePosition, setActivePosition] = React.useState<
+    [number, number] | null
+  >(null);
 
   return (
     <div className="h-[500px] w-full rounded-xl overflow-hidden shadow-lg z-0">
@@ -115,10 +116,10 @@ export default function MapWithMentors({
         className="h-full w-full"
       >
         {/*  Map Layers (Normal + Satellite Switcher) */}
-            <TileLayer
-              url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png"
-              attribution='&copy; OpenStreetMap contributors'
-            />
+        <TileLayer
+          url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png"
+          attribution="&copy; OpenStreetMap contributors"
+        />
 
         {/* School Marker */}
         <Marker position={[schoolCoords.lat, schoolCoords.lng]}>
@@ -128,25 +129,23 @@ export default function MapWithMentors({
               <div className="font-bold text-lg text-blue-600">
                 {school?.name || "School Name"}
               </div>
-              
-       
-              
+
               {school?.city && school?.prefecture && (
                 <div className="text-sm text-gray-600">
                   {school.city}, {school.prefecture}
                 </div>
               )}
-              
+
               {/* International Student Support */}
               {school?.supportInternationalStudents && (
                 <div className="text-sm bg-green-50 text-green-700 px-2 py-1 rounded">
                   ✓ Supports International Students
                 </div>
               )}
-              
+
               {/* Website Link */}
               {school?.websiteUrl && (
-                <a  
+                <a
                   href={school.websiteUrl}
                   target="_blank"
                   rel="noopener noreferrer"
@@ -161,9 +160,9 @@ export default function MapWithMentors({
 
         {/*  Mentor Markers */}
         {adjustedMentors.map((m) => (
-          <Marker 
-            key={m.userId} 
-            position={[m.lat!, m.lng!]} 
+          <Marker
+            key={m.userId}
+            position={[m.lat!, m.lng!]}
             eventHandlers={{
               click: () => setActivePosition([m.lat!, m.lng!]),
             }}
@@ -175,22 +174,28 @@ export default function MapWithMentors({
                   <Image
                     width={48}
                     height={48}
-                    src={m.user.image || "https://cdn-icons-png.flaticon.com/512/3135/3135715.png"}
+                    src={
+                      m.user.image ||
+                      "https://cdn-icons-png.flaticon.com/512/3135/3135715.png"
+                    }
                     alt={m.user.name}
                     className="w-12 h-12 rounded-full object-cover border border-gray-300"
                   />
                 </div>
 
                 {/*  Mentor Info */}
-                <strong>{capitalizeFirstLetter(m.user.name) ?? "Mentor"}</strong>
+                <strong>
+                  {capitalizeFirstLetter(m.user.name) ?? "Mentor"}
+                </strong>
                 <br />
                 <span className="text-sm text-gray-600">
-                  {capitalizeFirstLetter(m.city ?? "City")}, {capitalizeFirstLetter(m.country ?? "Country")}
+                  {capitalizeFirstLetter(m.city ?? "City")},{" "}
+                  {capitalizeFirstLetter(m.country ?? "Country")}
                 </span>
                 <br />
-                { m.distance !== undefined && m.distance !== 0  && (
+                {m.distance !== undefined && m.distance !== 0 && (
                   <span className="text-xs text-gray-500">
-                    { m.distance.toFixed(2)} km away
+                    {m.distance.toFixed(2)} km away
                   </span>
                 )}
                 <br />
@@ -206,7 +211,7 @@ export default function MapWithMentors({
             </Popup>
           </Marker>
         ))}
-        
+
         {/*  Trigger zoom on click on map icon */}
         {activePosition && <ZoomOnClick position={activePosition} />}
       </MapContainer>

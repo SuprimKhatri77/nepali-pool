@@ -174,20 +174,6 @@ export default function MentorApplication({
                     Resume
                   </CardTitle>
                 </CardHeader>
-                <CardContent>
-                  <div className="border rounded-lg overflow-hidden">
-                    <ClickableImage
-                      src={
-                        mentorProfileRecordWithUser.resume! ||
-                        "/placeholder.svg"
-                      }
-                      height={400}
-                      width={400}
-                      alt="Applicant's resume - Click to view full size"
-                      className="w-full h-auto object-contain rounded-md"
-                    />
-                  </div>
-                </CardContent>
               </Card>
 
               {/* Citizenship Photo */}
@@ -202,7 +188,7 @@ export default function MentorApplication({
                   <div className="border rounded-lg overflow-hidden">
                     <ClickableImage
                       src={
-                        mentorProfileRecordWithUser.citizenshipPhotoUrl! ||
+                        mentorProfileRecordWithUser.zyroCard! ||
                         "/placeholder.svg"
                       }
                       alt="Citizenship document - Click to view full size"

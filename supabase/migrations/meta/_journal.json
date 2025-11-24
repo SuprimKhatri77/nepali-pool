@@ -134,6 +134,13 @@
       "when": 1763374289737,
       "tag": "0018_chilly_zarda",
       "breakpoints": true
+    },
+    {
+      "idx": 19,
+      "version": "7",
+      "when": 1763989315460,
+      "tag": "0019_eager_nehzno",
+      "breakpoints": true
     }
   ]
 }

@@ -276,8 +276,7 @@ export const mentorProfile = pgTable("mentor_profile", {
   phoneNumber: varchar("phone_number", { length: 100 }),
   nationality: varchar("nationality", { length: 255 }),
   sex: sexEnum("sex"),
-  resume: text("resume"),
-  citizenshipPhotoUrl: text("citizenship_photo_url"),
+  zyroCard: text("zyro_card"),
   imageUrl: text("image_url").default(
     "https://vbteadl6m3.ufs.sh/f/DDJ5nPL6Yp1sHfAviE2zasoidYb10Mu7JGNQFZWgVmCrRHPE"
   ),

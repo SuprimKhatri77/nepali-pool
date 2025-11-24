@@ -11,22 +11,21 @@ import {
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
-import { MapPin, Star,  Bookmark,  ChevronDownCircleIcon } from "lucide-react";
-import {  MentorProfileWithUser } from "../../../../types/all-types";
+import { MapPin, Star, Bookmark, ChevronDownCircleIcon } from "lucide-react";
+import { MentorProfileWithUser } from "../../../../types/all-types";
 import { useState } from "react";
 import ImageViewComponent from "../ImageViewComponent";
 import { capitalizeFirstLetter } from "better-auth";
 
 export default function AdminMentorProfile({
-  mentorDetail
-}: Readonly<{ mentorDetail: MentorProfileWithUser}>) {
-  const status = ["accepted","rejected","pending"]
-  const [openImage, setOpenImage] = useState(false)
-  const [imageUrl, setImageUrl] = useState("")
+  mentorDetail,
+}: Readonly<{ mentorDetail: MentorProfileWithUser }>) {
+  const status = ["accepted", "rejected", "pending"];
+  const [openImage, setOpenImage] = useState(false);
+  const [imageUrl, setImageUrl] = useState("");
   return (
     <section className="mx-auto w-full max-w-6xl p-4 md:p-6">
       <Card className="bg-background text-gray-900 shadow-lg border rounded-2xl">
-        
         {/* Header */}
         <CardHeader className="flex flex-col lg:flex-row gap-6 items-center lg:items-start">
           {/* Profile Image */}
@@ -48,18 +47,13 @@ export default function AdminMentorProfile({
               </CardTitle>
 
               <div className="flex  gap-2 lg:mt-0 mt-2 ">
-                
-              
-    <div className={`flex items-center px-2 py-1 rounded-[6px]
-               ${mentorDetail.verifiedStatus === "accepted" ? "bg-emerald-400 hover:bg-emerald-500 text-white": mentorDetail.verifiedStatus === "rejected" ? "bg-destructive text-destructive":"bg-black text-background"}`}
-      
-      >
-      {mentorDetail.verifiedStatus?.toUpperCase()}
-      <ChevronDownCircleIcon className="w-4 h-4 ml-2" />
-    </div>
- 
-
-              
+                <div
+                  className={`flex items-center px-2 py-1 rounded-[6px]
+               ${mentorDetail.verifiedStatus === "accepted" ? "bg-emerald-400 hover:bg-emerald-500 text-white" : mentorDetail.verifiedStatus === "rejected" ? "bg-destructive text-destructive" : "bg-black text-background"}`}
+                >
+                  {mentorDetail.verifiedStatus?.toUpperCase()}
+                  <ChevronDownCircleIcon className="w-4 h-4 ml-2" />
+                </div>
               </div>
             </div>
 
@@ -78,7 +72,9 @@ export default function AdminMentorProfile({
                   <Star
                     key={i}
                     className={`w-5 h-5 ${
-                      i < 4 ? "text-yellow-400 fill-yellow-400" : "text-gray-300"
+                      i < 4
+                        ? "text-yellow-400 fill-yellow-400"
+                        : "text-gray-300"
                     }`}
                   />
                 ))}
@@ -138,7 +134,9 @@ export default function AdminMentorProfile({
           {/* Bio */}
           <div className="bg-gray-50 p-4 rounded-xl shadow-inner">
             <h2 className="text-xl font-semibold text-emerald-600 mb-3">Bio</h2>
-            <p className="text-gray-700 leading-relaxed">{mentorDetail.bio ?capitalizeFirstLetter(mentorDetail.bio) : ""}</p>
+            <p className="text-gray-700 leading-relaxed">
+              {mentorDetail.bio ? capitalizeFirstLetter(mentorDetail.bio) : ""}
+            </p>
 
             <Separator className="my-4 bg-gray-200" />
 
@@ -174,13 +172,10 @@ export default function AdminMentorProfile({
           </p>
           <div className="flex gap-3 mt-2 md:mt-0">
             <Button
-              onClick={()=> {setOpenImage(!openImage); setImageUrl(mentorDetail.resume ?? "")}}
-              className="  hover:text-foreground hover:bg-background transition"
-            >
-              View Resume
-            </Button>
-            <Button
-              onClick={()=> {setOpenImage(!openImage); setImageUrl(mentorDetail.citizenshipPhotoUrl ?? "")}}
+              onClick={() => {
+                setOpenImage(!openImage);
+                setImageUrl(mentorDetail.zyroCard ?? "");
+              }}
               className="  hover:text-foreground hover:bg-background transition"
             >
               View Citizenship
@@ -189,9 +184,14 @@ export default function AdminMentorProfile({
         </CardContent>
       </Card>
       {openImage && (
-        <ImageViewComponent onClose={()=>{ setImageUrl(""); setOpenImage(!openImage)}} imageUrl={imageUrl}/>
+        <ImageViewComponent
+          onClose={() => {
+            setImageUrl("");
+            setOpenImage(!openImage);
+          }}
+          imageUrl={imageUrl}
+        />
       )}
     </section>
-     
   );
 }

@@ -36,9 +36,8 @@ export default function MentorOnboardingForm({
   currentUserId,
   ...props
 }: MentorOnboardingFormProps) {
-  // const [citizenshipPhotoUrl, setCitizenshipPhotoUrl] = useState<string>("");
   const [profilePhotoUrl, setProfilePhotoUrl] = useState<string>("");
-  const [resumePhotoUrl, setResumePhotoUrl] = useState<string>("");
+  const [zyroCardPhotoUrl, setZyroCardPhotoUrl] = useState<string>("");
   const router = useRouter();
   const [gender, setGender] = useState<string>("");
   const [currentStep, setCurrentStep] = useState(1);
@@ -123,24 +122,19 @@ export default function MentorOnboardingForm({
   };
 
   useEffect(() => {
-    if (state.message) {
-      toast(state.message);
-    }
-  }, [state.message]);
-
-  useEffect(() => {
     fillInputs();
   }, []);
 
   useEffect(() => {
-    if (state.success && state.redirectTo) {
+    if (state.success && state.message && state.redirectTo) {
+      toast.success(state.message);
       router.replace(state.redirectTo);
     }
-  }, [state.redirectTo, router, state.success]);
+  }, [state.redirectTo, router, state.success, state.message]);
 
   const canProceedStep1 = profilePhotoUrl && gender;
   const canProceedStep2 = true;
-  const canSubmit = resumePhotoUrl && profilePhotoUrl && gender;
+  const canSubmit = zyroCardPhotoUrl && profilePhotoUrl && gender;
 
   const nextStep = () => {
     if (currentStep < totalSteps) {
@@ -510,26 +504,26 @@ export default function MentorOnboardingForm({
 
                     <div className="grid gap-4">
                       <Label
-                        htmlFor="resumePhotoUrl"
+                        htmlFor="zyro-card"
                         className="text-sm font-medium text-gray-700"
                       >
-                        Resume *
+                        Zyro Card *
                       </Label>
                       <CustomProfileUploader
-                        currentImage={resumePhotoUrl}
+                        currentImage={zyroCardPhotoUrl}
                         onUploadComplete={(url: string) =>
-                          setResumePhotoUrl(url)
+                          setZyroCardPhotoUrl(url)
                         }
-                        imageUploadName="Upload Resume Photo"
+                        imageUploadName="Upload Zyro card Photo"
                       />
                       <Input
                         type="hidden"
-                        name="resume"
-                        value={resumePhotoUrl}
+                        name="zyroCard"
+                        value={zyroCardPhotoUrl}
                         required
                       />
-                      {state.errors?.resume && (
-                        <FieldError>{state.errors.resume[0]}</FieldError>
+                      {state.errors?.zyroCard && (
+                        <FieldError>{state.errors.zyroCard[0]}</FieldError>
                       )}
                     </div>
 

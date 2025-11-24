@@ -17,8 +17,7 @@ export type FormState = {
     zipCode?: string[];
     phoneNumber?: string[];
     sex?: string[];
-    resume?: string[];
-    // citizenshipPhotoUrl?: string[];
+    zyroCard?: string[];
     currentUserId?: string[];
     nationality?: string[];
     bio?: string[];
@@ -33,8 +32,7 @@ export type FormState = {
     zipCode?: string;
     phoneNumber?: string;
     sex?: string;
-    resume?: string;
-    // citizenshipPhotoUrl?: string;
+    zyroCard?: string;
     currentUserId?: string;
     nationality?: string;
     bio?: string;
@@ -52,7 +50,6 @@ export async function OnboardingMentor(
   prevState: FormState,
   formData: FormData
 ) {
-  console.log("FORMDATA: ", formData);
   const userId = formData.get("currentUserId") as string;
 
   if (!userId) {
@@ -95,7 +92,7 @@ export async function OnboardingMentor(
       .max(20, "Phone number cannot exceed more than 20 digits.")
       .regex(/^\d+$/, "Phone number must contain only digits"),
     sex: sexEnum,
-    resume: z.string().nonempty("Resume photo is required"),
+    zyroCard: z.string().nonempty("Zyro card photo is required"),
     // citizenshipPhotoUrl: z.string().nonempty("Citizenship photo is required"),
     nationality: z
       .string()
@@ -113,7 +110,7 @@ export async function OnboardingMentor(
     zipCode: formData.get("zipCode") as string,
     phoneNumber: formData.get("phoneNumber") as string,
     sex: formData.get("sex") as string,
-    resume: formData.get("resume") as string,
+    zyroCard: formData.get("zyroCard") as string,
     // citizenshipPhotoUrl: formData.get("citizenshipPhotoUrl") as string,
     currentUserId: formData.get("currentUserId") as string,
     nationality: formData.get("nationality") as string,
@@ -138,7 +135,7 @@ export async function OnboardingMentor(
     country,
     city,
     sex,
-    resume,
+    zyroCard,
     // citizenshipPhotoUrl,
     currentUserId,
     nationality,
@@ -175,11 +172,10 @@ export async function OnboardingMentor(
     await db.insert(mentorProfile).values({
       nationality: nationality.toLowerCase(),
       country: country.toLowerCase(),
-      // citizenshipPhotoUrl,
       sex,
       city: city.toLowerCase(),
       phoneNumber,
-      resume,
+      zyroCard,
       zipCode,
       bio,
       imageUrl,

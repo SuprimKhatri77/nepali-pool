@@ -637,48 +637,17 @@ export function MentorProfile({
                 </CardDescription>
               </CardHeader>
               <CardContent className="pt-4 sm:pt-6 space-y-6">
-                <div className="space-y-3">
-                  <Label className="text-sm font-medium text-gray-900">
-                    Resume / CV
-                  </Label>
-                  {mentorRecord.resume ? (
-                    mentorRecord.resume.startsWith("http") ? (
-                      <a
-                        href={mentorRecord.resume}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center gap-2 text-sm text-emerald-600 hover:text-emerald-700 font-medium break-all"
-                      >
-                        <FileText className="h-4 w-4 flex-shrink-0" />
-                        <span>View Resume</span>
-                        <ExternalLink className="h-3 w-3 flex-shrink-0" />
-                      </a>
-                    ) : (
-                      <div className="p-4 bg-gray-50 rounded-lg border border-gray-200">
-                        <p className="text-sm text-gray-700 whitespace-pre-wrap break-words">
-                          {mentorRecord.resume}
-                        </p>
-                      </div>
-                    )
-                  ) : (
-                    <p className="text-sm text-gray-500">No resume uploaded</p>
-                  )}
-                </div>
-
                 <Separator />
 
                 <div className="space-y-3">
                   <Label className="text-sm font-medium text-gray-900">
-                    Citizenship Document
+                    Zyro Card
                   </Label>
-                  {mentorRecord.citizenshipPhotoUrl ? (
+                  {mentorRecord.zyroCard ? (
                     <div className="space-y-3">
                       <div className="relative rounded-lg border border-gray-200 w-full h-60 sm:h-80 overflow-hidden bg-gray-50">
                         <Image
-                          src={
-                            mentorRecord.citizenshipPhotoUrl ||
-                            "/placeholder.svg"
-                          }
+                          src={mentorRecord.zyroCard || "/placeholder.svg"}
                           fill
                           alt="Citizenship Document"
                           className="object-contain"
@@ -686,7 +655,7 @@ export function MentorProfile({
                       </div>
                       <div className="flex items-center gap-3">
                         <a
-                          href={mentorRecord.citizenshipPhotoUrl}
+                          href={mentorRecord.zyroCard}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="inline-flex items-center gap-1.5 text-sm text-emerald-600 hover:text-emerald-700 font-medium"
@@ -706,7 +675,7 @@ export function MentorProfile({
                     </div>
                   ) : (
                     <p className="text-sm text-gray-500">
-                      No citizenship document uploaded
+                      No Zyro Card uploaded
                     </p>
                   )}
                 </div>
