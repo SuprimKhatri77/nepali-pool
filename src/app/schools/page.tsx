@@ -1,5 +1,5 @@
 import { db } from "../../../lib/db";
-import { mentorProfile, school } from "../../../lib/db/schema";
+import { school } from "../../../lib/db/schema";
 import { count } from "drizzle-orm";
 import { getAllSchools } from "../../../server/lib/dal/get-all-schools";
 import { Schools } from "@/modules/schools/schools";
@@ -13,7 +13,7 @@ export default async function AllSchools({
     Number((await searchParams).page) > 0
       ? Number((await searchParams).page)
       : 1;
-  const limit = 6;
+  const limit = 12;
   const [totalResult] = await db.select({ count: count() }).from(school);
 
   const total = Number(totalResult.count);

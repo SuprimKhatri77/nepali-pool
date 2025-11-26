@@ -13,7 +13,7 @@ export async function getAllSchools(
   const schools: SchoolSelectType[] = await db.query.school.findMany({
     limit,
     offset,
-    orderBy: (school, { asc }) => [asc(school.id)],
+    orderBy: (school, { desc }) => [desc(school.createdAt)],
   });
 
   if (schools.length === 0) {

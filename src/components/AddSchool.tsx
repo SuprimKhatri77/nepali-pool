@@ -17,9 +17,8 @@ import {
   type FormState,
   addSchool,
 } from "../../server/actions/add-school/addSchool";
-import { AddSchoolType } from "../../types/all-types";
 import CustomProfileUploader from "./CustomImageButton";
-import Router from "next/router";
+import { AddSchoolType } from "../../types/all-types";
 
 export default function AddSchool({
   className,
@@ -28,6 +27,8 @@ export default function AddSchool({
 }: AddSchoolType) {
   const initialState: FormState = {
     errors: {},
+    success: false,
+    message: "",
   } as FormState;
 
   const [state, formAction, isPending] = useActionState<FormState, FormData>(
@@ -35,15 +36,11 @@ export default function AddSchool({
     initialState
   );
 
-    const [profilePhotoUrl, setProfilePhotoUrl] = useState<string>("");
-  
+  const [profilePhotoUrl, setProfilePhotoUrl] = useState<string>("");
 
   useEffect(() => {
     if (state.success) {
-      toast(state.message,{position: "top-right"});
-      setTimeout(() => {
-        Router.replace("/dashboard/mentor");
-      }, 1500);
+      toast.success(state.message, { position: "top-right" });
     }
     if (!state.success && state.message) {
       toast.error(state.message);
@@ -51,162 +48,167 @@ export default function AddSchool({
   }, [state]);
 
   return (
-   <div
-  className={cn(
-    "flex flex-col gap-6 max-w-[700px] mx-auto justify-center min-h-screen py-7",
-    className
-  )}
-  {...props}
->
-  <Card>
-    <CardHeader>
-      <CardTitle className="text-center">Add New Language School</CardTitle>
-      <CardDescription className="text-center">
-        Add a new school to provide students with more options.
-      </CardDescription>
-    </CardHeader>
+    <div
+      className={cn(
+        "flex flex-col gap-6 max-w-[700px] mx-auto justify-center min-h-screen py-7",
+        className
+      )}
+      {...props}
+    >
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-center">Add New Language School</CardTitle>
+          <CardDescription className="text-center">
+            Add a new school to provide students with more options.
+          </CardDescription>
+        </CardHeader>
 
-    <CardContent>
-      <form action={formAction}>
-        <div className="flex flex-col gap-6">
+        <CardContent>
+          <form action={formAction}>
+            <div className="flex flex-col gap-6">
+              <div className="grid gap-4">
+                <Label
+                  htmlFor="profilePhotoUrl"
+                  className="text-sm font-medium text-gray-700"
+                >
+                  Image of school*
+                </Label>
+                <CustomProfileUploader
+                  currentImage={profilePhotoUrl}
+                  onUploadComplete={(url: string) => setProfilePhotoUrl(url)}
+                  imageUploadName="Upload School Photo"
+                />
+                <Input
+                  type="hidden"
+                  name="imageUrl"
+                  value={profilePhotoUrl}
+                  required
+                />
+                {state.errors?.imageUrl && (
+                  <p className="text-red-500 text-sm">
+                    {state.errors.imageUrl[0]}
+                  </p>
+                )}
+              </div>
 
-           <div className="grid gap-4">
-                                <Label
-                                  htmlFor="profilePhotoUrl"
-                                  className="text-sm font-medium text-gray-700"
-                                >
-                                  Image of school*
-                                </Label>
-                                <CustomProfileUploader
-                                  currentImage={profilePhotoUrl}
-                                  onUploadComplete={(url: string) =>
-                                    setProfilePhotoUrl(url)
-                                  }
-                                  imageUploadName="Upload School Photo"
-                                />
-                                <Input
-                                  type="hidden"
-                                  name="imageUrl"
-                                  value={profilePhotoUrl}
-                                  required
-                                />
-                                {state.errors?.imageUrl && (
-                                  <p className="text-red-500 text-sm">
-                                    {state.errors.imageUrl[0]}
-                                  </p>
-                                )}
-                              </div>
+              {/* School Info */}
+              <div className="grid gap-3">
+                <Label htmlFor="name">School Name</Label>
+                <Input
+                  type="text"
+                  id="name"
+                  name="name"
+                  required
+                  defaultValue={state.inputs?.name}
+                />
+                {state.errors?.name && (
+                  <p className="text-sm text-destructive">
+                    {state.errors.name[0]}
+                  </p>
+                )}
+              </div>
 
-          {/* School Info */}
-          <div className="grid gap-3">
-            <Label htmlFor="name">School Name</Label>
-            <Input
-              type="text"
-              id="name"
-              name="name"
-              required
-              defaultValue={state.inputs?.name}
-            />
-            {state.errors?.name && (
-              <p className="text-sm text-destructive">{state.errors.name[0]}</p>
-            )}
-          </div>
+              {/* Address Section */}
+              <div className="grid gap-3 sm:grid-cols-2 sm:gap-6">
+                <div className="flex flex-col gap-3">
+                  <Label htmlFor="address">Street Address</Label>
+                  <Input
+                    type="text"
+                    id="address"
+                    name="address"
+                    required
+                    defaultValue={state.inputs?.address}
+                  />
+                  {state.errors?.address && (
+                    <p className="text-sm text-destructive">
+                      {state.errors.address[0]}
+                    </p>
+                  )}
+                </div>
 
-          
+                <div className="flex flex-col gap-3">
+                  <Label htmlFor="city">City</Label>
+                  <Input
+                    type="text"
+                    id="city"
+                    name="city"
+                    required
+                    defaultValue={state.inputs?.city}
+                  />
+                  {state.errors?.city && (
+                    <p className="text-sm text-destructive">
+                      {state.errors.city[0]}
+                    </p>
+                  )}
+                </div>
 
-          {/* Address Section */}
-          <div className="grid gap-3 sm:grid-cols-2 sm:gap-6">
-            <div className="flex flex-col gap-3">
-              <Label htmlFor="address">Street Address</Label>
-              <Input
-                type="text"
-                id="address"
-                name="address"
-                required
-                defaultValue={state.inputs?.address}
-              />
-              {state.errors?.address && (
-                <p className="text-sm text-destructive">{state.errors.address[0]}</p>
-              )}
+                <div className="flex flex-col gap-3">
+                  <Label htmlFor="prefecture">Prefecture</Label>
+                  <Input
+                    type="text"
+                    id="prefecture"
+                    name="prefecture"
+                    required
+                    defaultValue={state.inputs?.prefecture}
+                  />
+                  {state.errors?.prefecture && (
+                    <p className="text-sm text-destructive">
+                      {state.errors.prefecture[0]}
+                    </p>
+                  )}
+                </div>
+              </div>
+
+              {/* Contact Info */}
+              <div className="grid gap-3 sm:grid-cols-2 sm:gap-6">
+                <div className="flex flex-col gap-3">
+                  <Label htmlFor="email">Email of School</Label>
+                  <Input
+                    type="email"
+                    id="email"
+                    name="email"
+                    required
+                    defaultValue={state.inputs?.email}
+                  />
+                  {state.errors?.email && (
+                    <p className="text-sm text-destructive">
+                      {state.errors.email[0]}
+                    </p>
+                  )}
+                </div>
+
+                <div className="flex flex-col gap-3">
+                  <Label htmlFor="websiteUrl">Website URL</Label>
+                  <Input
+                    type="url"
+                    id="websiteUrl"
+                    name="websiteUrl"
+                    required
+                    defaultValue={state.inputs?.websiteUrl}
+                  />
+                  {state.errors?.websiteUrl && (
+                    <p className="text-sm text-destructive">
+                      {state.errors.websiteUrl[0]}
+                    </p>
+                  )}
+                </div>
+              </div>
+
+              {/* Submit Section */}
+              <div className="flex flex-col gap-3 mt-4">
+                <Button type="submit" className="w-full" disabled={isPending}>
+                  {isPending ? "Submitting..." : "Submit"}
+                </Button>
+                {state.message && !state.success && (
+                  <p className="text-sm text-destructive">{state.message}</p>
+                )}
+              </div>
+
+              <input type="hidden" name="userId" value={currentUserId} />
             </div>
-
-            <div className="flex flex-col gap-3">
-              <Label htmlFor="city">City</Label>
-              <Input
-                type="text"
-                id="city"
-                name="city"
-                required
-                defaultValue={state.inputs?.city}
-              />
-              {state.errors?.city && (
-                <p className="text-sm text-destructive">{state.errors.city[0]}</p>
-              )}
-            </div>
-
-            <div className="flex flex-col gap-3">
-              <Label htmlFor="prefecture">Prefecture</Label>
-              <Input
-                type="text"
-                id="prefecture"
-                name="prefecture"
-                required
-                defaultValue={state.inputs?.prefecture}
-              />
-              {state.errors?.prefecture && (
-                <p className="text-sm text-destructive">{state.errors.prefecture[0]}</p>
-              )}
-            </div>
-          </div>
-
-          {/* Contact Info */}
-          <div className="grid gap-3 sm:grid-cols-2 sm:gap-6">
-            <div className="flex flex-col gap-3">
-              <Label htmlFor="email">Email of School</Label>
-              <Input
-                type="email"
-                id="email"
-                name="email"
-                required
-                defaultValue={state.inputs?.email}
-              />
-              {state.errors?.email && (
-                <p className="text-sm text-destructive">{state.errors.email[0]}</p>
-              )}
-            </div>
-
-            <div className="flex flex-col gap-3">
-              <Label htmlFor="websiteUrl">Website URL</Label>
-              <Input
-                type="url"
-                id="websiteUrl"
-                name="websiteUrl"
-                required
-                defaultValue={state.inputs?.websiteUrl}
-              />
-              {state.errors?.websiteUrl && (
-                <p className="text-sm text-destructive">{state.errors.websiteUrl[0]}</p>
-              )}
-            </div>
-          </div>
-
-
-          {/* Submit Section */}
-          <div className="flex flex-col gap-3 mt-4">
-            <Button type="submit" className="w-full" disabled={isPending}>
-              {isPending ? "Submitting..." : "Submit"}
-            </Button>
-            {state.message && !state.success && (
-              <p className="text-sm text-destructive">{state.message}</p>
-            )}
-          </div>
-
-          <input type="hidden" name="userId" value={currentUserId} />
-        </div>
-      </form>
-    </CardContent>
-  </Card>
-</div>
-
+          </form>
+        </CardContent>
+      </Card>
+    </div>
   );
 }
