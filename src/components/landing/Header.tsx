@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useMemo } from "react";
 import { Spinner } from "@/components/ui/spinner";
 import SignOutButton from "@/components/SignOutButton";
 import { usePathname } from "next/navigation";
@@ -20,7 +20,6 @@ const navLinks = [
   { name: "Mentors", href: "/mentors" },
   { name: "Scholarships", href: "/scholarships" },
   { name: "Guides", href: "/guides" },
-  // { name: "Group Calls", href: "/group-calls" }, 
 ];
 
 export default function Header() {
@@ -79,6 +78,15 @@ export default function Header() {
       .join("")
       .toUpperCase();
 
+  const role = user?.user.role;
+  const links: { name: string; href: string }[] = useMemo(() => {
+    const arr = [...navLinks];
+    if (role === "mentor" || role === "admin") {
+      arr.push({ name: "Add School", href: "/add-school" });
+    }
+    return arr;
+  }, [role]);
+
   return (
     <>
       {/* {!pathname.startsWith("/sessions") && !pathname.startsWith("/chats") && (
@@ -113,11 +121,11 @@ export default function Header() {
 
           {/* Desktop Menu */}
           <nav className="hidden lg:flex items-center gap-1">
-            {navLinks.map((item) => (
+            {links.map((item) => (
               <MotionLink
                 key={item.name}
                 href={item.href}
-                whileHover={{  }}
+                whileHover={{}}
                 whileTap={{ scale: 0.98 }}
                 className={cn(
                   "relative px-2 xl:px-4 py-2 text-sm font-medium text-gray-700 rounded-lg transition-all duration-200 overflow-hidden group",
@@ -145,7 +153,7 @@ export default function Header() {
             ) : !user ? (
               <div className="flex gap-3">
                 <MotionLink
-                  whileHover={{ scale: 1.03,  }}
+                  whileHover={{ scale: 1.03 }}
                   whileTap={{ scale: 0.98 }}
                   href="/login"
                   className="px-4 py-2 text-sm font-medium text-gray-700 hover:text-emerald-600 rounded-lg hover:bg-emerald-50/50 transition-all duration-200"
@@ -153,7 +161,7 @@ export default function Header() {
                   Login
                 </MotionLink>
                 <MotionLink
-                  whileHover={{ scale: 1.03,  }}
+                  whileHover={{ scale: 1.03 }}
                   whileTap={{ scale: 0.98 }}
                   href="/sign-up"
                   className="px-4 py-2 bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white text-sm font-medium rounded-lg shadow-sm hover:shadow-md transition-all duration-200"
@@ -165,7 +173,7 @@ export default function Header() {
               <div className="flex items-center gap-2">
                 {!isDashboardRoute && (
                   <MotionLink
-                    whileHover={{ scale: 1.03,  }}
+                    whileHover={{ scale: 1.03 }}
                     whileTap={{ scale: 0.98 }}
                     href={`/dashboard/${user.user.role}`}
                     className="px-4 py-2 bg-emerald-50 text-emerald-700 text-sm font-medium rounded-lg hover:bg-emerald-100 transition-all duration-200"
@@ -175,7 +183,7 @@ export default function Header() {
                 )}
                 {!isChatRoute && (
                   <MotionLink
-                    whileHover={{ scale: 1.03,  }}
+                    whileHover={{ scale: 1.03 }}
                     whileTap={{ scale: 0.98 }}
                     href="/chats"
                     className="px-4 py-2 bg-emerald-50 text-emerald-700 text-sm font-medium rounded-lg hover:bg-emerald-100 transition-all duration-200"
@@ -206,9 +214,9 @@ export default function Header() {
                   <AnimatePresence>
                     {isDropdownOpen && (
                       <motion.div
-                        initial={{ opacity: 0,  scale: 0.95 }}
-                        animate={{ opacity: 1,  scale: 1 }}
-                        exit={{ opacity: 0,  scale: 0.95 }}
+                        initial={{ opacity: 0, scale: 0.95 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0, scale: 0.95 }}
                         transition={{ duration: 0.15 }}
                         className="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-lg border border-gray-200/50 py-1 z-50 overflow-hidden"
                       >
@@ -355,7 +363,7 @@ export default function Header() {
 
                 {/* Navigation Links */}
                 <div className="flex flex-col gap-1 p-4">
-                  {navLinks.map((item, index) => (
+                  {links.map((item, index) => (
                     <motion.div
                       key={item.name}
                       initial={{ opacity: 0, x: 20 }}

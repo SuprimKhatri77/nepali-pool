@@ -3,8 +3,8 @@
 import z from "zod";
 
 import { db } from "../../../lib/db";
-import { getCurrentAdmin } from "../../lib/auth/helpers/getCurrentAdmin";
 import { school, SchoolInsertType } from "../../../lib/db/schema";
+import { getCurrentUser } from "../../lib/auth/helpers/getCurrentUser";
 
 export type FormState = {
   errors?: {
@@ -16,8 +16,8 @@ export type FormState = {
     email?: string[];
     imageUrl?: string[];
   };
-  message?: string;
-  success?: boolean;
+  message: string;
+  success: boolean;
   inputs?: {
     name?: string;
     address?: string;
@@ -29,7 +29,11 @@ export type FormState = {
   };
 };
 
-export async function addSchool(prevState: FormState, formData: FormData) {
+export async function addSchool(
+  prevState: FormState,
+  formData: FormData
+): Promise<FormState> {
+  const userId = formData.get("userId") as string;
   const schoolData = z.object({
     name: z.string().min(1, "Name is required").nonempty(),
 
@@ -72,8 +76,14 @@ export async function addSchool(prevState: FormState, formData: FormData) {
     validateFields.data;
 
   try {
-    const result = await getCurrentAdmin();
-    if (!result.success) return result;
+    const result = await getCurrentUser();
+    if (
+      !result.success ||
+      result.userRecord.id !== userId ||
+      (result.userRecord.role !== "admin" &&
+        result.userRecord.role !== "mentor")
+    )
+      return { success: result.success, message: "Unauthorized attempt." };
 
     await db.insert(school).values({
       name,
