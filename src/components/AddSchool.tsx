@@ -41,6 +41,7 @@ export default function AddSchool({
   useEffect(() => {
     if (state.success) {
       toast.success(state.message, { position: "top-right" });
+      setProfilePhotoUrl("");
     }
     if (!state.success && state.message) {
       toast.error(state.message);
@@ -138,6 +139,21 @@ export default function AddSchool({
                   {state.errors?.city && (
                     <p className="text-sm text-destructive">
                       {state.errors.city[0]}
+                    </p>
+                  )}
+                </div>
+                <div className="flex flex-col gap-3">
+                  <Label htmlFor="postalCode">Postal Code</Label>
+                  <Input
+                    type="text"
+                    id="postalCode"
+                    name="postalCode"
+                    required
+                    defaultValue={state.inputs?.postalCode}
+                  />
+                  {state.errors?.postalCode && (
+                    <p className="text-sm text-destructive">
+                      {state.errors.postalCode[0]}
                     </p>
                   )}
                 </div>

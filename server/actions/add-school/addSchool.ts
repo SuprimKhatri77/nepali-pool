@@ -15,6 +15,7 @@ export type FormState = {
     websiteUrl?: string[];
     email?: string[];
     imageUrl?: string[];
+    postalCode?: string[];
   };
   message: string;
   success: boolean;
@@ -26,6 +27,7 @@ export type FormState = {
     websiteUrl?: string;
     email?: string;
     imageUrl?: string;
+    postalCode?: string;
   };
 };
 
@@ -52,6 +54,7 @@ export async function addSchool(
     websiteUrl: z.string().min(1, "Website url is required").nonempty(),
     email: z.string().email().nonempty(),
     imageUrl: z.string().min(1, "Image url is required").nonempty(),
+    postalCode: z.string().trim().nonempty(),
   });
 
   const validateFields = schoolData.safeParse({
@@ -62,6 +65,7 @@ export async function addSchool(
     email: formData.get("email") as string,
     websiteUrl: formData.get("websiteUrl") as string,
     imageUrl: formData.get("imageUrl") as string,
+    postalCode: formData.get("postalCode") as string,
   });
   if (!validateFields.success) {
     return {
@@ -72,8 +76,16 @@ export async function addSchool(
     };
   }
 
-  const { name, city, prefecture, address, email, imageUrl, websiteUrl } =
-    validateFields.data;
+  const {
+    name,
+    city,
+    prefecture,
+    address,
+    email,
+    imageUrl,
+    websiteUrl,
+    postalCode,
+  } = validateFields.data;
 
   try {
     const result = await getCurrentUser();
@@ -93,6 +105,7 @@ export async function addSchool(
       imageUrl,
       websiteUrl,
       address,
+      postalCode,
     } satisfies SchoolInsertType);
 
     return { success: true, message: "School data added successfully!" };
