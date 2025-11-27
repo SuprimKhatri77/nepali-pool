@@ -315,6 +315,7 @@ export const school = pgTable("school", {
   supportInternationalStudents: boolean(
     "support_international_students"
   ).default(true),
+  postalCode: text("postal_code"),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });
