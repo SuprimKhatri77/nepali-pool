@@ -13,7 +13,6 @@ import {
   Users,
   Award,
   MessageCircleIcon,
-  Calendar,
   Phone,
   Star,
   Briefcase,
@@ -22,7 +21,6 @@ import {
   TrendingUp,
   Heart,
   BookOpen,
-  LockIcon,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -30,7 +28,6 @@ import { Card, CardContent } from "@/components/ui/card";
 import { auth } from "../../../../server/lib/auth/auth";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
-import { PaymentButton } from "@/components/PaymentButton";
 import { capitalizeFirstLetter } from "better-auth";
 import MentorCard from "@/components/MentorCard";
 import { getChatStatus } from "../../../../server/lib/auth/helpers/free/getChatStatus";

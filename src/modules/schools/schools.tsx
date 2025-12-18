@@ -7,7 +7,6 @@ import { Building2, GraduationCap, MapPin } from "lucide-react";
 import SchoolShortCard from "@/components/schools/MainContent";
 import { PaginationClient } from "@/components/PaginationClient";
 import { getAllSchools } from "../../../server/lib/dal/get-all-schools";
-import { Spinner } from "@/components/ui/spinner";
 
 type Props = {
   allSchools: SchoolSelectType[] | null;
@@ -25,7 +24,7 @@ export function Schools({
   limit,
   totalPages,
 }: Props) {
-  const { data: schools, isPending } = useQuery({
+  const { data: schools } = useQuery({
     queryKey: ["schools", page],
     queryFn: () => getAllSchools(limit, offset).then((res) => res.schools),
     initialData: allSchools,

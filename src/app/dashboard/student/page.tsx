@@ -4,8 +4,6 @@ import { redirect } from "next/navigation";
 import { getMentorProfile } from "../../../../server/lib/auth/helpers/getMentorProfile";
 import { db } from "../../../../lib/db";
 import {
-  chatSubscription,
-  ChatSubscriptionSelectType,
   favorite,
   mentorProfile,
   studentProfile,

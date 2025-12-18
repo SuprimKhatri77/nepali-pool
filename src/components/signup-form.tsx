@@ -51,6 +51,7 @@ export function SignupForm({
   >("password");
   const [password, setPassword] = useState(state.inputs?.password || "");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [termsAgree, setTermsAgree] = useState<boolean>(false)
 
   const [role, setRole] = useState(() => {
     if (roleFromParams) {
@@ -80,7 +81,7 @@ export function SignupForm({
     if (!state.success && state.message) {
       toast.error(state.message);
     }
-  }, [state.message, state.success, state.redirectTo, router, state.timestamp]);
+  }, [queryClient,state.message, state.success, state.redirectTo, router, state.timestamp]);
 
   // console.log("roleFromParams:", roleFromParams);
   // console.log("state.inputs?.role:", state.inputs?.role);
@@ -220,12 +221,20 @@ export function SignupForm({
           {state.errors?.role && (
             <FieldError>{state.errors.role[0]}</FieldError>
           )}
+          <Field >
+            <InputGroup className="gap-2">
+            
+            <input onClick={() => setTermsAgree(!termsAgree)} type="checkbox" />
+            <FieldLabel>I accept terms and policy of NepaliPool.</FieldLabel>
+            </InputGroup>
+          </Field>
         </Field>
         <Field className="gap-1">
           <Button
+            
             type="submit"
             className="bg-green-600 hover:bg-green-700"
-            disabled={isPending || confirmErr !== null}
+            disabled={isPending || confirmErr !== null || !termsAgree}
           >
             {isPending ? (
               <div className="inline-block border-white-600 h-5 w-5 animate-spin rounded-full border-2 border-solid border-e-transparent">

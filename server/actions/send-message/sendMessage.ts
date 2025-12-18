@@ -1,9 +1,7 @@
 "use server";
 
-import { headers } from "next/headers";
 import { db } from "../../../lib/db";
-import { chats, messages, user } from "../../../lib/db/schema";
-import { auth } from "../../lib/auth/auth";
+import { chats, messages } from "../../../lib/db/schema";
 import { and, eq, or } from "drizzle-orm";
 import { getCurrentUser } from "../../lib/auth/helpers/getCurrentUser";
 

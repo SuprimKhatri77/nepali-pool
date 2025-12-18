@@ -29,10 +29,11 @@ type Props = {
 
 const SessionUserList = ({ sessionUsers }: Props) => {
   const [showSetMeetingLink, setShowSetMeetingLink] = useState<boolean>(false);
+  const [currentDate] = useState(() => Date.now())
   const intialState: SendSessionLinkFormstate = {
     message: "",
     success: false,
-    timestamp: Date.now(),
+    timestamp: currentDate,
   };
   const [state, formAction, isPending] = useActionState<
     SendSessionLinkFormstate,
@@ -40,7 +41,9 @@ const SessionUserList = ({ sessionUsers }: Props) => {
   >(sendSessionLink, intialState);
   useEffect(() => {
     if (state.success && state.message) {
-      setShowSetMeetingLink(false);
+      setTimeout(() => {
+        setShowSetMeetingLink(false)
+      }, 0);
       toast.success(state.message, { position: "top-right" });
     }
     if (!state.success && state.message) {

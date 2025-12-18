@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
+import Image from "next/image";
 
 // Placeholder image
 const placeholderImg = "https://vbteadl6m3.ufs.sh/f/DDJ5nPL6Yp1sOjASnmoRK8bhzDV6SN54Fks0Uc3GnugvPLEa";
@@ -35,12 +36,15 @@ export default function UpcomingSession() {
           {/* Mentor Carousel */}
           <div className="flex gap-2 overflow-x-auto w-full pb-4">
             {mentors.map((mentor, idx) => (
-              <img
-                key={idx}
-                src={mentor.img}
-                alt={mentor.name}
-                className="w-16 h-16 mx-auto rounded-full border-2 border-emerald-500 object-cover"
-              />
+         <Image
+  key={idx}
+  src={mentor.img}       // can be a string URL
+  alt={mentor.name}
+  width={64}             // w-16 = 64px
+  height={64}            // h-16 = 64px
+  className="mx-auto rounded-full border-2 border-emerald-500 object-cover"
+/>
+
             ))}
           </div>
 
@@ -78,12 +82,15 @@ export default function UpcomingSession() {
         >
           <div className="flex gap-2 overflow-x-auto w-full pb-4">
             {mentors.map((mentor, idx) => (
-              <img
-                key={idx}
-                src={mentor.img}
-                alt={mentor.name}
-                className="w-16 h-16 mx-auto rounded-full border-2 border-emerald-500 object-cover"
-              />
+              <Image
+  key={idx}
+  src={mentor.img}       // can be a string URL
+  alt={mentor.name}
+  width={64}             // w-16 = 64px
+  height={64}            // h-16 = 64px
+  className="mx-auto rounded-full border-2 border-emerald-500 object-cover"
+/>
+
             ))}
           </div>
           <h3 className="text-xl font-semibold text-gray-900">India Group Session</h3>
@@ -114,12 +121,15 @@ export default function UpcomingSession() {
         >
           <div className="flex gap-2 overflow-x-auto w-full pb-4">
             {mentors.map((mentor, idx) => (
-              <img
-                key={idx}
-                src={mentor.img}
-                alt={mentor.name}
-                className="w-16 h-16 mx-auto rounded-full border-2 border-emerald-500 object-cover"
-              />
+             <Image
+  key={idx}
+  src={mentor.img}       // can be a string URL
+  alt={mentor.name}
+  width={64}             // w-16 = 64px
+  height={64}            // h-16 = 64px
+  className="mx-auto rounded-full border-2 border-emerald-500 object-cover"
+/>
+
             ))}
           </div>
           <h3 className="text-xl font-semibold text-gray-900">USA Group Session</h3>

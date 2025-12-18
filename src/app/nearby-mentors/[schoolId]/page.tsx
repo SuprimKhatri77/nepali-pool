@@ -14,6 +14,7 @@ import {
   Mail,
   CheckCircle2,
   XCircle,
+  AlertTriangle,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -25,7 +26,7 @@ import { z } from "zod/v4";
 import MapContainer from "@/components/nearby-mentors/MapContainer";
 
 const uuidCheck = z.string().uuid();
-export default async function Page({
+export default async function SchoolNearByMentors({
   params,
 }: {
   params: Promise<{ schoolId: string }>;
@@ -41,16 +42,27 @@ export default async function Page({
   });
   if (!school) return <p>School not found</p>;
 
-  // console.log(school.address) // checking is school address available
-
+  // update the code when postal code is updated in the school form. 
+  const postalCode = school.postalCode ? school.postalCode : extractPostalCode(school.address  ?? "Japan")
   //  Geocode school address
-  let schoolCoords = await geocodeAddress(school.address ?? "Japan"); //school.addres
+  let schoolCoords = await geocodeAddress(`${school.address}`); 
   // console.log(schoolCoords) // is school cord coming
   if (!schoolCoords) {
-    schoolCoords = await geocodeAddress("Japan");
-    if (!schoolCoords) {
-      return <p>Unable to determine school location</p>;
-    }
+    console.log("postal code is:",postalCode?.trim())
+    schoolCoords = await geocodeAddress(`${postalCode?.trim()}, ${school.city}, Japan`);
+   if (!schoolCoords) {
+  return (
+    <div className="flex flex-col items-center justify-center p-6 bg-yellow-50 border border-yellow-200 rounded-lg shadow-sm text-center">
+      <AlertTriangle className="w-12 h-12 mb-3 text-yellow-400" />
+      <p className="text-lg font-medium text-yellow-700">
+        Unable to determine school location
+      </p>
+      <p className="text-sm text-yellow-600 mt-1">
+        Please check your internet connection or try again later.
+      </p>
+    </div>
+  );
+}
   }
 
   //  Fetch mentors with accepted status
@@ -103,6 +115,21 @@ export default async function Page({
 
     nearbyMentors = [...nearbyMentors, ...addedMentors];
   }
+
+  function extractPostalCode(address: string) {
+  // Match Japanese postal codes in formats:
+  // 123-4567, 123‑4567, 1234567
+  const regex = /〒?\s*(\d{3}[-‑]?\d{4})/;
+  const match = address.match(regex);
+
+  if (match) {
+    return match[1]; // extracted postal code
+  } else {
+    return null; // not found
+  }
+
+}
+
 
   //  Render school + nearby mentors
   return (

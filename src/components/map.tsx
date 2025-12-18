@@ -64,6 +64,7 @@ export default function MapWithMentors({
   school,
   mentors = [],
 }: MapProps) {
+  
   // Improved offset logic for overlapping markers
   const adjustedMentors = mentors.map((m, index) => {
     // Check if mentor is at the exact same location as school (0 km distance)
@@ -107,6 +108,19 @@ export default function MapWithMentors({
     [number, number] | null
   >(null);
 
+ const greenIcon = L.icon({
+  iconUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png", // normal marker
+  shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png", // shadow
+
+  iconSize: [25, 41],      // size of the icon
+  shadowSize: [41, 41],    // size of the shadow
+  iconAnchor: [12, 41],    // point of the icon which will correspond to marker's location
+  shadowAnchor: [12, 41],  // the same for the shadow
+  popupAnchor: [1, -34],   // point from which the popup open relative to the iconAnchor
+});
+
+
+
   return (
     <div className="h-[500px] w-full rounded-xl overflow-hidden shadow-lg z-0">
       <MapContainer
@@ -117,12 +131,13 @@ export default function MapWithMentors({
       >
         {/*  Map Layers (Normal + Satellite Switcher) */}
         <TileLayer
+      
           url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png"
           attribution="&copy; OpenStreetMap contributors"
         />
 
         {/* School Marker */}
-        <Marker position={[schoolCoords.lat, schoolCoords.lng]}>
+        <Marker icon={greenIcon} position={[schoolCoords.lat, schoolCoords.lng]}>
           <Popup maxWidth={300} minWidth={200}>
             <div className="space-y-2">
               {/* School Name */}
@@ -161,6 +176,7 @@ export default function MapWithMentors({
         {/*  Mentor Markers */}
         {adjustedMentors.map((m) => (
           <Marker
+          icon={greenIcon}
             key={m.userId}
             position={[m.lat!, m.lng!]}
             eventHandlers={{

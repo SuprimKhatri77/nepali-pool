@@ -1,10 +1,8 @@
 "use client";
 
 import {
-  IconCreditCard,
   IconDotsVertical,
   IconLogout,
-  IconNotification,
   IconUserCircle,
 } from "@tabler/icons-react";
 
@@ -40,7 +38,7 @@ export function NavUser({
 }) {
   const { isMobile } = useSidebar();
   const router = useRouter();
-  const [click, setClick] = useState<boolean>(false);
+  const [, setClick] = useState<boolean>(false);
   const handleLogout = async () => {
     setClick(true);
     await authClient.signOut({

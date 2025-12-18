@@ -45,14 +45,17 @@ export async function addToFavorite(prevState: FormState, formData: FormData) {
       message: "Mentor added to favorite successfully!",
       success: true,
     };
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Error: ", error);
-    if (error.message.includes("Duplicate Key")) {
-      return { message: "Mentor is already favorited", success: false };
+    if(error instanceof Error){
+
+      if (error.message.includes("Duplicate Key")) {
+        return { message: "Mentor is already favorited", success: false };
+      }
+      return {
+        message: "Error adding to favorite!",
+        success: false,
+      };
     }
-    return {
-      message: "Error adding to favorite!",
-      success: false,
-    };
   }
 }

@@ -6,7 +6,6 @@ import { eq } from "drizzle-orm";
 import { notFound, redirect } from "next/navigation";
 import { getStudentProfile } from "../../../../server/lib/auth/helpers/getStudentProfile";
 import { getMentorProfile } from "../../../../server/lib/auth/helpers/getMentorProfile";
-import { ArrowLeft } from "lucide-react";
 import { SignupForm } from "@/components/signup-form";
 import Link from "next/link";
 import Image from "next/image";

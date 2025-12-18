@@ -49,7 +49,7 @@ export function LoginForm({
     if (!state.success && state.message) {
       toast.error(state.message);
     }
-  }, [state.timestamp, state.message, state.redirectTo, router, state.success]);
+  }, [queryClient,state.timestamp, state.message, state.redirectTo, router, state.success]);
 
   useEffect(() => {
     if (message) {

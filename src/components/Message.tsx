@@ -15,7 +15,6 @@ import { Input } from "./ui/input";
 import { sendMessage } from "../../server/actions/send-message/sendMessage";
 import { toast } from "sonner";
 import { createClient } from "../../server/utlis/supabase/client";
-import Loader from "./Loader";
 import {
   CldUploadWidget,
   type CloudinaryUploadWidgetInfo,

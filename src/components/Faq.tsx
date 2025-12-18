@@ -23,30 +23,31 @@ interface Faq1Props {
 const Faq1 = ({
   heading = "Frequently asked questions",
   items = [
+   {
+  id: "faq-1",
+  question: "What is NepaliPool?",
+  answer:
+    "NepaliPool is a student connection and mentorship platform that helps Nepali students connect with mentors and fellow students applying to study abroad.",
+},
     {
-      id: "faq-1",
-      question: "What is NepaliPool?",
-      answer:
-        "NepaliPool is a mentorship platform that connects Nepali students with experienced mentors who have already studied abroad.",
-    },
-    {
-      id: "faq-2",
-      question: "How does NepaliPool work?",
-      answer:
-        "Students can browse verified mentors based on country, course, or university. Once matched, they can book a one-on-one session to discuss study plans, visa guidance, lifestyle abroad, and career opportunities.",
-    },
-    {
-      id: "faq-3",
-      question: "Who can become a mentor on NepaliPool?",
-      answer:
-        "Anyone who has studied or is currently studying abroad can apply to become a mentor. Mentors share their real experiences and guide students through the process of studying overseas.",
-    },
-    {
-      id: "faq-4",
-      question: "Is NepaliPool free to use?",
-      answer:
-        "Creating a student account and browsing mentors is completely free. However, booking a one-on-one session with a mentor may have a small fee, which goes directly to the mentor for their time and support.",
-    },
+  id: "faq-2",
+  question: "How does NepaliPool work?",
+  answer:
+    "Students can connect with mentors and other students applying to the same country or city. After completing basic profile details, they can start one-on-one chats to share experiences, guidance, and application-related insights.",
+},
+{
+  id: "faq-3",
+  question: "Who can become a mentor on NepaliPool?",
+  answer:
+    "Students or graduates who are studying or have studied abroad can apply to become mentors and share their real-life experiences and guidance with other students.",
+},
+{
+  id: "faq-4",
+  question: "Is NepaliPool free to use?",
+  answer:
+    "Creating a student account, connecting with other students, and starting chats is free. Some mentors may charge a fee for dedicated one-on-one mentorship sessions.",
+},
+
   ],
 }: Faq1Props) => {
   // Show only first 4 items

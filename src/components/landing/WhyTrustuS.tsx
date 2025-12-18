@@ -10,6 +10,7 @@ import { motion } from "framer-motion";
 import Image from "next/image";
 
 const trustPoints = [
+  "Connecting the students applying to same country or city",
   "Affordable mentorship by real Nepali students who've successfully navigated the process",
   "Verified mentors with proven track records of successful applications",
   "Comprehensive guidance from application to arrival in Japan",
@@ -19,14 +20,14 @@ const trustPoints = [
 
 const testimonials = [
   {
-    name: "Gokul Bhattarai",
-    image: "https://scontent-lhr8-2.xx.fbcdn.net/v/t39.30808-1/518713485_2246319272456738_8647015476533809278_n.jpg?stp=cp6_dst-jpg_s200x200_tt6&_nc_cat=103&ccb=1-7&_nc_sid=e99d92&_nc_ohc=XIkrTYjwZ2EQ7kNvwGJAxhr&_nc_oc=AdkocFUgdSvWwiCMk6pE_hTSK5_ggs0JJSmuHaTjesQPZHvDrR3rRfNshuJf-icFk8ik8gZSssDjc7miqh6xxL9t&_nc_zt=24&_nc_ht=scontent-lhr8-2.xx&_nc_gid=7hIevohEGQ-1s0Gl26ieAg&oh=00_Afj_GAXVOleiGV_qJfUZG1GFDgLFAmzTBAyc3SGEkOqslw&oe=69221862",
-    text: "The guidance and support I received were invaluable, and I'm grateful for the opportunity to learn from someone who's been there.",
+    name: "Mamta Bhattrai",
+    image: "/mentorImage/mamta_bhatt.jpg",
+    text: "The guidance and support I received were invaluable, I got new friends while applying to abroad. I'm grateful for the opportunity to learn from someone who's been there.",
   },
   {
-    name: "Sunil Pariyar",
-    image: "https://scontent-lhr8-2.xx.fbcdn.net/v/t39.30808-1/574488733_1303294938217247_2968228497102152063_n.jpg?stp=cp6_dst-jpg_s74x74_tt6&_nc_cat=106&ccb=1-7&_nc_sid=9a2c5d&_nc_ohc=w0LYT-GlIqwQ7kNvwEumze8&_nc_oc=AdmB20_cda_A8OPi1vnFHcrl6l0bLGY5zSjO2wXj7HB7azGPyqeHtFXEmT-a8HChsxzc3h6xPFMqoWls4g_Et1wW&_nc_zt=24&_nc_ht=scontent-lhr8-2.xx&_nc_gid=5__wUkUL-kdGiqvJGMVBDA&oh=00_AfiTB_sfLAjOVfW_-YKI6NPRr13_QQdT9e2cL0zJ0woSug&oe=6921FE6C",
-    text: "Mentor firsthand experience made all my journey easier. If you are coming to Japan. I recommend you to talk with mentor.",
+    name: "Gokul Bhattrai",
+    image: "/mentorImage/gokul_bhattarai.jpg",
+    text: "Mentor firsthand experience made all my journey easier. If you are coming to abroad. I recommend you to talk with mentor and also connect with students applying to same country.",
   },
 ];
 

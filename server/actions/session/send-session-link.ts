@@ -3,7 +3,6 @@
 import z from "zod";
 import { getCurrentAdmin } from "../../lib/auth/helpers/getCurrentAdmin";
 import { db } from "../../../lib/db";
-import { sendEmail } from "../../lib/send-email";
 import { Resend } from "resend";
 import { MeetingInvite } from "@/modules/email-templates/meeting-invite-email";
 

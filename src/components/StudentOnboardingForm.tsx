@@ -175,10 +175,16 @@ export default function StudentOnboardingForm({
 
   useEffect(() => {
     if (location) {
-      formData.city = state.inputs?.city || location.city || "";
-      formData.district = state.inputs?.district || location.district || "";
+     setTimeout(() => {
+       setFormData((prev) => ({
+  ...prev, // keep other fields
+  city: state.inputs?.city || location.city || "",
+  district: state.inputs?.district || location.district || "",
+}));
+     }, 0);
+
     }
-  }, [location]);
+  }, [location, state.inputs?.city, formData, state.inputs?.district]);
   // local storage data save.
   // useEffect(()=>{
   //   // console.log(formData.bio)

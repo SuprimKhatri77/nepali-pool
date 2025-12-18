@@ -11,7 +11,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Eye, EyeOff } from "lucide-react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
 import { resetPassword } from "../../server/actions/reset-password/resetPassword";
@@ -59,7 +59,7 @@ export default function ResetPassword({ token }: { token: string }) {
           router.replace(result.redirectTo as string);
         }, 1500);
       }
-    } catch (error) {
+    } catch{
       toast.error("Something went wrong!");
     } finally {
       setNewPassword("");
