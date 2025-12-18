@@ -17,6 +17,8 @@ export default function StudentCards() {
 
 
 export const StudentCard = () => {
+
+  
     return (
     <Card className="overflow-hidden border-gray-200 hover:shadow-lg transition-shadow">
   <CardHeader className="flex flex-row justify-between items-start">
