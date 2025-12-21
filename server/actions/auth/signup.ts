@@ -137,7 +137,7 @@ export async function SignUp(
               ? "/admin"
               : userRecord.role === "mentor"
                 ? "/dashboard/mentor"
-                : "/sessions"
+                : "/mentors"
             : "/select-role",
 
         // to be set after the session
