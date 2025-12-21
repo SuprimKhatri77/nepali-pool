@@ -3,7 +3,7 @@
 import z from "zod";
 import { db } from "../../../lib/db";
 import { meetingSession } from "../../../lib/db/schema";
-import { revalidatePath, revalidateTag } from "next/cache";
+import {  revalidateTag } from "next/cache";
 import { getCurrentUser } from "../../lib/auth/helpers/getCurrentUser";
 
 export type SessionFormState = {

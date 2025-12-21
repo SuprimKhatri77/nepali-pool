@@ -12,7 +12,9 @@ export default function Hero() {
 
   useEffect(() => {
     if (isMobile) {
-      setShowCursor(false);
+      setTimeout(() => {
+        setShowCursor(false)
+      }, 0);
       return;
     }
     const timerId = setTimeout(() => {
@@ -22,10 +24,8 @@ export default function Hero() {
   }, [isMobile]);
 
   return (
-    <motion.section
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{duration:0.2, ease: "easeIn"}}
+    <section
+    
       className="relative overflow-hidden min-h-screen flex items-center justify-center px-4 sm:px-6 pb-20 sm:pb-24"
     >
       {/* Gradient Background */}
@@ -39,12 +39,16 @@ export default function Hero() {
 
 
       {/* Content */}
-      <div className="max-w-5xl mx-auto text-center w-full relative z-10">
+      <motion.div 
+        initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{duration:0.4, ease: "easeIn"}}
+      className="max-w-5xl mx-auto text-center w-full relative z-10">
         <h1 className="text-4xl sm:text-5xl sm:mb-0 mb-12 md:text-6xl lg:text-7xl font-bold text-gray-900 leading-tight tracking-tight">
           Your Trusted Mentor to{" "}
           <motion.span
-            initial={{ width: "6ch" }}
-            animate={{ width: ["6ch", "21ch", "7ch", "21ch"] }}
+            initial={{ width: "7ch" }}
+            animate={{ width: ["7ch", "21ch", "7ch", "21ch"] }}
             transition={{ duration: 8, ease: "linear" }}
             className="hidden sm:inline-block overflow-hidden whitespace-nowrap"
           >
@@ -70,20 +74,20 @@ export default function Hero() {
             <motion.span
               animate={{ opacity: [0, 1, 0] }}
               transition={{ duration: 0.8, repeat: Infinity, ease: "easeInOut" }}
-              className="inline-block w-[4px] h-[1em] bg-emerald-600 ml-1 align-bottom"
+              className="hidden sm:inline-block w-[4px] h-[1em] bg-emerald-600 ml-1 align-bottom "
             />
           )}
         </h1>
 
-        <motion.p className="mt-6 sm:mt-8 text-lg sm:text-xl text-gray-600 max-w-2xl mx-auto leading-relaxed">
+        <p className="mt-6 sm:mt-8 text-lg sm:text-xl text-gray-600 max-w-2xl mx-auto leading-relaxed">
           Helping Nepali students choose the right college, city, and future —
           with expert guidance from someone who&apos;s been there.
-        </motion.p>
+        </p>
 
         <div className="flex flex-col sm:flex-row gap-4 justify-center mt-8 sm:mt-12 w-full max-w-sm sm:max-w-none mx-auto">
           <HeroButtons />
         </div>
-      </div>
-    </motion.section>
+      </motion.div>
+    </section>
   );
 }

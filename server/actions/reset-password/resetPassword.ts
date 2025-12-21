@@ -68,7 +68,7 @@ export async function resetPassword(
       success: true,
       redirectTo: "/login",
     };
-  } catch (error) {
+  } catch {
     return {
       message: "Something went wrong!",
       success: false,

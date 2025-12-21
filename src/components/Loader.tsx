@@ -1,5 +1,4 @@
 export default function Loader({
-  borderColor,
   from,
 }: {
   borderColor?: string;

@@ -2,6 +2,7 @@
 import Link from "next/link";
 import {motion} from "framer-motion"
 import Image from "next/image";
+import { InfoIcon } from "lucide-react";
 
 const exploreLinks = [
   { href: "/", name: "Home", id: 1 },
@@ -28,9 +29,10 @@ export default function Footer() {
   return (
     <footer className="bg-white border-t border-gray-200 py-12 px-6">
       <div className="max-w-7xl mx-auto">
-        <div className="grid md:grid-cols-5 gap-8 mb-8">
+        {/* grid md:grid-cols-5 gap-6 lg:gap-8 */}
+        <div className="grid md:grid-cols-5 gap-6 lg:gap-8 mb-8">
           {/* Logo & Social */}
-<div className="md:col-span-1">
+          <div className="md:col-span-1">
   <div className="flex items-center gap-2 mb-4">
     <motion.div
       className="w-9 h-9 sm:w-10 sm:h-10 rounded-lg flex items-center justify-center text-white font-bold shadow-sm group-hover:shadow-md transition-all duration-200"
@@ -97,7 +99,7 @@ export default function Footer() {
       </a>
     </div>
   </div>
-</div>
+          </div>
 
           {/* Explore */}
           <div>
@@ -159,7 +161,7 @@ export default function Footer() {
   </a>
 </li>
 <li>
-  <a href="mailto:support@nepalipool.com" className="hover:text-emerald-600 transition-colors">
+  <a href="mailto:support@nepalipool.com" className="hover:text-emerald-600 transition-colors  md:tracking-tighter">
     support@nepalipool.com
   </a>
 </li>
@@ -168,12 +170,15 @@ export default function Footer() {
         </div>
 
         {/* Disclaimer */}
-        <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-8">
-       <p className="text-sm text-center text-red-800">
-  <span className="font-semibold">महत्वपूर्ण:</span> यो प्लेटफर्म विद्यार्थीहरूलाई mentor सँग जोडेर आफैं application गर्न सिकाउने शैक्षिक माध्यम हो। हामी कन्सल्टेन्सी वा भिसा एजेन्सी होइनौं। भिसा पाउने कि नपाउने भन्ने कुरा पूर्ण रूपमा embassy र immigration को निर्णयमा निर्भर गर्दछ।
-</p>
+<div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-8">
+  <p className="text-sm text-center text-red-800 flex items-center justify-center gap-1">
+    <InfoIcon  className="text-red-500 size-8" />
+    यो प्लेटफर्म विद्यार्थीहरूलाई mentor तथा अन्य विद्यार्थीहरूसँग जोड्ने शैक्षिक माध्यम मात्र हो।
+    हामी कन्सल्टेन्सी वा भिसा एजेन्सी होइनौं।
+    भिसा, admission वा application सम्बन्धी अन्तिम निर्णय सम्बन्धित संस्था र embassy मा निर्भर गर्दछ।
+  </p>
+</div>
 
-        </div>
 
         {/* Copyright */}
         <div className="border-t border-gray-200 pt-8 text-center">

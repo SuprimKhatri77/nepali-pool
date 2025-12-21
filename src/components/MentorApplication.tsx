@@ -51,7 +51,7 @@ export default function MentorApplication({
         router.replace(stateAccept.redirectTo as string);
       }, 1500);
     }
-  }, [stateAccept.message]);
+  }, [stateAccept.message, stateAccept.redirectTo, stateAccept.success, router]);
   useEffect(() => {
     if (stateReject.message && stateReject.success) {
       toast(stateReject.message);
@@ -59,7 +59,7 @@ export default function MentorApplication({
         router.replace(stateReject.redirectTo as string);
       }, 1500);
     }
-  }, [stateReject.message]);
+  }, [stateReject.message, stateReject.redirectTo, stateReject.success, router]);
   return (
     <div className="min-h-screen bg-gray-50 py-8 my-40 sm:my-0">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">

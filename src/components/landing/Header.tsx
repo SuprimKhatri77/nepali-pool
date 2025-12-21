@@ -92,7 +92,7 @@ export default function Header() {
       {/* {!pathname.startsWith("/sessions") && !pathname.startsWith("/chats") && (
         <AnnouncementBanner isVisible={isVisible} setIsVisible={setIsVisible} />
       )} */}
-      <motion.header
+      <header
         className={cn(
           "bg-white/80 backdrop-blur-xl z-40 border-b border-gray-200/50 px-4 sm:px-6 lg:px-10 py-3 sm:py-4 shadow-sm",
           !pathname.startsWith("/chats") && "sticky top-0"
@@ -309,7 +309,7 @@ export default function Header() {
             </svg>
           </motion.button>
         </div>
-      </motion.header>
+      </header>
 
       {/* Mobile Menu Overlay */}
       <AnimatePresence mode="wait">

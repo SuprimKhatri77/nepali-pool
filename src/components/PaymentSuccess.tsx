@@ -16,11 +16,13 @@ export default function PaymentSuccess() {
   const sessionId = searchParams.get("session_id");
   const paymentType = searchParams.get("payment_type");
   const [loading, setLoading] = useState(true);
-  const [paymentDetails, setPaymentDetails] = useState<any>(null);
+  // const [paymentDetails, setPaymentDetails] = useState<any>(null);
 
   useEffect(() => {
     if (sessionId) {
-      setLoading(false);
+      setTimeout(() => {
+        setLoading(false)
+      }, 0);;
     }
   }, [sessionId]);
 
@@ -93,7 +95,7 @@ export default function PaymentSuccess() {
                     Next Steps
                   </p>
                   <p className="text-sm text-blue-700 mt-1">
-                    We'll send you an email confirmation shortly. You'll receive
+                    We&apos;ll send you an email confirmation shortly. You&apos;ll receive
                     another email once your mentor schedules the video call.
                     Please check your inbox regularly.
                   </p>

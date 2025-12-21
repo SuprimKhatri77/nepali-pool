@@ -1,29 +1,43 @@
 "use client";
 
 import { motion, AnimatePresence } from "framer-motion";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
+
+export type TimeLeft = {
+  days: number;
+  hours: number;
+  minutes: number;
+  seconds: number;
+};
+
+
+export type TimeUnit = keyof TimeLeft;
+
 
 export default function SessionCountdown({
   targetDate,
 }: {
   targetDate: string;
 }) {
-  const calculateTimeLeft = () => {
-    const difference = new Date(targetDate).getTime() - Date.now();
+const calculateTimeLeft = useCallback(() => {
+  const getDate = () => Date.now();
+  const difference = new Date(targetDate).getTime() - getDate();
 
-    let timeLeft = { days: 0, hours: 0, minutes: 0, seconds: 0 };
+  const timeLeft: TimeLeft = { days: 0, hours: 0, minutes: 0, seconds: 0 };
 
-    if (difference > 0) {
-      timeLeft = {
-        days: Math.floor(difference / (1000 * 60 * 60 * 24)),
-        hours: Math.floor((difference / (1000 * 60 * 60)) % 24),
-        minutes: Math.floor((difference / 1000 / 60) % 60),
-        seconds: Math.floor((difference / 1000) % 60),
-      };
-    }
 
-    return timeLeft;
-  };
+  if (difference > 0) {
+   const timeLeft: TimeLeft = {
+      days: Math.floor(difference / (1000 * 60 * 60 * 24)),
+      hours: Math.floor((difference / (1000 * 60 * 60)) % 24),
+      minutes: Math.floor((difference / 1000 / 60) % 60),
+      seconds: Math.floor((difference / 1000) % 60),
+    };
+    return timeLeft
+  }
+
+  return timeLeft;
+}, [targetDate]); // dependency: recalc only if targetDate changes
 
   const [timeLeft, setTimeLeft] = useState(calculateTimeLeft());
 
@@ -32,10 +46,10 @@ export default function SessionCountdown({
       setTimeLeft(calculateTimeLeft());
     }, 1000);
     return () => clearInterval(timer);
-  }, []);
+  }, [calculateTimeLeft]);
 
   // Dynamically show days only if more than 0
-  const units =
+  const units: TimeUnit[] =
     timeLeft.days > 0
       ? ["days", "hours", "minutes", "seconds"]
       : ["hours", "minutes", "seconds"];
@@ -46,18 +60,18 @@ export default function SessionCountdown({
         ⏳ Session starts in
       </h3>
       <div className="flex gap-4 text-4xl font-bold text-emerald-600">
-        {units.map((unit) => (
+        {units.map((unit,idx) => (
           <AnimatePresence mode="popLayout" key={unit}>
             <motion.span
               suppressHydrationWarning
-              key={(timeLeft as any)[unit]}
+              key={idx}
               initial={{  opacity: 0 }}
               animate={{  opacity: 1 }}
               exit={{  opacity: 0 }}
               transition={{ duration: 0.3 }}
               className="tabular-nums min-w-[60px] text-center"
             >
-              {(timeLeft as any)[unit].toString().padStart(2, "0")}
+              {timeLeft[unit].toString().padStart(2, "0")}
             </motion.span>
           </AnimatePresence>
         ))}

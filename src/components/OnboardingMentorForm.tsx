@@ -507,7 +507,8 @@ export default function MentorOnboardingForm({
                         htmlFor="zyro-card"
                         className="text-sm font-medium text-gray-700"
                       >
-                        Zyro Card *
+                        {/* Zyro Card *, updated label because some people worried of zyro card */} 
+                        Document that verify you are in {state.inputs?.country ?? "current country"}
                       </Label>
                       <CustomProfileUploader
                         currentImage={zyroCardPhotoUrl}

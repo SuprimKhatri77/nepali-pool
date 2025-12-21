@@ -6,7 +6,6 @@ import {
   Handshake,
   MessageCircle,
   Watch,
-  Globe,
 } from "lucide-react";
 import Image from "next/image";
 import { useEffect, useState } from "react";

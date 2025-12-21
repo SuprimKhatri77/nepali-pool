@@ -1,10 +1,8 @@
 "use server";
 
-import { headers } from "next/headers";
 import { db } from "../../../lib/db";
-import { chats, messageAttachments, user } from "../../../lib/db/schema";
-import { auth } from "../../lib/auth/auth";
-import { and, eq, or } from "drizzle-orm";
+import { chats, messageAttachments} from "../../../lib/db/schema";
+import { and,  or } from "drizzle-orm";
 import { getCurrentUser } from "../../lib/auth/helpers/getCurrentUser";
 
 export async function sendAttachments(

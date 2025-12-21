@@ -8,7 +8,7 @@ import {
   CardHeader,
 } from "@/components/ui/card";
 import { useRouter } from "next/navigation";
-import { startTransition, useEffect, useOptimistic, useState } from "react";
+import { startTransition,  useOptimistic, useState } from "react";
 import type { FavoriteSelectType } from "../../lib/db/schema";
 import Image from "next/image";
 import {

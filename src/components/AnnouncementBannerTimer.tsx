@@ -1,14 +1,15 @@
 "use client";
 
 import { motion, AnimatePresence } from "framer-motion";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
+import { TimeUnit } from "./sessions/SessionCountDown";
 
 export default function AnnouncementBannerTimer({
   targetDate,
 }: {
   targetDate: string;
 }) {
-  const calculateTimeLeft = () => {
+  const calculateTimeLeft = useCallback(() =>  {
     const difference = new Date(targetDate).getTime() - Date.now();
 
     let timeLeft = { days: 0, hours: 0, minutes: 0, seconds: 0 };
@@ -23,7 +24,7 @@ export default function AnnouncementBannerTimer({
     }
 
     return timeLeft;
-  };
+  },[targetDate])
 
   const [timeLeft, setTimeLeft] = useState(calculateTimeLeft());
 
@@ -32,10 +33,10 @@ export default function AnnouncementBannerTimer({
       setTimeLeft(calculateTimeLeft());
     }, 1000);
     return () => clearInterval(timer);
-  }, []);
+  }, [calculateTimeLeft]);
 
   // Dynamically show days only if more than 0
-  const units =
+  const units: TimeUnit[] =
     timeLeft.days > 0
       ? ["days", "hours", "minutes", "seconds"]
       : ["hours", "minutes", "seconds"];
@@ -50,14 +51,14 @@ export default function AnnouncementBannerTimer({
         <AnimatePresence mode="popLayout">
           <motion.span
             suppressHydrationWarning
-            key={(timeLeft as any)[unit]}
+            key={timeLeft[unit]}
             initial={{ y: -10, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: 10, opacity: 0 }}
             transition={{ duration: 0.2 }}
             className="tabular-nums text-sm font-mono"
           >
-            {(timeLeft as any)[unit].toString().padStart(2, "0")}
+            {timeLeft[unit].toString().padStart(2, "0")}
           </motion.span>
         </AnimatePresence>
         <span className="text-[10px] text-gray-500">

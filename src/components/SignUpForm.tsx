@@ -37,7 +37,7 @@ export default function SignUpPage() {
         router.replace(state.redirectTo as string);
       }, 1500);
     }
-  }, [state.redirectTo]);
+  }, [state.redirectTo, router, state.message]);
 
   useEffect(() => {
     if (state.message) {

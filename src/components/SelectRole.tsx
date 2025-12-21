@@ -18,11 +18,12 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { UserCircle, GraduationCap, Users } from "lucide-react";
 
 export default function SelectRolePage() {
+  const [currentDate] = useState(() => Date.now())
   const initialState: FormState = {
     errors: {},
     message: "",
     success: false,
-    timestamp: Date.now(),
+    timestamp: currentDate,
     redirectTo: "",
   };
   const [state, formAction, isPending] = useActionState<FormState, FormData>(

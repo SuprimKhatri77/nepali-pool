@@ -67,7 +67,7 @@ export default function ScheduleCall({
   const [videoRecord, setVideoRecord] =
     useState<VideoCallWithStudentAndMentor | null>(null);
   const [pending, setPending] = useState<boolean>(false);
-  const [errors, setErrors] = useState<
+  const [, setErrors] = useState<
     | {
         date?: string[] | undefined;
         videoId?: string[] | undefined;

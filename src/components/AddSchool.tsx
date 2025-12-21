@@ -41,7 +41,7 @@ export default function AddSchool({
   useEffect(() => {
     if (state.success) {
       toast.success(state.message, { position: "top-right" });
-      setProfilePhotoUrl("");
+      setTimeout(() => setProfilePhotoUrl(""), 0);
     }
     if (!state.success && state.message) {
       toast.error(state.message);

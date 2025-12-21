@@ -45,7 +45,7 @@ export async function sendResetPasswordLink(
       message: "A reset password link has been sent to your email!",
       success: true,
     };
-  } catch (error) {
+  } catch {
     // console.error("Server action error msg: ", error);
     return {
       message: "Something went wrong!",

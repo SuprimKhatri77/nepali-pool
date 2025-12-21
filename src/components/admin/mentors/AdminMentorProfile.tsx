@@ -11,7 +11,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
-import { MapPin, Star, Bookmark, ChevronDownCircleIcon } from "lucide-react";
+import { MapPin, Star, ChevronDownCircleIcon } from "lucide-react";
 import { MentorProfileWithUser } from "../../../../types/all-types";
 import { useState } from "react";
 import ImageViewComponent from "../ImageViewComponent";
@@ -20,7 +20,7 @@ import { capitalizeFirstLetter } from "better-auth";
 export default function AdminMentorProfile({
   mentorDetail,
 }: Readonly<{ mentorDetail: MentorProfileWithUser }>) {
-  const status = ["accepted", "rejected", "pending"];
+  // const status = ["accepted", "rejected", "pending"];
   const [openImage, setOpenImage] = useState(false);
   const [imageUrl, setImageUrl] = useState("");
   return (
