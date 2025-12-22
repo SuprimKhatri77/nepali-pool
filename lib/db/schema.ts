@@ -300,25 +300,30 @@ export const favorite = pgTable(
   },
   (table) => [
     uniqueIndex("unique_student_mentor").on(table.studentId, table.mentorId),
+    index("favorite_mentor_idx").on(table.mentorId, table.studentId),
   ]
 );
 
-export const school = pgTable("school", {
-  id: uuid("id").primaryKey().notNull().defaultRandom(),
-  name: text("name"),
-  address: text("address"),
-  city: text("city"),
-  prefecture: text("prefecture"),
-  websiteUrl: text("website_url"),
-  email: text("email"),
-  imageUrl: text("image_url"),
-  supportInternationalStudents: boolean(
-    "support_international_students"
-  ).default(true),
-  postalCode: text("postal_code"),
-  createdAt: timestamp("created_at").defaultNow(),
-  updatedAt: timestamp("updated_at").defaultNow(),
-});
+export const school = pgTable(
+  "school",
+  {
+    id: uuid("id").primaryKey().notNull().defaultRandom(),
+    name: text("name"),
+    address: text("address"),
+    city: text("city"),
+    prefecture: text("prefecture"),
+    websiteUrl: text("website_url"),
+    email: text("email"),
+    imageUrl: text("image_url"),
+    supportInternationalStudents: boolean(
+      "support_international_students"
+    ).default(true),
+    postalCode: text("postal_code"),
+    createdAt: timestamp("created_at").defaultNow(),
+    updatedAt: timestamp("updated_at").defaultNow(),
+  },
+  (table) => [index("school_idx").on(table.id)]
+);
 
 export const chatStatusEnum = pgEnum("chat_status", ["active", "expired"]);
 

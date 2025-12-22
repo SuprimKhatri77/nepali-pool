@@ -8,11 +8,11 @@ export const metadata = {
     title: "NepaliPool | Connect with Mentors Abroad",
     description:
       "Guidance you can trust. NepaliPool connects students with Nepali mentors already abroad — chat, video call, and learn the reality before you go.",
-    url: "https://nepalipool.vercel.app/",
+    url: "https://nepalipool.com/",
     siteName: "NepaliPool",
     images: [
       {
-        url: "https://nepalipool.vercel.app/logo.png",
+        url: "https://nepalipool.com/logo.png",
         width: 1200,
         height: 630,
         alt: "NepaliPool – Connect with Mentors Abroad",
@@ -33,7 +33,7 @@ export const metadata = {
     title: "NepaliPool | Connect with Mentors Abroad",
     description:
       "Guidance from Nepalis already abroad. Chat, call, and prepare smartly for your study journey.",
-    images: ["https://nepalipool.vercel.app/logo.png"],
+    images: ["https://nepalipool.com/logo.png"],
   },
 };
 

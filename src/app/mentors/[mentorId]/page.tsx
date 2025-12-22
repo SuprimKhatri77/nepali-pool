@@ -30,6 +30,91 @@ import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import MentorCard from "@/components/MentorCard";
 import { getChatStatus } from "../../../../server/lib/auth/helpers/free/getChatStatus";
+import { Metadata } from "next";
+import { getMentorById } from "../../../../server/seo-helpers/get-mentor-by-id";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ mentorId: string }>;
+}): Promise<Metadata> {
+  const { mentorId } = await params;
+  const mentor = await getMentorById(mentorId);
+  if (!mentor) {
+    return {
+      title: "Mentor Not Found | NepaliPool",
+      description:
+        "The mentor you're looking for couldn't be found. Browse our list of verified mentors living abroad ready to guide Nepali students.",
+      icons: {
+        icon: [
+          {
+            url: "/logoBgWhite.jpg",
+            href: "/logoBgWhite.jpg",
+          },
+        ],
+      },
+      openGraph: {
+        title: "Mentor Not Found | NepaliPool",
+        description:
+          "This mentor profile is unavailable. Explore other verified mentors from different countries ready to help you.",
+        url: "https://nepalipool.com/mentors",
+        siteName: "NepaliPool",
+        images: [
+          {
+            url: "/mentors-preview.png",
+            width: 1200,
+            height: 630,
+            alt: "Find Mentors - NepaliPool",
+          },
+        ],
+        locale: "en_US",
+        type: "website",
+      },
+      twitter: {
+        card: "summary_large_image",
+        title: "Mentor Not Found | NepaliPool",
+        description:
+          "This mentor profile is unavailable. Explore other verified mentors from different countries ready to help you.",
+        images: ["/mentors-preview.png"],
+      },
+    };
+  }
+
+  return {
+    title: `${mentor.user.name} - Mentor in ${mentor.country} | NepaliPool`,
+    description: `Connect with ${mentor.user.name}, a verified Nepali mentor in ${mentor.city}, ${mentor.country}. Get guidance on studying abroad, application process, and life in ${mentor.country}.`,
+    icons: {
+      icon: [
+        {
+          url: "/logoBgWhite.jpg",
+          href: "/logoBgWhite.jpg",
+        },
+      ],
+    },
+    openGraph: {
+      title: `${mentor.user.name} - Mentor in ${mentor.country} | NepaliPool`,
+      description: `Chat with ${mentor.user.name} about studying in ${mentor.country}. Get honest insights about life abroad, application tips, and more.`,
+      url: `https://nepalipool.com/mentors/${mentorId}`,
+      siteName: "NepaliPool",
+      images: [
+        {
+          url: mentor.imageUrl || "/mentor-default-preview.png",
+          width: 1200,
+          height: 630,
+          alt: `${mentor.user.name} - Mentor in ${mentor.country}`,
+        },
+      ],
+      locale: "en_US",
+      type: "profile",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `${mentor.user.name} - Mentor in ${mentor.country} | NepaliPool`,
+      description: `Chat with ${mentor.user.name} about studying in ${mentor.country}. Get honest insights about life abroad and application guidance.`,
+      images: [mentor.imageUrl || "/mentor-default-preview.png"],
+    },
+  };
+}
 
 function capitalizeFirstLetter(sentence: string): string {
   return sentence

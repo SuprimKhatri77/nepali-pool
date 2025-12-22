@@ -8,6 +8,7 @@ import {
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { motion } from "framer-motion";
+import { usePathname } from "next/navigation";
 
 interface FaqItem {
   id: string;
@@ -23,47 +24,43 @@ interface Faq1Props {
 const Faq1 = ({
   heading = "Frequently asked questions",
   items = [
-   {
-  id: "faq-1",
-  question: "What is NepaliPool?",
-  answer:
-    "NepaliPool is a student connection and mentorship platform that helps Nepali students connect with mentors and fellow students applying to study abroad.",
-},
     {
-  id: "faq-2",
-  question: "How does NepaliPool work?",
-  answer:
-    "Students can connect with mentors and other students applying to the same country or city. After completing basic profile details, they can start one-on-one chats to share experiences, guidance, and application-related insights.",
-},
-{
-  id: "faq-3",
-  question: "Who can become a mentor on NepaliPool?",
-  answer:
-    "Students or graduates who are studying or have studied abroad can apply to become mentors and share their real-life experiences and guidance with other students.",
-},
-{
-  id: "faq-4",
-  question: "Is NepaliPool free to use?",
-  answer:
-    "Creating a student account, connecting with other students, and starting chats is free. Some mentors may charge a fee for dedicated one-on-one mentorship sessions.",
-},
-
+      id: "faq-1",
+      question: "What is NepaliPool?",
+      answer:
+        "NepaliPool is a student connection and mentorship platform that helps Nepali students connect with mentors and fellow students applying to study abroad.",
+    },
+    {
+      id: "faq-2",
+      question: "How does NepaliPool work?",
+      answer:
+        "Students can connect with mentors and other students applying to the same country or city. After completing basic profile details, they can start one-on-one chats to share experiences, guidance, and application-related insights.",
+    },
+    {
+      id: "faq-3",
+      question: "Who can become a mentor on NepaliPool?",
+      answer:
+        "Students or graduates who are studying or have studied abroad can apply to become mentors and share their real-life experiences and guidance with other students.",
+    },
+    {
+      id: "faq-4",
+      question: "Is NepaliPool free to use?",
+      answer:
+        "Creating a student account, connecting with other students, and starting chats is free. Some mentors may charge a fee for dedicated one-on-one mentorship sessions.",
+    },
   ],
 }: Faq1Props) => {
-  // Show only first 4 items
   const displayedItems = items.slice(0, 4);
+
+  const pathname = usePathname();
 
   return (
     <section className="relative py-24 w-full px-6 overflow-hidden">
-      {/* Background */}
       <div className="absolute inset-0 bg-gradient-to-b from-white via-green-50/40 to-white" />
 
-      {/* Grid Pattern */}
       <div className="absolute inset-0 bg-[linear-gradient(to_right,#10b98110_1px,transparent_1px),linear-gradient(to_bottom,#10b98110_1px,transparent_1px)] bg-[size:48px_48px]" />
 
-
       <div className="container max-w-4xl mx-auto relative z-10">
-        {/* Header */}
         <motion.div
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
@@ -78,16 +75,13 @@ const Faq1 = ({
           </p>
         </motion.div>
 
-        {/* FAQ Accordion */}
-        <motion.div
-          
-        >
+        <motion.div>
           <Accordion type="single" collapsible className="space-y-4">
             {displayedItems.map((item, index) => (
               <motion.div
                 key={item.id}
-                initial={{ opacity: 0, }}
-                whileInView={{ opacity: 1,  }}
+                initial={{ opacity: 0 }}
+                whileInView={{ opacity: 1 }}
                 transition={{ duration: 0.4, delay: index * 0.1 }}
               >
                 <AccordionItem
@@ -106,25 +100,19 @@ const Faq1 = ({
           </Accordion>
         </motion.div>
 
-        {/* View All Link */}
-        <motion.div
-         
-          className="flex justify-center mt-12"
-        >
-          <Link
-            href="/faq"
-            className="group inline-flex items-center gap-2 px-6 py-3 bg-white border-2 border-emerald-600 text-emerald-600 font-semibold rounded-lg hover:bg-emerald-600 hover:text-white transition-all duration-300 shadow-md hover:shadow-lg"
-          >
-            View all FAQs
-            <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-300" />
-          </Link>
-        </motion.div>
+        {pathname !== "/faq" && (
+          <motion.div className="flex justify-center mt-12">
+            <Link
+              href="/faq"
+              className="group inline-flex items-center gap-2 px-6 py-3 bg-white border-2 border-emerald-600 text-emerald-600 font-semibold rounded-lg hover:bg-emerald-600 hover:text-white transition-all duration-300 shadow-md hover:shadow-lg"
+            >
+              View all FAQs
+              <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-300" />
+            </Link>
+          </motion.div>
+        )}
 
-        {/* Optional: Still have questions CTA */}
-        <motion.div
-         
-          className="text-center mt-8"
-        >
+        <motion.div className="text-center mt-8">
           <p className="text-gray-600">
             Still have questions?{" "}
             <Link
