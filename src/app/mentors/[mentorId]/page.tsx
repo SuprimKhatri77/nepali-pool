@@ -48,8 +48,8 @@ export async function generateMetadata({
       icons: {
         icon: [
           {
-            url: "/logoBgWhite.jpg",
-            href: "/logoBgWhite.jpg",
+            url: "https://nepalipool.com/logoBgWhite.jpg",
+            href: "https://nepalipool.com/logoBgWhite.jpg",
           },
         ],
       },
@@ -61,7 +61,7 @@ export async function generateMetadata({
         siteName: "NepaliPool",
         images: [
           {
-            url: "/mentors-preview.png",
+            url: "https://nepalipool.com/mentor-default-preview.png",
             width: 1200,
             height: 630,
             alt: "Find Mentors - NepaliPool",
@@ -75,7 +75,7 @@ export async function generateMetadata({
         title: "Mentor Not Found | NepaliPool",
         description:
           "This mentor profile is unavailable. Explore other verified mentors from different countries ready to help you.",
-        images: ["/mentors-preview.png"],
+        images: ["https://nepalipool.com/mentor-default-preview.png"],
       },
     };
   }
@@ -86,8 +86,8 @@ export async function generateMetadata({
     icons: {
       icon: [
         {
-          url: "/logoBgWhite.jpg",
-          href: "/logoBgWhite.jpg",
+          url: "https://nepalipool.com/logoBgWhite.jpg",
+          href: "https://nepalipool.com/logoBgWhite.jpg",
         },
       ],
     },
@@ -98,7 +98,9 @@ export async function generateMetadata({
       siteName: "NepaliPool",
       images: [
         {
-          url: mentor.imageUrl || "/mentor-default-preview.png",
+          url:
+            mentor.imageUrl ||
+            "https://nepalipool.com/mentor-default-preview.png",
           width: 1200,
           height: 630,
           alt: `${mentor.user.name} - Mentor in ${mentor.country}`,
@@ -111,7 +113,9 @@ export async function generateMetadata({
       card: "summary_large_image",
       title: `${mentor.user.name} - Mentor in ${mentor.country} | NepaliPool`,
       description: `Chat with ${mentor.user.name} about studying in ${mentor.country}. Get honest insights about life abroad and application guidance.`,
-      images: [mentor.imageUrl || "/mentor-default-preview.png"],
+      images: [
+        mentor.imageUrl || "https://nepalipool.com/mentor-default-preview.png",
+      ],
     },
   };
 }

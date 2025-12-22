@@ -23,8 +23,8 @@ export async function generateMetadata({
       icons: {
         icon: [
           {
-            url: "/logoBgWhite.jpg",
-            href: "/logoBgWhite.jpg",
+            url: "https://nepalipool.com/logoBgWhite.jpg",
+            href: "https://nepalipool.com/logoBgWhite.jpg",
           },
         ],
       },
@@ -36,7 +36,7 @@ export async function generateMetadata({
         siteName: "NepaliPool",
         images: [
           {
-            url: "/schools-preview.png",
+            url: "https://nepalipool.com/schools-preview.png",
             width: 1200,
             height: 630,
             alt: "Browse Schools - NepaliPool",
@@ -50,7 +50,7 @@ export async function generateMetadata({
         title: "School Not Found | NepaliPool",
         description:
           "This school profile is unavailable. Explore other schools and connect with mentors already studying abroad.",
-        images: ["/schools-preview.png"],
+        images: ["https://nepalipool.com/schools-preview.png"],
       },
     };
   }
@@ -73,7 +73,9 @@ export async function generateMetadata({
       siteName: "NepaliPool",
       images: [
         {
-          url: school?.imageUrl || "/school-default-preview.png",
+          url:
+            school?.imageUrl ||
+            "https://nepalipool.com/school-default-preview.png",
           width: 1200,
           height: 630,
           alt: `${school.name} - ${school.city}, ${school.prefecture}`,

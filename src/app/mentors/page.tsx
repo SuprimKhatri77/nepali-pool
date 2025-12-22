@@ -19,8 +19,8 @@ export const metadata: Metadata = {
   icons: {
     icon: [
       {
-        url: "/logoBgWhite.jpg",
-        href: "/logoBgWhite.jpg",
+        url: "https://nepalipool.com/logoBgWhite.jpg",
+        href: "https://nepalipool.com/logoBgWhite.jpg",
       },
     ],
   },
@@ -32,7 +32,7 @@ export const metadata: Metadata = {
     siteName: "NepaliPool",
     images: [
       {
-        url: "/mentors-preview.png",
+        url: "https://nepalipool.com/mentor-default-preview.png",
         width: 1200,
         height: 630,
         alt: "Find Verified Mentors Abroad - NepaliPool",
@@ -46,7 +46,7 @@ export const metadata: Metadata = {
     title: "Find Verified Mentors Abroad | NepaliPool",
     description:
       "Browse verified Nepali mentors from different countries. Chat with them to learn about applications, life abroad, and get honest guidance before you go.",
-    images: ["/mentors-preview.png"],
+    images: ["https://nepalipool.com/mentor-default-preview.png"],
   },
 };
 

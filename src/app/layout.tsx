@@ -7,14 +7,15 @@ import { Suspense } from "react";
 import TRQProvider from "@/components/providers/query-client-provider";
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://nepalipool.com"),
   title: "NepaliPool | Connect with Mentors Abroad",
   description:
     "NepaliPool helps Nepali students connect with verified mentors already living abroad. Get honest guidance, chat freely, and schedule video calls for real insights before applying abroad.",
   icons: {
     icon: [
       {
-        url: "/logoBgWhite.jpg",
-        href: "/logoBgWhite.jpg",
+        url: "https://nepalipool.com/logoBgWhite.jpg",
+        href: "https://nepalipool.com/logoBgWhite.jpg",
       },
     ],
   },
@@ -22,11 +23,11 @@ export const metadata: Metadata = {
     title: "NepaliPool | Connect with Mentors Abroad",
     description:
       "Guidance you can trust. NepaliPool connects students with Nepali mentors already abroad — chat, video call, and learn the reality before you go.",
-    url: "https://nepalipool.com/",
+    url: "https://nepalipool.com",
     siteName: "NepaliPool",
     images: [
       {
-        url: "/homepage-preview.png",
+        url: "https://nepalipool.com/homepage-preview.png",
         width: 1200,
         height: 630,
         alt: "NepaliPool – Connect with Mentors Abroad",
@@ -41,7 +42,7 @@ export const metadata: Metadata = {
 
     description:
       "Guidance you can trust. NepaliPool connects students with Nepali mentors already abroad — chat, video call, and learn the reality before you go.",
-    images: ["/homepage-preview.png"],
+    images: ["https://nepalipool.com/homepage-preview.png"],
   },
 };
 const geistSans = Geist({

@@ -1,42 +1,5 @@
 import HomePage from "@/components/HomePage";
 
-export const metadata = {
-  title: "NepaliPool | Connect with Mentors Abroad",
-  description:
-    "NepaliPool helps Nepali students connect with verified mentors already living abroad. Get honest guidance, chat freely, and schedule video calls for real insights before applying abroad.",
-  openGraph: {
-    title: "NepaliPool | Connect with Mentors Abroad",
-    description:
-      "Guidance you can trust. NepaliPool connects students with Nepali mentors already abroad — chat, video call, and learn the reality before you go.",
-    url: "https://nepalipool.com/",
-    siteName: "NepaliPool",
-    images: [
-      {
-        url: "https://nepalipool.com/logo.png",
-        width: 1200,
-        height: 630,
-        alt: "NepaliPool – Connect with Mentors Abroad",
-      },
-    ],
-    locale: "en_US",
-    type: "website",
-    // Add Facebook App ID here
-    additionalMetaTags: [
-      {
-        property: "fb:app_id",
-        content: "4071033779812681",
-      },
-    ],
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "NepaliPool | Connect with Mentors Abroad",
-    description:
-      "Guidance from Nepalis already abroad. Chat, call, and prepare smartly for your study journey.",
-    images: ["https://nepalipool.com/logo.png"],
-  },
-};
-
 export default function Home() {
   return <HomePage />;
 }

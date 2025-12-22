@@ -9,8 +9,8 @@ export const metadata: Metadata = {
   icons: {
     icon: [
       {
-        url: "/logoBgWhite.jpg",
-        href: "/logoBgWhite.jpg",
+        url: "https://nepalipool.com/logoBgWhite.jpg",
+        href: "https://nepalipool.com/logoBgWhite.jpg",
       },
     ],
   },
@@ -22,7 +22,7 @@ export const metadata: Metadata = {
     siteName: "NepaliPool",
     images: [
       {
-        url: "/guides-preview.png",
+        url: "https://nepalipool.com/guides-preview.png",
         width: 1200,
         height: 630,
         alt: "Study Abroad Guides - NepaliPool",
@@ -36,7 +36,7 @@ export const metadata: Metadata = {
     title: "Study Abroad Guides | Application, Admission & Visa | NepaliPool",
     description:
       "Everything you need to know about studying abroad. From application timelines to visa processes, get comprehensive guides from those who've done it.",
-    images: ["/guides-preview.png"],
+    images: ["https://nepalipool.com/guides-preview.png"],
   },
 };
 const page = () => {

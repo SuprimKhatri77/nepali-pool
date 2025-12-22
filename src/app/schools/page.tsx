@@ -12,8 +12,8 @@ export const metadata: Metadata = {
   icons: {
     icon: [
       {
-        url: "/logoBgWhite.jpg",
-        href: "/logoBgWhite.jpg",
+        url: "https://nepalipool.com/logoBgWhite.jpg",
+        href: "https://nepalipool.com/logoBgWhite.jpg",
       },
     ],
   },
@@ -21,11 +21,11 @@ export const metadata: Metadata = {
     title: "NepaliPool | Connect with Mentors Abroad",
     description:
       "Guidance you can trust. NepaliPool connects students with Nepali mentors already abroad — chat, video call, and learn the reality before you go.",
-    url: "https://nepalipool.com/",
+    url: "https://nepalipool.com",
     siteName: "NepaliPool",
     images: [
       {
-        url: "/homepage-preview.png",
+        url: "https://nepalipool.com/school-default-preview.png",
         width: 1200,
         height: 630,
         alt: "NepaliPool – Connect with Mentors Abroad",
@@ -40,7 +40,7 @@ export const metadata: Metadata = {
 
     description:
       "Guidance you can trust. NepaliPool connects students with Nepali mentors already abroad — chat, video call, and learn the reality before you go.",
-    images: ["/homepage-preview.png"],
+    images: ["https://nepalipool.com/school-default-preview.png"],
   },
 };
 export default async function AllSchools({
