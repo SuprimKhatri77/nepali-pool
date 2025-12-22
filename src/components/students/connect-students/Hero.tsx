@@ -5,7 +5,9 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
 import { Search, Filter, X } from 'lucide-react';
-import { useState } from 'react';
+import {  useState } from 'react';
+import { japaneseCitiesForNepali, japanIntakes, Student, students } from '@/information/Japan';
+import StudentCards from './StudentCards';
 
 // hero of connect student
 
@@ -51,22 +53,26 @@ export  default function ConnectStudentHero() {
 export const StudentFilterSection = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCountry, setSelectedCountry] = useState('');
+  const [selectedCity, setSelectedCity] = useState('all');
   const [selectedYear, setSelectedYear] = useState('');
   const [selectedMonth, setSelectedMonth] = useState('');
   const [selectedLevel, setSelectedLevel] = useState('');
+  const [selectedIntake, setSelectedIntake] = useState('');
+  const [matchStudents, setMatchStudents]= useState<Student[]>(students)
 
-  const countries = [
-    "United States", "United Kingdom", "Canada", "Australia", "Germany", 
-    "France", "Netherlands", "Sweden", "Switzerland", "Japan", "South Korea"
-  ];
+
+  // for other countries it might required 
+  // const countries = [
+  //   "United States", "United Kingdom", "Canada", "Australia", "Germany", 
+  //   "France", "Netherlands", "Sweden", "Switzerland", "Japan", "South Korea"
+  // ];
   
-  const months = [
-    "January", "February", "March", "April", "May", "June",
-    "July", "August", "September", "October", "November", "December"
-  ];
+  // const months = [
+  //   "January", "February", "March", "April", "May", "June",
+  //   "July", "August", "September", "October", "November", "December"
+  // ];
   
-  const currentYear = new Date().getFullYear();
-  const years = Array.from({ length: 5 }, (_, i) => currentYear + i);
+  // const currentYear = new Date().getFullYear();
 
   const studyLevels = [
     "Bachelor's Degree",
@@ -85,8 +91,57 @@ export const StudentFilterSection = () => {
 
   const hasActiveFilters = searchQuery || selectedCountry || selectedYear || selectedMonth || selectedLevel;
 
+
+  const filterByCity = (value: string) => {
+    if(!value) return students
+    const matchStudents = students.filter((student)=>
+    student.city.toLowerCase().includes(value.toLowerCase())
+    )
+      if(matchStudents.length === 0){
+        setSearchQuery("")
+      return students
+    }
+    setMatchStudents(matchStudents)
+  }
+
+  const filterBySchoolName = (value: string) => {
+    if(!value) return students
+    const matchStudents = students.filter((student)=>
+    student.schoolName.toLowerCase().includes(value.toLowerCase()) || student.city.toLowerCase().includes(value.toLowerCase())
+    )
+    if(matchStudents.length === 0){
+      return students
+    }
+    setMatchStudents(matchStudents)
+  }
+
+  const filterByStudyLevel = (value: string) => {
+    if(!value) return students
+    const matchStudents = students.filter((student)=>
+    student.studyLevel.toLowerCase().includes(value.toLowerCase())
+    )
+    if(matchStudents.length === 0){
+      return students
+    }
+    setMatchStudents(matchStudents)
+  }
+
+  const filterByIntake = (value: string) => {
+       if(!value) return students
+       const removeIntakeWord = value.split(" ")[0];
+       console.log(removeIntakeWord)
+    const matchStudents = students.filter((student)=>
+    student.forIntake.toLowerCase().includes(removeIntakeWord.toLowerCase())
+    )
+    if(matchStudents.length === 0){
+      return students
+    }
+    setMatchStudents(matchStudents)
+  }
+
+
   return (
-    <div className="w-full p-6 mb-8">
+    <div className="w-full p-3 sm:p-6 mb-8">
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-2">
           <Filter className="w-5 h-5 text-slate-700" />
@@ -111,17 +166,17 @@ export const StudentFilterSection = () => {
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
           <Input
             type="text"
-            placeholder="Search by university, college, or school name..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="Search by university or school name..."
+            value={searchQuery }
+            onChange={(e) => {setSearchQuery(e.target.value); filterBySchoolName(e.target.value)}}
             className="pl-10"
           />
         </div>
 
         {/* Filter Grid */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 px-4">
           {/* Country Filter */}
-          <div className="space-y-2">
+          {/* <div className="space-y-2">
             <Label className="text-sm font-medium text-slate-700">Country</Label>
             <Select value={selectedCountry} onValueChange={setSelectedCountry}>
               <SelectTrigger>
@@ -136,12 +191,31 @@ export const StudentFilterSection = () => {
                 ))}
               </SelectContent>
             </Select>
+          </div> */}
+
+
+          {/* City Filter */}
+          <div className="space-y-2">
+            <Label className="text-sm font-medium text-slate-700">City</Label>
+            <Select value={selectedCity} onValueChange={(value)=>{setSelectedCity(value); filterByCity(value)}}>
+              <SelectTrigger>
+                <SelectValue placeholder="All Cities" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Cities</SelectItem>
+                {japaneseCitiesForNepali.map((city) => (
+                  <SelectItem key={city} value={city}>
+                    {city}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
 
           {/* Study Level Filter */}
           <div className="space-y-2">
             <Label className="text-sm font-medium text-slate-700">Study Level</Label>
-            <Select value={selectedLevel} onValueChange={setSelectedLevel}>
+            <Select value={selectedLevel} onValueChange={(value) => {setSelectedLevel(value); filterByStudyLevel(value)} }>
               <SelectTrigger>
                 <SelectValue placeholder="All Levels" />
               </SelectTrigger>
@@ -156,8 +230,26 @@ export const StudentFilterSection = () => {
             </Select>
           </div>
 
-          {/* Intake Year Filter */}
+          {/* intakes */}
           <div className="space-y-2">
+            <Label className="text-sm font-medium text-slate-700">Intakes</Label>
+            <Select value={selectedIntake} onValueChange={(value) => {setSelectedIntake(value); filterByIntake(value)} }>
+              <SelectTrigger>
+                <SelectValue placeholder="All Intakes" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Intakes</SelectItem>
+                { japanIntakes.map((intake) => (
+                  <SelectItem key={intake} value={intake}>
+                    {intake}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+          {/* Intake Year Filter */}
+          {/* <div className="space-y-2">
             <Label className="text-sm font-medium text-slate-700">Intake Year</Label>
             <Select value={selectedYear} onValueChange={setSelectedYear}>
               <SelectTrigger>
@@ -172,10 +264,10 @@ export const StudentFilterSection = () => {
                 ))}
               </SelectContent>
             </Select>
-          </div>
+          </div> */}
 
           {/* Intake Month Filter */}
-          <div className="space-y-2">
+          {/* <div className="space-y-2">
             <Label className="text-sm font-medium text-slate-700">Intake Month</Label>
             <Select value={selectedMonth} onValueChange={setSelectedMonth}>
               <SelectTrigger>
@@ -190,7 +282,7 @@ export const StudentFilterSection = () => {
                 ))}
               </SelectContent>
             </Select>
-          </div>
+          </div> */}
         </div>
 
         {/* Active Filters Display */}
@@ -245,6 +337,8 @@ export const StudentFilterSection = () => {
           </div>
         )}
       </div>
+
+      {matchStudents && <StudentCards  students={matchStudents}/>}
     </div>
   );
 }

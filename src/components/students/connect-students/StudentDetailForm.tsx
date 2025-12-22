@@ -9,6 +9,7 @@ import { CalendarIcon } from "lucide-react";
 import { useState } from "react";
 export default function StudentDetailForm(){
     const [date, setDate] = useState<Date>();
+    
   const countries = [
     "United States", "United Kingdom", "Canada", "Australia", "Germany", 
     "France", "Netherlands", "Sweden", "Switzerland", "Japan", "South Korea"
@@ -32,7 +33,7 @@ export default function StudentDetailForm(){
         
         <div className="space-y-6">
          
-          {/* date ad country applied to  */}
+          {/* date and country applied to  */}
         <div className="grid grid-cols-2 gap-4">
  {/* Country Applied To */}
           <div className="space-y-2">

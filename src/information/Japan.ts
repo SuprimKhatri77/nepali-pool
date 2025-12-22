@@ -1,0 +1,230 @@
+
+export interface Student {
+  fullname: string;
+  country: string;
+  city: string;
+  studyLevel: string; // e.g., Language School, Language School, Language School
+  schoolName: string;
+  currentStatus: string;
+  appliedOn: string; // ISO date string, e.g., "2025-11-10"
+  forIntake: japanIntakes
+}
+
+// intakes
+export type japanIntakes = "January" | "July" | "October" | "April"
+export const japanIntakes = ["January","July" , "October" , "April"]
+// fake details
+export const students: Student[] = [
+  {
+    fullname: "Rojina Shrestha",
+    country: "Japan",
+    city: "Osaka City",
+    studyLevel: "Language School",
+    schoolName: "Kyoshin Language Academy Osaka Chuo",
+    currentStatus: "Waiting for COE",
+    appliedOn: "2025-05-10",
+  forIntake: "October" },
+  {
+    fullname: "Jeevan Kami",
+    country: "Japan",
+    city: "Osaka City",
+    studyLevel: "Language School",
+    schoolName: "OJA Language School",
+    currentStatus: "Waiting for COE",
+    appliedOn: "2025-04-18",
+  forIntake:  "April" },
+  {
+    fullname: "Anjali Rai",
+    country: "Japan",
+    city: "Fukuoka City",
+    studyLevel: "Language School",
+    schoolName: "Kitta Kyushu Japanese Cultural Institute",
+    currentStatus: "Waiting for COE",
+    appliedOn: "2025-03-02",
+  forIntake: "October"  },
+  {
+    fullname: "Rakhesh Thapa",
+    country: "Japan",
+    city: "Tokyo City",
+    studyLevel: "Language School",
+    schoolName: "Tokyo Foreign Language Education Academy",
+    currentStatus: "Waiting for COE",
+    appliedOn: "2025-02-12",
+  forIntake:  "April"  },
+  {
+    fullname: "Maya Koirala",
+    country: "Japan",
+    city: "Fukuoka City",
+    studyLevel: "Language School",
+    schoolName: "Higashi Asia",
+    currentStatus: "Waiting for COE",
+    appliedOn: "2025-01-25",
+  forIntake: "April"  },
+  {
+    fullname: "Prakash Adhikari",
+    country: "Japan",
+    city: "Kobe",
+    studyLevel: "Language School",
+    schoolName: "Kobe Interculture Academy",
+    currentStatus: "Waiting for COE",
+    appliedOn: "2024-12-30",
+  forIntake: "April"  },
+  {
+    fullname: "Sita Basnet",
+    country: "Japan",
+    city: "Fukuoka",
+    studyLevel: "Language School",
+    schoolName: "Foreign Language Academy",
+    currentStatus: "Waiting for COE",
+    appliedOn: "2025-06-05",
+  forIntake: "October" },
+  {
+    fullname: "Nabin KC",
+    country: "Japan",
+    city: "Fukuoka City",
+    studyLevel: "Language School",
+    schoolName: "ICA College",
+    currentStatus: "Waiting for COE",
+    appliedOn: "2025-05-22",
+  forIntake:  "April"  },
+  {
+    fullname: "Aarav Sharma",
+    country: "Japan",
+    city: "Nagano",
+    studyLevel: "Language School",
+    schoolName: "Matsumoto International Japanese Language School",
+    currentStatus: "Waiting for COE",
+    appliedOn: "2025-04-03",
+  forIntake:  "April"  },
+  {
+    fullname: "Kiran Thapa",
+    country: "Japan",
+    city: "Osaka",
+    studyLevel: "Language School",
+    schoolName: "Kyoshin Language Academy",
+    currentStatus: "Waiting for COE",
+    appliedOn: "2025-03-15",
+  forIntake:  "April"  },
+  {
+    fullname: "Sneha Joshi",
+    country: "Japan",
+    city: "Fukuoka",
+    studyLevel: "Language School",
+    schoolName: "Asia Japanese Academy Fukuoka",
+    currentStatus: "Waiting for COE",
+    appliedOn: "2025-02-01",
+  forIntake: "April"  },
+  {
+    fullname: "Rahul Verma",
+    country: "Japan",
+    city: "Osaka City",
+    studyLevel: "Language School",
+    schoolName: "OJA Language School",
+    currentStatus: "Waiting for COE",
+    appliedOn: "2025-01-10",
+  forIntake:  "April" },
+  {
+    fullname: "Pooja Mishra",
+    country: "Japan",
+    city: "Fukuoka City",
+    studyLevel: "Language School",
+    schoolName: "Higashi Asia",
+    currentStatus: "Waiting for COE",
+    appliedOn: "2024-12-22",
+  forIntake: "April"  },
+  {
+    fullname: "Bibek Bhandari",
+    country: "Japan",
+    city: "Kobe",
+    studyLevel: "Language School",
+    schoolName: "Kobe Interculture Academy",
+    currentStatus: "Waiting for COE",
+    appliedOn: "2025-06-12",
+  forIntake:   "April" },
+  {
+    fullname: "Aditi Singh",
+    country: "Japan",
+    city: "Tokyo City",
+    studyLevel: "Language School",
+    schoolName: "Tokyo Foreign Language Education Academy",
+    currentStatus: "Waiting for COE",
+    appliedOn: "2025-05-01",
+  forIntake: "April" },
+  {
+    fullname: "Suman Rai",
+    country: "Japan",
+    city: "Nagano",
+    studyLevel: "Language School",
+    schoolName: "Matsumoto International Japanese Language School",
+    currentStatus: "Waiting for COE",
+    appliedOn: "2025-04-20",
+  forIntake: "April" },
+  {
+    fullname: "Ritika Kapoor",
+    country: "Japan",
+    city: "Fukuoka",
+    studyLevel: "Language School",
+    schoolName: "Foreign Language Academy",
+    currentStatus: "Waiting for COE",
+    appliedOn: "2025-03-08",
+  forIntake:  "April"  },
+  {
+    fullname: "Dipesh Lama",
+    country: "Japan",
+    city: "Osaka City",
+    studyLevel: "Language School",
+    schoolName: "Kyoshin Language Academy Osaka Chuo",
+    currentStatus: "Waiting for COE",
+    appliedOn: "2025-02-18",
+  forIntake:  "April"},
+  {
+    fullname: "Neha Patel",
+    country: "Japan",
+    city: "Fukuoka City",
+    studyLevel: "Language School",
+    schoolName: "ICA College",
+    currentStatus: "Waiting for COE",
+    appliedOn: "2025-01-05",
+  forIntake: "April"},
+  {
+    fullname: "Ashish Pandey",
+    country: "Japan",
+    city: "Fukuoka",
+    studyLevel: "Language School",
+    schoolName: "Asia Japanese Academy Fukuoka",
+    currentStatus: "Waiting for COE",
+    appliedOn: "2024-12-28",
+  forIntake: "April" },
+];
+
+
+
+// city of Japan
+export const japaneseCitiesForNepali: string[] = [
+  "Tokyo",
+  "Osaka",
+  "Fukuoka",
+  "Nagoya",
+  "Yokohama",
+  "Kobe",
+  "Kyoto",
+  "Saitama",
+  "Chiba",
+  "Kawasaki",
+  "Hiroshima",
+  "Okayama",
+  "Shizuoka",
+  "Hamamatsu",
+  "Niigata",
+  "Sendai",
+  "Nagano",
+  "Matsumoto",
+  "Kanazawa",
+  "Toyama",
+  "Gifu",
+  "Kumamoto",
+  "Oita",
+  "Beppu",
+  "Naha",
+];
+
