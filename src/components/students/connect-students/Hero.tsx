@@ -23,14 +23,14 @@ export  default function ConnectStudentHero() {
       </div>
 
       <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-slate-900 tracking-tight px-4">
-        Connect With Your{' '}
+        Find Your Future{' '}
         <motion.span 
           initial={{ width: "0ch" }} 
-          animate={{ width: ["0ch", "7ch"] }} 
-          transition={{ duration: 3, ease: "linear" }} 
+          animate={{ width: ["0ch", "22ch"] }} 
+          transition={{ duration: 11, ease: "linear" }} 
           className="hidden text-emerald-700 overflow-hidden text-nowrap sm:inline-flex"
         >
-          Friends
+           Roommates & Classmates.
         </motion.span>
         <span className="sm:hidden text-emerald-700">Friends</span>
       </h1>
