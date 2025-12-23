@@ -100,7 +100,7 @@ export function SignupForm({
             Fill in the form below to create your account
           </p>
         </div>
-        <FieldGroup className="flex-row">
+        <FieldGroup className="flex-row" >
           <Field className="gap-1">
             <FieldLabel htmlFor="firstname">First Name</FieldLabel>
             <Input
@@ -117,6 +117,21 @@ export function SignupForm({
             )}
           </Field>
           <Field className="gap-1">
+            <FieldLabel htmlFor="middlename">Middle Name</FieldLabel>
+            <Input
+              id="middlename"
+              type="text"
+              name="middlename"
+              defaultValue={state.inputs?.middlename}
+            />
+
+            {state.errors?.middlename && (
+              <FieldError>{state.errors.middlename[0]}</FieldError>
+            )}
+          </Field>
+         
+        </FieldGroup>
+         <Field className="gap-1">
             <FieldLabel htmlFor="lastname">Last Name</FieldLabel>
             <Input
               id="lastname"
@@ -130,7 +145,6 @@ export function SignupForm({
               <FieldError>{state.errors.lastname[0]}</FieldError>
             )}
           </Field>
-        </FieldGroup>
         <Field className="gap-1">
           <FieldLabel htmlFor="email">Email</FieldLabel>
           <Input
@@ -224,7 +238,7 @@ export function SignupForm({
           <Field >
             <InputGroup className="gap-2">
             
-            <input onClick={() => setTermsAgree(!termsAgree)} type="checkbox" />
+            <input checked={termsAgree} onChange={(e) => e.target.checked  && setTermsAgree(e.target.checked)} type="checkbox" />
             <FieldLabel>I accept terms and policy of NepaliPool.</FieldLabel>
             </InputGroup>
           </Field>

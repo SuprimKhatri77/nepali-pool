@@ -19,6 +19,8 @@ export async function sendEmail({
   text?: string;
   html: string;
 }) {
+  console.log("sending mail")
+  console.log("to: ",to)
   await transporter.sendMail({
     from: process.env.EMAIL_FROM,
     to,

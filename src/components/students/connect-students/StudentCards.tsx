@@ -89,12 +89,18 @@ export const StudentCard = ({student}:{student: Student}) => {
 
 
   {/* Action */}
-  <CardFooter className="px-6 pb-2">
+  <CardFooter className="px-6 pb-2 grid grid-cols-2 gap-3">
     <Button className="w-full bg-emerald-600 hover:bg-emerald-700">
       <Link href={"/chats/0ff7797c-3e78-4fdc-ab82-4e83ad877658"}>
       
       Start Conversation
       </Link>
+    </Button>
+    <Button className="w-full bg-emerald-600 hover:bg-emerald-700">
+      <a target="_blank" href={"https://m.me/ch/AbYIEGS3aMMTPi1b/"}>
+      
+      Join Group
+      </a>
     </Button>
   </CardFooter>
 </Card>

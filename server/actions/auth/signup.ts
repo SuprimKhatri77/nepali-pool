@@ -11,6 +11,7 @@ export type FormState = {
   errors?: {
     firstname?: string[];
     lastname?: string[];
+    middlename?:string[];
     email?: string[];
     password?: string[];
     role?: string[];
@@ -21,6 +22,7 @@ export type FormState = {
   redirectTo?: string;
   inputs?: {
     firstname?: string;
+    middlename?:string;
     lastname?: string;
     email?: string;
     password?: string;
@@ -42,6 +44,7 @@ export async function SignUp(
   formData: FormData
 ): Promise<FormState> {
   // console.log("ROLE: ", formData.get("role"));
+  console.log("formdata: ",formData)
   const userData = z.object({
     firstname: z
       .string()
@@ -50,6 +53,11 @@ export async function SignUp(
       .max(20, "Firstname must be less than 20 characters")
       .regex(/^[A-Za-z]+$/, "Firstname must contain only letters")
       .nonempty(),
+    middlename: z
+      .string()
+      .trim()
+     
+      .optional(),
     lastname: z
       .string()
       .trim()
@@ -77,6 +85,7 @@ export async function SignUp(
   const validateFields = userData.safeParse({
     email: formData.get("email") as string,
     firstname: formData.get("firstname") as string,
+    middlename: formData.get("middlename") as string,
     lastname: formData.get("lastname") as string,
     password: formData.get("password") as string,
     role: formData.get("role") as string,
@@ -94,7 +103,7 @@ export async function SignUp(
     };
   }
 
-  const { firstname, lastname, email, password, role, confirmPassword } =
+  const { firstname, middlename,lastname, email, password, role, confirmPassword } =
     validateFields.data;
 
   if (password !== confirmPassword) {
@@ -108,7 +117,7 @@ export async function SignUp(
   try {
     await auth.api.signUpEmail({
       body: {
-        name: `${firstname} ${lastname}`,
+        name: middlename ?  `${firstname.toLowerCase()} ${middlename.toLowerCase()} ${lastname.toLowerCase()}` : `${firstname.toLowerCase()} ${lastname.toLowerCase()}` ,
         email,
         password,
       },
@@ -157,6 +166,7 @@ export async function SignUp(
       timestamp: Date.now(),
     };
   } catch (error) {
+    console.log("error: ",error)
     if (error instanceof APIError) {
       return {
         success: false,
@@ -172,6 +182,5 @@ export async function SignUp(
       timestamp: Date.now(),
       inputs: Object.fromEntries(formData),
     };
-    throw error;
   }
 }

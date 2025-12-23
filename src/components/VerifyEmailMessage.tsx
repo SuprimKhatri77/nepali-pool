@@ -6,6 +6,9 @@ interface EmailVerificationProps {
 }
 
 export const EmailVerification = ({ url, name }: EmailVerificationProps) => {
+  console.log("sending email via resend")
+  console.log("url: ",url)
+  console.log("name: ", name)
   return (
     <html>
       <Head>
