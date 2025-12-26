@@ -1,0 +1,1 @@
+ALTER TABLE "connect_students" ADD COLUMN "applied_on" timestamp with time zone NOT NULL;

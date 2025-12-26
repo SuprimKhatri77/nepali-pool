@@ -148,6 +148,34 @@
       "when": 1764255721127,
       "tag": "0020_neat_maria_hill",
       "breakpoints": true
+    },
+    {
+      "idx": 21,
+      "version": "7",
+      "when": 1766728787214,
+      "tag": "0021_nasty_killer_shrike",
+      "breakpoints": true
+    },
+    {
+      "idx": 22,
+      "version": "7",
+      "when": 1766731630592,
+      "tag": "0022_slim_hellfire_club",
+      "breakpoints": true
+    },
+    {
+      "idx": 23,
+      "version": "7",
+      "when": 1766737787952,
+      "tag": "0023_pink_logan",
+      "breakpoints": true
+    },
+    {
+      "idx": 24,
+      "version": "7",
+      "when": 1766737835059,
+      "tag": "0024_normal_wong",
+      "breakpoints": true
     }
   ]
 }

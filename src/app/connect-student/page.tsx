@@ -1,22 +1,16 @@
-"use client"
+export const revalidate = 3600;
 
-import ConnectStudentHero from "@/components/students/connect-students/Hero"
-import StudentDetailForm from "@/components/students/connect-students/StudentDetailForm"
+import { getStudentProfiles } from "../../../server/helper/connect-student/get-student-profile";
+import { ConnectStudents } from "@/components/students/connect-students/connect-students";
 
-
-export default function page() {
+export default async function page() {
+  const { students, hasCurrentUserProfile, hasSession } =
+    await getStudentProfiles();
   return (
-    <>
-    <section className="min-h-[90%]">
-
-      <ConnectStudentHero />
-    </section>
-     
-
-      {/* show this form to student  when first time coming to this page. */}
-        <StudentDetailForm />
-    </>
-  )
+    <ConnectStudents
+      hasSession={hasSession}
+      hasCurrentUserProfile={hasCurrentUserProfile}
+      students={students}
+    />
+  );
 }
-
-

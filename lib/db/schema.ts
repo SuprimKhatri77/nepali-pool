@@ -418,7 +418,81 @@ export const meetingSession = pgTable(
   (table) => [uniqueIndex("unique_student_session").on(table.studentId)]
 );
 
+export const countryAppliedToEnum = pgEnum("country_applied_to", [
+  "United States",
+  "United Kingdom",
+  "Canada",
+  "Australia",
+  "Germany",
+  "France",
+  "Netherlands",
+  "Sweden",
+  "Switzerland",
+  "Japan",
+  "South Korea",
+]);
+export const intakeYearEnum = pgEnum("intake_year", [
+  "2025",
+  "2026",
+  "2027",
+  "2028",
+  "2029",
+  "2030",
+]);
+export const intakeMonthEnum = pgEnum("intake_month", [
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
+]);
+export const studyLevelEnum = pgEnum("study_level", [
+  "Bachelor's Degree",
+  "Master's Degree",
+  "PhD",
+  "Language School",
+]);
+export const connectStudentProfiles = pgTable(
+  "connect_students",
+  {
+    id: uuid().primaryKey().defaultRandom(),
+    userId: text("user_id").references(() => user.id, { onDelete: "cascade" }),
+    countryAppliedTo: countryAppliedToEnum("country_applied_to_enum").notNull(),
+    cityAppliedTo: varchar("city_applied_to", { length: 100 }).notNull(),
+    intakeYear: intakeYearEnum("intake_year_enum").notNull(),
+    intakeMonth: intakeMonthEnum("intake_month").notNull(),
+    studyLevel: studyLevelEnum("study_level").notNull(),
+    universityName: text("university_name").notNull(),
+    currentStatus: text("current_status").notNull(),
+    appliedOn: timestamp("applied_on", { withTimezone: true }).notNull(),
+    createdAt: timestamp("created_at").defaultNow(),
+    updatedAt: timestamp("updated_at")
+      .defaultNow()
+      .$onUpdate(() => new Date()),
+  },
+  (table) => [
+    index("student_index").on(table.userId),
+    uniqueIndex("unique_user").on(table.userId),
+  ]
+);
+
 // ==========RELATIONS===============
+export const connectStudentProfileRelations = relations(
+  connectStudentProfiles,
+  ({ one }) => ({
+    user: one(user, {
+      fields: [connectStudentProfiles.userId],
+      references: [user.id],
+    }),
+  })
+);
 
 export const messageAttachmentRelations = relations(
   messageAttachments,
@@ -476,6 +550,10 @@ export const userRelations = relations(user, ({ one }) => ({
   mentorProfile: one(mentorProfile, {
     fields: [user.id],
     references: [mentorProfile.userId],
+  }),
+  connectStudentProfile: one(connectStudentProfiles, {
+    fields: [user.id],
+    references: [connectStudentProfiles.userId],
   }),
 }));
 
@@ -568,3 +646,10 @@ export type MessageAttachmentsInsertType = InferInsertModel<
 
 export type MeetingSessionSelectType = InferSelectModel<typeof meetingSession>;
 export type MeetingSessionInsertType = InferInsertModel<typeof meetingSession>;
+
+export type ConnectStudentProfileInsertType = InferInsertModel<
+  typeof connectStudentProfiles
+>;
+export type ConnectStudentProfileSelectType = InferSelectModel<
+  typeof connectStudentProfiles
+>;
