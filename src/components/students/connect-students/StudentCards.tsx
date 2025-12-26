@@ -1,4 +1,4 @@
-import { Button } from "@/components/ui/button";
+// import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -6,19 +6,47 @@ import {
   CardHeader,
 } from "@/components/ui/card";
 import { Building2, Calendar, Clock } from "lucide-react";
-import Link from "next/link";
 import {
   ConnectStudentProfileSelectType,
   UserSelectType,
 } from "../../../../lib/db/schema";
+import { toast } from "sonner";
 
 type StudentType = {
   student: ConnectStudentProfileSelectType & {
     user: UserSelectType | null;
   };
+  hasCurrentUserProfile: boolean
 };
 
-export const StudentCard = ({ student }: StudentType) => {
+export const StudentCard = ({ student, hasCurrentUserProfile }: StudentType) => {
+  /* after group wise join feature  */
+//  const cityGroupLinks: Record<string, string> = {
+//   osaka: "https://m.me/osaka_group_link",
+//   tokyo: "https://m.me/tokyo_group_link",
+//   fukuoka: "https://m.me/fukuoka_group_link",
+//   kyoto: "https://m.me/kyoto_group_link",
+//   nagoya: "https://m.me/nagoya_group_link",
+// };
+
+// const city = student.cityAppliedTo?.toLowerCase();
+// const groupLink = city ? cityGroupLinks[city.toLowerCase()] : undefined; // undefine main grp link
+
+
+//   const navigateToGroup = () => {
+//     if(!hasCurrentUserProfile) {
+//       toast("Please fill up the form",{position: "top-right"})
+//       window.scrollTo({"top": document.documentElement.scrollHeight - 1400, "behavior": "smooth"})
+//       return;
+//     }
+//   if (!groupLink) {
+//     alert("Group link not available for this city yet.");
+//     return;
+//   }
+
+//   window.open(groupLink, "_blank");
+// };
+
   return (
     <Card className="overflow-hidden border-gray-200 hover:shadow-lg transition-shadow">
       <CardHeader className="flex flex-row justify-between items-start">
@@ -72,18 +100,17 @@ export const StudentCard = ({ student }: StudentType) => {
         </div>
       </CardContent>
 
-      {/* Action */}
-      <CardFooter className="px-6 pb-2 grid grid-cols-2 gap-3">
+      {/* Action later we can add the buttons*/}
+      <CardFooter className="px-6 pb-2 grid  gap-3">
+        {/* update this after chat comes  */}
+          {/* <Link href={`/chats/${student.userId}`}>
         <Button className="w-full bg-emerald-600 hover:bg-emerald-700">
-          <Link href={"/chats/0ff7797c-3e78-4fdc-ab82-4e83ad877658"}>
             Start Conversation
-          </Link>
         </Button>
-        <Button className="w-full bg-emerald-600 hover:bg-emerald-700">
-          <a target="_blank" href={"https://m.me/ch/AbYIEGS3aMMTPi1b/"}>
-            Join Group
-          </a>
-        </Button>
+          </Link> */}
+        {/* <Button onClick={navigateToGroup} className="w-full bg-emerald-600 hover:bg-emerald-700">
+            Join {student.cityAppliedTo} Group
+        </Button> */}
       </CardFooter>
     </Card>
   );

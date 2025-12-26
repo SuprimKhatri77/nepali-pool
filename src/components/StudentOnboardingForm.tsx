@@ -82,6 +82,18 @@ export default function StudentOnboardingForm({
     }
   }, [message]);
 
+    // remove the following locally set link when onboarding is successful
+  const setImageLinkInLocal = (image_link: string) => {
+    // set in state 
+     setProfilePicture(image_link)
+// set in local
+    localStorage.setItem("onboarding_profile_image",image_link)
+  }
+  const removeImageLinkFromLocal = () => {
+// remove in local
+    localStorage.removeItem("onboarding_profile_image")
+  }
+
   const totalSteps = 3;
   const progress = (currentStep / totalSteps) * 100;
 
@@ -89,8 +101,9 @@ export default function StudentOnboardingForm({
     if (state.success) {
       toast.success(state.message);
       setTimeout(() => {
-        router.replace("/dashboard/student");
-      }, 1100);
+        router.replace("/connect-student");
+        removeImageLinkFromLocal()
+      }, 500);
     }
     if (!state.success && state.message) {
       toast.error(state.message);
@@ -124,6 +137,8 @@ export default function StudentOnboardingForm({
     { number: 3, title: "Preferences" },
   ];
 
+
+
   const [location, setLocation] = useState({
     city: "",
     district: "",
@@ -132,7 +147,7 @@ export default function StudentOnboardingForm({
   // navigator is a browser api so, we have to run in use clinet page.
   const fillInputs = () => {
     if (!navigator.geolocation) {
-      alert("Geolocation not supported");
+      
       return;
     }
 
@@ -171,10 +186,16 @@ export default function StudentOnboardingForm({
 
   useEffect(() => {
     fillInputs();
+    const uploaded_image_link= localStorage.getItem("onboarding_profile_image");
+    if(uploaded_image_link){
+      setTimeout(() => {
+        setProfilePicture(uploaded_image_link)
+      }, 0);
+    }
   }, []);
 
   useEffect(() => {
-    if (location) {
+    if (location.city && location.district) {
      setTimeout(() => {
        setFormData((prev) => ({
   ...prev, // keep other fields
@@ -294,8 +315,10 @@ export default function StudentOnboardingForm({
                     <div className="flex justify-center">
                       <CustomProfileUploader
                         imageUploadName="Profile Picture"
-                        onUploadComplete={(url: string) =>
-                          setProfilePicture(url)
+                        onUploadComplete={(url: string) => {(
+
+                          setImageLinkInLocal(url)
+                        )}
                         }
                         currentImage={profilePicture}
                       />

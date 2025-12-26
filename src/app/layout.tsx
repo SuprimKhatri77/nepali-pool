@@ -5,6 +5,7 @@ import { Toaster } from "@/components/ui/sonner";
 import ClientLayout from "./client-layout";
 import { Suspense } from "react";
 import TRQProvider from "@/components/providers/query-client-provider";
+import Script from "next/script";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://nepalipool.com"),
@@ -81,6 +82,22 @@ export default function RootLayout({
           content="https://nepalipool.com/homepage-preview.png"
         />
         <meta name="twitter:image:alt" content="Our Website Home Page" />
+
+
+{/* Google Analytics */}
+      <Script
+        src="https://www.googletagmanager.com/gtag/js?id=G-PBRH8MBVNW"
+        strategy="afterInteractive"
+      />
+
+      <Script id="google-analytics" strategy="afterInteractive">
+        {`
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-PBRH8MBVNW');
+        `}
+      </Script>
       </head>
 
       <body

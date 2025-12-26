@@ -22,7 +22,7 @@ export function ConnectStudents({
   return (
     <>
       <section className="min-h-[90%]">
-        <ConnectStudentHero students={students} />
+        <ConnectStudentHero hasCurrentUserProfile={hasCurrentUserProfile} students={students} />
       </section>
 
       {/* show this form to student  when first time coming to this page. */}

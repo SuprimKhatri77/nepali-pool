@@ -236,9 +236,9 @@ export function SignupForm({
             <FieldError>{state.errors.role[0]}</FieldError>
           )}
           <Field >
-            <InputGroup className="gap-2">
+            <InputGroup className="gap-2 px-2">
             
-            <input checked={termsAgree} onChange={(e) => e.target.checked  && setTermsAgree(e.target.checked)} type="checkbox" />
+            <input checked={termsAgree} onChange={(e) => setTermsAgree(e.target.checked)} type="checkbox" />
             <FieldLabel>I accept terms and policy of NepaliPool.</FieldLabel>
             </InputGroup>
           </Field>
