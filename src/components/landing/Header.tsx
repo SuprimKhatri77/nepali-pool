@@ -19,7 +19,7 @@ const navLinks = [
   { name: "Schools", href: "/schools" },
   { name: "Mentors", href: "/mentors" },
   // { name: "Scholarships", href: "/scholarships" },
-  { name: "Students", href: "/connect-students" },
+  { name: "Students", href: "/connect-student" },
   { name: "Guides", href: "/guides" },
 ];
 
