@@ -311,6 +311,8 @@ export default function StudentDetailForm() {
             <Input
               id="status"
               type="text"
+              minLength={5}
+              maxLength={30}
               placeholder="Currently you are in what process?"
               value={currentStatus}
               onChange={(e) => setCurrentStatus(e.target.value)}

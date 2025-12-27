@@ -88,7 +88,7 @@ export default function Footer() {
       </a>
 
       <a 
-        href="https://m.me/cm/AbYCo2T6A-3kPC0K/?send_source=cm%3Acopy_invite_link" 
+        href="https://www.facebook.com/nepalipooldotcom" 
         target="_blank" 
         rel="noopener noreferrer"
         className="w-9 h-9 bg-gray-100 hover:bg-emerald-600 rounded-lg flex items-center justify-center transition-colors duration-200 group"

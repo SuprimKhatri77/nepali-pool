@@ -2,6 +2,7 @@
 
 import { IconBrandMessengerFilled } from "@tabler/icons-react";
 import Link from "next/link";
+import WhatsappButton from "./WhatsAppBtn";
 
 export function MessengerIcon() {
   return (

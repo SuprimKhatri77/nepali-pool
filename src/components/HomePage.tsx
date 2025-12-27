@@ -5,6 +5,7 @@ import WhyTrustUs from "./landing/WhyTrustuS";
 import { Faq1 } from "./Faq";
 import OurFeature from "./whatweoffer/OurFeature";
 import { MessengerIcon } from "./landing/messenger-button";
+import WhatsappButton from "./landing/WhatsAppBtn";
 
 export default function HomePage() {
   return (
@@ -16,7 +17,8 @@ export default function HomePage() {
       {/* <Pricing /> */}
       <Faq1 />
       {/* <SubscribeNewsLetter /> */}
-      <MessengerIcon />
+      {/* <MessengerIcon /> */}
+      <WhatsappButton />
     </div>
   );
 }

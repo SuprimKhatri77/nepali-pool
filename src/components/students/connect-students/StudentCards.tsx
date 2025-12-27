@@ -10,7 +10,7 @@ import {
   ConnectStudentProfileSelectType,
   UserSelectType,
 } from "../../../../lib/db/schema";
-import { toast } from "sonner";
+import { capitalizeFirstLetter } from "better-auth";
 
 type StudentType = {
   student: ConnectStudentProfileSelectType & {
@@ -19,6 +19,7 @@ type StudentType = {
   hasCurrentUserProfile: boolean
 };
 
+// has current user profile can be use later when delaing with caht 
 export const StudentCard = ({ student, hasCurrentUserProfile }: StudentType) => {
   /* after group wise join feature  */
 //  const cityGroupLinks: Record<string, string> = {
@@ -54,15 +55,15 @@ export const StudentCard = ({ student, hasCurrentUserProfile }: StudentType) => 
         <div className="flex items-center gap-3">
           <div>
             <h3 className="font-semibold text-gray-900">
-              {student.user?.name}
+              {capitalizeFirstLetter(student.user?.name ?? "No Name")}
             </h3>
             <p className="text-sm text-gray-500">
-              {student.countryAppliedTo}, {student.cityAppliedTo}
+              {capitalizeFirstLetter(student.countryAppliedTo)}, {capitalizeFirstLetter(student.cityAppliedTo)}
             </p>
           </div>
         </div>
         <div className="flex flex-wrap flex-col gap-2 text-sm">
-          <span className="px-2 py-1 rounded bg-emerald-50 text-emerald-700">
+          <span className="px-2 py-1 rounded font-medium uppercase tracking-wider bg-emerald-50 text-emerald-700">
             {student.currentStatus}
           </span>
           {/* Examples: Language School | Master | PhD */}

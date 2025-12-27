@@ -27,9 +27,10 @@ type Props = {
         user: UserSelectType | null;
       })[]
     | [];
-    hasCurrentUserProfile: boolean
+    hasCurrentUserProfile: boolean,
+    hasSession: boolean
 };
-export default function ConnectStudentHero({ students, hasCurrentUserProfile }: Props) {
+export default function ConnectStudentHero({ students, hasCurrentUserProfile, hasSession }: Props) {
   return (
     <div className="pt-12">
       <div className="text-center mb-12 sm:mb-16 space-y-4 min-h-1/2">
@@ -59,13 +60,13 @@ export default function ConnectStudentHero({ students, hasCurrentUserProfile }: 
           community before you even step off the plane.
         </p>
       </div>
-      <StudentFilterSection hasCurrentUserProfile={hasCurrentUserProfile} students={students} />
+      <StudentFilterSection hasSession={hasSession} hasCurrentUserProfile={hasCurrentUserProfile} students={students} />
     </div>
   );
 }
 
 // student filter section
-export const StudentFilterSection = ({ students, hasCurrentUserProfile }: Props) => {
+export const StudentFilterSection = ({ students, hasCurrentUserProfile, hasSession }: Props) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCountry, setSelectedCountry] = useState("");
   const [selectedCity, setSelectedCity] = useState("all");
@@ -385,7 +386,7 @@ export const StudentFilterSection = ({ students, hasCurrentUserProfile }: Props)
         )}
       </div>
 
-      {matchStudents && <StudentCards hasCurrentUserProfile={hasCurrentUserProfile} students={matchStudents} />}
+      {matchStudents && <StudentCards hasSession={hasSession} hasCurrentUserProfile={hasCurrentUserProfile} students={matchStudents} />}
     </div>
   );
 };

@@ -17,10 +17,13 @@ export async function redirectByRole(userRecord: UserSelectType) {
         .from(studentProfile)
         .where(eq(studentProfile.userId, userRecord.id));
       if (!studentRecord)
-        return redirect(
-          "/onboarding/student?message=Please+complete+the+onboarding+to+continue!"
-        );
-      return redirect("/dashboard/student");
+        // TODO
+        return redirect("/connect-student")
+        // return redirect(
+        //   "/onboarding/student?message=Please+complete+the+onboarding+to+continue!"
+        // );
+      // return redirect("/dashboard/student");
+      return redirect("/connect-student")
     }
 
     case "mentor": {

@@ -228,7 +228,7 @@ export default function StudentOnboardingForm({
     >
       <div className="space-y-2 text-center mb-2">
         <h1 className="text-3xl font-bold tracking-tight bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">
-          Welcome aboard
+          Your Information
         </h1>
         <p className="text-muted-foreground text-sm">
           Let&apos;s get your profile set up in just a few steps

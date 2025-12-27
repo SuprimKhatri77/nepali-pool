@@ -8,6 +8,8 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/components/lib/utils";
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 type Props = {
   students:
@@ -15,12 +17,13 @@ type Props = {
         user: UserSelectType | null;
       })[]
     | [];
-    hasCurrentUserProfile: boolean
+    hasCurrentUserProfile: boolean,
+    hasSession: boolean
 };
-export default function StudentCards({ students, hasCurrentUserProfile }: Props) {
+export default function StudentCards({ students, hasCurrentUserProfile, hasSession }: Props) {
   return (
     <section className="py-4 relative">
-      <JoinNepaliPoolCommunity />
+      <JoinNepaliPoolCommunity hasSession={hasSession} hasCurrentUserProfile={hasCurrentUserProfile} />
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 px-2 sm:px-4">
         {/* receive from props */}
         {students.map((student, i) => (
@@ -31,16 +34,34 @@ export default function StudentCards({ students, hasCurrentUserProfile }: Props)
   );
 }
 
-export const JoinNepaliPoolCommunity = ({ className, ...props }: React.ComponentProps<"div">) => {
+export const JoinNepaliPoolCommunity = ({ hasSession,hasCurrentUserProfile, className, ...props }: React.ComponentProps<"div"> & {hasCurrentUserProfile: boolean, hasSession: boolean}) => {
   const [open, setOpen] = useState(false);
+  const router = useRouter()
 
   const messengerLink = "https://m.me/ch/AbYIEGS3aMMTPi1b/?send_source=cm%3Acopy_invite_link";
+
+  
+
+  const checkUserProfile = () => {
+    if(!hasSession) {
+      router.push("/login")
+      return ;
+    }
+    if(hasSession && !hasCurrentUserProfile){
+      toast("Please fill up the Study Abroad Form",{position: "top-right"});
+      window.scrollTo({top: document.documentElement.scrollHeight - 1400, behavior:   "smooth"})
+      return ;
+    }
+    else {
+      setOpen(true)
+    }
+  }
 
   return (
     <div className={cn("relative", className)} {...props}>
       {/* Trigger button */}
-      <Button onClick={() => setOpen(true)} className="bg-emerald-400 text-sm absolute right-2 -top-9">
-        Join NepaliPool Community
+      <Button onClick={checkUserProfile} className=" text-sm absolute right-2 -top-12">
+        Join Community
       </Button>
 
       {/* Dialog / Popup */}
@@ -81,11 +102,19 @@ export const JoinNepaliPoolCommunity = ({ className, ...props }: React.Component
 
           </div>
 
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setOpen(false)}>
-              Close
-            </Button>
-          </DialogFooter>
+          <DialogFooter className="flex justify-between">
+  <Button
+    onClick={() => window.open(messengerLink, "_blank")}
+    className="bg-blue-600 hover:bg-blue-700 text-white"
+  >
+    Join Community
+  </Button>
+
+  <Button variant="outline" onClick={() => setOpen(false)}>
+    Close
+  </Button>
+</DialogFooter>
+
         </DialogContent>
       </Dialog>
     </div>
