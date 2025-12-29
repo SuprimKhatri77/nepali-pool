@@ -11,7 +11,7 @@ export type FormState = {
   errors?: {
     firstname?: string[];
     lastname?: string[];
-    middlename?:string[];
+    middlename?: string[];
     email?: string[];
     password?: string[];
     role?: string[];
@@ -22,7 +22,7 @@ export type FormState = {
   redirectTo?: string;
   inputs?: {
     firstname?: string;
-    middlename?:string;
+    middlename?: string;
     lastname?: string;
     email?: string;
     password?: string;
@@ -44,7 +44,7 @@ export async function SignUp(
   formData: FormData
 ): Promise<FormState> {
   // console.log("ROLE: ", formData.get("role"));
-  console.log("formdata: ",formData)
+  console.log("formdata: ", formData);
   const userData = z.object({
     firstname: z
       .string()
@@ -56,7 +56,7 @@ export async function SignUp(
     middlename: z
       .string()
       .trim()
-     
+
       .optional(),
     lastname: z
       .string()
@@ -103,8 +103,15 @@ export async function SignUp(
     };
   }
 
-  const { firstname, middlename,lastname, email, password, role, confirmPassword } =
-    validateFields.data;
+  const {
+    firstname,
+    middlename,
+    lastname,
+    email,
+    password,
+    role,
+    confirmPassword,
+  } = validateFields.data;
 
   if (password !== confirmPassword) {
     return {
@@ -117,7 +124,9 @@ export async function SignUp(
   try {
     await auth.api.signUpEmail({
       body: {
-        name: middlename ?  `${firstname.toLowerCase()} ${middlename.toLowerCase()} ${lastname.toLowerCase()}` : `${firstname.toLowerCase()} ${lastname.toLowerCase()}` ,
+        name: middlename
+          ? `${firstname.toLowerCase()} ${middlename.toLowerCase()} ${lastname.toLowerCase()}`
+          : `${firstname.toLowerCase()} ${lastname.toLowerCase()}`,
         email,
         password,
       },
@@ -160,13 +169,13 @@ export async function SignUp(
 
     return {
       errors: {},
-      redirectTo: `/verify-email?from=signup`,
+      redirectTo: "/connect-student", //`/verify-email?from=signup`,
       message: "Signup successfull , Redirecting to verify email....",
       success: true,
       timestamp: Date.now(),
     };
   } catch (error) {
-    console.log("error: ",error)
+    console.log("error: ", error);
     if (error instanceof APIError) {
       return {
         success: false,

@@ -129,7 +129,7 @@ export const auth = betterAuth({
         react: EmailVerification({ url, name }),
       });
     },
-    expiresIn: 3600,
+    expiresIn: 86400,
   },
   account: {
     accountLinking: {
