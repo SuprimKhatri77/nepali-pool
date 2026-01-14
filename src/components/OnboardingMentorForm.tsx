@@ -508,14 +508,14 @@ export default function MentorOnboardingForm({
                         className="text-sm font-medium text-gray-700"
                       >
                         {/* Zyro Card *, updated label because some people worried of zyro card */} 
-                        Document that verify you are in {state.inputs?.country ?? "current country"}
+                        Document that verify you are in {state.inputs?.country ?? "abroad"}
                       </Label>
                       <CustomProfileUploader
                         currentImage={zyroCardPhotoUrl}
                         onUploadComplete={(url: string) =>
                           setZyroCardPhotoUrl(url)
                         }
-                        imageUploadName="Upload Zyro card Photo"
+                        imageUploadName="Upload Student Id or Any Valid Documents"
                       />
                       <Input
                         type="hidden"
