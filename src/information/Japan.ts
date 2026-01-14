@@ -213,6 +213,7 @@ export const japaneseCitiesForNepali: string[] = [
   "Kawasaki",
   "Hiroshima",
   "Okayama",
+  "Khagoshima",
   "Shizuoka",
   "Hamamatsu",
   "Niigata",
