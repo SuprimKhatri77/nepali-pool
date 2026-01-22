@@ -37,21 +37,21 @@ export function SignupForm({
 
   const [state, formAction, isPending] = useActionState<FormState, FormData>(
     SignUp,
-    initialState
+    initialState,
   );
 
   const router = useRouter();
   const params = useSearchParams();
   const roleFromParams = params.get("role");
   const [toggleInputType, setToggleInputType] = useState<"text" | "password">(
-    "password"
+    "password",
   );
   const [toggleConfirmInputType, setToggleConfirmInputType] = useState<
     "text" | "password"
   >("password");
   const [password, setPassword] = useState(state.inputs?.password || "");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [termsAgree, setTermsAgree] = useState<boolean>(false)
+  const [termsAgree, setTermsAgree] = useState<boolean>(false);
 
   const [role, setRole] = useState(() => {
     if (roleFromParams) {
@@ -71,7 +71,7 @@ export function SignupForm({
 
   useEffect(() => {
     if (state.success && state.message && state.redirectTo) {
-      queryClient.invalidateQueries({ queryKey: ["user"] });
+      queryClient.invalidateQueries({ queryKey: ["user-nav"] });
       toast.success(state.message);
       setTimeout(() => {
         router.replace(state.redirectTo as string);
@@ -81,7 +81,14 @@ export function SignupForm({
     if (!state.success && state.message) {
       toast.error(state.message);
     }
-  }, [queryClient,state.message, state.success, state.redirectTo, router, state.timestamp]);
+  }, [
+    queryClient,
+    state.message,
+    state.success,
+    state.redirectTo,
+    router,
+    state.timestamp,
+  ]);
 
   // console.log("roleFromParams:", roleFromParams);
   // console.log("state.inputs?.role:", state.inputs?.role);
@@ -100,7 +107,7 @@ export function SignupForm({
             Fill in the form below to create your account
           </p>
         </div>
-        <FieldGroup className="flex-row" >
+        <FieldGroup className="flex-row">
           <Field className="gap-1">
             <FieldLabel htmlFor="firstname">First Name</FieldLabel>
             <Input
@@ -129,22 +136,21 @@ export function SignupForm({
               <FieldError>{state.errors.middlename[0]}</FieldError>
             )}
           </Field>
-         
         </FieldGroup>
-         <Field className="gap-1">
-            <FieldLabel htmlFor="lastname">Last Name</FieldLabel>
-            <Input
-              id="lastname"
-              type="text"
-              name="lastname"
-              placeholder="Doe"
-              defaultValue={state.inputs?.lastname}
-              required
-            />
-            {state.errors?.lastname && (
-              <FieldError>{state.errors.lastname[0]}</FieldError>
-            )}
-          </Field>
+        <Field className="gap-1">
+          <FieldLabel htmlFor="lastname">Last Name</FieldLabel>
+          <Input
+            id="lastname"
+            type="text"
+            name="lastname"
+            placeholder="Doe"
+            defaultValue={state.inputs?.lastname}
+            required
+          />
+          {state.errors?.lastname && (
+            <FieldError>{state.errors.lastname[0]}</FieldError>
+          )}
+        </Field>
         <Field className="gap-1">
           <FieldLabel htmlFor="email">Email</FieldLabel>
           <Input
@@ -235,17 +241,19 @@ export function SignupForm({
           {state.errors?.role && (
             <FieldError>{state.errors.role[0]}</FieldError>
           )}
-          <Field >
+          <Field>
             <InputGroup className="gap-2 px-2">
-            
-            <input checked={termsAgree} onChange={(e) => setTermsAgree(e.target.checked)} type="checkbox" />
-            <FieldLabel>I accept terms and policy of NepaliPool.</FieldLabel>
+              <input
+                checked={termsAgree}
+                onChange={(e) => setTermsAgree(e.target.checked)}
+                type="checkbox"
+              />
+              <FieldLabel>I accept terms and policy of NepaliPool.</FieldLabel>
             </InputGroup>
           </Field>
         </Field>
         <Field className="gap-1">
           <Button
-            
             type="submit"
             className="bg-green-600 hover:bg-green-700"
             disabled={isPending || confirmErr !== null || !termsAgree}

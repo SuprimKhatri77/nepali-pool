@@ -14,6 +14,7 @@ type GetStudentProfilesResult = {
   })[];
   hasCurrentUserProfile: boolean;
   hasSession: boolean;
+  role: "student" | "mentor" | "admin" | null;
 };
 
 export async function getStudentProfiles(): Promise<GetStudentProfilesResult> {
@@ -31,6 +32,25 @@ export async function getStudentProfiles(): Promise<GetStudentProfilesResult> {
       students: students ?? [],
       hasCurrentUserProfile: false,
       hasSession: false,
+      role: null,
+    };
+  }
+
+  const userProfile = await db.query.user.findFirst({
+    where: (fields, { eq }) => eq(fields.id, session.user.id),
+  });
+  if (!userProfile) {
+    await auth.api.signOut({ headers: await headers() });
+    const students = await db.query.connectStudentProfiles.findMany({
+      with: {
+        user: true,
+      },
+    });
+    return {
+      students: students ?? [],
+      hasCurrentUserProfile: false,
+      hasSession: false,
+      role: null,
     };
   }
 
@@ -49,5 +69,6 @@ export async function getStudentProfiles(): Promise<GetStudentProfilesResult> {
     students,
     hasCurrentUserProfile: Boolean(myProfile),
     hasSession: true,
+    role: userProfile.role as "student" | "mentor" | "admin" | null,
   };
 }

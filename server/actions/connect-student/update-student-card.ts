@@ -1,20 +1,19 @@
 "use server";
 
+import z from "zod";
 import {
-  ConnectStudentProfileInsertType,
   connectStudentProfiles,
   countryAppliedToEnum,
+  intakeMonthEnum,
   intakeYearEnum,
   studyLevelEnum,
-} from "./../../../lib/db/schema";
-
-import z from "zod";
-import { intakeMonthEnum } from "../../../lib/db/schema";
+} from "../../../lib/db/schema";
+import { db } from "../../../lib/db";
 import { auth } from "../../lib/auth/auth";
 import { headers } from "next/headers";
-import { db } from "../../../lib/db";
+import { eq } from "drizzle-orm";
 
-const createStudentProfileSchema = z.object({
+const updateStudentProfileSchema = z.object({
   countryAppliedTo: z.enum(countryAppliedToEnum.enumValues),
   cityAppliedTo: z.string(),
   intakeYear: z.enum(intakeYearEnum.enumValues),
@@ -41,7 +40,7 @@ const createStudentProfileSchema = z.object({
     .optional(),
 });
 
-const createStudentProfileResponseSchema = z.object({
+const updateStudentProfileResponseSchema = z.object({
   success: z.boolean(),
   message: z.string(),
   errors: z
@@ -74,50 +73,63 @@ const createStudentProfileResponseSchema = z.object({
     })
     .optional(),
 });
-
-export type CreateStudentProfile = z.infer<typeof createStudentProfileSchema>;
-export type CreateStudentProfileResponse = z.infer<
-  typeof createStudentProfileResponseSchema
+export type UpdateStudentProfile = z.infer<typeof updateStudentProfileSchema>;
+export type UpdateStudentProfileResponse = z.infer<
+  typeof updateStudentProfileResponseSchema
 >;
-export async function createStudentProfile(
-  input: CreateStudentProfile,
-): Promise<CreateStudentProfileResponse> {
-  console.log("input: ", input);
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
-  if (!session) return { success: false, message: "Unauthorized" };
+export async function updateStudentCard(
+  data: z.infer<typeof updateStudentProfileSchema>,
+): Promise<z.infer<typeof updateStudentProfileResponseSchema>> {
+  const session = await auth.api.getSession({ headers: await headers() });
+  if (!session || !session.user) {
+    return { success: false, message: "Unauthorized." };
+  }
   const userRecord = await db.query.user.findFirst({
     where: (fields, { eq }) => eq(fields.id, session.user.id),
   });
-  if (!userRecord) return { success: false, message: "User not found." };
-  if (userRecord.role !== "student")
+  if (!userRecord) {
+    await auth.api.signOut({ headers: await headers() });
     return {
       success: false,
-      message: "Only students can perform this action.",
+      message: "User doesn't have a user record.",
     };
-  const validateInput = createStudentProfileSchema.safeParse(input);
-  if (!validateInput.success) {
+  }
+
+  if (userRecord.role !== "student") {
+    return {
+      success: false,
+      message: "You're not authorized to perform this action.",
+    };
+  }
+
+  const validateFileds = updateStudentProfileSchema.safeParse(data);
+  if (!validateFileds.success) {
     return {
       success: false,
       message: "Validation failed.",
-      errors: validateInput.error.flatten().fieldErrors,
-      inputs: validateInput.data,
+      errors: validateFileds.error.flatten().fieldErrors,
+      inputs: data,
     };
   }
 
   try {
-    await db.insert(connectStudentProfiles).values({
-      ...validateInput.data,
-      userId: session.user.id,
-    } satisfies ConnectStudentProfileInsertType);
-    return { success: true, message: "Profile created successfully." };
+    const hasConnectStudentProfile =
+      await db.query.connectStudentProfiles.findFirst({
+        where: (fields, { eq }) => eq(fields.userId, userRecord.id),
+      });
+    if (!hasConnectStudentProfile) {
+      return {
+        success: false,
+        message: "You don't have a student profile.",
+      };
+    }
+    await db
+      .update(connectStudentProfiles)
+      .set({ ...validateFileds.data })
+      .where(eq(connectStudentProfiles.userId, userRecord.id));
+    return { success: true, message: "Profile updated successfully." };
   } catch (error) {
-    console.log("error: ", error);
-    return {
-      success: false,
-      message: "Failed to create profile.",
-      inputs: validateInput.data,
-    };
+    console.error("error: ", error);
+    return { success: false, message: "Failed to update the student profile." };
   }
 }

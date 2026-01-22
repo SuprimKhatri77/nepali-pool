@@ -78,10 +78,10 @@ export const verification = pgTable("verification", {
   expiresAt: timestamp("expires_at").notNull(),
   consumed: boolean("consumed").default(false),
   createdAt: timestamp("created_at").$defaultFn(
-    () => /* @__PURE__ */ new Date()
+    () => /* @__PURE__ */ new Date(),
   ),
   updatedAt: timestamp("updated_at").$defaultFn(
-    () => /* @__PURE__ */ new Date()
+    () => /* @__PURE__ */ new Date(),
   ),
 });
 
@@ -103,7 +103,7 @@ export const studentProfile = pgTable("student_profile", {
   sex: sexEnum("sex"),
   city: varchar("city", { length: 30 }),
   imageUrl: text("image_url").default(
-    "https://vbteadl6m3.ufs.sh/f/DDJ5nPL6Yp1sHfAviE2zasoidYb10Mu7JGNQFZWgVmCrRHPE"
+    "https://vbteadl6m3.ufs.sh/f/DDJ5nPL6Yp1sHfAviE2zasoidYb10Mu7JGNQFZWgVmCrRHPE",
   ),
   favoriteDestination: text("favorite_destination").array(),
   createdAt: timestamp("created_at").defaultNow(),
@@ -163,7 +163,7 @@ export const chatSubscription = pgTable(
     uniqueIndex("unique_chat").on(table.studentId, table.mentorId),
     index("idx_sub_student").on(table.studentId),
     index("idx_sub_mentor").on(table.mentorId),
-  ]
+  ],
 );
 
 export const chatSubscriptionPayment = pgTable(
@@ -179,7 +179,7 @@ export const chatSubscriptionPayment = pgTable(
       .notNull(),
     createdAt: timestamp("created_at").defaultNow(),
   },
-  (table) => [primaryKey({ columns: [table.subscriptionId, table.paymentId] })]
+  (table) => [primaryKey({ columns: [table.subscriptionId, table.paymentId] })],
 );
 
 export const videoCallStatusEnum = pgEnum("video_call_status", [
@@ -214,12 +214,12 @@ export const videoCall = pgTable(
     uniqueIndex("unique_student_mentor_status").on(
       table.studentId,
       table.mentorId,
-      table.status
+      table.status,
     ),
     index("idx_video_student").on(table.studentId),
     index("idx_video_mentor").on(table.mentorId),
     index("idx_video_scheduledTime").on(table.scheduledTime),
-  ]
+  ],
 );
 
 export const preferredTimeStatusEnum = pgEnum("preferred_time_status", [
@@ -249,7 +249,7 @@ export const preferredTime = pgTable(
     createdAt: timestamp("created_at").defaultNow(),
     updatedAt: timestamp("updated_at").defaultNow(),
   },
-  (table) => [uniqueIndex("unique_video_id").on(table.videoId)]
+  (table) => [uniqueIndex("unique_video_id").on(table.videoId)],
 );
 
 export const suggestedByEnum = pgEnum("suggestedBy", ["student", "mentor"]);
@@ -278,7 +278,7 @@ export const mentorProfile = pgTable("mentor_profile", {
   sex: sexEnum("sex"),
   zyroCard: text("zyro_card"),
   imageUrl: text("image_url").default(
-    "https://vbteadl6m3.ufs.sh/f/DDJ5nPL6Yp1sHfAviE2zasoidYb10Mu7JGNQFZWgVmCrRHPE"
+    "https://vbteadl6m3.ufs.sh/f/DDJ5nPL6Yp1sHfAviE2zasoidYb10Mu7JGNQFZWgVmCrRHPE",
   ),
   verifiedStatus:
     mentorVerifiedStatusEnum("verified_status").default("pending"),
@@ -301,7 +301,7 @@ export const favorite = pgTable(
   (table) => [
     uniqueIndex("unique_student_mentor").on(table.studentId, table.mentorId),
     index("favorite_mentor_idx").on(table.mentorId, table.studentId),
-  ]
+  ],
 );
 
 export const school = pgTable(
@@ -316,13 +316,13 @@ export const school = pgTable(
     email: text("email"),
     imageUrl: text("image_url"),
     supportInternationalStudents: boolean(
-      "support_international_students"
+      "support_international_students",
     ).default(true),
     postalCode: text("postal_code"),
     createdAt: timestamp("created_at").defaultNow(),
     updatedAt: timestamp("updated_at").defaultNow(),
   },
-  (table) => [index("school_idx").on(table.id)]
+  (table) => [index("school_idx").on(table.id)],
 );
 
 export const chatStatusEnum = pgEnum("chat_status", ["active", "expired"]);
@@ -351,12 +351,12 @@ export const chats = pgTable(
   (table) => [
     uniqueIndex("unique_student_mentor_chat").on(
       table.studentId,
-      table.mentorId
+      table.mentorId,
     ),
     index("idx_chats_student").on(table.studentId),
     index("idx_chats_mentor").on(table.mentorId),
     index("idx_chats_lastMessage").on(table.lastMessageAt),
-  ]
+  ],
 );
 
 export const messages = pgTable(
@@ -377,7 +377,7 @@ export const messages = pgTable(
   },
   (table) => [
     index("index_chat_id_created_at").on(table.chatId, table.createdAt),
-  ]
+  ],
 );
 
 export const messageAttachments = pgTable("message_attachments", {
@@ -415,7 +415,7 @@ export const meetingSession = pgTable(
     question: text("question"),
     createdAt: timestamp("created_at").defaultNow(),
   },
-  (table) => [uniqueIndex("unique_student_session").on(table.studentId)]
+  (table) => [uniqueIndex("unique_student_session").on(table.studentId)],
 );
 
 export const countryAppliedToEnum = pgEnum("country_applied_to", [
@@ -463,7 +463,9 @@ export const connectStudentProfiles = pgTable(
   "connect_students",
   {
     id: uuid().primaryKey().defaultRandom(),
-    userId: text("user_id").references(() => user.id, { onDelete: "cascade" }),
+    userId: text("user_id")
+      .references(() => user.id, { onDelete: "cascade" })
+      .notNull(),
     countryAppliedTo: countryAppliedToEnum("country_applied_to_enum").notNull(),
     cityAppliedTo: varchar("city_applied_to", { length: 100 }).notNull(),
     intakeYear: intakeYearEnum("intake_year_enum").notNull(),
@@ -471,6 +473,8 @@ export const connectStudentProfiles = pgTable(
     studyLevel: studyLevelEnum("study_level").notNull(),
     universityName: text("university_name").notNull(),
     currentStatus: text("current_status").notNull(),
+    whatsAppNumber: text("whats_app_number"),
+    facebookProfileLink: text("facebook_profile_link"),
     appliedOn: timestamp("applied_on", { withTimezone: true }).notNull(),
     createdAt: timestamp("created_at").defaultNow(),
     updatedAt: timestamp("updated_at")
@@ -480,7 +484,7 @@ export const connectStudentProfiles = pgTable(
   (table) => [
     index("student_index").on(table.userId),
     uniqueIndex("unique_user").on(table.userId),
-  ]
+  ],
 );
 
 // ==========RELATIONS===============
@@ -491,7 +495,7 @@ export const connectStudentProfileRelations = relations(
       fields: [connectStudentProfiles.userId],
       references: [user.id],
     }),
-  })
+  }),
 );
 
 export const messageAttachmentRelations = relations(
@@ -501,7 +505,7 @@ export const messageAttachmentRelations = relations(
       fields: [messageAttachments.messageId],
       references: [messages.id],
     }),
-  })
+  }),
 );
 
 export const chatRelations = relations(chats, ({ one }) => ({
@@ -615,7 +619,7 @@ export const preferredTimeLogRelations = relations(
       fields: [preferredTimeLog.videoId],
       references: [videoCall.id],
     }),
-  })
+  }),
 );
 
 export type StudentProfileSelectType = InferSelectModel<typeof studentProfile>;

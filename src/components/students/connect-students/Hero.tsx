@@ -13,24 +13,75 @@ import {
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { Search, Filter, X } from "lucide-react";
-import { useState } from "react";
 import { japaneseCitiesForNepali, japanIntakes } from "@/information/Japan";
+
+import StudentCards from "./student-card";
+import Link from "next/link";
+import { StudentCardSkeleton } from "@/modules/connect-student/student-card-skeleton";
+import { StudentEmptyState } from "@/modules/connect-student/student-empty-state";
+import { StudentErrorState } from "@/modules/connect-student/student-error-state";
 import {
   ConnectStudentProfileSelectType,
   UserSelectType,
 } from "../../../../lib/db/schema";
-import StudentCards from "./student-card";
+
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination";
+import { useQuery } from "@tanstack/react-query";
+import { useState } from "react";
+import { getPaginatedStudentProfiles } from "../../../../server/helper/connect-student/get-paginated-student-profiles";
 
 type Props = {
-  students:
-    | (ConnectStudentProfileSelectType & {
-        user: UserSelectType | null;
-      })[]
-    | [];
-    hasCurrentUserProfile: boolean,
-    hasSession: boolean
+  hasCurrentUserProfile: boolean;
+  hasSession: boolean;
+  role: "student" | "mentor" | "admin" | null;
 };
-export default function ConnectStudentHero({ students, hasCurrentUserProfile, hasSession }: Props) {
+
+export function ConnectStudentHero({
+  hasCurrentUserProfile,
+  hasSession,
+  role,
+}: Props) {
+  const [currentPage, setCurrentPage] = useState(0);
+  const limit = 12;
+
+  const {
+    data: studentsProfiles,
+    isPending,
+    isError,
+  } = useQuery({
+    queryKey: ["all-student-profiles", currentPage],
+    queryFn: () => getPaginatedStudentProfiles(currentPage, limit),
+
+    staleTime: 1000 * 60 * 60,
+    gcTime: 1000 * 60 * 60,
+  });
+
+  const students = studentsProfiles?.students ?? [];
+  const totalStudents = studentsProfiles?.total ?? 0;
+  const totalPages = Math.ceil(totalStudents / limit);
+
+  if (!isPending && !isError && students?.length === 0) {
+    return <StudentEmptyState />;
+  }
+
+  if (isError) {
+    return <StudentErrorState />;
+  }
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
   return (
     <div className="pt-12">
       <div className="text-center mb-12 sm:mb-16 space-y-4 min-h-1/2">
@@ -40,7 +91,6 @@ export default function ConnectStudentHero({ students, hasCurrentUserProfile, ha
             Meet with your new friends
           </div>
         </div>
-
         <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-slate-900 tracking-tight px-4">
           Find Your Future{" "}
           <motion.span
@@ -53,20 +103,144 @@ export default function ConnectStudentHero({ students, hasCurrentUserProfile, ha
           </motion.span>
           <span className="sm:hidden text-emerald-700">Friends</span>
         </h1>
-
         <p className="text-base sm:text-lg text-slate-600 max-w-2xl mx-auto leading-relaxed px-4">
           Connect with future classmates heading to your city. Find peers at
           your university, coordinate travel plans, and start building your
           community before you even step off the plane.
         </p>
       </div>
-      <StudentFilterSection hasSession={hasSession} hasCurrentUserProfile={hasCurrentUserProfile} students={students} />
+
+      {isPending ? (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 p-4">
+          {Array.from({ length: limit }).map((_, i) => (
+            <StudentCardSkeleton key={i} />
+          ))}
+        </div>
+      ) : (
+        <>
+          <StudentFilterSection
+            hasSession={hasSession}
+            hasCurrentUserProfile={hasCurrentUserProfile}
+            students={students}
+            role={role}
+          />
+
+          {/* Pagination Component */}
+          {totalPages > 1 && (
+            <div className="mt-8 mb-12 flex justify-center">
+              <Pagination>
+                <PaginationContent>
+                  <PaginationItem>
+                    <PaginationPrevious
+                      onClick={() =>
+                        handlePageChange(Math.max(0, currentPage - 1))
+                      }
+                      className={
+                        currentPage === 0
+                          ? "pointer-events-none opacity-50"
+                          : "cursor-pointer"
+                      }
+                    />
+                  </PaginationItem>
+
+                  {/* First page */}
+                  {currentPage > 2 && (
+                    <>
+                      <PaginationItem>
+                        <PaginationLink
+                          onClick={() => handlePageChange(0)}
+                          className="cursor-pointer"
+                        >
+                          1
+                        </PaginationLink>
+                      </PaginationItem>
+                      {currentPage > 3 && (
+                        <PaginationItem>
+                          <PaginationEllipsis />
+                        </PaginationItem>
+                      )}
+                    </>
+                  )}
+
+                  {/* Pages around current */}
+                  {Array.from({ length: totalPages }, (_, i) => i)
+                    .filter((page) => {
+                      return (
+                        page === currentPage ||
+                        page === currentPage - 1 ||
+                        page === currentPage + 1 ||
+                        page === currentPage - 2 ||
+                        page === currentPage + 2
+                      );
+                    })
+                    .map((page) => (
+                      <PaginationItem key={page}>
+                        <PaginationLink
+                          onClick={() => handlePageChange(page)}
+                          isActive={currentPage === page}
+                          className="cursor-pointer"
+                        >
+                          {page + 1}
+                        </PaginationLink>
+                      </PaginationItem>
+                    ))}
+
+                  {/* Last page */}
+                  {currentPage < totalPages - 3 && (
+                    <>
+                      {currentPage < totalPages - 4 && (
+                        <PaginationItem>
+                          <PaginationEllipsis />
+                        </PaginationItem>
+                      )}
+                      <PaginationItem>
+                        <PaginationLink
+                          onClick={() => handlePageChange(totalPages - 1)}
+                          className="cursor-pointer"
+                        >
+                          {totalPages}
+                        </PaginationLink>
+                      </PaginationItem>
+                    </>
+                  )}
+
+                  <PaginationItem>
+                    <PaginationNext
+                      onClick={() =>
+                        handlePageChange(
+                          Math.min(totalPages - 1, currentPage + 1),
+                        )
+                      }
+                      className={
+                        currentPage === totalPages - 1
+                          ? "pointer-events-none opacity-50"
+                          : "cursor-pointer"
+                      }
+                    />
+                  </PaginationItem>
+                </PaginationContent>
+              </Pagination>
+            </div>
+          )}
+        </>
+      )}
     </div>
   );
 }
 
-// student filter section
-export const StudentFilterSection = ({ students, hasCurrentUserProfile, hasSession }: Props) => {
+type StudentFilterProps = {
+  students: (ConnectStudentProfileSelectType & {
+    user: UserSelectType;
+  })[];
+  hasCurrentUserProfile: boolean;
+  hasSession: boolean;
+  role: "student" | "mentor" | "admin" | null;
+};
+export const StudentFilterSection = ({
+  students,
+  hasCurrentUserProfile,
+  hasSession,
+}: StudentFilterProps) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCountry, setSelectedCountry] = useState("");
   const [selectedCity, setSelectedCity] = useState("all");
@@ -116,7 +290,7 @@ export const StudentFilterSection = ({ students, hasCurrentUserProfile, hasSessi
     const matchStudents =
       students &&
       students.filter((student) =>
-        student.cityAppliedTo.toLowerCase().includes(value.toLowerCase())
+        student.cityAppliedTo.toLowerCase().includes(value.toLowerCase()),
       );
     if (matchStudents.length === 0) {
       setSearchQuery("");
@@ -130,7 +304,7 @@ export const StudentFilterSection = ({ students, hasCurrentUserProfile, hasSessi
     const matchStudents = students.filter(
       (student) =>
         student.universityName.toLowerCase().includes(value.toLowerCase()) ||
-        student.cityAppliedTo.toLowerCase().includes(value.toLowerCase())
+        student.cityAppliedTo.toLowerCase().includes(value.toLowerCase()),
     );
     if (matchStudents.length === 0) {
       return students;
@@ -141,7 +315,7 @@ export const StudentFilterSection = ({ students, hasCurrentUserProfile, hasSessi
   const filterByStudyLevel = (value: string) => {
     if (!value) return students;
     const matchStudents = students.filter((student) =>
-      student.studyLevel.toLowerCase().includes(value.toLowerCase())
+      student.studyLevel.toLowerCase().includes(value.toLowerCase()),
     );
     if (matchStudents.length === 0) {
       return students;
@@ -152,9 +326,10 @@ export const StudentFilterSection = ({ students, hasCurrentUserProfile, hasSessi
   const filterByIntake = (value: string) => {
     if (!value) return students;
     const removeIntakeWord = value.split(" ")[0];
-    console.log(removeIntakeWord);
     const matchStudents = students.filter((student) =>
-      student.intakeMonth.toLowerCase().includes(removeIntakeWord.toLowerCase())
+      student.intakeMonth
+        .toLowerCase()
+        .includes(removeIntakeWord.toLowerCase()),
     );
     if (matchStudents.length === 0) {
       return students;
@@ -165,11 +340,18 @@ export const StudentFilterSection = ({ students, hasCurrentUserProfile, hasSessi
   return (
     <div className="w-full p-3 sm:p-6 mb-8">
       <div className="flex items-center justify-between mb-6">
-        <div className="flex items-center gap-2">
-          <Filter className="w-5 h-5 text-slate-700" />
-          <h2 className="text-xl font-semibold text-slate-900">
-            Filter Applications
-          </h2>
+        <div className="flex justify-between items-center gap-2  w-full">
+          <div className="flex  items-center gap-2">
+            <Filter className="w-5 h-5 text-slate-700" />
+            <h2 className="text-xl font-semibold text-slate-900">
+              Filter Applications
+            </h2>
+          </div>
+          <Button variant="outline" asChild>
+            <Link href="/connect-student/update/profile">
+              Update student card
+            </Link>
+          </Button>
         </div>
         {hasActiveFilters && (
           <Button
@@ -386,7 +568,13 @@ export const StudentFilterSection = ({ students, hasCurrentUserProfile, hasSessi
         )}
       </div>
 
-      {matchStudents && <StudentCards hasSession={hasSession} hasCurrentUserProfile={hasCurrentUserProfile} students={matchStudents} />}
+      {matchStudents && (
+        <StudentCards
+          hasSession={hasSession}
+          hasCurrentUserProfile={hasCurrentUserProfile}
+          students={matchStudents}
+        />
+      )}
     </div>
   );
 };

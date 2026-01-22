@@ -20,58 +20,72 @@ import {
 import { CalendarIcon } from "lucide-react";
 import { useState } from "react";
 import {
+  ConnectStudentProfileSelectType,
   countryAppliedToEnum,
   intakeMonthEnum,
   intakeYearEnum,
   studyLevelEnum,
-} from "../../../../lib/db/schema";
+} from "../../../lib/db/schema";
 import { useMutation } from "@tanstack/react-query";
-import {
-  CreateStudentProfile,
-  createStudentProfile,
-  CreateStudentProfileResponse,
-} from "../../../../server/actions/connect-student/create-student-profile";
+
 import { toast } from "sonner";
 import { Spinner } from "@/components/ui/spinner";
 import { FieldError } from "@/components/ui/field";
 import { useRouter } from "next/navigation";
+import {
+  updateStudentCard,
+  UpdateStudentProfile,
+  UpdateStudentProfileResponse,
+} from "../../../server/actions/connect-student/update-student-card";
 
 const countries = countryAppliedToEnum.enumValues;
 const months = intakeMonthEnum.enumValues;
 const years = intakeYearEnum.enumValues;
 const studyLevels = studyLevelEnum.enumValues;
 
-export default function StudentDetailForm() {
-  const [date, setDate] = useState<Date>();
-  const [studyLevel, setStudyLevel] =
-    useState<(typeof studyLevelEnum.enumValues)[number]>("Bachelor's Degree");
-  const [country, setCountry] =
-    useState<(typeof countryAppliedToEnum.enumValues)[number]>();
-  const [city, setCity] = useState<string>("");
-  const [intakeYear, setIntakeYear] =
-    useState<(typeof intakeYearEnum.enumValues)[number]>();
-  const [intakeMonth, setIntakeMonth] =
-    useState<(typeof intakeMonthEnum.enumValues)[number]>();
-  const [university, setUniversity] = useState<string>();
-  const [currentStatus, setCurrentStatus] = useState<string>();
-  const [whatsAppNumber, setWhatsAppNumber] = useState<string>();
-  const [facebookProfileLink, setFacebookProfileLink] = useState<string>();
-  const [errors, setErrors] = useState<CreateStudentProfileResponse["errors"]>(
+type Props = {
+  student: ConnectStudentProfileSelectType;
+};
+export function UpdateStudentDetailForm({ student }: Props) {
+  const [date, setDate] = useState<Date>(student.appliedOn);
+  const [studyLevel, setStudyLevel] = useState<
+    (typeof studyLevelEnum.enumValues)[number]
+  >(student.studyLevel);
+  const [country, setCountry] = useState<
+    (typeof countryAppliedToEnum.enumValues)[number]
+  >(student.countryAppliedTo);
+  const [city, setCity] = useState<string>(student.cityAppliedTo);
+  const [intakeYear, setIntakeYear] = useState<
+    (typeof intakeYearEnum.enumValues)[number]
+  >(student.intakeYear);
+  const [intakeMonth, setIntakeMonth] = useState<
+    (typeof intakeMonthEnum.enumValues)[number]
+  >(student.intakeMonth);
+  const [university, setUniversity] = useState<string>(student.universityName);
+  const [currentStatus, setCurrentStatus] = useState<string>(
+    student.currentStatus,
+  );
+  const [whatsAppNumber, setWhatsAppNumber] = useState<string | null>(
+    student.whatsAppNumber,
+  );
+  const [facebookProfileLink, setFacebookProfileLink] = useState<string | null>(
+    student.facebookProfileLink,
+  );
+  const [errors, setErrors] = useState<UpdateStudentProfileResponse["errors"]>(
     {},
   );
   const router = useRouter();
 
   const { mutate, isPending, reset } = useMutation<
-    CreateStudentProfileResponse,
+    UpdateStudentProfileResponse,
     { message: string },
-    CreateStudentProfile
+    UpdateStudentProfile
   >({
     mutationFn: (data) => {
-      return createStudentProfile(data);
+      return updateStudentCard(data);
     },
     onSuccess: (result) => {
       if (!result.success) {
-        console.log("validation error: ", result.errors);
         setErrors(result.errors);
         toast.error(result.message);
         reset();
@@ -79,7 +93,7 @@ export default function StudentDetailForm() {
       }
 
       toast.success(result.message);
-      router.refresh();
+      router.push("/connect-student");
       reset();
     },
     onError: (error) => {
@@ -113,7 +127,7 @@ export default function StudentDetailForm() {
       universityName: university,
       currentStatus,
       whatsAppNumber,
-      facebookProfileLink,
+      facebookProfileLink: facebookProfileLink || undefined,
     });
   };
   return (
@@ -123,7 +137,8 @@ export default function StudentDetailForm() {
           Student Details
         </h1>
         <p className="text-gray-600 mb-8">
-          Fill in the fields to create a card which will be shown to other.
+          Fill in the fields to update your student card which will be shown to
+          other students.
         </p>
 
         <div className="space-y-6">
@@ -282,7 +297,12 @@ export default function StudentDetailForm() {
                   </Button>
                 </PopoverTrigger>
                 <PopoverContent className="w-auto p-0" align="start">
-                  <Calendar mode="single" selected={date} onSelect={setDate} />
+                  <Calendar
+                    mode="single"
+                    selected={date}
+                    onSelect={setDate}
+                    required={true}
+                  />
                 </PopoverContent>
               </Popover>
               {errors?.appliedOn && (
@@ -314,7 +334,7 @@ export default function StudentDetailForm() {
             <Input
               id="whatsapp-number"
               type="number"
-              value={whatsAppNumber}
+              value={whatsAppNumber || ""}
               onChange={(e) => setWhatsAppNumber(e.target.value)}
             />
             {errors?.whatsAppNumber && (
@@ -332,7 +352,7 @@ export default function StudentDetailForm() {
               id="facebook-profile-link"
               type="text"
               placeholder="https://www.facebook.com/username"
-              value={facebookProfileLink}
+              value={facebookProfileLink || ""}
               onChange={(e) => setFacebookProfileLink(e.target.value)}
             />
             {errors?.facebookProfileLink && (
@@ -369,10 +389,10 @@ export default function StudentDetailForm() {
             {isPending ? (
               <>
                 <Spinner />
-                creating profile....
+                updating....
               </>
             ) : (
-              "Create Application"
+              "Update student card"
             )}
           </Button>
         </div>

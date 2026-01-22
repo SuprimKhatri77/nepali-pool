@@ -4,13 +4,13 @@ import { getStudentProfiles } from "../../../server/helper/connect-student/get-s
 import { ConnectStudents } from "@/components/students/connect-students/connect-students";
 
 export default async function page() {
-  const { students, hasCurrentUserProfile, hasSession } =
+  const { hasCurrentUserProfile, hasSession, role } =
     await getStudentProfiles();
   return (
     <ConnectStudents
       hasSession={hasSession}
       hasCurrentUserProfile={hasCurrentUserProfile}
-      students={students}
+      role={role}
     />
   );
 }

@@ -1,0 +1,1 @@
+ALTER TABLE "connect_students" ALTER COLUMN "whats_app_number" SET NOT NULL;

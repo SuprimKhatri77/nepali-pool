@@ -25,7 +25,7 @@ export function LoginForm({
 }: React.ComponentProps<"form">) {
   const queryClient = useQueryClient();
   const [toggleInputType, setToggleInputType] = useState<"text" | "password">(
-    "password"
+    "password",
   );
   const initialState: FormState = {
     errors: {},
@@ -36,12 +36,12 @@ export function LoginForm({
   const message = params.get("message");
   const [state, formAction, isPending] = useActionState<FormState, FormData>(
     SignIn,
-    initialState
+    initialState,
   );
 
   useEffect(() => {
     if (state.success && state.message && state.redirectTo) {
-      queryClient.invalidateQueries({ queryKey: ["user"] });
+      queryClient.invalidateQueries({ queryKey: ["user-nav"] });
       toast(state.message);
       router.push(state.redirectTo);
     }
@@ -49,7 +49,14 @@ export function LoginForm({
     if (!state.success && state.message) {
       toast.error(state.message);
     }
-  }, [queryClient,state.timestamp, state.message, state.redirectTo, router, state.success]);
+  }, [
+    queryClient,
+    state.timestamp,
+    state.message,
+    state.redirectTo,
+    router,
+    state.success,
+  ]);
 
   useEffect(() => {
     if (message) {

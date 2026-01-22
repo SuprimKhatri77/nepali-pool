@@ -32,7 +32,7 @@ export default function Header() {
   const isChatRoute = pathname.startsWith("/chats");
 
   const { data: user, isPending } = useQuery({
-    queryKey: ["user"],
+    queryKey: ["user-nav"],
     queryFn: async () => {
       const result = await getCurrentUser();
       if (!result.success) return null;
@@ -96,7 +96,7 @@ export default function Header() {
       <header
         className={cn(
           "bg-white/80 backdrop-blur-xl z-40 border-b border-gray-200/50 px-4 sm:px-6 lg:px-10 py-3 sm:py-4 shadow-sm",
-          !pathname.startsWith("/chats") && "sticky top-0"
+          !pathname.startsWith("/chats") && "sticky top-0",
         )}
         suppressHydrationWarning
       >
@@ -132,7 +132,7 @@ export default function Header() {
                   "relative px-2 xl:px-4 py-2 text-sm font-medium text-gray-700 rounded-lg transition-all duration-200 overflow-hidden group",
                   pathname === item.href
                     ? "text-emerald-600 bg-emerald-50"
-                    : "hover:text-emerald-600 hover:bg-emerald-50/50"
+                    : "hover:text-emerald-600 hover:bg-emerald-50/50",
                 )}
               >
                 <span className="relative z-10">{item.name}</span>
@@ -381,7 +381,7 @@ export default function Header() {
                           "block px-4 py-3 text-sm font-medium rounded-lg transition-all duration-200",
                           pathname === item.href
                             ? "bg-emerald-50 text-emerald-600"
-                            : "text-gray-700 hover:bg-emerald-50/50 hover:text-emerald-600"
+                            : "text-gray-700 hover:bg-emerald-50/50 hover:text-emerald-600",
                         )}
                         onClick={() => setIsOpen(false)}
                       >

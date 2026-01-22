@@ -1,6 +1,5 @@
 "use client";
 import { ArrowRight, MapPin } from "lucide-react";
-import React from "react";
 import { SchoolSelectType } from "../../../lib/db/schema";
 import { motion } from "framer-motion";
 import Image from "next/image";
