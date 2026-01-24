@@ -2,9 +2,9 @@ import { redirect } from "next/navigation";
 import { db } from "../../../../../lib/db";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { UpdateStudentDetailForm } from "@/modules/connect-student/update-student-card";
 import { auth } from "../../../../../server/lib/auth/auth";
 import { headers } from "next/headers";
+import UpdateStudentCardForm from "@/modules/connect-student/update-student-form";
 
 export default async function Page() {
   const session = await auth.api.getSession({ headers: await headers() });
@@ -35,5 +35,5 @@ export default async function Page() {
       </div>
     );
   }
-  return <UpdateStudentDetailForm student={connectStudentProfile} />;
+  return <UpdateStudentCardForm student={connectStudentProfile}/>
 }

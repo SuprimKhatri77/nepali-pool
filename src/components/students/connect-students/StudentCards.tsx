@@ -1,64 +1,159 @@
-// import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
   CardFooter,
   CardHeader,
 } from "@/components/ui/card";
-import { Building2, Calendar, Clock } from "lucide-react";
+import { Building2, Calendar, Clock,  XIcon } from "lucide-react";
 import {
   ConnectStudentProfileSelectType,
   UserSelectType,
 } from "../../../../lib/db/schema";
 import { capitalizeFirstLetter } from "better-auth";
+import { Button } from "@/components/ui/button";
+import { FaFacebook, FaUserGraduate, FaWhatsapp } from "react-icons/fa";
+import { cn } from "@/components/lib/utils";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
+import { useIsMobile } from "@/hooks/use-mobile";
+import { Dialog,  DialogHeader, DialogTrigger } from "@/components/ui/dialog";
+import { DialogContent, DialogTitle } from "@radix-ui/react-dialog";
+import { useState } from "react";
 
 type StudentType = {
   student: ConnectStudentProfileSelectType & {
     user: UserSelectType | null;
   };
-  hasCurrentUserProfile: boolean
+  hasCurrentUserProfile: boolean;
+  hasSession: boolean,
+  user: ConnectStudentProfileSelectType | undefined
 };
 
 // has current user profile can be use later when delaing with caht 
-export const StudentCard = ({ student, hasCurrentUserProfile }: StudentType) => {
-  /* after group wise join feature  */
-//  const cityGroupLinks: Record<string, string> = {
-//   osaka: "https://m.me/osaka_group_link",
-//   tokyo: "https://m.me/tokyo_group_link",
-//   fukuoka: "https://m.me/fukuoka_group_link",
-//   kyoto: "https://m.me/kyoto_group_link",
-//   nagoya: "https://m.me/nagoya_group_link",
-// };
-
-// const city = student.cityAppliedTo?.toLowerCase();
-// const groupLink = city ? cityGroupLinks[city.toLowerCase()] : undefined; // undefine main grp link
-
-
-//   const navigateToGroup = () => {
-//     if(!hasCurrentUserProfile) {
-//       toast("Please fill up the form",{position: "top-right"})
-//       window.scrollTo({"top": document.documentElement.scrollHeight - 1400, "behavior": "smooth"})
-//       return;
-//     }
-//   if (!groupLink) {
-//     alert("Group link not available for this city yet.");
-//     return;
-//   }
-
-//   window.open(groupLink, "_blank");
-// };
-
+export const StudentCard = ({ student, hasSession, user }: StudentType) => {
+  const [open, setOpen] = useState(false)
+  const router = useRouter()
+  const isMobile = useIsMobile()
+  const handleClick = (navigate: "facebook" | "whatsapp") => {
+    if(!hasSession) {
+      router.push("/login")
+      return;
+    }
+    if(!user?.whatsAppNumber){
+      toast("First fill the form to connect with new friend",{position: "top-right"})
+      if(isMobile){
+        window.scrollTo({top: document.documentElement.scrollHeight - 2000, behavior:   "smooth"})
+      }
+      else {
+        window.scrollTo({top: document.documentElement.scrollHeight -1400, behavior:   "smooth"})
+      }
+      return;
+    }
+    if (navigate === "whatsapp") {
+    const message = `I want to connect with ${student.user?.name}.`;
+    const url = `https://wa.me/9779867473181?text=${encodeURIComponent(message)}`;
+    window.open(url, "_blank"); 
+    return;
+  }
+  if(navigate === "facebook" && user.facebookProfileLink){
+    window.open(user.facebookProfileLink, "_blank"); 
+  }
+}
+  
   return (
     <Card className="overflow-hidden border-gray-200 hover:shadow-lg transition-shadow">
-      <CardHeader className="flex flex-row justify-between items-start">
+      <CardHeader className="flex flex-col px-2 md:px-4">
+        <div className="flex justify-between gap-2 w-full">
+             <p className="text-sm text-gray-500">
+                {student.cityAppliedTo !== "Not set" ? capitalizeFirstLetter(student.cityAppliedTo) : capitalizeFirstLetter(student.countryAppliedTo)}
+            </p>
+          <span className="px-1 py-1 text-[8px] rounded font-medium  bg-emerald-50 text-emerald-700">
+            {student.currentStatus}
+          </span>
+        </div>  
+
+      {
+        student.universityName === "Not set" ? (
+           <p className="flex items-center gap-1">
+    <FaUserGraduate className="w-4 h-4 text-gray-500" />
+    <span className="font-medium text-[10px] line-clamp-1 text-emerald-700">
+      {capitalizeFirstLetter(student.user?.name.split(" ")[0] ?? "")}
+    </span>
+  </p>
+        ) : (
+          <p className="flex items-center gap-1">
+    <Building2 className="w-4 h-4 text-gray-500" />
+    <span className="font-medium text-[10px] line-clamp-1 text-emerald-700">
+      {student.universityName}
+    </span>
+  </p>
+        )
+      }
+         
+        
+        
+      </CardHeader>
+
+     
+
+     
+
+
+
+      {/* Action later we can add the buttons*/}
+      <CardFooter className="px-2 space-y-0 grid  gap-x-3 md:px-4">
+        <p className="text-left text-[8px] font-medium">Connect On</p>
+       <div className={cn("flex items-center justify-between", student.facebookProfileLink ? "grid-cols-2 gap-3" : "")}>
+        <div className="flex gap-2">
+
+{/* show only when fb link is available */}
+          {student.facebookProfileLink && 
+            <FaFacebook onClick={() => handleClick("facebook")}  className="cursor-pointer"/>
+ } 
+ 
+  
+        {/* WhatsApp */}
+    <FaWhatsapp onClick={() => handleClick("whatsapp")} className="cursor-pointer"/>
+        </div>
+
+       <p onClick={() => setOpen(true)} className="text-[8px] p-1 col-span-2 cursor-pointer">View More</p>
+       </div>
+      </CardFooter>
+      {
+        open && (
+          <DialogStudentCard open={true} setOpen={setOpen}  student={student} />
+        )
+      }
+    </Card>
+  );
+};
+
+
+// for user after clicking view more 
+export const DialogStudentCard = ({student, open, setOpen}:{student: (ConnectStudentProfileSelectType & {
+    user: UserSelectType | null;
+  }), open: boolean, setOpen: React.Dispatch<React.SetStateAction<boolean>>}) =>  {
+  return <Dialog open={open} onOpenChange={setOpen}>
+    <DialogContent
+    className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 max-w-lg w-full"
+  >
+    <DialogHeader>
+      <DialogTitle></DialogTitle>
+        <DialogTrigger>
+   
+   </DialogTrigger>
+    </DialogHeader>
+      <Card className="overflow-hidden border-gray-200 hover:shadow-lg transition-shadow">
+      <CardHeader className="flex  flex-row justify-between items-start">
+
         {/*  Name */}
         <div className="flex items-center gap-3">
           <div>
             <h3 className="font-semibold text-gray-900">
-              {capitalizeFirstLetter(student.user?.name ?? "No Name")}
+              {capitalizeFirstLetter(student.user?.name.split(" ")[0] ?? "No Name")}
             </h3>
             <p className="text-sm text-gray-500">
-              {capitalizeFirstLetter(student.countryAppliedTo)}, {capitalizeFirstLetter(student.cityAppliedTo)}
+              {capitalizeFirstLetter(student.countryAppliedTo)} {student.cityAppliedTo !== "Not set" && ","} {student.cityAppliedTo !== "Not set" && capitalizeFirstLetter(student.cityAppliedTo)}
             </p>
           </div>
         </div>
@@ -101,18 +196,14 @@ export const StudentCard = ({ student, hasCurrentUserProfile }: StudentType) => 
         </div>
       </CardContent>
 
-      {/* Action later we can add the buttons*/}
-      <CardFooter className="px-6 pb-2 grid  gap-3">
-        {/* update this after chat comes  */}
-          {/* <Link href={`/chats/${student.userId}`}>
-        <Button className="w-full bg-emerald-600 hover:bg-emerald-700">
-            Start Conversation
-        </Button>
-          </Link> */}
-        {/* <Button onClick={navigateToGroup} className="w-full bg-emerald-600 hover:bg-emerald-700">
-            Join {student.cityAppliedTo} Group
-        </Button> */}
-      </CardFooter>
+       <CardFooter className="flex justify-end">
+     <Button onClick={() => setOpen(false)} className="flex gap-2"><XIcon></XIcon> Close</Button>
+       </CardFooter>
+
+
+
+      
     </Card>
-  );
-};
+    </DialogContent>
+  </Dialog>
+}

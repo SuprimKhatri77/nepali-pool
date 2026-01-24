@@ -86,6 +86,7 @@ export default function Hero() {
 
         <div className="flex flex-col sm:flex-row gap-4 justify-center mt-8 sm:mt-12 w-full max-w-sm sm:max-w-none mx-auto">
           <HeroButtons />
+          {/* NOTE */}
         </div>
       </motion.div>
     </section>

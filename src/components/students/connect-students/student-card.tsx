@@ -18,16 +18,17 @@ type Props = {
       })[]
     | [];
     hasCurrentUserProfile: boolean,
-    hasSession: boolean
-};
-export default function StudentCards({ students, hasCurrentUserProfile, hasSession }: Props) {
+    hasSession: boolean,
+    user: ConnectStudentProfileSelectType | undefined
+} & React.ComponentProps<"section">;
+export default function StudentCards({ students, hasCurrentUserProfile, hasSession,user, className, ...props }: Props) {
   return (
-    <section className="py-4 relative">
-      <JoinNepaliPoolCommunity hasSession={hasSession} hasCurrentUserProfile={hasCurrentUserProfile} />
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 px-2 sm:px-4">
+    <section className={cn("py-4 relative", className)} {...props}>
+      {/* //grid-cols-1 md: */}
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 md:gap-6 px-2 md:px-4">
         {/* receive from props */}
         {students.map((student, i) => (
-          <StudentCard key={i} student={student} hasCurrentUserProfile={hasCurrentUserProfile}/>
+          <StudentCard key={i} student={student} hasCurrentUserProfile={hasCurrentUserProfile} hasSession={hasSession} user={user}/>
         ))}
       </div>
     </section>

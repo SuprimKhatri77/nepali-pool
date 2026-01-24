@@ -15,6 +15,7 @@ type GetStudentProfilesResult = {
   hasCurrentUserProfile: boolean;
   hasSession: boolean;
   role: "student" | "mentor" | "admin" | null;
+  user: ConnectStudentProfileSelectType | undefined
 };
 
 export async function getStudentProfiles(): Promise<GetStudentProfilesResult> {
@@ -33,6 +34,7 @@ export async function getStudentProfiles(): Promise<GetStudentProfilesResult> {
       hasCurrentUserProfile: false,
       hasSession: false,
       role: null,
+      user: undefined
     };
   }
 
@@ -51,6 +53,7 @@ export async function getStudentProfiles(): Promise<GetStudentProfilesResult> {
       hasCurrentUserProfile: false,
       hasSession: false,
       role: null,
+      user: undefined
     };
   }
 
@@ -70,5 +73,6 @@ export async function getStudentProfiles(): Promise<GetStudentProfilesResult> {
     hasCurrentUserProfile: Boolean(myProfile),
     hasSession: true,
     role: userProfile.role as "student" | "mentor" | "admin" | null,
+    user: myProfile
   };
 }

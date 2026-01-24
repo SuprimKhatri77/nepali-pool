@@ -183,7 +183,7 @@ export default function Footer() {
         {/* Copyright */}
         <div className="border-t border-gray-200 pt-8 text-center">
           <p className="text-sm text-gray-600">
-            Copyright © 2025 NepaliPool. All rights reserved.
+            Copyright © {new Date().getFullYear()} NepaliPool. All rights reserved.
           </p>
         </div>
       </div>

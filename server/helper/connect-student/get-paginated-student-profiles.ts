@@ -21,7 +21,7 @@ export async function getPaginatedStudentProfiles(
     with: {
       user: true,
     },
-    orderBy: (fields, { desc }) => desc(fields.createdAt),
+    orderBy: (fields, { asc }) => asc(fields.createdAt),
     limit,
     offset,
   });
