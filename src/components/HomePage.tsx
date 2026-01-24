@@ -4,7 +4,7 @@ import WhyTrustUs from "./landing/WhyTrustuS";
 // import Pricing from "./landing/Pricing";
 import { Faq1 } from "./Faq";
 import OurFeature from "./whatweoffer/OurFeature";
-import { MessengerIcon } from "./landing/messenger-button";
+// import { MessengerIcon } from "./landing/messenger-button";
 import WhatsappButton from "./landing/WhatsAppBtn";
 
 export default function HomePage() {

@@ -28,7 +28,8 @@ export default function SignOutButton({
     await authClient.signOut({
       fetchOptions: {
         onSuccess: () => {
-          queryClient.invalidateQueries({ queryKey: ["user"] });
+          queryClient.invalidateQueries({ queryKey: ["user-nav"] });
+          queryClient.invalidateQueries({ queryKey: ["hero-cta"] });
           router.push("/");
         },
         onError: ({ error }) => {

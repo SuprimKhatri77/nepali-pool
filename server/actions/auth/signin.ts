@@ -3,10 +3,6 @@
 import z from "zod";
 import { auth } from "../../lib/auth/auth";
 import { APIError } from "better-auth/api";
-import { db } from "../../../lib/db";
-import { eq } from "drizzle-orm";
-import { user } from "../../../lib/db/schema";
-import { redirectByRole } from "../../helper/redirectByrole";
 
 export type FormState = {
   errors?: {
@@ -23,9 +19,12 @@ export type FormState = {
   };
 };
 
-export async function SignIn(prevState: FormState, formData: FormData) {
+export async function SignIn(
+  prevState: FormState,
+  formData: FormData,
+): Promise<FormState> {
   const userData = z.object({
-    email: z.string().email().nonempty(),
+    email: z.email().nonempty(),
     password: z.string().min(1, "Password is required").nonempty(),
   });
 
@@ -40,28 +39,28 @@ export async function SignIn(prevState: FormState, formData: FormData) {
       message: "Failed to login.",
       success: false,
       timestamp: Date.now(),
-      inpus: Object.fromEntries(formData.entries()),
+      inputs: Object.fromEntries(formData.entries()),
     };
   }
 
   const { email, password } = validateFields.data;
 
   try {
-    const [userRecord] = await db
-      .select()
-      .from(user)
-      .where(eq(user.email, email));
+    // const [userRecord] = await db
+    //   .select()
+    //   .from(user)
+    //   .where(eq(user.email, email));
 
-    if (!userRecord) {
-      return {
-        success: false,
-        message: "User doesn't exist",
-        errors: {
-          email: ["User doesn't exist"],
-        },
-        timestamp: Date.now(),
-      };
-    }
+    // if (!userRecord) {
+    //   return {
+    //     success: false,
+    //     message: "User doesn't exist",
+    //     errors: {
+    //       email: ["User doesn't exist"],
+    //     },
+    //     timestamp: Date.now(),
+    //   };
+    // }
     await auth.api.signInEmail({
       body: {
         email,
@@ -69,16 +68,21 @@ export async function SignIn(prevState: FormState, formData: FormData) {
       },
     });
 
-    if (!userRecord.emailVerified) {
-      return {
-        redirectTo: `/verify-email`,
-        timestamp: Date.now(),
-      };
-    }
+    // if (!userRecord.emailVerified) {
+    //   return {
+    //     redirectTo: `/verify-email`,
+    //     timestamp: Date.now(),
+    //   };
+    // }
 
-    await redirectByRole(userRecord);
+    // await redirectByRole(userRecord);
 
-    return { success: true, message: "Redirecting...", timestamp: Date.now() };
+    return {
+      success: true,
+      message: "Redirecting...",
+      timestamp: Date.now(),
+      redirectTo: "/connect-student",
+    };
   } catch (error) {
     if (error instanceof APIError) {
       return {

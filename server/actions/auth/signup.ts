@@ -41,7 +41,7 @@ const adminEmails = process.env.ADMIN_EMAILS?.split(",") ?? [];
 
 export async function SignUp(
   prevState: FormState,
-  formData: FormData
+  formData: FormData,
 ): Promise<FormState> {
   // console.log("ROLE: ", formData.get("role"));
   console.log("formdata: ", formData);
@@ -76,7 +76,7 @@ export async function SignUp(
       .regex(/[0-9]/, "Password must contain at least one number")
       .regex(
         /[^a-zA-Z0-9]/,
-        "Use  at least one special character eg: @, # in Password"
+        "Use  at least one special character eg: @, # in Password",
       ),
     confirmPassword: z.string(),
     role: roleEnum,
@@ -170,7 +170,7 @@ export async function SignUp(
     return {
       errors: {},
       redirectTo: "/connect-student", //`/verify-email?from=signup`,
-      message: "Signup successfull , Redirecting to verify email....",
+      message: "Signup successfull",
       success: true,
       timestamp: Date.now(),
     };

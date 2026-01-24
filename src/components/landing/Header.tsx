@@ -10,7 +10,7 @@ import { AnimatePresence, motion } from "framer-motion";
 // import AnnouncementBanner from "@/components/sessions/announcement-banner";
 import { cn } from "../lib/utils";
 import { useQuery } from "@tanstack/react-query";
-import { getCurrentUser } from "../../../server/lib/auth/helpers/getCurrentUser";
+import { getCurrentUserRecord } from "../../../server/lib/auth/helpers/get-current-user";
 
 const MotionLink = motion(Link);
 
@@ -33,14 +33,7 @@ export default function Header() {
 
   const { data: user, isPending } = useQuery({
     queryKey: ["user-nav"],
-    queryFn: async () => {
-      const result = await getCurrentUser();
-      if (!result.success) return null;
-
-      return {
-        user: result.userRecord,
-      };
-    },
+    queryFn: async () => getCurrentUserRecord().then((res) => res.user),
     staleTime: 0,
     refetchOnWindowFocus: false,
   });
@@ -71,7 +64,7 @@ export default function Header() {
 
   const initials =
     user &&
-    user.user.name
+    user.name
       ?.split(" ")
       .filter(Boolean)
       .slice(0, 2)
@@ -79,7 +72,7 @@ export default function Header() {
       .join("")
       .toUpperCase();
 
-  const role = user?.user.role;
+  const role = user?.role;
   const links: { name: string; href: string }[] = useMemo(() => {
     const arr = [...navLinks];
     if (role === "mentor" || role === "admin") {
@@ -176,7 +169,7 @@ export default function Header() {
                   <MotionLink
                     whileHover={{ scale: 1.03 }}
                     whileTap={{ scale: 0.98 }}
-                    href={`/dashboard/${user.user.role}`}
+                    href={`/dashboard/${user.role}`}
                     className="px-4 py-2 bg-emerald-50 text-emerald-700 text-sm font-medium rounded-lg hover:bg-emerald-100 transition-all duration-200"
                   >
                     Dashboard
@@ -199,12 +192,12 @@ export default function Header() {
                     onClick={() => setIsDropdownOpen(!isDropdownOpen)}
                     className="relative w-10 h-10 bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-full flex items-center justify-center text-white font-semibold text-sm shadow-sm hover:shadow-md transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 overflow-hidden"
                   >
-                    {user.user.image ? (
+                    {user.image ? (
                       <Image
-                        src={user.user.image}
+                        src={user.image}
                         fill
                         sizes="40px"
-                        alt={user.user?.name || "User"}
+                        alt={user.name || "User"}
                         className="object-cover"
                       />
                     ) : (
@@ -223,10 +216,10 @@ export default function Header() {
                       >
                         <div className="px-4 py-3 border-b border-gray-100">
                           <p className="text-sm font-medium text-gray-900 truncate">
-                            {user.user?.name || "User"}
+                            {user.name || "User"}
                           </p>
                           <p className="text-xs text-gray-500 truncate">
-                            {user.user?.email}
+                            {user.email}
                           </p>
                         </div>
                         <Link

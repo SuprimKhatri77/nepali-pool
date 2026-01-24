@@ -72,6 +72,7 @@ export function SignupForm({
   useEffect(() => {
     if (state.success && state.message && state.redirectTo) {
       queryClient.invalidateQueries({ queryKey: ["user-nav"] });
+      queryClient.invalidateQueries({ queryKey: ["hero-cta"] });
       toast.success(state.message);
       setTimeout(() => {
         router.replace(state.redirectTo as string);
