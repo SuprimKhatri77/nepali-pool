@@ -54,9 +54,9 @@ export async function sendVideoCallSchedule(
     };
 
   const data = z.object({
-    videoId: z.string({ required_error: "Video ID is required" }).nonempty(),
+    videoId: z.string("Video ID is required" ).nonempty(),
     date: z
-      .string({ required_error: "Date is required" })
+      .string("Date is required")
       .refine((val) => !isNaN(Date.parse(val)), { message: "Invalid date" }),
     // time: z
     //   .string({ required_error: "Time is required" })
@@ -65,9 +65,9 @@ export async function sendVideoCallSchedule(
     //   }),
     role: roleEnum,
     studentId: z
-      .string({ required_error: "Student ID is requireed" })
+      .string("Student ID is requireed" )
       .nonempty(),
-    mentorId: z.string({ required_error: "Mentor ID is required" }).nonempty(),
+    mentorId: z.string("Mentor ID is required").nonempty(),
   });
 
   const validateFields = data.safeParse({

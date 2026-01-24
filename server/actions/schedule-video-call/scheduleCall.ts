@@ -37,10 +37,10 @@ export async function scheduleVideoCallTime(
 ) {
   const data = z.object({
     date: z
-      .string({ required_error: "Date is required" })
+      .string("Date is required")
       .refine((val) => !isNaN(Date.parse(val)), { message: "Invalid date" }),
     time: z
-      .string({ required_error: "Time is required" })
+      .string("Time is required" )
       .refine((val) => /^([01]\d|2[0-3]):([0-5]\d):([0-5]\d)$/.test(val), {
         message: "Invalid time format (HH:mm)",
       }),
