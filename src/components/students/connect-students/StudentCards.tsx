@@ -18,7 +18,7 @@ import { toast } from "sonner";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Dialog,  DialogHeader, DialogTrigger } from "@/components/ui/dialog";
 import { DialogContent, DialogTitle } from "@radix-ui/react-dialog";
-import { useState } from "react";
+import React, { useState } from "react";
 
 type StudentType = {
   student: ConnectStudentProfileSelectType & {
@@ -26,11 +26,15 @@ type StudentType = {
   };
   hasCurrentUserProfile: boolean;
   hasSession: boolean,
-  user: ConnectStudentProfileSelectType | undefined
+  user: ConnectStudentProfileSelectType | undefined,
+  connectWith: string[],
+  setConnectWith: React.Dispatch<React.SetStateAction<string[]>>
+  multipleConnect: boolean,
+  // setMultipleConnect: React.Dispatch<React.SetStateAction<string[]>>
 };
 
 // has current user profile can be use later when delaing with caht 
-export const StudentCard = ({ student, hasSession, user }: StudentType) => {
+export const StudentCard = ({ student, hasSession, user, connectWith, setConnectWith, multipleConnect }: StudentType) => {
   const [open, setOpen] = useState(false)
   const router = useRouter()
   const isMobile = useIsMobile()
@@ -55,13 +59,41 @@ export const StudentCard = ({ student, hasSession, user }: StudentType) => {
     window.open(url, "_blank"); 
     return;
   }
-  if(navigate === "facebook" && user.facebookProfileLink){
-    window.open(user.facebookProfileLink, "_blank"); 
+
+  if(navigate === "facebook" && student.facebookProfileLink){
+    window.open(student.facebookProfileLink, "_blank"); 
   }
-}
+} 
+
+  const connectWithMultiple = (name: string) => {
+    console.log("i want to connect with : ", name, "old", connectWith)
+
+    if(multipleConnect){
+      // check is already added if yes remove it from list
+      const isAlreadyIncluded = connectWith.find((n)=>{
+        return n.toLowerCase() === name.toLowerCase()
+      })
+      if(isAlreadyIncluded){
+        // if i put with indexing it is much easier
+        const removePrevious = connectWith.filter((n)=>{
+          return n !== name
+        })
+
+        setConnectWith(removePrevious)
+        return;
+      }
+      setConnectWith((prev) => {
+      const updated = [...prev, name]
+      console.log(updated)
+      return updated
+    })
+    }
+  }
   
   return (
-    <Card className="overflow-hidden border-gray-200 hover:shadow-lg transition-shadow">
+    <>
+    
+    <Card onClick={() => student.user?.name && connectWithMultiple(student.user?.name)} className={cn("overflow-hidden border-gray-200 hover:shadow-lg transition-shadow", student.user?.name && connectWith.includes(student.user?.name) ? "border-2 drop-shadow-2xl border-green-400" : "")}>
       <CardHeader className="flex flex-col px-2 md:px-4">
         <div className="flex justify-between gap-2 w-full">
              <p className="text-sm text-gray-500">
@@ -116,15 +148,21 @@ export const StudentCard = ({ student, hasSession, user }: StudentType) => {
     <FaWhatsapp onClick={() => handleClick("whatsapp")} className="cursor-pointer"/>
         </div>
 
-       <p onClick={() => setOpen(true)} className="text-[8px] p-1 col-span-2 cursor-pointer">View More</p>
+       <p onClick={(e) => {
+        e.stopPropagation();
+        setOpen(true)
+       }} className="text-[8px] p-1 col-span-2 cursor-pointer">View More</p>
        </div>
       </CardFooter>
-      {
+     
+    </Card>
+     {
         open && (
           <DialogStudentCard open={true} setOpen={setOpen}  student={student} />
         )
       }
-    </Card>
+    </>
+    
   );
 };
 
@@ -135,7 +173,7 @@ export const DialogStudentCard = ({student, open, setOpen}:{student: (ConnectStu
   }), open: boolean, setOpen: React.Dispatch<React.SetStateAction<boolean>>}) =>  {
   return <Dialog open={open} onOpenChange={setOpen}>
     <DialogContent
-    className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 max-w-lg w-full"
+    className="fixed z-50 left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 max-w-lg w-full"
   >
     <DialogHeader>
       <DialogTitle></DialogTitle>

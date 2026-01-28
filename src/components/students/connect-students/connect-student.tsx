@@ -55,7 +55,6 @@ export default function ConnectStudent({
   const search = (searchQuery.get("search") as string) ?? "";
   const [debounceSearch, setDebounceSearch] = useState(search);
   const limit = 20;
-  // NOTE
   const {
     data: studentsProfiles,
     isPending,
@@ -177,6 +176,8 @@ export default function ConnectStudent({
   const onFilterClear = () => {
     router.push(`?`, { scroll: false });
   };
+
+  
 
   return (
     <section>

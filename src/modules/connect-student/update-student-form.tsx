@@ -15,6 +15,27 @@ import { updateStudentCard, UpdateStudentProfile, UpdateStudentProfileResponse }
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { Card } from "@/components/ui/card";
+import { useEffect, useMemo, useState } from "react";
+import { getAllCitiesByCountry } from "@/dal/get-cities-by-country";
+
+
+export const StudentStatusLabel: Record<string, string> = {
+  PROFILE_CREATED: "Profile Created",
+  DOCUMENTS_PENDING: "Documents Pending",
+  DOCUMENTS_SUBMITTED: "Documents Submitted",
+  APPLICATION_SUBMITTED: "Application Submitted",
+  OFFER_LETTER_RECEIVED: "Offer Letter Received",
+  WAITING_FOR_COE: "Waiting for COE",
+  COE_RECEIVED: "COE Received",
+  VISA_APPLIED: "Visa Applied",
+  VISA_RECEIVED: "Visa Received",
+  PRE_DEPARTURE: "Pre-Departure",
+  ENROLLED: "Enrolled",
+
+  REJECTED: "Rejected",
+  VISA_REJECTED: "Visa Rejected",
+  WITHDRAWN: "Withdrawn",
+};
 
 
 export const studentFormSchema = z.object({
@@ -112,8 +133,29 @@ export default function UpdateStudentCardForm({ student }: Props) {
 mutate(payload);
    })()
    }
+
+   const country  = form.watch("country")
+   const [open, setOpen]= useState(false)
  
+      const [cities, setCities] = useState<string[]>([]);
+       const [loading, setLoading] = useState(false);
+
+       const memoCities = useMemo(() => cities ?? [], [cities]);
+
      
+       useEffect(() => {
+         if (!student.countryAppliedTo) return;
+     
+         setTimeout(() => {
+           setLoading(true);
+         }, 0);
+        console.log(student.countryAppliedTo , "country state ", country)
+     
+         getAllCitiesByCountry(student.countryAppliedTo)
+           .then(setCities)
+           .catch(console.error)
+           .finally(() => setLoading(false));
+       }, [country, student.countryAppliedTo]);
    
 
   return  (
@@ -223,11 +265,31 @@ mutate(payload);
       control={form.control}
       name="city"
       render={({ field }) => (
-        <FormItem>
+        <FormItem className="relative">
           <FormLabel>City</FormLabel>
           <FormControl>
-            <Input placeholder="City" {...field} />
+            <Input placeholder="City" onFocus={() => setOpen(true)} {...field} />
           </FormControl>
+           {open && cities.length > 0  && (
+             <div className="absolute z-50 mt-4 w-full max-h-48 overflow-y-auto rounded-md border bg-white shadow-md">
+    {cities
+      .filter((c) =>
+        c.toLowerCase().includes(c.toLowerCase())
+      )
+      .map((c, idx) => (
+        <div
+          key={idx}
+          className="cursor-pointer px-3 py-2 text-sm hover:bg-gray-100"
+          onClick={() => {
+            form.setValue("city",c, {shouldValidate: true})
+            setOpen(false)
+          }}
+        >
+          {c}
+        </div>
+      ))}
+             </div>
+             )}
           <FormMessage />
         </FormItem>
       )}
@@ -309,7 +371,18 @@ mutate(payload);
           <FormItem>
             <FormLabel>Current Status</FormLabel>
             <FormControl>
-              <Input placeholder="Current Status" {...field} />
+               <Select value={field.value} onValueChange={field.onChange}>
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Select year"/>
+                </SelectTrigger>
+                <SelectContent>
+                  {Object.values(StudentStatusLabel)?.map((status) => (
+                    <SelectItem key={status} value={status}>
+                      {status}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </FormControl>
             <FormMessage />
           </FormItem>

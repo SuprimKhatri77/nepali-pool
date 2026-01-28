@@ -18,7 +18,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { CalendarIcon } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   countryAppliedToEnum,
   intakeMonthEnum,
@@ -35,6 +35,9 @@ import { toast } from "sonner";
 import { Spinner } from "@/components/ui/spinner";
 import { FieldError } from "@/components/ui/field";
 import { useRouter } from "next/navigation";
+import { getAllCitiesByCountry } from "@/dal/get-cities-by-country";
+import { StudentStatusLabel } from "@/modules/connect-student/update-student-form";
+import { boolean } from "zod";
 
 const countries = countryAppliedToEnum.enumValues;
 const months = intakeMonthEnum.enumValues;
@@ -59,6 +62,7 @@ export default function StudentDetailForm() {
   const [errors, setErrors] = useState<CreateStudentProfileResponse["errors"]>(
     {},
   );
+  const [openCurStatus,setOpenCurStatus] = useState(true)
   const router = useRouter();
 
   const { mutate, isPending, reset } = useMutation<
@@ -116,6 +120,23 @@ export default function StudentDetailForm() {
       facebookProfileLink,
     });
   };
+
+
+  const [cities, setCities] = useState<string[]>([]);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (!country) return;
+
+    setTimeout(() => {
+      setLoading(true);
+    }, 0);
+
+    getAllCitiesByCountry(country)
+      .then(setCities)
+      .catch(console.error)
+      .finally(() => setLoading(false));
+  }, [country]);
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 py-12">
       <div className="max-w-2xl mx-auto bg-white rounded-2xl shadow-xl p-4 sm:p-8">
@@ -159,22 +180,47 @@ export default function StudentDetailForm() {
             </div>
 
             {/* city applied to  : */}
-            <div className="space-y-2">
-              <Label htmlFor="city" className="text-sm font-semibold">
+            <div className="space-y-2 relative">
+             <Label htmlFor="city" className="text-sm font-semibold">
                 City Applied To
               </Label>
 
               <Input
-                id="city"
-                type="text"
-                placeholder="Enter city name"
-                value={city}
+               id="city"
+               type="text"
+               placeholder="Enter city name"
+               value={city}
                 onChange={(e) => setCity(e.target.value)}
-              />
-              {errors?.cityAppliedTo && (
-                <FieldError>{errors.cityAppliedTo[0]}</FieldError>
-              )}
-            </div>
+                autoComplete="off"
+                />
+
+            {cities.length > 0 && city.length > 3 && (
+             <div className="absolute z-50 mt-1 w-full max-h-48 overflow-y-auto rounded-md border bg-white shadow-md">
+    {cities
+      .filter((c) =>
+        c.toLowerCase().includes(city.toLowerCase())
+      )
+      .map((c, idx) => (
+        <div
+          key={idx}
+          className="cursor-pointer px-3 py-2 text-sm hover:bg-gray-100"
+          onClick={() => {
+            setCity(c);
+            setCities([]); 
+          }}
+        >
+          {c}
+        </div>
+      ))}
+             </div>
+             )}
+
+
+  {errors?.cityAppliedTo && (
+    <FieldError>{errors.cityAppliedTo[0]}</FieldError>
+  )}
+</div>
+
           </div>
 
           {/* Intake Year and Month */}
@@ -341,7 +387,7 @@ export default function StudentDetailForm() {
           </div>
 
           {/* at what phase currently the student is : current status */}
-          <div className="space-y-2">
+          <div className="space-y-2 relative">
             <Label htmlFor="institution" className="text-sm font-semibold">
               Current Status
             </Label>
@@ -354,6 +400,28 @@ export default function StudentDetailForm() {
               value={currentStatus}
               onChange={(e) => setCurrentStatus(e.target.value)}
             />
+
+            
+            {openCurStatus && currentStatus && currentStatus.length > 3 && (
+             <div className="absolute z-50 mt-1 w-full max-h-48 overflow-y-auto rounded-md border bg-white shadow-md">
+    {Object.values(StudentStatusLabel)
+      .filter((c) =>
+        c.toLowerCase().includes(currentStatus.toLowerCase())
+      )
+      .map((c, idx) => (
+        <div
+          key={idx}
+          className="cursor-pointer px-3 py-2 text-sm hover:bg-gray-100"
+          onClick={() => {
+            setCurrentStatus(c);
+            setOpenCurStatus(false)
+          }}
+        >
+          {c}
+        </div>
+      ))}
+             </div>
+             )}
             {errors?.currentStatus && (
               <FieldError>{errors.currentStatus[0]}</FieldError>
             )}

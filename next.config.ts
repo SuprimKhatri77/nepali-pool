@@ -27,6 +27,9 @@ const nextConfig: NextConfig = {
 
     ],
   },
+  experimental:{
+    typedEnv: true
+  }
   // cacheComponents: true,
 };
 

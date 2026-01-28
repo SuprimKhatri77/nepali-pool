@@ -10,6 +10,9 @@ import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import { Input } from "@/components/ui/input";
+import { FaWhatsapp } from "react-icons/fa";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 type Props = {
   students:
@@ -19,16 +22,67 @@ type Props = {
     | [];
     hasCurrentUserProfile: boolean,
     hasSession: boolean,
-    user: ConnectStudentProfileSelectType | undefined
+    user: ConnectStudentProfileSelectType | undefined,
 } & React.ComponentProps<"section">;
 export default function StudentCards({ students, hasCurrentUserProfile, hasSession,user, className, ...props }: Props) {
+    const [connectWith, setConnectWith] = useState<string[]>([])
+    const [multipleConnect, setMultipleConnect] = useState<boolean>(false)
+    const router = useRouter()
+   const isMobile = useIsMobile()
+
+    const handleClickMultiple = (navigate: "facebook" | "whatsapp") => {
+        if(!hasSession) {
+          router.push("/login")
+          return;
+        }
+        if(!user?.whatsAppNumber){
+          toast("First fill the form to connect with new friend",{position: "top-right"})
+          if(isMobile){
+            window.scrollTo({top: document.documentElement.scrollHeight - 2000, behavior:   "smooth"})
+          }
+          else {
+            window.scrollTo({top: document.documentElement.scrollHeight -1400, behavior:   "smooth"})
+          }
+          return;
+        }
+        if (navigate === "whatsapp") {
+        const message = `I want to connect with ${connectWith.join(", ")}.`;
+        const url = `https://wa.me/9779867473181?text=${encodeURIComponent(message)}`;
+        window.open(url, "_blank"); 
+        return;
+        }
+    
+      if(navigate === "facebook"){
+        return;
+      }
+      } 
+  
   return (
-    <section className={cn("py-4 relative", className)} {...props}>
+    <section className={cn("py-4 relative space-y-4", className)} {...props}>
+      <div className="flex gap-2 flex-wrap justify-between items-center px-4">
+        <div className="flex gap-2 justify-center items-center">
+          <p className="text-xs tracking-tight text-right">{multipleConnect ? connectWith.length === 0 ? "Select students you want to connect with" : `${connectWith.length} students selected`  : "Connect with Multiple Students"}</p>
+        <Input onChange={() => {
+          if(multipleConnect){
+            setConnectWith([]);
+            setMultipleConnect(false)
+          }
+          else{
+            setMultipleConnect(true)
+          }
+        }} type="checkbox" className="size-2"/>
+        </div>
+        {multipleConnect && connectWith.length >= 2 ? (
+        <Button onClick={() => handleClickMultiple("whatsapp")} variant={"outline"}>Connect on <FaWhatsapp /></Button>
+        ): !multipleConnect && (
+          <JoinNepaliPoolCommunity className="top-7" hasCurrentUserProfile={hasCurrentUserProfile} hasSession={hasSession} about="NepaliPool Messenger Community QR"/>
+        )}
+      </div>
       {/* //grid-cols-1 md: */}
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 md:gap-6 px-2 md:px-4">
         {/* receive from props */}
         {students.map((student, i) => (
-          <StudentCard key={i} student={student} hasCurrentUserProfile={hasCurrentUserProfile} hasSession={hasSession} user={user}/>
+          <StudentCard key={i} multipleConnect={multipleConnect} connectWith={connectWith} setConnectWith={setConnectWith} student={student} hasCurrentUserProfile={hasCurrentUserProfile} hasSession={hasSession} user={user}/>
         ))}
       </div>
     </section>
