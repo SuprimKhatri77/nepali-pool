@@ -4,17 +4,21 @@ import { getStudentProfiles } from "../../../server/helper/connect-student/get-s
 import { redirect } from "next/navigation";
 import ConnectStudent from "@/components/students/connect-students/connect-student";
 
-
 export default async function page() {
   const { hasCurrentUserProfile, hasSession, role, user } =
     await getStudentProfiles();
 
   //  check for user who login and ! has whatsapp number for user befoer jan 24/22 2026
-    if(hasSession && user?.appliedOn && !user?.whatsAppNumber){
-     return redirect("/connect-student/update/profile")
-    }
-    
+  if (hasSession && user?.appliedOn && !user?.whatsAppNumber) {
+    return redirect("/connect-student/update/profile");
+  }
+
   return (
-    <ConnectStudent hasCurrentUserProfile={hasCurrentUserProfile} user={user} hasSession={hasSession} role={role} />
+    <ConnectStudent
+      hasCurrentUserProfile={hasCurrentUserProfile}
+      user={user}
+      hasSession={hasSession}
+      role={role}
+    />
   );
 }

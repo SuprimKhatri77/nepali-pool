@@ -6,7 +6,7 @@ import { motion } from "framer-motion";
 
 export default function Loading({ count = 30 }) {
   return (
-    <div className="pt-12">
+    <div className="pt-12 max-w-7xl mx-auto">
       <div className="text-center mb-12 sm:mb-16 space-y-4 min-h-1/2">
         <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-emerald-50 border border-emerald-200 rounded-full mb-4">
           <GraduationCap className="w-4 h-4 text-emerald-600" />

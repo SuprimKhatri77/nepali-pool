@@ -1,6 +1,6 @@
 "use server";
 
-import { count } from "drizzle-orm";
+import { and, count, isNotNull, ne } from "drizzle-orm";
 import { db } from "../../../lib/db";
 import {
   connectStudentProfiles,
@@ -18,6 +18,12 @@ export async function getPaginatedStudentProfiles(
   const offset = page * limit;
 
   const studentProfiles = await db.query.connectStudentProfiles.findMany({
+    where: (fields, { isNotNull, and, ne }) =>
+      and(
+        ne(fields.universityName, ""),
+        isNotNull(fields.universityName),
+        ne(fields.universityName, "Not set"),
+      ),
     with: {
       user: true,
     },
@@ -25,10 +31,16 @@ export async function getPaginatedStudentProfiles(
     limit,
     offset,
   });
-
   const studentProfilesCount = await db
     .select({ count: count() })
-    .from(connectStudentProfiles);
+    .from(connectStudentProfiles)
+    .where(
+      and(
+        ne(connectStudentProfiles.universityName, ""),
+        isNotNull(connectStudentProfiles.universityName),
+        ne(connectStudentProfiles.universityName, "Not set"),
+      ),
+    );
   const totalCount = studentProfilesCount[0].count ?? 0;
   return {
     students: studentProfiles.length > 0 ? studentProfiles : [],
