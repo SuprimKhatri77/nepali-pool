@@ -14,6 +14,8 @@ import {
   Calendar,
   Users,
   TrendingUp,
+  Briefcase,
+  ClipboardCheck,
 } from "lucide-react";
 
 type Props = {
@@ -21,12 +23,14 @@ type Props = {
   scheduledVideoCallCount: number;
   totalUniqueStudents: number;
   chatIncreaseCount: number;
+  pendingBookingCount: number;
 };
 export default function MentorPage({
   chatCount,
   scheduledVideoCallCount,
   totalUniqueStudents,
   chatIncreaseCount,
+  pendingBookingCount,
 }: Props) {
   const [click, setClick] = useState(false);
   const router = useRouter();
@@ -35,10 +39,6 @@ export default function MentorPage({
     setClick(true);
     await authClient.signOut({
       fetchOptions: {
-        baseUrl:
-          process.env.NODE_ENV === "production"
-            ? `${process.env.NEXT_PUBLIC_BETTER_AUTH_URL}/api/auth`
-            : "http://localhost:3000/api/auth",
         onSuccess: () => {
           router.push("/");
         },
@@ -58,6 +58,25 @@ export default function MentorPage({
             Here&apos;s what&apos;s happening with your mentorship today
           </p>
         </div>
+
+        {pendingBookingCount > 0 && (
+          <Link
+            href="/dashboard/mentor/bookings?status=pending"
+            className="flex items-center justify-between gap-4 rounded-lg border border-amber-200 bg-amber-50 p-4 mb-6 hover:bg-amber-100/70 transition-colors"
+          >
+            <div className="flex items-center gap-3">
+              <ClipboardCheck className="w-5 h-5 text-amber-700" />
+              <p className="text-sm font-medium text-amber-900">
+                {pendingBookingCount} booking
+                {pendingBookingCount === 1 ? "" : "s"} waiting for payment
+                verification
+              </p>
+            </div>
+            <span className="text-sm font-semibold text-amber-800">
+              Review →
+            </span>
+          </Link>
+        )}
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
           <Card className="border-emerald-100 hover:shadow-md transition-shadow">
@@ -148,6 +167,38 @@ export default function MentorPage({
                       <p className="font-semibold">View Chats</p>
                       <p className="text-xs text-emerald-100">
                         Manage conversations
+                      </p>
+                    </div>
+                  </div>
+                </Button>
+              </Link>
+
+              <Link href="/dashboard/mentor/services" className="w-full">
+                <Button className="w-full h-auto py-4 bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm hover:shadow-md transition-all group">
+                  <div className="flex items-center gap-3 w-full">
+                    <div className="w-10 h-10 rounded-lg bg-white/20 flex items-center justify-center group-hover:scale-110 transition-transform">
+                      <Briefcase className="w-5 h-5" />
+                    </div>
+                    <div className="text-left flex-1">
+                      <p className="font-semibold">My Services</p>
+                      <p className="text-xs text-emerald-100">
+                        Offerings & payment details
+                      </p>
+                    </div>
+                  </div>
+                </Button>
+              </Link>
+
+              <Link href="/dashboard/mentor/bookings" className="w-full">
+                <Button className="w-full h-auto py-4 bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm hover:shadow-md transition-all group">
+                  <div className="flex items-center gap-3 w-full">
+                    <div className="w-10 h-10 rounded-lg bg-white/20 flex items-center justify-center group-hover:scale-110 transition-transform">
+                      <ClipboardCheck className="w-5 h-5" />
+                    </div>
+                    <div className="text-left flex-1">
+                      <p className="font-semibold">Service Bookings</p>
+                      <p className="text-xs text-emerald-100">
+                        Verify payments & bookings
                       </p>
                     </div>
                   </div>

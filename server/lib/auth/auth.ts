@@ -7,6 +7,7 @@ import { Resend } from "resend";
 import * as schema from "../../../lib/db/schema";
 import { EmailVerification } from "@/components/VerifyEmailMessage";
 import { PasswordReset } from "@/modules/email-templates/reset-password-email";
+import { authBaseURL } from "./base-url";
 
 const resend = new Resend(process.env.RESEND_API_KEY as string);
 
@@ -15,10 +16,7 @@ export const auth = betterAuth({
     provider: "pg",
     schema,
   }),
-  baseURL:
-    process.env.NODE_ENV === "production"
-      ? process.env.NEXT_PUBLIC_BETTER_AUTH_URL
-      : "http://localhost:3000",
+  baseURL: authBaseURL,
   secret: process.env.BETTER_AUTH_SECRET,
   emailAndPassword: {
     enabled: true,

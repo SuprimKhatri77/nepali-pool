@@ -78,6 +78,12 @@ export default function Header() {
     if (role === "mentor" || role === "admin") {
       arr.push({ name: "Add School", href: "/add-school" });
     }
+    if (role === "student") {
+      arr.push({ name: "My Bookings", href: "/bookings" });
+    }
+    if (role === "mentor") {
+      arr.push({ name: "Bookings", href: "/dashboard/mentor/bookings" });
+    }
     return arr;
   }, [role]);
 
