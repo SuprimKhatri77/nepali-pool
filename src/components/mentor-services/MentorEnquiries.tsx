@@ -1,0 +1,387 @@
+"use client";
+
+import { useState, useTransition } from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
+import {
+  ArrowLeft,
+  CheckCircle2,
+  Inbox,
+  Loader2,
+  MessageCircle,
+  MessageSquare,
+  XCircle,
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Card, CardContent } from "@/components/ui/card";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import type {
+  MentorEnquirySelectType,
+  MentorEnquiryStatus,
+} from "../../../lib/db/schema";
+import { respondToEnquiry } from "../../../server/actions/mentor-enquiry/update-enquiry-status";
+import {
+  BUDGET_READINESS_LABELS,
+  ENGLISH_LEVEL_LABELS,
+  ENQUIRY_STATUS_META,
+  whatsappLink,
+} from "./format";
+import { LocalDateTime } from "./LocalDateTime";
+
+export type EnquiryFilter = MentorEnquiryStatus | "all";
+
+// Contact details are null until the mentor accepts (redacted server-side).
+export type MentorEnquiryRow = Omit<
+  MentorEnquirySelectType,
+  "email" | "whatsappNumber"
+> & { email: string | null; whatsappNumber: string | null };
+
+const FILTERS: { value: EnquiryFilter; label: string }[] = [
+  { value: "new", label: "New" },
+  { value: "accepted", label: "Accepted" },
+  { value: "declined", label: "Declined" },
+  { value: "withdrawn", label: "Withdrawn" },
+  { value: "all", label: "All" },
+];
+
+type Props = {
+  mentorName: string;
+  filter: EnquiryFilter;
+  counts: Partial<Record<MentorEnquiryStatus, number>>;
+  enquiries: MentorEnquiryRow[];
+  chatIdByStudent: Record<string, string>;
+  isTruncated: boolean;
+};
+
+export default function MentorEnquiries({
+  mentorName,
+  filter,
+  counts,
+  enquiries,
+  chatIdByStudent,
+  isTruncated,
+}: Props) {
+  const router = useRouter();
+  const [opened, setOpened] = useState<MentorEnquiryRow | null>(null);
+  // Prefer fresh props; fall back to the snapshot when the enquiry leaves the
+  // current tab (e.g. right after accepting from "New") so the dialog stays put.
+  const selected = opened
+    ? (enquiries.find((e) => e.id === opened.id) ?? opened)
+    : null;
+  const total = Object.values(counts).reduce((sum, n) => sum + (n ?? 0), 0);
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-white to-green-50">
+      <main className="container mx-auto px-4 py-8 max-w-5xl">
+        <Link
+          href="/dashboard/mentor"
+          className="inline-flex items-center gap-1 text-sm text-gray-600 hover:text-emerald-700 mb-4"
+        >
+          <ArrowLeft className="w-4 h-4" /> Back to dashboard
+        </Link>
+        <h1 className="text-3xl font-bold text-gray-900">Enquiries</h1>
+        <p className="text-gray-600 mt-1 mb-6">
+          Free questions from students, with their background to help you
+          screen.
+        </p>
+
+        <div className="flex flex-wrap gap-2 mb-6">
+          {FILTERS.map((f) => {
+            const n = f.value === "all" ? total : (counts[f.value] ?? 0);
+            const active = f.value === filter;
+            return (
+              <Link
+                key={f.value}
+                href={`/dashboard/mentor/enquiries?status=${f.value}`}
+                className={`px-3 py-1.5 rounded-full text-sm font-medium border transition-colors ${
+                  active
+                    ? "bg-emerald-600 text-white border-emerald-600"
+                    : "bg-white text-gray-700 border-gray-200 hover:border-emerald-300"
+                }`}
+              >
+                {f.label}{" "}
+                <span className={active ? "text-emerald-100" : "text-gray-400"}>
+                  {n}
+                </span>
+              </Link>
+            );
+          })}
+        </div>
+
+        {enquiries.length === 0 ? (
+          <Card className="border-emerald-100">
+            <CardContent className="py-14 text-center">
+              <Inbox className="w-10 h-10 text-gray-300 mx-auto mb-3" />
+              <p className="text-gray-600">
+                {filter === "new"
+                  ? "No new enquiries."
+                  : "No enquiries here yet."}
+              </p>
+            </CardContent>
+          </Card>
+        ) : (
+          <div className="space-y-3">
+            {enquiries.map((enquiry) => (
+              <Card
+                key={enquiry.id}
+                className="border-emerald-100 hover:shadow-sm transition-shadow"
+              >
+                <CardContent className="p-4 flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-6">
+                  <div className="flex-1 min-w-0">
+                    <div className="flex flex-wrap items-center gap-2 mb-1">
+                      <span className="font-mono text-xs text-gray-500">
+                        {enquiry.referenceCode}
+                      </span>
+                      <StatusBadge status={enquiry.status} />
+                    </div>
+                    <p className="font-semibold text-gray-900 truncate capitalize">
+                      {enquiry.fullName}
+                    </p>
+                    <p className="text-sm text-gray-600 line-clamp-1 break-words">
+                      {enquiry.question}
+                    </p>
+                  </div>
+                  <div className="text-sm text-gray-500 sm:text-right">
+                    <p>{enquiry.targetCourse}</p>
+                    <LocalDateTime value={enquiry.createdAt} />
+                  </div>
+                  <Button
+                    variant={enquiry.status === "new" ? "default" : "outline"}
+                    className={
+                      enquiry.status === "new"
+                        ? "bg-emerald-600 hover:bg-emerald-700 text-white"
+                        : ""
+                    }
+                    onClick={() => setOpened(enquiry)}
+                  >
+                    {enquiry.status === "new" ? "Review" : "View"}
+                  </Button>
+                </CardContent>
+              </Card>
+            ))}
+            {isTruncated && (
+              <p className="text-center text-sm text-gray-500 pt-2">
+                Showing the 100 most recent enquiries.
+              </p>
+            )}
+          </div>
+        )}
+      </main>
+
+      <Dialog
+        open={selected !== null}
+        onOpenChange={(open) => !open && setOpened(null)}
+      >
+        <DialogContent className="sm:max-w-xl max-h-[90vh] overflow-y-auto">
+          {selected && (
+            <EnquiryDetails
+              key={selected.id}
+              enquiry={selected}
+              mentorName={mentorName}
+              chatId={chatIdByStudent[selected.studentId]}
+              onDeclined={() => setOpened(null)}
+              onAccepted={(contact) => {
+                setOpened({
+                  ...selected,
+                  ...contact,
+                  status: "accepted",
+                  respondedAt: new Date(),
+                });
+                if (filter !== "all" && filter !== "accepted") {
+                  router.replace("/dashboard/mentor/enquiries?status=accepted");
+                }
+              }}
+              onStale={() => {
+                setOpened(null);
+                router.refresh();
+              }}
+            />
+          )}
+        </DialogContent>
+      </Dialog>
+    </div>
+  );
+}
+
+function StatusBadge({ status }: { status: MentorEnquiryStatus }) {
+  const meta = ENQUIRY_STATUS_META[status];
+  return (
+    <Badge variant="outline" className={meta.className}>
+      {meta.label}
+    </Badge>
+  );
+}
+
+function Detail({
+  label,
+  children,
+}: {
+  label: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <div className="min-w-0">
+      <p className="text-xs font-medium text-gray-500">{label}</p>
+      <div className="text-sm text-gray-900 break-words">{children}</div>
+    </div>
+  );
+}
+
+function EnquiryDetails({
+  enquiry,
+  mentorName,
+  chatId,
+  onAccepted,
+  onDeclined,
+  onStale,
+}: {
+  enquiry: MentorEnquiryRow;
+  mentorName: string;
+  chatId: string | undefined;
+  onAccepted: (contact: { email: string; whatsappNumber: string }) => void;
+  onDeclined: () => void;
+  onStale: () => void;
+}) {
+  const [isPending, startTransition] = useTransition();
+  const [note, setNote] = useState("");
+
+  const respond = (decision: "accepted" | "declined") =>
+    startTransition(async () => {
+      const result = await respondToEnquiry(enquiry.id, decision, note);
+      if (result.success) {
+        toast.success(result.message);
+        if (decision === "accepted" && result.contact)
+          onAccepted(result.contact);
+        else onDeclined();
+      } else {
+        toast.error(result.message);
+        onStale();
+      }
+    });
+
+  const whatsappText = `Hi ${enquiry.fullName}, this is ${mentorName} from NepaliPool. Thanks for your question (${enquiry.referenceCode}). Happy to help!`;
+
+  return (
+    <>
+      <DialogHeader>
+        <DialogTitle className="capitalize">{enquiry.fullName}</DialogTitle>
+        <DialogDescription asChild>
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="font-mono">{enquiry.referenceCode}</span>
+            <StatusBadge status={enquiry.status} />
+            <span className="text-xs">
+              <LocalDateTime value={enquiry.createdAt} />
+            </span>
+          </div>
+        </DialogDescription>
+      </DialogHeader>
+
+      <Detail label="Question">
+        <p className="mt-1 rounded-md bg-gray-50 border border-gray-100 p-3 whitespace-pre-line">
+          {enquiry.question}
+        </p>
+      </Detail>
+
+      <div className="grid grid-cols-2 gap-4">
+        <Detail label="Qualification">{enquiry.qualification}</Detail>
+        <Detail label="Wants to study">{enquiry.targetCourse}</Detail>
+        <Detail label="English">
+          {ENGLISH_LEVEL_LABELS[enquiry.englishLevel]}
+          {enquiry.englishTestScore && ` · ${enquiry.englishTestScore}`}
+        </Detail>
+        <Detail label="Intake">
+          {enquiry.intakeMonth} {enquiry.intakeYear}
+        </Detail>
+        <Detail label="Finances">
+          {BUDGET_READINESS_LABELS[enquiry.budgetReadiness]}
+        </Detail>
+        {/* Contact details unlock once the mentor accepts. */}
+        {enquiry.status === "accepted" && (
+          <>
+            <Detail label="Email">{enquiry.email}</Detail>
+            <Detail label="WhatsApp">{enquiry.whatsappNumber}</Detail>
+          </>
+        )}
+      </div>
+
+      <Detail label="Goals & why abroad">
+        <p className="mt-1 whitespace-pre-line">{enquiry.goals}</p>
+      </Detail>
+
+      {enquiry.mentorNote && (
+        <Detail label="Your note">{enquiry.mentorNote}</Detail>
+      )}
+
+      {enquiry.status === "new" && (
+        <div className="space-y-3 border-t border-gray-100 pt-4">
+          <div className="space-y-1.5">
+            <Label htmlFor="enquiry-note">Note to the student (optional)</Label>
+            <Textarea
+              id="enquiry-note"
+              value={note}
+              maxLength={500}
+              onChange={(e) => setNote(e.target.value)}
+              placeholder="e.g. Happy to help! Message me on WhatsApp and we can set up a time."
+            />
+          </div>
+          <div className="flex flex-col sm:flex-row gap-2">
+            <Button
+              className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white"
+              disabled={isPending}
+              onClick={() => respond("accepted")}
+            >
+              {isPending ? (
+                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+              ) : (
+                <CheckCircle2 className="w-4 h-4 mr-2" />
+              )}
+              Accept
+            </Button>
+            <Button
+              variant="outline"
+              className="flex-1 border-red-200 text-red-600 hover:bg-red-50 hover:text-red-700"
+              disabled={isPending}
+              onClick={() => respond("declined")}
+            >
+              <XCircle className="w-4 h-4 mr-2" /> Decline
+            </Button>
+          </div>
+        </div>
+      )}
+
+      {enquiry.status === "accepted" && enquiry.whatsappNumber && (
+        <div className="flex flex-col sm:flex-row gap-2">
+          <Button
+            asChild
+            className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white"
+          >
+            <a
+              href={whatsappLink(enquiry.whatsappNumber, whatsappText)}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <MessageCircle className="w-4 h-4 mr-2" /> WhatsApp student
+            </a>
+          </Button>
+          {chatId && (
+            <Button asChild variant="outline" className="flex-1">
+              <Link href={`/chats/${chatId}`}>
+                <MessageSquare className="w-4 h-4 mr-2" /> Open chat
+              </Link>
+            </Button>
+          )}
+        </div>
+      )}
+    </>
+  );
+}

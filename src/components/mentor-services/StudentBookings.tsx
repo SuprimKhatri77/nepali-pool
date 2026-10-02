@@ -4,7 +4,7 @@ import { useState, useTransition } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { CalendarCheck, CheckCircle2, Loader2, MessageSquare } from "lucide-react";
+import { CalendarCheck, Loader2, MessageSquare } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
@@ -25,7 +25,8 @@ type StudentBooking = ServiceBookingSelectType & { mentorName: string };
 
 const STATUS_HINT: Record<StudentBooking["status"], string> = {
   pending: "The mentor is checking your payment.",
-  confirmed: "Payment verified. Your mentor will contact you, or message them now.",
+  confirmed:
+    "Payment verified. Your mentor will contact you, or message them now.",
   rejected: "The mentor couldn't verify your payment.",
   cancelled: "You cancelled this booking.",
   completed: "This session is complete.",
@@ -34,11 +35,9 @@ const STATUS_HINT: Record<StudentBooking["status"], string> = {
 export default function StudentBookings({
   bookings,
   chatIdByMentor,
-  justBookedRef,
 }: {
   bookings: StudentBooking[];
   chatIdByMentor: Record<string, string>;
-  justBookedRef?: string;
 }) {
   const router = useRouter();
   const [cancelId, setCancelId] = useState<string | null>(null);
@@ -61,117 +60,111 @@ export default function StudentBookings({
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-white to-green-50">
-      <main className="container mx-auto px-4 py-8 max-w-4xl">
-        <h1 className="text-3xl font-bold text-gray-900">My Bookings</h1>
-        <p className="text-gray-600 mt-1 mb-6">
-          Services you&apos;ve booked with mentors and their status.
-        </p>
-
-        {justBookedRef && (
-          <div className="flex gap-3 rounded-lg border border-emerald-200 bg-emerald-50 p-4 mb-6 text-emerald-900">
-            <CheckCircle2 className="w-5 h-5 shrink-0 mt-0.5 text-emerald-600" />
-            <p className="text-sm">
-              Booking submitted! Your reference is{" "}
-              <span className="font-mono font-semibold">{justBookedRef}</span>.
-              The mentor will verify your payment and you&apos;ll get an email
-              once it&apos;s confirmed.
+    <section id="bookings" className="scroll-mt-24">
+      <h2 className="text-xl font-semibold text-gray-900 mb-3">
+        Service bookings
+      </h2>
+      {bookings.length === 0 ? (
+        <Card className="border-emerald-100">
+          <CardContent className="py-14 text-center space-y-4">
+            <CalendarCheck className="w-10 h-10 text-gray-300 mx-auto" />
+            <p className="text-gray-600">
+              You haven&apos;t booked any services yet.
             </p>
-          </div>
-        )}
-
-        {bookings.length === 0 ? (
-          <Card className="border-emerald-100">
-            <CardContent className="py-14 text-center space-y-4">
-              <CalendarCheck className="w-10 h-10 text-gray-300 mx-auto" />
-              <p className="text-gray-600">You haven&apos;t booked any services yet.</p>
-              <Button asChild className="bg-emerald-600 hover:bg-emerald-700 text-white">
-                <Link href="/mentors">Find a mentor</Link>
-              </Button>
-            </CardContent>
-          </Card>
-        ) : (
-          <div className="space-y-4">
-            {bookings.map((booking) => {
-              const meta = BOOKING_STATUS_META[booking.status];
-              const chatId = chatIdByMentor[booking.mentorId];
-              const canMessage =
-                (booking.status === "confirmed" || booking.status === "completed") &&
-                Boolean(chatId);
-              const canCancel = booking.status === "pending";
-              return (
-                <Card key={booking.id} className="border-emerald-100">
-                  <CardContent className="p-5 space-y-3">
-                    <div className="flex flex-wrap items-center justify-between gap-2">
-                      <div className="flex flex-wrap items-center gap-2">
-                        <span className="font-mono text-xs text-gray-500">
-                          {booking.referenceCode}
-                        </span>
-                        <Badge variant="outline" className={meta.className}>
-                          {meta.label}
-                        </Badge>
-                      </div>
-                      <span className="text-xs text-gray-500">
-                        <LocalDateTime value={booking.createdAt} />
+            <Button
+              asChild
+              className="bg-emerald-600 hover:bg-emerald-700 text-white"
+            >
+              <Link href="/mentors">Find a mentor</Link>
+            </Button>
+          </CardContent>
+        </Card>
+      ) : (
+        <div className="space-y-4">
+          {bookings.map((booking) => {
+            const meta = BOOKING_STATUS_META[booking.status];
+            const chatId = chatIdByMentor[booking.mentorId];
+            const canMessage =
+              (booking.status === "confirmed" ||
+                booking.status === "completed") &&
+              Boolean(chatId);
+            const canCancel = booking.status === "pending";
+            return (
+              <Card key={booking.id} className="border-emerald-100">
+                <CardContent className="p-5 space-y-3">
+                  <div className="flex flex-wrap items-center justify-between gap-2">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <span className="font-mono text-xs text-gray-500">
+                        {booking.referenceCode}
                       </span>
+                      <Badge variant="outline" className={meta.className}>
+                        {meta.label}
+                      </Badge>
                     </div>
-                    <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-2">
-                      <div className="min-w-0">
-                        <p className="font-semibold text-gray-900 break-words">
-                          {booking.serviceTitle}
-                        </p>
-                        <p className="text-sm text-gray-600">
-                          with{" "}
-                          <Link
-                            href={`/mentors/${booking.mentorId}`}
-                            className="text-emerald-700 hover:underline capitalize"
-                          >
-                            {booking.mentorName}
-                          </Link>
-                        </p>
-                      </div>
-                      <span className="font-semibold text-gray-900">
-                        {formatNpr(booking.priceNpr)}
-                      </span>
-                    </div>
-                    <p className="text-sm text-gray-600">{STATUS_HINT[booking.status]}</p>
-                    {booking.status === "rejected" && booking.rejectionReason && (
-                      <p className="text-sm rounded-md bg-red-50 border border-red-100 text-red-800 p-3 break-words">
-                        <span className="font-medium">Reason:</span> {booking.rejectionReason}
+                    <span className="text-xs text-gray-500">
+                      <LocalDateTime value={booking.createdAt} />
+                    </span>
+                  </div>
+                  <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-2">
+                    <div className="min-w-0">
+                      <p className="font-semibold text-gray-900 break-words">
+                        {booking.serviceTitle}
                       </p>
-                    )}
-                    {(canMessage || canCancel) && (
-                      <div className="flex gap-2 pt-1">
-                        {canMessage && (
-                          <Button
-                            asChild
-                            size="sm"
-                            className="bg-emerald-600 hover:bg-emerald-700 text-white"
-                          >
-                            <Link href={`/chats/${chatId}`}>
-                              <MessageSquare className="w-4 h-4 mr-1" /> Message mentor
-                            </Link>
-                          </Button>
-                        )}
-                        {canCancel && (
-                          <Button
-                            size="sm"
-                            variant="outline"
-                            className="border-red-200 text-red-600 hover:bg-red-50 hover:text-red-700"
-                            onClick={() => setCancelId(booking.id)}
-                          >
-                            Cancel booking
-                          </Button>
-                        )}
-                      </div>
-                    )}
-                  </CardContent>
-                </Card>
-              );
-            })}
-          </div>
-        )}
-      </main>
+                      <p className="text-sm text-gray-600">
+                        with{" "}
+                        <Link
+                          href={`/mentors/${booking.mentorId}`}
+                          className="text-emerald-700 hover:underline capitalize"
+                        >
+                          {booking.mentorName}
+                        </Link>
+                      </p>
+                    </div>
+                    <span className="font-semibold text-gray-900">
+                      {formatNpr(booking.priceNpr)}
+                    </span>
+                  </div>
+                  <p className="text-sm text-gray-600">
+                    {STATUS_HINT[booking.status]}
+                  </p>
+                  {booking.status === "rejected" && booking.rejectionReason && (
+                    <p className="text-sm rounded-md bg-red-50 border border-red-100 text-red-800 p-3 break-words">
+                      <span className="font-medium">Reason:</span>{" "}
+                      {booking.rejectionReason}
+                    </p>
+                  )}
+                  {(canMessage || canCancel) && (
+                    <div className="flex gap-2 pt-1">
+                      {canMessage && (
+                        <Button
+                          asChild
+                          size="sm"
+                          className="bg-emerald-600 hover:bg-emerald-700 text-white"
+                        >
+                          <Link href={`/chats/${chatId}`}>
+                            <MessageSquare className="w-4 h-4 mr-1" /> Message
+                            mentor
+                          </Link>
+                        </Button>
+                      )}
+                      {canCancel && (
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          className="border-red-200 text-red-600 hover:bg-red-50 hover:text-red-700"
+                          onClick={() => setCancelId(booking.id)}
+                        >
+                          Cancel booking
+                        </Button>
+                      )}
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            );
+          })}
+        </div>
+      )}
 
       <Dialog
         open={cancelTarget !== null}
@@ -181,13 +174,17 @@ export default function StudentBookings({
           <DialogHeader>
             <DialogTitle>Cancel this booking?</DialogTitle>
             <DialogDescription>
-              {cancelTarget?.serviceTitle} ({cancelTarget?.referenceCode}). NepaliPool
-              doesn&apos;t handle payments, so contact the mentor directly about a
-              refund if you&apos;ve already paid.
+              {cancelTarget?.serviceTitle} ({cancelTarget?.referenceCode}).
+              NepaliPool doesn&apos;t handle payments, so contact the mentor
+              directly about a refund if you&apos;ve already paid.
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
-            <Button variant="outline" disabled={isPending} onClick={() => setCancelId(null)}>
+            <Button
+              variant="outline"
+              disabled={isPending}
+              onClick={() => setCancelId(null)}
+            >
               Keep booking
             </Button>
             <Button variant="destructive" disabled={isPending} onClick={cancel}>
@@ -197,6 +194,6 @@ export default function StudentBookings({
           </DialogFooter>
         </DialogContent>
       </Dialog>
-    </div>
+    </section>
   );
 }

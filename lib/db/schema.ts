@@ -594,6 +594,71 @@ export const serviceBooking = pgTable(
   ],
 ).enableRLS();
 
+export const mentorEnquiryStatusEnum = pgEnum("mentor_enquiry_status", [
+  "new",
+  "accepted",
+  "declined",
+  "withdrawn",
+]);
+export const englishLevelEnum = pgEnum("english_level", [
+  "beginner",
+  "intermediate",
+  "advanced",
+  "fluent",
+]);
+export const budgetReadinessEnum = pgEnum("budget_readiness", [
+  "ready",
+  "partially_ready",
+  "planning",
+]);
+
+// Free "ask a question" enquiries: contact details plus a short screening
+// profile the mentor uses before taking a student on.
+export const mentorEnquiry = pgTable(
+  "mentor_enquiry",
+  {
+    id: uuid().primaryKey().defaultRandom(),
+    referenceCode: varchar("reference_code", { length: 20 }).notNull().unique(),
+    mentorId: text("mentor_id")
+      .references(() => mentorProfile.userId, { onDelete: "cascade" })
+      .notNull(),
+    studentId: text("student_id")
+      .references(() => studentProfile.userId, { onDelete: "cascade" })
+      .notNull(),
+    fullName: varchar("full_name", { length: 100 }).notNull(),
+    email: varchar("email", { length: 255 }).notNull(),
+    whatsappNumber: varchar("whatsapp_number", { length: 30 }).notNull(),
+    question: text("question").notNull(),
+    qualification: varchar("qualification", { length: 200 }).notNull(),
+    targetCourse: varchar("target_course", { length: 200 }).notNull(),
+    englishLevel: englishLevelEnum("english_level").notNull(),
+    englishTestScore: varchar("english_test_score", { length: 50 }),
+    intakeMonth: intakeMonthEnum("intake_month").notNull(),
+    intakeYear: intakeYearEnum("intake_year").notNull(),
+    budgetReadiness: budgetReadinessEnum("budget_readiness").notNull(),
+    goals: text("goals").notNull(),
+    status: mentorEnquiryStatusEnum("status").default("new").notNull(),
+    mentorNote: text("mentor_note"),
+    respondedAt: timestamp("responded_at", { withTimezone: true }),
+    withdrawnAt: timestamp("withdrawn_at", { withTimezone: true }),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .defaultNow()
+      .notNull(),
+    updatedAt: timestamp("updated_at", { withTimezone: true })
+      .defaultNow()
+      .notNull()
+      .$onUpdate(() => new Date()),
+  },
+  (table) => [
+    index("idx_mentor_enquiry_mentor_status").on(table.mentorId, table.status),
+    index("idx_mentor_enquiry_student").on(table.studentId),
+    // One open enquiry per student per mentor.
+    uniqueIndex("unique_open_enquiry_per_mentor")
+      .on(table.studentId, table.mentorId)
+      .where(sql`${table.status} = 'new'`),
+  ],
+).enableRLS();
+
 // ==========RELATIONS===============
 export const connectStudentProfileRelations = relations(
   connectStudentProfiles,
@@ -676,6 +741,7 @@ export const studentRelations = relations(studentProfile, ({ one, many }) => ({
   chats: many(chats),
   videoCall: many(videoCall),
   serviceBookings: many(serviceBooking),
+  enquiries: many(mentorEnquiry),
 }));
 
 export const mentorRelations = relations(mentorProfile, ({ one, many }) => ({
@@ -687,6 +753,18 @@ export const mentorRelations = relations(mentorProfile, ({ one, many }) => ({
   services: many(mentorService),
   serviceBookings: many(serviceBooking),
   paymentDetails: one(mentorPaymentDetails),
+  enquiries: many(mentorEnquiry),
+}));
+
+export const mentorEnquiryRelations = relations(mentorEnquiry, ({ one }) => ({
+  mentorProfile: one(mentorProfile, {
+    fields: [mentorEnquiry.mentorId],
+    references: [mentorProfile.userId],
+  }),
+  studentProfile: one(studentProfile, {
+    fields: [mentorEnquiry.studentId],
+    references: [studentProfile.userId],
+  }),
 }));
 
 export const mentorPaymentDetailsRelations = relations(
@@ -811,3 +889,6 @@ export type ServiceBookingSelectType = InferSelectModel<typeof serviceBooking>;
 export type ServiceBookingInsertType = InferInsertModel<typeof serviceBooking>;
 export type ServiceBookingStatus =
   (typeof serviceBookingStatusEnum.enumValues)[number];
+export type MentorEnquirySelectType = InferSelectModel<typeof mentorEnquiry>;
+export type MentorEnquiryStatus =
+  (typeof mentorEnquiryStatusEnum.enumValues)[number];
