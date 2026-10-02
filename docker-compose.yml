@@ -1,0 +1,24 @@
+# Local Postgres for development. Host port 54330 avoids clashing with other
+# projects on 5432. Connection string:
+#   postgres://nepalipool:nepalipool@localhost:54330/nepalipool
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: nepalipool-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: nepalipool
+      POSTGRES_PASSWORD: nepalipool
+      POSTGRES_DB: nepalipool
+    ports:
+      - "127.0.0.1:54330:5432"
+    volumes:
+      - nepalipool-db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U nepalipool -d nepalipool"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  nepalipool-db-data:

@@ -10,7 +10,8 @@ if (!connectionString) {
 
 const client = postgres(connectionString, {
   prepare: false,
-  ssl: "require",
+  // Local docker Postgres has no SSL; set DATABASE_SSL=disable for it.
+  ssl: process.env.DATABASE_SSL === "disable" ? false : "require",
 });
 
 export const db = drizzle(client, { schema });
