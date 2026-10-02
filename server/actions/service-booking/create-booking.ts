@@ -1,6 +1,5 @@
 "use server";
 
-import { randomInt } from "node:crypto";
 import { eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { after } from "next/server";
@@ -12,6 +11,7 @@ import { getCurrentStudent } from "../../lib/auth/helpers/getCurrentStudent";
 import { createBookingSchema } from "../../lib/mentor-services/schemas";
 import { isUniqueViolation } from "../../lib/mentor-services/pg-error";
 import { notifyMentorOfNewBooking } from "../../lib/mentor-services/booking-emails";
+import { generateReferenceCode } from "../../lib/mentor-services/reference-code";
 
 type BookingField =
   | "fullName"
@@ -28,14 +28,6 @@ export type BookingFormState = {
   inputs?: Partial<Record<BookingField, string>>;
   timestamp?: number;
 };
-
-// No 0/O/1/I so codes are easy to read out over the phone.
-const REF_ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
-function generateReferenceCode() {
-  let code = "NPB-";
-  for (let i = 0; i < 8; i++) code += REF_ALPHABET[randomInt(REF_ALPHABET.length)];
-  return code;
-}
 
 export async function createServiceBooking(
   prevState: BookingFormState,
@@ -88,7 +80,7 @@ export async function createServiceBooking(
 
     // Retry only on the (astronomically unlikely) reference code collision.
     for (let attempt = 0; attempt < 3 && !referenceCode; attempt++) {
-      const candidate = generateReferenceCode();
+      const candidate = generateReferenceCode("NPB");
       try {
         await db.insert(serviceBooking).values({
           referenceCode: candidate,

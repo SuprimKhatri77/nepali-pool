@@ -16,6 +16,7 @@ import {
   TrendingUp,
   Briefcase,
   ClipboardCheck,
+  HelpCircle,
 } from "lucide-react";
 
 type Props = {
@@ -24,6 +25,7 @@ type Props = {
   totalUniqueStudents: number;
   chatIncreaseCount: number;
   pendingBookingCount: number;
+  newEnquiryCount: number;
 };
 export default function MentorPage({
   chatCount,
@@ -31,6 +33,7 @@ export default function MentorPage({
   totalUniqueStudents,
   chatIncreaseCount,
   pendingBookingCount,
+  newEnquiryCount,
 }: Props) {
   const [click, setClick] = useState(false);
   const router = useRouter();
@@ -74,6 +77,24 @@ export default function MentorPage({
             </div>
             <span className="text-sm font-semibold text-amber-800">
               Review →
+            </span>
+          </Link>
+        )}
+
+        {newEnquiryCount > 0 && (
+          <Link
+            href="/dashboard/mentor/enquiries?status=new"
+            className="flex items-center justify-between gap-4 rounded-lg border border-emerald-200 bg-emerald-50 p-4 mb-6 hover:bg-emerald-100/70 transition-colors"
+          >
+            <div className="flex items-center gap-3">
+              <HelpCircle className="w-5 h-5 text-emerald-700" />
+              <p className="text-sm font-medium text-emerald-900">
+                {newEnquiryCount} new student enquir
+                {newEnquiryCount === 1 ? "y" : "ies"} waiting for a reply
+              </p>
+            </div>
+            <span className="text-sm font-semibold text-emerald-800">
+              Reply →
             </span>
           </Link>
         )}
@@ -199,6 +220,22 @@ export default function MentorPage({
                       <p className="font-semibold">Service Bookings</p>
                       <p className="text-xs text-emerald-100">
                         Verify payments & bookings
+                      </p>
+                    </div>
+                  </div>
+                </Button>
+              </Link>
+
+              <Link href="/dashboard/mentor/enquiries" className="w-full">
+                <Button className="w-full h-auto py-4 bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm hover:shadow-md transition-all group">
+                  <div className="flex items-center gap-3 w-full">
+                    <div className="w-10 h-10 rounded-lg bg-white/20 flex items-center justify-center group-hover:scale-110 transition-transform">
+                      <HelpCircle className="w-5 h-5" />
+                    </div>
+                    <div className="text-left flex-1">
+                      <p className="font-semibold">Enquiries</p>
+                      <p className="text-xs text-emerald-100">
+                        Free questions from students
                       </p>
                     </div>
                   </div>

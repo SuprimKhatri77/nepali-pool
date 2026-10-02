@@ -2,6 +2,7 @@ import { notFound, redirect } from "next/navigation";
 import { db } from "../../../../lib/db";
 import {
   chatSubscription,
+  mentorEnquiry,
   mentorProfile,
   serviceBooking,
   videoCall,
@@ -79,6 +80,16 @@ export default async function Mentor() {
 
     const chatIncrease = await getChatIncreaseCount(mentorProfileRecord.userId);
 
+    const [newEnquiryCount] = await db
+      .select({ count: count() })
+      .from(mentorEnquiry)
+      .where(
+        and(
+          eq(mentorEnquiry.mentorId, mentorProfileRecord.userId),
+          eq(mentorEnquiry.status, "new")
+        )
+      );
+
     const [pendingBookingCount] = await db
       .select({ count: count() })
       .from(serviceBooking)
@@ -97,6 +108,7 @@ export default async function Mentor() {
         totalUniqueStudents={totalUniqueStudents.count}
         chatIncreaseCount={chatIncrease ?? 0}
         pendingBookingCount={pendingBookingCount.count}
+        newEnquiryCount={newEnquiryCount.count}
       />
     );
   }

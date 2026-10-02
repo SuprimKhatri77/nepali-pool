@@ -1,4 +1,10 @@
 import { z } from "zod";
+import {
+  budgetReadinessEnum,
+  englishLevelEnum,
+  intakeMonthEnum,
+  intakeYearEnum,
+} from "../../../lib/db/schema";
 import { isOwnUploadUrl } from "./is-own-upload-url";
 
 export const MAX_ACTIVE_SERVICES = 20;
@@ -61,13 +67,15 @@ export const paymentDetailsSchema = z.object({
     .transform((v) => (v === "" ? null : v)),
 });
 
-export const createBookingSchema = z.object({
-  serviceId: z.uuid("Invalid service"),
+// Contact details shared by bookings and enquiries.
+const contactFields = {
   fullName: z
     .string()
     .trim()
     .min(2, "Please enter your full name")
-    .max(100, "Name must be 100 characters or less"),
+    .max(100, "Name must be 100 characters or less")
+    // No newlines/control characters: the name ends up in email subjects.
+    .regex(/^[^\p{Cc}]+$/u, "Name contains invalid characters"),
   email: z
     .string()
     .trim()
@@ -84,6 +92,11 @@ export const createBookingSchema = z.object({
           "Enter your WhatsApp number with country code, e.g. +9779812345678",
         ),
     ),
+};
+
+export const createBookingSchema = z.object({
+  serviceId: z.uuid("Invalid service"),
+  ...contactFields,
   message: optionalText(1000, "Notes"),
   paymentReference: optionalText(100, "Transaction ID"),
   paymentProofUrl: uploadUrl("Please upload your payment screenshot"),
@@ -96,4 +109,47 @@ export const rejectBookingSchema = z.object({
     .trim()
     .min(5, "Please give the student a reason (at least 5 characters)")
     .max(500, "Reason must be 500 characters or less"),
+});
+
+const requiredText = (min: number, max: number, label: string) =>
+  text().pipe(
+    z
+      .string()
+      .min(min, `${label} must be at least ${min} characters`)
+      .max(max, `${label} must be ${max} characters or less`),
+  );
+
+export const createEnquirySchema = z
+  .object({
+    mentorId: z.string().min(1, "Invalid mentor").max(64, "Invalid mentor"),
+    ...contactFields,
+    question: requiredText(10, 1000, "Your question"),
+    qualification: requiredText(2, 200, "Qualification"),
+    targetCourse: requiredText(2, 200, "Target course"),
+    englishLevel: z.enum(englishLevelEnum.enumValues, "Select your English level"),
+    englishTestScore: optionalText(50, "Test score"),
+    intakeMonth: z.enum(intakeMonthEnum.enumValues, "Select an intake month"),
+    intakeYear: z.enum(intakeYearEnum.enumValues, "Select an intake year"),
+    budgetReadiness: z.enum(
+      budgetReadinessEnum.enumValues,
+      "Select how ready your finances are",
+    ),
+    goals: requiredText(20, 1000, "Your goals"),
+  })
+  .superRefine((data, ctx) => {
+    const now = new Date();
+    const intakeIndex =
+      Number(data.intakeYear) * 12 + intakeMonthEnum.enumValues.indexOf(data.intakeMonth);
+    if (intakeIndex < now.getFullYear() * 12 + now.getMonth()) {
+      ctx.addIssue({
+        code: "custom",
+        path: ["intakeMonth"],
+        message: "Choose an intake that hasn't passed yet",
+      });
+    }
+  });
+
+export const respondEnquirySchema = z.object({
+  enquiryId: z.uuid("Invalid enquiry"),
+  note: optionalText(500, "Note"),
 });

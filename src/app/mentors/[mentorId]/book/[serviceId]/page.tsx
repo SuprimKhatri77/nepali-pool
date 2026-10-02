@@ -5,10 +5,14 @@ import { and, eq } from "drizzle-orm";
 import { z } from "zod";
 import { ArrowLeft, Clock, Info } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { ClickableImage } from "@/components/ClickableImage";
 import BookServiceForm from "@/components/mentor-services/BookServiceForm";
-import { formatDuration, formatNpr } from "@/components/mentor-services/format";
+import Notice from "@/components/mentor-services/Notice";
+import {
+  formatDuration,
+  formatNpr,
+  toWhatsappPrefill,
+} from "@/components/mentor-services/format";
 import { db } from "../../../../../../lib/db";
 import {
   mentorService,
@@ -18,45 +22,9 @@ import {
 import { auth } from "../../../../../../server/lib/auth/auth";
 import { requireUser } from "../../../../../../server/lib/auth/helpers/requireUser";
 
-// Onboarding stores local numbers like "9812345678"; WhatsApp links need the
-// country code, so prefill Nepali mobile numbers as +977… and leave anything
-// we can't interpret for the student to fill in.
-function toWhatsappPrefill(phone: string | null): string {
-  const compact = phone?.replace(/[\s()-]/g, "") ?? "";
-  if (/^\+[1-9]\d{6,14}$/.test(compact)) return compact;
-  if (/^9\d{9}$/.test(compact)) return `+977${compact}`;
-  return "";
-}
-
 export const metadata = {
   title: "Book a Service | NepaliPool",
 };
-
-function Notice({
-  title,
-  children,
-  backHref,
-  backLabel,
-}: {
-  title: string;
-  children: React.ReactNode;
-  backHref: string;
-  backLabel: string;
-}) {
-  return (
-    <div className="min-h-[70vh] flex items-center justify-center p-4 bg-gradient-to-br from-emerald-50 via-white to-green-50">
-      <Card className="max-w-md w-full border-slate-200 shadow-lg">
-        <CardContent className="p-8 text-center space-y-4">
-          <h1 className="text-2xl font-bold text-slate-900">{title}</h1>
-          <div className="text-slate-600">{children}</div>
-          <Button asChild className="bg-emerald-600 hover:bg-emerald-700 text-white">
-            <Link href={backHref}>{backLabel}</Link>
-          </Button>
-        </CardContent>
-      </Card>
-    </div>
-  );
-}
 
 export default async function BookServicePage({
   params,
