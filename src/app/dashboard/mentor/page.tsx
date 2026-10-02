@@ -3,6 +3,7 @@ import { db } from "../../../../lib/db";
 import {
   chatSubscription,
   mentorProfile,
+  serviceBooking,
   videoCall,
 } from "../../../../lib/db/schema";
 import { and, count, eq, sql } from "drizzle-orm";
@@ -77,6 +78,16 @@ export default async function Mentor() {
     // console.log(totalUniqueStudents);
 
     const chatIncrease = await getChatIncreaseCount(mentorProfileRecord.userId);
+
+    const [pendingBookingCount] = await db
+      .select({ count: count() })
+      .from(serviceBooking)
+      .where(
+        and(
+          eq(serviceBooking.mentorId, mentorProfileRecord.userId),
+          eq(serviceBooking.status, "pending")
+        )
+      );
     // console.log("increase: ", chatIncrease);
 
     return (
@@ -85,6 +96,7 @@ export default async function Mentor() {
         scheduledVideoCallCount={scheduledVideoCallCount.count}
         totalUniqueStudents={totalUniqueStudents.count}
         chatIncreaseCount={chatIncrease ?? 0}
+        pendingBookingCount={pendingBookingCount.count}
       />
     );
   }

@@ -1,4 +1,4 @@
-import { InferInsertModel, InferSelectModel, relations } from "drizzle-orm";
+import { InferInsertModel, InferSelectModel, relations, sql } from "drizzle-orm";
 import {
   pgTable,
   text,
@@ -12,6 +12,7 @@ import {
   bigint,
   index,
   primaryKey,
+  check,
 } from "drizzle-orm/pg-core";
 
 export const roleEnum = pgEnum("role", ["none", "student", "mentor", "admin"]);
@@ -487,6 +488,112 @@ export const connectStudentProfiles = pgTable(
   ],
 );
 
+export const serviceBookingStatusEnum = pgEnum("service_booking_status", [
+  "pending",
+  "confirmed",
+  "rejected",
+  "cancelled",
+  "completed",
+]);
+
+// Kept out of mentor_profile on purpose: many pages pass whole mentor_profile
+// rows to client components, and payment details must only reach the booking
+// page (logged-in students) and the mentor's own services page.
+export const mentorPaymentDetails = pgTable("mentor_payment_details", {
+  mentorId: text("mentor_id")
+    .references(() => mentorProfile.userId, { onDelete: "cascade" })
+    .primaryKey(),
+  instructions: text("instructions"),
+  qrUrl: text("qr_url"),
+  createdAt: timestamp("created_at", { withTimezone: true })
+    .defaultNow()
+    .notNull(),
+  updatedAt: timestamp("updated_at", { withTimezone: true })
+    .defaultNow()
+    .notNull()
+    .$onUpdate(() => new Date()),
+}).enableRLS();
+
+export const mentorService = pgTable(
+  "mentor_service",
+  {
+    id: uuid().primaryKey().defaultRandom(),
+    mentorId: text("mentor_id")
+      .references(() => mentorProfile.userId, { onDelete: "cascade" })
+      .notNull(),
+    title: varchar("title", { length: 120 }).notNull(),
+    description: text("description").notNull(),
+    priceNpr: integer("price_npr").notNull(),
+    durationMinutes: integer("duration_minutes"),
+    isActive: boolean("is_active").default(true).notNull(),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .defaultNow()
+      .notNull(),
+    updatedAt: timestamp("updated_at", { withTimezone: true })
+      .defaultNow()
+      .notNull()
+      .$onUpdate(() => new Date()),
+  },
+  (table) => [
+    index("idx_mentor_service_mentor").on(table.mentorId, table.isActive),
+    check("mentor_service_price_positive", sql`${table.priceNpr} > 0`),
+    check(
+      "mentor_service_duration_positive",
+      sql`${table.durationMinutes} IS NULL OR ${table.durationMinutes} > 0`,
+    ),
+  ],
+).enableRLS();
+
+export const serviceBooking = pgTable(
+  "service_booking",
+  {
+    id: uuid().primaryKey().defaultRandom(),
+    referenceCode: varchar("reference_code", { length: 20 }).notNull().unique(),
+    // Nullable so bookings survive if a service row is ever removed; title and
+    // price are snapshotted below.
+    serviceId: uuid("service_id").references(() => mentorService.id, {
+      onDelete: "set null",
+    }),
+    mentorId: text("mentor_id")
+      .references(() => mentorProfile.userId, { onDelete: "cascade" })
+      .notNull(),
+    studentId: text("student_id")
+      .references(() => studentProfile.userId, { onDelete: "cascade" })
+      .notNull(),
+    serviceTitle: varchar("service_title", { length: 120 }).notNull(),
+    priceNpr: integer("price_npr").notNull(),
+    fullName: varchar("full_name", { length: 100 }).notNull(),
+    email: varchar("email", { length: 255 }).notNull(),
+    whatsappNumber: varchar("whatsapp_number", { length: 30 }).notNull(),
+    message: text("message"),
+    paymentProofUrl: text("payment_proof_url").notNull(),
+    paymentReference: varchar("payment_reference", { length: 100 }),
+    status: serviceBookingStatusEnum("status").default("pending").notNull(),
+    rejectionReason: text("rejection_reason"),
+    verifiedAt: timestamp("verified_at", { withTimezone: true }),
+    completedAt: timestamp("completed_at", { withTimezone: true }),
+    cancelledAt: timestamp("cancelled_at", { withTimezone: true }),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .defaultNow()
+      .notNull(),
+    updatedAt: timestamp("updated_at", { withTimezone: true })
+      .defaultNow()
+      .notNull()
+      .$onUpdate(() => new Date()),
+  },
+  (table) => [
+    index("idx_service_booking_mentor_status").on(
+      table.mentorId,
+      table.status,
+    ),
+    index("idx_service_booking_student").on(table.studentId),
+    // A student can only have one pending booking per service at a time.
+    uniqueIndex("unique_pending_booking_per_service")
+      .on(table.studentId, table.serviceId)
+      .where(sql`${table.status} = 'pending'`),
+  ],
+).enableRLS();
+
 // ==========RELATIONS===============
 export const connectStudentProfileRelations = relations(
   connectStudentProfiles,
@@ -568,6 +675,7 @@ export const studentRelations = relations(studentProfile, ({ one, many }) => ({
   }),
   chats: many(chats),
   videoCall: many(videoCall),
+  serviceBookings: many(serviceBooking),
 }));
 
 export const mentorRelations = relations(mentorProfile, ({ one, many }) => ({
@@ -576,6 +684,45 @@ export const mentorRelations = relations(mentorProfile, ({ one, many }) => ({
     references: [user.id],
   }),
   chats: many(chats),
+  services: many(mentorService),
+  serviceBookings: many(serviceBooking),
+  paymentDetails: one(mentorPaymentDetails),
+}));
+
+export const mentorPaymentDetailsRelations = relations(
+  mentorPaymentDetails,
+  ({ one }) => ({
+    mentorProfile: one(mentorProfile, {
+      fields: [mentorPaymentDetails.mentorId],
+      references: [mentorProfile.userId],
+    }),
+  }),
+);
+
+export const mentorServiceRelations = relations(
+  mentorService,
+  ({ one, many }) => ({
+    mentorProfile: one(mentorProfile, {
+      fields: [mentorService.mentorId],
+      references: [mentorProfile.userId],
+    }),
+    bookings: many(serviceBooking),
+  }),
+);
+
+export const serviceBookingRelations = relations(serviceBooking, ({ one }) => ({
+  service: one(mentorService, {
+    fields: [serviceBooking.serviceId],
+    references: [mentorService.id],
+  }),
+  mentorProfile: one(mentorProfile, {
+    fields: [serviceBooking.mentorId],
+    references: [mentorProfile.userId],
+  }),
+  studentProfile: one(studentProfile, {
+    fields: [serviceBooking.studentId],
+    references: [studentProfile.userId],
+  }),
 }));
 
 export const favoriteRelations = relations(favorite, ({ one }) => ({
@@ -657,3 +804,10 @@ export type ConnectStudentProfileInsertType = InferInsertModel<
 export type ConnectStudentProfileSelectType = InferSelectModel<
   typeof connectStudentProfiles
 >;
+
+export type MentorServiceSelectType = InferSelectModel<typeof mentorService>;
+export type MentorServiceInsertType = InferInsertModel<typeof mentorService>;
+export type ServiceBookingSelectType = InferSelectModel<typeof serviceBooking>;
+export type ServiceBookingInsertType = InferInsertModel<typeof serviceBooking>;
+export type ServiceBookingStatus =
+  (typeof serviceBookingStatusEnum.enumValues)[number];

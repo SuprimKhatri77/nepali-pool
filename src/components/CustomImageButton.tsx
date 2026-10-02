@@ -14,25 +14,34 @@ import {
   ArrowUp,
 } from "lucide-react";
 import { cn } from "./lib/utils";
+import { toast } from "sonner";
 
 interface Props {
   currentImage?: string;
   onUploadComplete: (url: string) => void;
   imageUploadName?: string;
+  endpoint?: "imageUploader" | "paymentImageUploader";
 }
 
 export default function CustomProfileUploader({
   currentImage,
   onUploadComplete,
   imageUploadName,
+  endpoint = "imageUploader",
 }: Props) {
   const inputRef = useRef<HTMLInputElement>(null);
-  const { startUpload, isUploading } = useUploadThing("imageUploader");
+  const { startUpload, isUploading } = useUploadThing(endpoint, {
+    onUploadError: (error) => {
+      toast.error(error.message || "Upload failed");
+    },
+  });
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (!files || files.length === 0) return;
     const filesArray = Array.from(files);
+    // Reset so picking the same file again (e.g. after a failed upload) re-triggers onChange.
+    e.target.value = "";
     const uploaded = await startUpload(filesArray);
     if (uploaded && uploaded[0]?.ufsUrl) {
       onUploadComplete(uploaded[0].ufsUrl);

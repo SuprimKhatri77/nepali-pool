@@ -1,6 +1,10 @@
-import { and, ne } from "drizzle-orm";
+import { and, asc, eq, ne } from "drizzle-orm";
 import { db } from "../../../../lib/db";
-import { mentorProfile } from "../../../../lib/db/schema";
+import {
+  mentorPaymentDetails,
+  mentorProfile,
+  mentorService,
+} from "../../../../lib/db/schema";
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -29,6 +33,7 @@ import { auth } from "../../../../server/lib/auth/auth";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import MentorCard from "@/components/MentorCard";
+import MentorServicesSection from "@/components/mentor-services/MentorServicesSection";
 import { getChatStatus } from "../../../../server/lib/auth/helpers/free/getChatStatus";
 import { Metadata } from "next";
 import { getMentorById } from "../../../../server/seo-helpers/get-mentor-by-id";
@@ -203,6 +208,26 @@ export default async function MentorDetailPage({
     },
     limit: 3,
   });
+
+  const [services, paymentDetails] = await Promise.all([
+    db
+      .select()
+      .from(mentorService)
+      .where(
+        and(eq(mentorService.mentorId, mentorId), eq(mentorService.isActive, true)),
+      )
+      .orderBy(asc(mentorService.createdAt)),
+    db.query.mentorPaymentDetails.findFirst({
+      where: eq(mentorPaymentDetails.mentorId, mentorId),
+    }),
+  ]);
+  // Logged-out visitors and students without a profile are routed to login /
+  // onboarding by the booking page; only non-student accounts can't book.
+  const canBookServices = !(
+    currentUser &&
+    !currentUser.success &&
+    currentUser.errorType === "not_a_student"
+  );
 
   return (
     <div className="min-h-screen bg-white">
@@ -387,6 +412,15 @@ export default async function MentorDetailPage({
             </div>
           </CardContent>
         </Card>
+
+        <MentorServicesSection
+          mentorId={mentorId}
+          services={services}
+          acceptingBookings={Boolean(
+            paymentDetails?.instructions || paymentDetails?.qrUrl,
+          )}
+          canBook={canBookServices}
+        />
 
         {/* Two Column Layout */}
         <div className="grid lg:grid-cols-3 gap-8">
