@@ -1,3 +1,4 @@
+import { requireAdmin } from "../../../../server/lib/auth/guards";
 
 import { db } from "../../../../lib/db";
 import { MentorProfileWithUser } from "../../../../types/all-types";
@@ -8,6 +9,7 @@ import { getCountsByDate } from "../dashboard/page";
 
 
 export default async function Page() {
+  await requireAdmin();
 
   
     

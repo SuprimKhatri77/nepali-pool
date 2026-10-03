@@ -11,7 +11,7 @@ import {
   UserSelectType,
 } from "../../lib/db/schema";
 import { eq } from "drizzle-orm";
-import { getCurrentUser } from "../lib/auth/helpers/getCurrentUser";
+import { getCurrentUser } from "../lib/auth/guards";
 
 type UserChatType =
   | {

@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { db } from "../../../lib/db";
 import { favorite, FavoriteInsertType } from "../../../lib/db/schema";
-import { getCurrentStudent } from "../../lib/auth/helpers/getCurrentStudent";
+import { getCurrentStudent } from "../../lib/auth/guards";
 
 export type FormState = {
   errors?: {

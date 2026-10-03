@@ -1,7 +1,7 @@
 import { asc, desc, eq } from "drizzle-orm";
 import { db } from "../../../../../lib/db";
 import { mentorPaymentDetails, mentorService } from "../../../../../lib/db/schema";
-import { requireApprovedMentor } from "../../../../../server/lib/auth/helpers/require-approved-mentor";
+import { requireApprovedMentor } from "../../../../../server/lib/auth/guards";
 import ManageServices from "@/components/mentor-services/ManageServices";
 
 export const metadata = {

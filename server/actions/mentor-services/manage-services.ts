@@ -5,7 +5,7 @@ import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { db } from "../../../lib/db";
 import { mentorPaymentDetails, mentorService } from "../../../lib/db/schema";
-import { getCurrentMentor } from "../../lib/auth/helpers/getCurrentMentor";
+import { getCurrentMentor } from "../../lib/auth/guards";
 import {
   MAX_ACTIVE_SERVICES,
   mentorServiceSchema,

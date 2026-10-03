@@ -7,7 +7,7 @@ import { after } from "next/server";
 import { z } from "zod";
 import { db } from "../../../lib/db";
 import { mentorEnquiry, mentorProfile } from "../../../lib/db/schema";
-import { getCurrentStudent } from "../../lib/auth/helpers/getCurrentStudent";
+import { getCurrentStudent } from "../../lib/auth/guards";
 import { createEnquirySchema } from "../../lib/mentor-services/schemas";
 import { isUniqueViolation } from "../../lib/mentor-services/pg-error";
 import { generateReferenceCode } from "../../lib/mentor-services/reference-code";

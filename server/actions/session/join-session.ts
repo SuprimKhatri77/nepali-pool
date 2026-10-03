@@ -4,7 +4,7 @@ import z from "zod";
 import { db } from "../../../lib/db";
 import { meetingSession } from "../../../lib/db/schema";
 import {  revalidateTag } from "next/cache";
-import { getCurrentUser } from "../../lib/auth/helpers/getCurrentUser";
+import { getCurrentUser } from "../../lib/auth/guards";
 
 export type SessionFormState = {
   errors?: {

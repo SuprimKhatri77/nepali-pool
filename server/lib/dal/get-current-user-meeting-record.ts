@@ -2,7 +2,7 @@
 
 import { db } from "../../../lib/db";
 import { MeetingSessionSelectType } from "../../../lib/db/schema";
-import { getCurrentUser } from "../auth/helpers/getCurrentUser";
+import { getCurrentUser } from "../auth/guards";
 
 type UserMeetingDataType =
   | { success: false; message: string }

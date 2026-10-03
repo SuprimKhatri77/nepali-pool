@@ -4,7 +4,7 @@ import { eq } from "drizzle-orm";
 import { db } from "../../../lib/db";
 import { mentorProfile, user } from "../../../lib/db/schema";
 import { sendEmail } from "../../lib/send-email";
-import { getCurrentAdmin } from "../../lib/auth/helpers/getCurrentAdmin";
+import { getCurrentAdmin } from "../../lib/auth/guards";
 
 export type FormState = {
   errors?: {

@@ -1,12 +1,9 @@
-import { Card, CardContent } from "@/components/ui/card"
-import { XCircle } from "lucide-react"
-import { db } from "../../../../../lib/db"
-import { mentorProfile, studentProfile, user } from "../../../../../lib/db/schema"
-import MentorApplication from "@/components/MentorApplication"
-import { auth } from "../../../../../server/lib/auth/auth"
-import { headers } from "next/headers"
-import { redirect } from "next/navigation"
-import { eq } from "drizzle-orm"
+import { requireAdmin } from "../../../../../server/lib/auth/guards";
+import { Card, CardContent } from "@/components/ui/card";
+import { XCircle } from "lucide-react";
+import { db } from "../../../../../lib/db";
+import { mentorProfile } from "../../../../../lib/db/schema";
+import MentorApplication from "@/components/MentorApplication";
 
 
 export default async function ApplicationPage({
@@ -15,53 +12,8 @@ export default async function ApplicationPage({
     params: Promise<{ applicationId: string }>
 }) {
 
-    const session = await auth.api.getSession({
-        headers: await headers(),
-    })
-
-    if (!session) {
-        return redirect("/login?message=Please+login+to+continue")
-    }
-
-    const [userRecord] = await db.select().from(user).where(eq(user.id, session.user.id))
-
-    if (!userRecord) {
-        return redirect("/login?message=Please+login+to+continue")
-    }
-
-    if (!userRecord.emailVerified) {
-        return redirect(`/sign-up/verify-email?email=${encodeURIComponent(userRecord.email)}`)
-    }
-
-    if (!userRecord.role || userRecord.role === "none") {
-        return redirect("/select-role")
-    }
-
-    if (userRecord.role === "student") {
-        const [studentProfileRecord] = await db.select().from(studentProfile).where(eq(studentProfile.userId, userRecord.id))
-        if (!studentProfileRecord) {
-            return redirect("/sign-up/onboarding/student")
-        }
-        return redirect("/dashboard/student")
-    }
-
-    if (userRecord.role === "mentor") {
-        const [mentorProfileRecord] = await db.select().from(mentorProfile).where(eq(mentorProfile.userId, userRecord.id))
-        if (!mentorProfileRecord) {
-            return redirect("/sign-up/onboarding/mentor")
-        }
-        if (mentorProfileRecord.verifiedStatus === "pending") {
-            return redirect("/waitlist")
-        }
-        if (mentorProfileRecord.verifiedStatus === "rejected") {
-            return redirect("/rejected")
-        }
-        return redirect("/dashboard/mentor")
-    }
-
-
-
-
+    await requireAdmin()
+    
     const { applicationId } = await params
 
     const mentorProfileRecordWithUser = await db.query.mentorProfile.findFirst({

@@ -6,8 +6,8 @@ import { after } from "next/server";
 import { z } from "zod";
 import { db } from "../../../lib/db";
 import { chats, mentorEnquiry, user } from "../../../lib/db/schema";
-import { getCurrentMentor } from "../../lib/auth/helpers/getCurrentMentor";
-import { getCurrentStudent } from "../../lib/auth/helpers/getCurrentStudent";
+import { getCurrentMentor } from "../../lib/auth/guards";
+import { getCurrentStudent } from "../../lib/auth/guards";
 import { respondEnquirySchema } from "../../lib/mentor-services/schemas";
 import {
   notifyStudentEnquiryAccepted,

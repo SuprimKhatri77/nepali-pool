@@ -1,28 +1,14 @@
 import VideoCall from "@/components/VideoCall";
 import { db } from "../../../lib/db";
-import { user, videoCall } from "../../../lib/db/schema";
-import { auth } from "../../../server/lib/auth/auth";
-import { headers } from "next/headers";
-import { redirect } from "next/navigation";
-import { eq } from "drizzle-orm";
+import { videoCall } from "../../../lib/db/schema";
+import { requireViewer } from "../../../server/lib/auth/guards";
 import { VideoCallWithStudentAndMentor } from "../../../types/all-types";
 
 export default async function Page() {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
-  if (!session) {
-    return redirect("/login?message=Please+login+to+continue");
-  }
-  const [userRecord] = await db
-    .select()
-    .from(user)
-    .where(eq(user.id, session.user.id));
-  if (!userRecord) {
-    return redirect("/login?message=Please+login+to+continue");
-  }
+  const viewer = await requireViewer(["student", "mentor"]);
+  const userRecord = viewer.user;
 
-  if (userRecord.role === "student") {
+  if (viewer.status === "student") {
     const videoRecords = (await db.query.videoCall.findMany({
       where: (fields, { eq }) => eq(videoCall.studentId, userRecord.id),
       with: {
@@ -40,8 +26,8 @@ export default async function Page() {
     //     </div>
     //   );
     // }
-    return <VideoCall videoCallRecords={videoRecords} role={userRecord.role} />;
-  } else if (userRecord.role === "mentor") {
+    return <VideoCall videoCallRecords={videoRecords} role={viewer.status} />;
+  } else {
     const videoRecords = (await db.query.videoCall.findMany({
       where: (fields, { eq }) => eq(videoCall.mentorId, userRecord.id),
       with: {
@@ -60,8 +46,7 @@ export default async function Page() {
     //   );
     // }
     return (
-      <VideoCall videoCallRecords={videoRecords ?? []} role={userRecord.role} />
+      <VideoCall videoCallRecords={videoRecords ?? []} role={viewer.status} />
     );
   }
-  return redirect("/select-role");
 }

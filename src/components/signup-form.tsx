@@ -1,5 +1,6 @@
 "use client";
 
+import { viewerKeys } from "@/modules/viewer/queries";
 import { cn } from "./lib/utils";
 import { Button } from "@/components/ui/button";
 import {
@@ -71,8 +72,7 @@ export function SignupForm({
 
   useEffect(() => {
     if (state.success && state.message && state.redirectTo) {
-      queryClient.invalidateQueries({ queryKey: ["user-nav"] });
-      queryClient.invalidateQueries({ queryKey: ["hero-cta"] });
+      queryClient.invalidateQueries({ queryKey: viewerKeys.nav });
       toast.success(state.message);
       setTimeout(() => {
         router.replace(state.redirectTo as string);

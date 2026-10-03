@@ -11,7 +11,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { resendEmailVerification } from "../../server/actions/email-verification/resendEmailVerification";
-import { authClient } from "../../server/lib/auth/auth-client";
+import { useSignOut } from "@/hooks/use-sign-out";
 import { Spinner } from "./ui/spinner";
 
 export default function VerifyEmail({ email }: { email: string }) {
@@ -21,7 +21,7 @@ export default function VerifyEmail({ email }: { email: string }) {
   const message = params.get("message");
   const from = params.get("from");
   const [isLoading, setIsLoading] = useState(false);
-  const [isPending, setIsPending] = useState<boolean>(false);
+  const { signOut: handleLogout, isPending } = useSignOut();
 
   const handleClick = async () => {
     if (!email) {
@@ -61,19 +61,6 @@ export default function VerifyEmail({ email }: { email: string }) {
       window.history.replaceState(null, "", url.toString());
     }
   }, [message]);
-
-  const handleLogout = async () => {
-    setIsPending(true);
-    await authClient.signOut({
-      fetchOptions: {
-        onSuccess: () => {
-          router.push("/");
-        },
-      },
-    });
-
-    setIsPending(false);
-  };
 
   if (from === "signup") {
     return (

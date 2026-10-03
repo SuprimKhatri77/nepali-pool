@@ -4,7 +4,7 @@ import { and, eq } from "drizzle-orm";
 import { db } from "../../../lib/db";
 import { favorite } from "../../../lib/db/schema";
 import { revalidatePath } from "next/cache";
-import { getCurrentStudent } from "../../lib/auth/helpers/getCurrentStudent";
+import { getCurrentStudent } from "../../lib/auth/guards";
 
 export type FormState = {
   errors?: {

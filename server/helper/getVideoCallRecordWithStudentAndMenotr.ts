@@ -4,7 +4,7 @@ import { unstable_noStore } from "next/cache";
 import { db } from "../../lib/db";
 import { videoCall } from "../../lib/db/schema";
 import { VideoCallWithStudentAndMentor } from "../../types/all-types";
-import { getCurrentUser } from "../lib/auth/helpers/getCurrentUser";
+import { getCurrentUser } from "../lib/auth/guards";
 
 type VideoCallRecord =
   | {

@@ -3,7 +3,7 @@
 import { db } from "../../../lib/db";
 import { chats, messageAttachments} from "../../../lib/db/schema";
 import { and,  or } from "drizzle-orm";
-import { getCurrentUser } from "../../lib/auth/helpers/getCurrentUser";
+import { getCurrentUser } from "../../lib/auth/guards";
 
 export async function sendAttachments(
   messageId: string,

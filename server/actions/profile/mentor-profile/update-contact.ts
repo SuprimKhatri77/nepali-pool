@@ -1,7 +1,7 @@
 "use server";
 
 import z from "zod";
-import { getCurrentMentor } from "../../../lib/auth/helpers/getCurrentMentor";
+import { getCurrentMentor } from "../../../lib/auth/guards";
 import { db } from "../../../../lib/db";
 import { mentorProfile } from "../../../../lib/db/schema";
 import { eq } from "drizzle-orm";

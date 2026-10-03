@@ -1,7 +1,7 @@
 "use server";
 
 import z from "zod";
-import { getCurrentAdmin } from "../../lib/auth/helpers/getCurrentAdmin";
+import { getCurrentAdmin } from "../../lib/auth/guards";
 import { db } from "../../../lib/db";
 import { Resend } from "resend";
 import { MeetingInvite } from "@/modules/email-templates/meeting-invite-email";

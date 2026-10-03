@@ -1,73 +1,11 @@
-import { headers } from "next/headers";
-import { redirect } from "next/navigation";
-import { eq } from "drizzle-orm";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { requireViewer } from "../../../server/lib/auth/guards";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { auth } from "../../../server/lib/auth/auth";
-import { db } from "../../../lib/db";
-import { mentorProfile, studentProfile, user } from "../../../lib/db/schema";
 
 export default async function RejectedMentor() {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
-
-  if (!session) {
-    return redirect("/login?message=Please+login+to+continue");
-  }
-
-  const [userRecord] = await db
-    .select()
-    .from(user)
-    .where(eq(user.id, session.user.id));
-
-  if (!userRecord) {
-    return redirect("/login?message=Please+login+to+continue");
-  }
-
-  if (!userRecord.emailVerified) {
-    return redirect(`/verify-email`);
-  }
-
-  if (userRecord.role === "student") {
-    const [studentProfileRecord] = await db
-      .select()
-      .from(studentProfile)
-      .where(eq(studentProfile.userId, userRecord.id));
-    if (!studentProfileRecord) {
-      return redirect("/onboarding/student?message=Please+complete+the+onboarding+to+continue!");
-    }
-    return redirect("/dashboard/student");
-  }
-
-  if (userRecord.role === "none") {
-    return redirect("/select-role");
-  }
-
-  const [mentorProfileRecord] = await db
-    .select()
-    .from(mentorProfile)
-    .where(eq(mentorProfile.userId, userRecord.id));
-
-  if (!mentorProfileRecord && userRecord.role === "mentor") {
-    return redirect("/onboarding/mentor?message=Please+complete+the+onboarding+to+continue!");
-  }
-
-  if (mentorProfileRecord.verifiedStatus === "pending") {
-    return redirect("/waitlist");
-  }
-
-  if (mentorProfileRecord.verifiedStatus === "accepted") {
-    return redirect("/dashboard/mentor");
-  }
-
+  await requireViewer(["mentor-rejected"]);
+  
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-50 via-white to-emerald-50">
       {/* Hero Section */}

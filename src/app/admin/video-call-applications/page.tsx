@@ -1,9 +1,11 @@
+import { requireAdmin } from "../../../../server/lib/auth/guards";
 import VideoCallApplicationsPage from "@/components/VideoCallApplications";
 import { db } from "../../../../lib/db";
 import { VideoCallWithStudentAndMentor } from "../../../../types/all-types";
 
 
 export default async function Page() {
+  await requireAdmin();
   const videoCallRecords = (await db.query.videoCall.findMany({
     with: {
       studentProfile: { with: { user: true } },

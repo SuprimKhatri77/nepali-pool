@@ -6,7 +6,7 @@ import {
   mentorEnquiryStatusEnum,
   type MentorEnquiryStatus,
 } from "../../../../../lib/db/schema";
-import { requireApprovedMentor } from "../../../../../server/lib/auth/helpers/require-approved-mentor";
+import { requireApprovedMentor } from "../../../../../server/lib/auth/guards";
 import MentorEnquiries, {
   type EnquiryFilter,
   type MentorEnquiryRow,

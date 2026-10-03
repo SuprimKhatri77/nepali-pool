@@ -1,5 +1,6 @@
 "use client";
 
+import { viewerKeys } from "@/modules/viewer/queries";
 import { Button } from "@/components/ui/button";
 import {
   Field,
@@ -41,8 +42,7 @@ export function LoginForm({
 
   useEffect(() => {
     if (state.success && state.message && state.redirectTo) {
-      queryClient.invalidateQueries({ queryKey: ["user-nav"] });
-      queryClient.invalidateQueries({ queryKey: ["hero-cta"] });
+      queryClient.invalidateQueries({ queryKey: viewerKeys.nav });
       toast(state.message);
       router.push(state.redirectTo);
     }

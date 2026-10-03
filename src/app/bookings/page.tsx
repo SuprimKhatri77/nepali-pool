@@ -2,7 +2,7 @@ import { desc, eq } from "drizzle-orm";
 import { CheckCircle2 } from "lucide-react";
 import { db } from "../../../lib/db";
 import { chats, mentorEnquiry, serviceBooking } from "../../../lib/db/schema";
-import { requireStudent } from "../../../server/lib/auth/helpers/require-student";
+import { requireStudent } from "../../../server/lib/auth/guards";
 import StudentBookings from "@/components/mentor-services/StudentBookings";
 import StudentEnquiries from "@/components/mentor-services/StudentEnquiries";
 

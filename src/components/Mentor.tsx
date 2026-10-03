@@ -3,9 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { authClient } from "../../server/lib/auth/auth-client";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useSignOut } from "@/hooks/use-sign-out";
 import Link from "next/link";
 import {
   MessageSquare,
@@ -35,20 +33,7 @@ export default function MentorPage({
   pendingBookingCount,
   newEnquiryCount,
 }: Props) {
-  const [click, setClick] = useState(false);
-  const router = useRouter();
-
-  const handleClick = async () => {
-    setClick(true);
-    await authClient.signOut({
-      fetchOptions: {
-        onSuccess: () => {
-          router.push("/");
-        },
-      },
-    });
-    setClick(false);
-  };
+  const { signOut, isPending: click } = useSignOut();
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-white to-green-50">
@@ -262,7 +247,7 @@ export default function MentorPage({
             <Separator className="my-6 bg-emerald-100" />
 
             <Button
-              onClick={handleClick}
+              onClick={signOut}
               disabled={click}
               variant="outline"
               className="w-full border-gray-300 hover:bg-gray-50 hover:border-gray-400 transition-colors bg-transparent"

@@ -19,9 +19,7 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 import { Button } from "./ui/button";
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { authClient } from "../../server/lib/auth/auth-client";
+import { useSignOut } from "@/hooks/use-sign-out";
 import { Spinner } from "./ui/spinner";
 
 export function NavUser({
@@ -34,21 +32,7 @@ export function NavUser({
   };
 }) {
   const { isMobile } = useSidebar();
-  const router = useRouter();
-  const [isPending, setIsPending] = useState<boolean>(false);
-
-  const handleClick = async () => {
-    setIsPending(true);
-    await authClient.signOut({
-      fetchOptions: {
-        onSuccess: () => {
-          router.push("/");
-        },
-      },
-    });
-
-    setIsPending(false);
-  };
+  const { signOut: handleClick, isPending } = useSignOut();
 
   return (
     <SidebarMenu>
