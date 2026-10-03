@@ -1,53 +1,31 @@
 import ScheduleCall from "@/components/ScheduleCall";
+import { notFound } from "next/navigation";
+import z from "zod";
 import { db } from "../../../../../lib/db";
-import { user, videoCall } from "../../../../../lib/db/schema";
-import { eq } from "drizzle-orm";
-import { auth } from "../../../../../server/lib/auth/auth";
-import { headers } from "next/headers";
-import { redirect } from "next/navigation";
+import { requireViewer } from "../../../../../server/lib/auth/guards";
 
 export default async function Page({
   params,
 }: {
   params: Promise<{ videoId: string }>;
 }) {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
-  if (!session) {
-    return redirect("/login?message=Please+login+to+continue");
-  }
-  const [userRecord] = await db
-    .select()
-    .from(user)
-    .where(eq(user.id, session.user.id));
-  if (!userRecord) {
-    return redirect("/login?message=Please+login+to+continue");
-  }
-  if (!userRecord.emailVerified) {
-    return redirect("/sign-up/verify-email");
-  }
-  if (!userRecord.role || userRecord.role === "none") {
-    return redirect("/select-role");
-  }
-
-  if (userRecord.role !== "student" && userRecord.role !== "mentor") {
-    return redirect("/");
-  }
+  const viewer = await requireViewer(["student", "mentor"]);
 
   const { videoId } = await params;
-  if (!videoId) {
-    return (
-      <div className="flex items-center justify-center min-h-screen w-full">
-        <h1 className="text-2xl font-bold">Missing Video ID</h1>
-      </div>
-    );
-  }
+  if (!z.uuid().safeParse(videoId).success) return notFound();
 
-  const [videoCallRecord] = await db
-    .select()
-    .from(videoCall)
-    .where(eq(videoCall.id, videoId));
+  // Only the student or mentor on this call may open it.
+  const videoCallRecord = await db.query.videoCall.findFirst({
+    columns: { id: true },
+    where: (fields, { and, eq, or }) =>
+      and(
+        eq(fields.id, videoId),
+        or(
+          eq(fields.studentId, viewer.user.id),
+          eq(fields.mentorId, viewer.user.id)
+        )
+      ),
+  });
   if (!videoCallRecord) {
     return (
       <div className="flex items-center justify-center min-h-screen w-full">
@@ -55,5 +33,5 @@ export default async function Page({
       </div>
     );
   }
-  return <ScheduleCall videoId={videoId} role={userRecord.role} />;
+  return <ScheduleCall videoId={videoId} role={viewer.status} />;
 }

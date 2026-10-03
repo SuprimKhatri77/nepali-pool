@@ -3,7 +3,7 @@
 import { db } from "../../lib/db";
 import { chats, messages } from "../../lib/db/schema";
 import { and, eq, or, lt, desc } from "drizzle-orm";
-import { getCurrentUser } from "../lib/auth/helpers/getCurrentUser";
+import { getCurrentUser } from "../lib/auth/guards";
 
 export async function getMessages(chatId: string, limit: number = 20) {
   if (!chatId) {

@@ -10,7 +10,7 @@ import { AnimatePresence, motion } from "framer-motion";
 // import AnnouncementBanner from "@/components/sessions/announcement-banner";
 import { cn } from "../lib/utils";
 import { useQuery } from "@tanstack/react-query";
-import { getCurrentUserRecord } from "../../../server/lib/auth/helpers/get-current-user";
+import { navViewerQueryOptions } from "@/modules/viewer/queries";
 
 const MotionLink = motion(Link);
 
@@ -31,12 +31,7 @@ export default function Header() {
   const isDashboardRoute = pathname.startsWith("/dashboard");
   const isChatRoute = pathname.startsWith("/chats");
 
-  const { data: user, isPending } = useQuery({
-    queryKey: ["user-nav"],
-    queryFn: async () => getCurrentUserRecord().then((res) => res.user),
-    staleTime: 0,
-    refetchOnWindowFocus: false,
-  });
+  const { data: user, isPending } = useQuery(navViewerQueryOptions);
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -175,7 +170,7 @@ export default function Header() {
                   <MotionLink
                     whileHover={{ scale: 1.03 }}
                     whileTap={{ scale: 0.98 }}
-                    href={`/dashboard/${user.role}`}
+                    href="/dashboard"
                     className="px-4 py-2 bg-emerald-50 text-emerald-700 text-sm font-medium rounded-lg hover:bg-emerald-100 transition-all duration-200"
                   >
                     Dashboard

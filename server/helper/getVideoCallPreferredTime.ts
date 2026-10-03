@@ -2,7 +2,7 @@
 
 import { db } from "../../lib/db";
 import { preferredTime } from "../../lib/db/schema";
-import { getCurrentUser } from "../lib/auth/helpers/getCurrentUser";
+import { getCurrentUser } from "../lib/auth/guards";
 
 type VideoCallPreferredTime =
   | { success: false; message: string }

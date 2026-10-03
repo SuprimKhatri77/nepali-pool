@@ -1,3 +1,4 @@
+import { requireAdmin } from "../../../../../../server/lib/auth/guards";
 import ScheduleVideoCallWithMentor from "@/components/ScheduleVideoCall";
 import { videoCall } from "../../../../../../lib/db/schema";
 import { VideoCallWithStudentAndMentor } from "../../../../../../types/all-types";
@@ -8,6 +9,7 @@ export default async function Page({
 }: {
   params: Promise<{ videoId: string }>;
 }) {
+  await requireAdmin();
   const { videoId } = await params;
   const videoCallRecord = (await db.query.videoCall.findFirst({
     where: (fields, { eq }) => eq(videoCall.id, videoId),

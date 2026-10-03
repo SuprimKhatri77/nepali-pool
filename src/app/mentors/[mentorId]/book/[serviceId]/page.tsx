@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { headers } from "next/headers";
 import { notFound, redirect } from "next/navigation";
 import { and, eq } from "drizzle-orm";
 import { z } from "zod";
@@ -8,19 +7,11 @@ import { Card, CardContent } from "@/components/ui/card";
 import { ClickableImage } from "@/components/ClickableImage";
 import BookServiceForm from "@/components/mentor-services/BookServiceForm";
 import Notice from "@/components/mentor-services/Notice";
-import {
-  formatDuration,
-  formatNpr,
-  toWhatsappPrefill,
-} from "@/components/mentor-services/format";
+import { formatDuration, formatNpr, toWhatsappPrefill } from "@/components/mentor-services/format";
 import { db } from "../../../../../../lib/db";
-import {
-  mentorService,
-  serviceBooking,
-  studentProfile,
-} from "../../../../../../lib/db/schema";
-import { auth } from "../../../../../../server/lib/auth/auth";
-import { requireUser } from "../../../../../../server/lib/auth/helpers/requireUser";
+import { mentorService, serviceBooking } from "../../../../../../lib/db/schema";
+import { requireUser } from "../../../../../../server/lib/auth/guards";
+import { getViewer } from "../../../../../../server/lib/auth/viewer";
 
 export const metadata = {
   title: "Book a Service | NepaliPool",
@@ -34,11 +25,14 @@ export default async function BookServicePage({
   const { mentorId, serviceId } = await params;
   if (!z.uuid().safeParse(serviceId).success) notFound();
 
-  const session = await auth.api.getSession({ headers: await headers() });
-  if (!session) redirect("/login?message=Please+login+to+book+a+service");
-
-  const userRecord = await requireUser();
-  if (userRecord.role !== "student") {
+  const viewer = await getViewer();
+  if (viewer.status === "anonymous") redirect("/login?message=Please+login+to+book+a+service");
+  if (viewer.status === "needs-onboarding" && viewer.role === "student") {
+    redirect("/onboarding/student?message=Please+complete+your+profile+before+booking");
+  }
+  if (viewer.status !== "student") {
+    // Sends unverified or role-less users on to finish signing up.
+    await requireUser();
     return (
       <Notice
         title="Students only"
@@ -49,14 +43,8 @@ export default async function BookServicePage({
       </Notice>
     );
   }
-  const student = await db.query.studentProfile.findFirst({
-    where: eq(studentProfile.userId, userRecord.id),
-  });
-  if (!student) {
-    redirect(
-      "/onboarding/student?message=Please+complete+your+profile+before+booking",
-    );
-  }
+  const userRecord = viewer.user;
+  const student = viewer.studentProfile;
 
   const service = await db.query.mentorService.findFirst({
     where: and(

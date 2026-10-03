@@ -56,7 +56,7 @@ export default async function AllSchools({
   const [totalResult] = await db.select({ count: count() }).from(school);
 
   const total = Number(totalResult.count);
-  const totalPages = Math.ceil(total / limit);
+  const totalPages = Math.max(Math.ceil(total / limit), 1);
 
   const offset = (page - 1) * limit;
   const allSchools = await getAllSchools(limit, offset);

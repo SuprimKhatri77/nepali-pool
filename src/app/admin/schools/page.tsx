@@ -1,3 +1,4 @@
+import { requireAdmin } from "../../../../server/lib/auth/guards";
 import { db } from "../../../../lib/db";
 import { school, type SchoolSelectType } from "../../../../lib/db/schema";
 import { Building2 } from "lucide-react";
@@ -12,13 +13,14 @@ export default async function AllSchools({
 }: {
   searchParams: Promise<{ page: string }>;
 }) {
+  await requireAdmin();
   const params = await searchParams;
   let page = Number(params.page) || 1;
   const limit = 6;
   const [totalResult] = await db.select({ count: count() }).from(school);
 
   const total = Number(totalResult.count);
-  const totalPages = Math.ceil(total / limit);
+  const totalPages = Math.max(Math.ceil(total / limit), 1);
 
   if (page < 1) page = 1;
   if (page > totalPages) page = totalPages;

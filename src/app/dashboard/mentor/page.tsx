@@ -1,16 +1,13 @@
-import { notFound, redirect } from "next/navigation";
 import { db } from "../../../../lib/db";
 import {
   chatSubscription,
   mentorEnquiry,
-  mentorProfile,
   serviceBooking,
   videoCall,
 } from "../../../../lib/db/schema";
 import { and, count, eq, sql } from "drizzle-orm";
 import MentorPage from "@/components/Mentor";
-import { requireUser } from "../../../../server/lib/auth/helpers/requireUser";
-import { getStudentProfile } from "../../../../server/lib/auth/helpers/getStudentProfile";
+import { requireApprovedMentor } from "../../../../server/lib/auth/guards";
 import { getChatIncreaseCount } from "../../../../server/helper/getChatIncreaseCount";
 
 export const metadata = {
@@ -18,100 +15,64 @@ export const metadata = {
 };
 
 export default async function Mentor() {
-  const userRecord = await requireUser();
+  const { mentorRecord } = await requireApprovedMentor();
+  const mentorId = mentorRecord.userId;
 
-  if (userRecord.role === "admin") {
-    return redirect("/admin");
-  }
-  if (userRecord.role === "student") {
-    await getStudentProfile(userRecord.id);
-  }
-
-  if (userRecord.role === "mentor") {
-    const [mentorProfileRecord] = await db
-      .select()
-      .from(mentorProfile)
-      .where(eq(mentorProfile.userId, userRecord.id));
-    if (!mentorProfileRecord) {
-      return redirect("/onboarding/mentor?message=Please+complete+the+onboarding+to+continue!");
-    }
-    if (mentorProfileRecord.verifiedStatus === "pending") {
-      return redirect("/waitlist");
-    }
-    if (mentorProfileRecord.verifiedStatus === "rejected") {
-      return redirect("/rejected");
-    }
-
-    const [chatCount] = await db
+  const [
+    [chatCount],
+    [scheduledVideoCallCount],
+    [totalUniqueStudents],
+    chatIncrease,
+    [newEnquiryCount],
+    [pendingBookingCount],
+  ] = await Promise.all([
+    db
       .select({ count: count() })
       .from(chatSubscription)
-      .where(eq(chatSubscription.mentorId, mentorProfileRecord.userId));
-    const [scheduledVideoCallCount] = await db
+      .where(eq(chatSubscription.mentorId, mentorId)),
+    db
       .select({ count: count() })
       .from(videoCall)
       .where(
-        and(
-          eq(videoCall.mentorId, mentorProfileRecord.userId),
-          eq(videoCall.status, "scheduled")
-        )
-      );
-    // console.log("chat count: ", chatCount);
-    // console.log("chat count type: ", typeof chatCount.count);
-    // console.log("scheduled video call count: ", scheduledVideoCallCount);
-    // console.log("video call count: ", typeof scheduledVideoCallCount.count);
-
-    const [totalUniqueStudents] = await db
-      .select({
-        count: sql<number>`
-      COUNT(DISTINCT student_id)
-    `,
-      })
+        and(eq(videoCall.mentorId, mentorId), eq(videoCall.status, "scheduled"))
+      ),
+    db
+      .select({ count: sql<number>`COUNT(DISTINCT student_id)` })
       .from(
         sql`
       (
-        SELECT student_id FROM chat_subscription WHERE mentor_id = ${mentorProfileRecord.userId}
+        SELECT student_id FROM chat_subscription WHERE mentor_id = ${mentorId}
         UNION
-        SELECT student_id FROM video_call WHERE mentor_id = ${mentorProfileRecord.userId}
+        SELECT student_id FROM video_call WHERE mentor_id = ${mentorId}
       ) AS combined
     `
-      );
-
-    // console.log(totalUniqueStudents);
-
-    const chatIncrease = await getChatIncreaseCount(mentorProfileRecord.userId);
-
-    const [newEnquiryCount] = await db
+      ),
+    getChatIncreaseCount(mentorId),
+    db
       .select({ count: count() })
       .from(mentorEnquiry)
       .where(
-        and(
-          eq(mentorEnquiry.mentorId, mentorProfileRecord.userId),
-          eq(mentorEnquiry.status, "new")
-        )
-      );
-
-    const [pendingBookingCount] = await db
+        and(eq(mentorEnquiry.mentorId, mentorId), eq(mentorEnquiry.status, "new"))
+      ),
+    db
       .select({ count: count() })
       .from(serviceBooking)
       .where(
         and(
-          eq(serviceBooking.mentorId, mentorProfileRecord.userId),
+          eq(serviceBooking.mentorId, mentorId),
           eq(serviceBooking.status, "pending")
         )
-      );
-    // console.log("increase: ", chatIncrease);
+      ),
+  ]);
 
-    return (
-      <MentorPage
-        chatCount={chatCount.count}
-        scheduledVideoCallCount={scheduledVideoCallCount.count}
-        totalUniqueStudents={totalUniqueStudents.count}
-        chatIncreaseCount={chatIncrease ?? 0}
-        pendingBookingCount={pendingBookingCount.count}
-        newEnquiryCount={newEnquiryCount.count}
-      />
-    );
-  }
-
-  return notFound();
+  return (
+    <MentorPage
+      chatCount={chatCount.count}
+      scheduledVideoCallCount={scheduledVideoCallCount.count}
+      totalUniqueStudents={totalUniqueStudents.count}
+      chatIncreaseCount={chatIncrease ?? 0}
+      pendingBookingCount={pendingBookingCount.count}
+      newEnquiryCount={newEnquiryCount.count}
+    />
+  );
 }

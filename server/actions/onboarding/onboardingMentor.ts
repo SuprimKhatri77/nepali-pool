@@ -8,7 +8,7 @@ import {
   MentorProfileInsertType,
   user,
 } from "../../../lib/db/schema";
-import { getCurrentUser } from "../../lib/auth/helpers/getCurrentUser";
+import { getCurrentUser } from "../../lib/auth/guards";
 
 export type FormState = {
   errors?: {

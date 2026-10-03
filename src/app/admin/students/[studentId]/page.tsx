@@ -1,3 +1,4 @@
+import { requireAdmin } from "../../../../../server/lib/auth/guards";
 import AdminStudentSpecific from "@/components/admin/students/AdminStudentSpecific";
 import { db } from "../../../../../lib/db";
 import { studentProfile } from "../../../../../lib/db/schema";
@@ -8,6 +9,7 @@ export default async function MentorSpecificServer({
 }: {
   params: Promise<{studentId: string}>
 }) {
+  await requireAdmin();
 
       const {studentId} = await params;
 

@@ -1,71 +1,9 @@
-import { auth } from "../../../server/lib/auth/auth";
-import { headers } from "next/headers";
-import { redirect } from "next/navigation";
-import { db } from "../../../lib/db";
-import { mentorProfile, studentProfile, user } from "../../../lib/db/schema";
-import { eq } from "drizzle-orm";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { requireViewer } from "../../../server/lib/auth/guards";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 
 export default async function MentorWaitlist() {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
-
-  if (!session) {
-    return redirect("/login?message=Please+login+to+continue");
-  }
-
-  const [userRecord] = await db
-    .select()
-    .from(user)
-    .where(eq(user.id, session.user.id));
-
-  if (!userRecord) {
-    return redirect("/login?message=Please+login+to+continue");
-  }
-
-  if (!userRecord.emailVerified) {
-    return redirect("/verify-email?message=Please+verify+your+email");
-  }
-
-  if (userRecord.role === "student") {
-    const [studentProfileRecord] = await db
-      .select()
-      .from(studentProfile)
-      .where(eq(studentProfile.userId, userRecord.id));
-    if (!studentProfileRecord) {
-      return redirect("/onboarding/student?message=Please+complete+the+onboarding+to+continue!");
-    }
-    return redirect("/dashboard/student");
-  }
-
-  if (userRecord.role === "none") {
-    return redirect("/select-role");
-  }
-
-  const [mentorProfileRecord] = await db
-    .select()
-    .from(mentorProfile)
-    .where(eq(mentorProfile.userId, userRecord.id));
-
-  if (!mentorProfileRecord && userRecord.role === "mentor") {
-    return redirect("/onboarding/mentor?message=Please+complete+the+onboarding+to+continue!");
-  }
-
-  if (mentorProfileRecord.verifiedStatus === "rejected") {
-    return redirect("/rejected");
-  }
-
-  if (mentorProfileRecord.verifiedStatus === "accepted") {
-    return redirect("/dashboard/mentor");
-  }
-
+  await requireViewer(["mentor-pending"]);
+  
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-50 via-white to-emerald-50">
       {/* Hero Section */}
@@ -78,7 +16,7 @@ export default async function MentorWaitlist() {
             </span>
           </div>
           <h1 className="text-4xl md:text-5xl font-bold text-white mb-6">
-            You&apos;re On The Waitlist! 🎉
+            You&apos;re On The Waitlist!
           </h1>
           <p className="text-xl text-green-50 max-w-2xl mx-auto">
             Thank you for applying to become a mentor on Nepali Pool. Our team

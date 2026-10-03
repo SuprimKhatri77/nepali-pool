@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { and, eq } from "drizzle-orm";
 import { ArrowLeft } from "lucide-react";
@@ -8,15 +7,9 @@ import EnquiryForm from "@/components/mentor-services/EnquiryForm";
 import Notice from "@/components/mentor-services/Notice";
 import { toWhatsappPrefill } from "@/components/mentor-services/format";
 import { db } from "../../../../../lib/db";
-import {
-  intakeMonthEnum,
-  intakeYearEnum,
-  mentorEnquiry,
-  mentorProfile,
-  studentProfile,
-} from "../../../../../lib/db/schema";
-import { auth } from "../../../../../server/lib/auth/auth";
-import { requireUser } from "../../../../../server/lib/auth/helpers/requireUser";
+import { intakeMonthEnum, intakeYearEnum, mentorEnquiry, mentorProfile } from "../../../../../lib/db/schema";
+import { requireUser } from "../../../../../server/lib/auth/guards";
+import { getViewer } from "../../../../../server/lib/auth/viewer";
 
 export const metadata = {
   title: "Ask a Mentor | NepaliPool",
@@ -29,12 +22,14 @@ export default async function EnquirePage({
 }) {
   const { mentorId } = await params;
 
-  const session = await auth.api.getSession({ headers: await headers() });
-  if (!session)
-    redirect("/login?message=Please+login+to+ask+a+mentor+a+question");
-
-  const userRecord = await requireUser();
-  if (userRecord.role !== "student") {
+  const viewer = await getViewer();
+  if (viewer.status === "anonymous") redirect("/login?message=Please+login+to+ask+a+mentor+a+question");
+  if (viewer.status === "needs-onboarding" && viewer.role === "student") {
+    redirect("/onboarding/student?message=Please+complete+your+profile+before+contacting+a+mentor");
+  }
+  if (viewer.status !== "student") {
+    // Sends unverified or role-less users on to finish signing up.
+    await requireUser();
     return (
       <Notice
         title="Students only"
@@ -45,14 +40,8 @@ export default async function EnquirePage({
       </Notice>
     );
   }
-  const student = await db.query.studentProfile.findFirst({
-    where: eq(studentProfile.userId, userRecord.id),
-  });
-  if (!student) {
-    redirect(
-      "/onboarding/student?message=Please+complete+your+profile+before+contacting+a+mentor",
-    );
-  }
+  const userRecord = viewer.user;
+  const student = viewer.studentProfile;
 
   const mentor = await db.query.mentorProfile.findFirst({
     where: and(

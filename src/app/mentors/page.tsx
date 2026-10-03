@@ -1,11 +1,10 @@
 import { count, eq } from "drizzle-orm";
 import { db } from "../../../lib/db";
 import { MentorProfileWithUser } from "../../../types/all-types";
-import { mentorProfile, user } from "../../../lib/db/schema";
+import { mentorProfile } from "../../../lib/db/schema";
 
 import { PaginationClient } from "@/components/PaginationClient";
-import { auth } from "../../../server/lib/auth/auth";
-import { headers } from "next/headers";
+import { getViewer } from "../../../server/lib/auth/viewer";
 import SearchBelowHero from "@/components/SearchBelowHero";
 import MentorCard from "@/components/MentorCard";
 import { Sparkles } from "lucide-react";
@@ -68,19 +67,9 @@ export default async function Page({
   const total = Number(totalResult.count);
   const totalPages = Math.max(Math.ceil(total / limit), 1);
   const offset = (page - 1) * limit;
-  const session = await auth.api.getSession({ headers: await headers() });
-  const currentUserId = session?.user.id;
-  let currentUserRole: "none" | "student" | "mentor" | "admin" | null = null;
-
-  if (currentUserId) {
-    const [userRecord] = await db
-      .select({ role: user.role })
-      .from(user)
-      .where(eq(user.id, currentUserId));
-    if (userRecord.role) {
-      currentUserRole = userRecord.role || null;
-    }
-  }
+  const viewer = await getViewer();
+  const currentUserId = "user" in viewer ? viewer.user.id : undefined;
+  const currentUserRole = "user" in viewer ? viewer.user.role : null;
   let allMentors: MentorProfileWithUser[] = [];
   try {
     allMentors = await db.query.mentorProfile.findMany({

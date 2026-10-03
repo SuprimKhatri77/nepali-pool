@@ -7,7 +7,7 @@ import { redirect } from "next/navigation";
 import { z } from "zod";
 import { db } from "../../../lib/db";
 import { mentorService, serviceBooking } from "../../../lib/db/schema";
-import { getCurrentStudent } from "../../lib/auth/helpers/getCurrentStudent";
+import { getCurrentStudent } from "../../lib/auth/guards";
 import { createBookingSchema } from "../../lib/mentor-services/schemas";
 import { isUniqueViolation } from "../../lib/mentor-services/pg-error";
 import { notifyMentorOfNewBooking } from "../../lib/mentor-services/booking-emails";

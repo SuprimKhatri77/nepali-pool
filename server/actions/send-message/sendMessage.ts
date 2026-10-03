@@ -3,7 +3,7 @@
 import { db } from "../../../lib/db";
 import { chats, messages } from "../../../lib/db/schema";
 import { and, eq, or } from "drizzle-orm";
-import { getCurrentUser } from "../../lib/auth/helpers/getCurrentUser";
+import { getCurrentUser } from "../../lib/auth/guards";
 
 type SendMessageType =
   | { success: true; messageId: string }

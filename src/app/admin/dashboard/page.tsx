@@ -1,45 +1,15 @@
-import { headers } from "next/headers";
-import { auth } from "../../../../server/lib/auth/auth";
-import { redirect } from "next/navigation";
 import { db } from "../../../../lib/db";
-import { user, UserSelectType } from "../../../../lib/db/schema";
-import { eq } from "drizzle-orm";
+import { UserSelectType } from "../../../../lib/db/schema";
 import AdminPage from "@/components/admin/AdminPage";
+import { requireAdmin } from "../../../../server/lib/auth/guards";
 
 export const metadata = {
   title: "Admin | Nepali Pool",
 };
 
 export default async function AdminDashboardPage() {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
+  await requireAdmin();
 
-  if (!session) {
-    return redirect("/login?message=Please+login+to+continue");
-  }
-  const [userRecord] = await db
-    .select()
-    .from(user)
-    .where(eq(user.id, session.user.id));
-  if (!userRecord) {
-    return redirect("/login?message=Please+login+to+continue");
-  }
-
-  if (!userRecord.emailVerified) {
-    return redirect(`/verify-email`);
-  }
-
-  if (userRecord.role === "none") {
-    return redirect("/select-role");
-  }
-
-  if (userRecord.role === "student") {
-    return redirect("/dashboard/student");
-  }
-  if (userRecord.role === "mentor") {
-    return redirect("/dashboard/mentor");
-  }
   const mentorProfiles = await db.query.mentorProfile.findMany({
      with: {
        user: true,

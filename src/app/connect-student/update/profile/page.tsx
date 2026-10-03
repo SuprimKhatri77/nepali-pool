@@ -2,21 +2,15 @@ import { redirect } from "next/navigation";
 import { db } from "../../../../../lib/db";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { auth } from "../../../../../server/lib/auth/auth";
-import { headers } from "next/headers";
+import { getViewer } from "../../../../../server/lib/auth/viewer";
 import UpdateStudentCardForm from "@/modules/connect-student/update-student-form";
 
 export default async function Page() {
-  const session = await auth.api.getSession({ headers: await headers() });
-  if (!session || !session.user) redirect("/");
-  const userRecord = await db.query.user.findFirst({
-    where: (fields, { eq }) => eq(fields.id, session.user.id),
-  });
-  if (!userRecord) {
-    await auth.api.signOut({ headers: await headers() });
-    redirect("/");
-  }
-  if (userRecord.role !== "student") redirect("/");
+  // Student cards don't need a verified email or a finished student
+  // onboarding, only a student account.
+  const viewer = await getViewer();
+  const userRecord = "user" in viewer ? viewer.user : null;
+  if (!userRecord || userRecord.role !== "student") redirect("/");
 
   const connectStudentProfile = await db.query.connectStudentProfiles.findFirst(
     {

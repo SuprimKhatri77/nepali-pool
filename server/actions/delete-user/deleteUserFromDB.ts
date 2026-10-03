@@ -5,7 +5,7 @@ import { db } from "../../../lib/db";
 import { user } from "../../../lib/db/schema";
 
 import { redirect } from "next/navigation";
-import { getCurrentAdmin } from "../../lib/auth/helpers/getCurrentAdmin";
+import { getCurrentAdmin } from "../../lib/auth/guards";
 
 export type UserDetails = {
   id: string;

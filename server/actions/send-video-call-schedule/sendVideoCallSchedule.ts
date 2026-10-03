@@ -12,7 +12,7 @@ import {
 } from "../../../lib/db/schema";
 import { and, eq } from "drizzle-orm";
 import { sendEmail } from "../../lib/send-email";
-import { getCurrentUser } from "../../lib/auth/helpers/getCurrentUser";
+import { getCurrentUser } from "../../lib/auth/guards";
 import { revalidatePath } from "next/cache";
 
 const roleEnum = z

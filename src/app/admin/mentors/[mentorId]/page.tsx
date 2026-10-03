@@ -1,3 +1,4 @@
+import { requireAdmin } from "../../../../../server/lib/auth/guards";
 import { db } from "../../../../../lib/db";
 import { mentorProfile } from "../../../../../lib/db/schema";
 import { and,  ne, or } from "drizzle-orm";
@@ -8,6 +9,7 @@ export default async function MentorSpecificServer({
 }: {
   params: Promise<{mentorId: string}>
 }) {
+  await requireAdmin();
 
       const {mentorId} = await params;
       console.log(mentorId)

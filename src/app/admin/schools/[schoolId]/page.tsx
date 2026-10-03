@@ -1,3 +1,4 @@
+import { requireAdmin } from "../../../../../server/lib/auth/guards";
 import { eq, ne } from "drizzle-orm";
 import { db } from "../../../../../lib/db";
 import { school, SchoolSelectType } from "../../../../../lib/db/schema";
@@ -26,6 +27,7 @@ export default async function SchoolDetailPage({
 }: {
   params: Promise<{ schoolId: string }>;
 }) {
+  await requireAdmin();
   const schoolId = (await params).schoolId;
   const parsed = uuidCheck.safeParse(schoolId);
 

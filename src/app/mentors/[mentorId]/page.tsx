@@ -30,8 +30,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { auth } from "../../../../server/lib/auth/auth";
-import { headers } from "next/headers";
+import { getSession } from "../../../../server/lib/auth/viewer";
 import { redirect } from "next/navigation";
 import MentorCard from "@/components/MentorCard";
 import MentorServicesSection from "@/components/mentor-services/MentorServicesSection";
@@ -139,7 +138,7 @@ export default async function MentorDetailPage({
   params: Promise<{ mentorId: string }>;
 }) {
   const { mentorId } = await params;
-  const session = await auth.api.getSession({ headers: await headers() });
+  const session = await getSession();
   if (session?.user.id === mentorId) return redirect("/profile");
 
   const mentorRecord = await db.query.mentorProfile.findFirst({

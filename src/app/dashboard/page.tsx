@@ -1,33 +1,11 @@
-import { headers } from "next/headers";
 import { redirect } from "next/navigation";
+import { getViewer, homeFor } from "../../../server/lib/auth/viewer";
 
-import { eq } from "drizzle-orm";
-
-import { auth } from "../../../server/lib/auth/auth";
-import { db } from "../../../lib/db";
-import { user } from "../../../lib/db/schema";
-import { redirectByRole } from "../../../server/helper/redirectByrole";
-import NotFound from "../not-found";
-
+// /dashboard just forwards everyone to the place they belong.
 export default async function Dashboard() {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
-
-  if (!session) {
-    return redirect("/login?message=Please+login+to+continue");
+  const viewer = await getViewer();
+  if (viewer.status === "anonymous") {
+    redirect("/login?message=Please+login+to+continue");
   }
-
-  const [userRecord] = await db
-    .select()
-    .from(user)
-    .where(eq(user.id, session.user.id));
-
-  if (!userRecord.emailVerified) {
-    return redirect("/verify-email?message=Please+verify+your+email");
-  }
-
-  await redirectByRole(userRecord);
-
-  return <NotFound />;
+  redirect(homeFor(viewer));
 }

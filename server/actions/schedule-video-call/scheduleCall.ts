@@ -11,7 +11,7 @@ import {
 } from "../../../lib/db/schema";
 import { and, eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
-import { getCurrentUser } from "../../lib/auth/helpers/getCurrentUser";
+import { getCurrentUser } from "../../lib/auth/guards";
 
 export type FormState = {
   errors?: {

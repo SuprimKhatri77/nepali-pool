@@ -129,6 +129,16 @@ export const auth = betterAuth({
     },
     expiresIn: 86400,
   },
+  session: {
+    // Keep a signed copy of the session in a cookie so most requests skip the
+    // session-table lookup. A revoked session stays usable for up to maxAge.
+    // The user row (role, verification, profiles) is still read from the
+    // database on every request by getViewer().
+    cookieCache: {
+      enabled: true,
+      maxAge: 5 * 60,
+    },
+  },
   account: {
     accountLinking: {
       enabled: true,

@@ -1,4 +1,6 @@
 "use client";
+import { useQueryClient } from "@tanstack/react-query";
+import { viewerKeys } from "@/modules/viewer/queries";
 import {
   Select,
   SelectContent,
@@ -33,6 +35,7 @@ export default function SelectRolePage() {
   const [role, setRole] = useState("");
   const params = useSearchParams();
   const router = useRouter();
+  const queryClient = useQueryClient();
 
   const message = params.get("message");
 
@@ -53,6 +56,8 @@ export default function SelectRolePage() {
   useEffect(() => {
     let timeout: ReturnType<typeof setTimeout>;
     if (state.success && state.message) {
+      // The header shows role-specific links; refresh it for the new role.
+      queryClient.invalidateQueries({ queryKey: viewerKeys.nav });
       toast.message(state.message);
       timeout = setTimeout(() => {
         router.replace(state.redirectTo as string);
@@ -62,7 +67,7 @@ export default function SelectRolePage() {
       toast.error(state.message);
     }
     return () => clearTimeout(timeout);
-  }, [state.message, state.success, state.timestamp, router, state.redirectTo]);
+  }, [state.message, state.success, state.timestamp, router, state.redirectTo, queryClient]);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-white to-green-50 flex items-center justify-center p-6">

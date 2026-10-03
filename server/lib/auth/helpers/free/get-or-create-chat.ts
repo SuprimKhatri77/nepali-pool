@@ -2,7 +2,7 @@
 
 import { db } from "../../../../../lib/db";
 import { chats } from "../../../../../lib/db/schema";
-import { getCurrentStudent } from "../getCurrentStudent";
+import { getCurrentStudent } from "../../guards";
 import { and } from "drizzle-orm";
 
 type ChatType = { success: true; chatId: string } | { success: false };

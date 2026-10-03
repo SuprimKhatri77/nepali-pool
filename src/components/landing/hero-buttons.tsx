@@ -14,16 +14,13 @@ import {
 import { Button } from "../ui/button";
 import { cn } from "../lib/utils";
 import { useQuery } from "@tanstack/react-query";
-import { getCurrentUserSession } from "../../../server/lib/auth/helpers/get-current-user-session";
+import { navViewerQueryOptions } from "@/modules/viewer/queries";
 
 const HeroButtons = () => {
   // const { data: session, isPending } = authClient.useSession();
 
   const [mounted, setMounted] = useState(false);
-  const { data: session, isPending } = useQuery({
-    queryKey: ["hero-cta"],
-    queryFn: async () => getCurrentUserSession().then((res) => res),
-  });
+  const { data: viewer, isPending } = useQuery(navViewerQueryOptions);
 
   useEffect(() => {
     setTimeout(() => {
@@ -37,7 +34,7 @@ const HeroButtons = () => {
 
   if (isPending) return <Spinner className="w-full mx-auto" />;
 
-  if (!session || !session.session) {
+  if (!viewer) {
     return (
       <>
         <Link

@@ -6,7 +6,7 @@ import {
   serviceBookingStatusEnum,
   type ServiceBookingStatus,
 } from "../../../../../lib/db/schema";
-import { requireApprovedMentor } from "../../../../../server/lib/auth/helpers/require-approved-mentor";
+import { requireApprovedMentor } from "../../../../../server/lib/auth/guards";
 import MentorBookings, {
   type BookingFilter,
 } from "@/components/mentor-services/MentorBookings";

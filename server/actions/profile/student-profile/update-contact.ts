@@ -1,7 +1,7 @@
 "use server";
 
 import z from "zod";
-import { getCurrentStudent } from "../../../lib/auth/helpers/getCurrentStudent";
+import { getCurrentStudent } from "../../../lib/auth/guards";
 import { db } from "../../../../lib/db";
 import { studentProfile } from "../../../../lib/db/schema";
 import { eq } from "drizzle-orm";

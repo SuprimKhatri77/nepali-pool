@@ -1,10 +1,5 @@
 import type React from "react";
-import { redirect } from "next/navigation";
-import { auth } from "../../../server/lib/auth/auth";
-import { db } from "../../../lib/db";
-import { user } from "../../../lib/db/schema";
-import { eq } from "drizzle-orm";
-import { headers } from "next/headers";
+import { requireViewer } from "../../../server/lib/auth/guards";
 import Chats from "@/components/Chats";
 import {
   SidebarProvider,
@@ -18,24 +13,9 @@ export default async function ChatLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const session = await auth.api.getSession({ headers: await headers() });
-  if (!session) redirect("/login?message=Please+login+to+continue");
-
-  const [userRecord] = await db
-    .select()
-    .from(user)
-    .where(eq(user.id, session.user.id));
-
-  if (!userRecord) {
-    await auth.api.signOut({ headers: await headers() });
-    return redirect("/login?error=invalid_session");
-  }
-  if (!userRecord.emailVerified)
-    return redirect("/verify-email?message=Please+verify+your+email");
-  if (!userRecord.role || userRecord.role === "none")
-    return redirect("/select-role");
-
-  const role = userRecord.role as "student" | "mentor";
+  const viewer = await requireViewer(["student", "mentor"]);
+  const userRecord = viewer.user;
+  const role = viewer.status;
 
   return (
     <SidebarProvider
