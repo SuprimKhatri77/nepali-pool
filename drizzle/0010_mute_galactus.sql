@@ -1,1 +1,0 @@
-ALTER TYPE "public"."status" RENAME TO "mentor_verified_status";

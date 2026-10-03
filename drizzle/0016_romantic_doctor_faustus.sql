@@ -1,1 +1,0 @@
-ALTER TABLE "preferred_time" ALTER COLUMN "student_preferred_time" DROP NOT NULL;

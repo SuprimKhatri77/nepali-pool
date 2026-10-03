@@ -1,1 +1,0 @@
-ALTER TABLE "student_profile" RENAME COLUMN "phone" TO "phone_number";
