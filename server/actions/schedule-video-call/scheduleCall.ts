@@ -11,7 +11,7 @@ import {
 } from "../../../lib/db/schema";
 import { and, eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
-import { getCurrentUser } from "../../lib/auth/guards";
+import { getViewer } from "../../lib/auth/viewer";
 
 export type FormState = {
   errors?: {
@@ -44,7 +44,7 @@ export async function scheduleVideoCallTime(
       .refine((val) => /^([01]\d|2[0-3]):([0-5]\d):([0-5]\d)$/.test(val), {
         message: "Invalid time format (HH:mm)",
       }),
-    videoId: z.string(),
+    videoId: z.uuid(),
     role: roleEnum,
   });
 
@@ -66,21 +66,38 @@ export async function scheduleVideoCallTime(
 
   const { date, time, videoId, role } = parsedData.data;
   const combinedDate = new Date(`${date}T${time}`);
-  console.log("combineddate: ", combinedDate);
 
   try {
-    const result = await getCurrentUser();
-    if (!result.success) {
+    // The caller must be an onboarded student or approved mentor acting as
+    // their own role (the form's role field is only a cross-check), and the
+    // call must be theirs.
+    const viewer = await getViewer();
+    if (viewer.status !== "student" && viewer.status !== "mentor") {
       return {
-        success: result.success,
-        message: result.message,
+        success: false,
+        message: "Unauthorized",
         timestamp: new Date(),
       };
     }
+    if (viewer.status !== role) {
+      return {
+        success: false,
+        message: "Invalid role",
+        timestamp: new Date(),
+      };
+    }
+    const userRecord = viewer.user;
     const [videoCallRecord] = await db
       .select()
       .from(videoCall)
-      .where(eq(videoCall.id, videoId));
+      .where(
+        and(
+          eq(videoCall.id, videoId),
+          role === "student"
+            ? eq(videoCall.studentId, userRecord.id)
+            : eq(videoCall.mentorId, userRecord.id)
+        )
+      );
 
     if (!videoCallRecord) {
       return {

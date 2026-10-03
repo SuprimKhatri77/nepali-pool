@@ -94,16 +94,20 @@ export default function StudentPage({
     optimisticFavorites.includes(mentorId);
 
   const handleChat = async (mentorId: string) => {
+    if (loadingChatMentorId) return;
     setLoadingChatMentorId(mentorId);
-    const result = await getOrCreateChat(mentorId);
-
-    if (!result.success) {
+    try {
+      const result = await getOrCreateChat(mentorId);
+      if (!result.success) {
+        toast.error("Unable to start chat. Please try again.");
+        return;
+      }
+      router.push(`/chats/${result.chatId}`);
+    } catch {
       toast.error("Unable to start chat. Please try again.");
-      return;
+    } finally {
+      setLoadingChatMentorId(null);
     }
-
-    router.push(`/chats/${result.chatId}`);
-    setLoadingChatMentorId(null);
   };
 
   return (

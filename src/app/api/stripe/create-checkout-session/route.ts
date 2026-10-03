@@ -2,7 +2,14 @@ import { type NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
 import { db } from "../../../../../lib/db";
 import { chatSubscription, videoCall } from "../../../../../lib/db/schema";
-import { and, eq } from "drizzle-orm";
+import { and, eq, inArray } from "drizzle-orm";
+import z from "zod";
+import { getViewer } from "../../../../../server/lib/auth/viewer";
+
+const checkoutBodySchema = z.object({
+  paymentType: z.enum(["chat_subscription", "video_call"]),
+  mentorId: z.string().min(1),
+});
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: "2025-08-27.basil",
@@ -10,13 +17,34 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
 
 export async function POST(request: NextRequest) {
   try {
-    const { paymentType, userId, mentorId, userEmail } = await request.json();
+    // The payer is always the signed-in student; ids and email sent in the
+    // body are ignored.
+    const viewer = await getViewer();
+    if (viewer.status !== "student") {
+      return NextResponse.json(
+        { error: "Please log in as a student to continue" },
+        { status: viewer.status === "anonymous" ? 401 : 403 }
+      );
+    }
+    const userId = viewer.user.id;
+    const userEmail = viewer.user.email;
 
-    if (!paymentType || !userId || !userEmail) {
+    const body = checkoutBodySchema.safeParse(await request.json().catch(() => null));
+    if (!body.success) {
       return NextResponse.json(
         { error: "Missing required fields" },
         { status: 400 }
       );
+    }
+    const { paymentType, mentorId } = body.data;
+
+    const mentor = await db.query.mentorProfile.findFirst({
+      columns: { userId: true },
+      where: (fields, { and, eq }) =>
+        and(eq(fields.userId, mentorId), eq(fields.verifiedStatus, "accepted")),
+    });
+    if (!mentor) {
+      return NextResponse.json({ error: "Mentor not found" }, { status: 404 });
     }
 
     const baseUrl =
@@ -49,18 +77,14 @@ export async function POST(request: NextRequest) {
     }
 
     if (paymentType === "video_call") {
-      const [videoCallRecord] = await db
-        .select()
-        .from(videoCall)
-        .where(
-          and(eq(videoCall.mentorId, mentorId), eq(videoCall.studentId, userId))
-        );
-
-      if (
-        videoCallRecord &&
-        (videoCallRecord.status === "pending" ||
-          videoCallRecord.status === "scheduled")
-      ) {
+      const videoCallRecord = await db.query.videoCall.findFirst({
+        where: and(
+          eq(videoCall.mentorId, mentorId),
+          eq(videoCall.studentId, userId),
+          inArray(videoCall.status, ["pending", "scheduled"])
+        ),
+      });
+      if (videoCallRecord) {
         return NextResponse.json(
           {
             error: `You already have a ${videoCallRecord.status} video call  with this mentor.`,
@@ -96,7 +120,7 @@ export async function POST(request: NextRequest) {
         metadata: {
           paymentType: "chat_subscription",
           userId,
-          mentorId: mentorId || "",
+          mentorId,
         },
         success_url: `${baseUrl}/payment/success?session_id={CHECKOUT_SESSION_ID}&payment_type=${paymentType}`,
         cancel_url: `${baseUrl}/payment/cancel`,
@@ -122,7 +146,7 @@ export async function POST(request: NextRequest) {
         metadata: {
           paymentType: "video_call",
           userId,
-          mentorId: mentorId || "",
+          mentorId,
         },
         success_url: `${baseUrl}/payment/success?session_id={CHECKOUT_SESSION_ID}&payment_type=${paymentType}`,
         cancel_url: `${baseUrl}/payment/cancel`,

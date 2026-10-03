@@ -4,7 +4,14 @@ import { auth as authServer } from "../../../../server/lib/auth/auth";
 
 const f = createUploadthing();
 
-const auth = (req: Request) => ({ id: "fakeId" }); // Fake auth function
+// Uploads are only for signed-in users.
+async function requireUploader(req: Request) {
+  const session = await authServer.api.getSession({ headers: req.headers });
+  if (!session) {
+    throw new UploadThingError({ code: "FORBIDDEN", message: "Please log in to upload" });
+  }
+  return { userId: session.user.id };
+}
 
 // FileRouter for your app, can contain multiple FileRoutes
 export const ourFileRouter = {
@@ -24,22 +31,9 @@ export const ourFileRouter = {
     },
   })
     // Set permissions and file types for this FileRoute
-    .middleware(async ({ req }) => {
-      // This code runs on your server before upload
-      const user = await auth(req);
-
-      // If you throw, the user will not be able to upload
-      if (!user) throw new UploadThingError("Unauthorized");
-
-      // Whatever is returned here is accessible in onUploadComplete as `metadata`
-      return { userId: user.id };
-    })
-    .onUploadComplete(async ({ metadata, file }) => {
+    .middleware(({ req }) => requireUploader(req))
+    .onUploadComplete(async ({ metadata }) => {
       // This code RUNS ON YOUR SERVER after upload
-      console.log("Upload complete for userId:", metadata.userId);
-
-      console.log("file url", file.ufsUrl);
-
       // !!! Whatever is returned here is sent to the clientside `onClientUploadComplete` callback
       return { uploadedBy: metadata.userId };
     }),
@@ -49,15 +43,7 @@ export const ourFileRouter = {
   paymentImageUploader: f({
     image: { maxFileSize: "4MB", maxFileCount: 1 },
   })
-    .middleware(async ({ req }) => {
-      const session = await authServer.api.getSession({
-        headers: req.headers,
-      });
-      if (!session) {
-        throw new UploadThingError({ code: "FORBIDDEN", message: "Please log in to upload" });
-      }
-      return { userId: session.user.id };
-    })
+    .middleware(({ req }) => requireUploader(req))
     .onUploadComplete(async ({ metadata }) => {
       return { uploadedBy: metadata.userId };
     }),

@@ -1,4 +1,4 @@
-"use server";
+import "server-only";
 
 import { startOfWeek, subWeeks } from "date-fns";
 import { db } from "../../lib/db";

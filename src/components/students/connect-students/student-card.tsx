@@ -1,8 +1,6 @@
 import React, { useState } from "react";
-import {
-  ConnectStudentProfileSelectType,
-  UserSelectType,
-} from "../../../../lib/db/schema";
+import { ConnectStudentProfileSelectType } from "../../../../lib/db/schema";
+import type { PublicConnectStudent } from "../../../../types/all-types";
 import { StudentCard } from "./StudentCards";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/components/lib/utils";
@@ -16,9 +14,7 @@ import { useIsMobile } from "@/hooks/use-mobile";
 
 type Props = {
   students:
-    | (ConnectStudentProfileSelectType & {
-        user: UserSelectType | null;
-      })[]
+    | PublicConnectStudent[]
     | [];
     hasCurrentUserProfile: boolean,
     hasSession: boolean,
