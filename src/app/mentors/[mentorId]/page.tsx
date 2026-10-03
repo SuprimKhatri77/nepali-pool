@@ -30,11 +30,11 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { getSession } from "../../../../server/lib/auth/viewer";
+import { getViewer } from "../../../../server/lib/auth/viewer";
 import { redirect } from "next/navigation";
 import MentorCard from "@/components/MentorCard";
 import MentorServicesSection from "@/components/mentor-services/MentorServicesSection";
-import { getChatStatus } from "../../../../server/lib/auth/helpers/free/getChatStatus";
+import { StartChatButton } from "@/components/chat/start-chat-button";
 import { Metadata } from "next";
 import { getMentorById } from "../../../../server/seo-helpers/get-mentor-by-id";
 
@@ -138,8 +138,9 @@ export default async function MentorDetailPage({
   params: Promise<{ mentorId: string }>;
 }) {
   const { mentorId } = await params;
-  const session = await getSession();
-  if (session?.user.id === mentorId) return redirect("/profile");
+  const viewer = await getViewer();
+  const signedInUser = "user" in viewer ? viewer.user : null;
+  if (signedInUser?.id === mentorId) return redirect("/profile");
 
   const mentorRecord = await db.query.mentorProfile.findFirst({
     where: (fields, { eq }) =>
@@ -187,14 +188,11 @@ export default async function MentorDetailPage({
     );
   }
 
-  let currentUser;
-  if (session) {
-    currentUser = await getChatStatus(mentorId, session.user.id);
-  }
-
-  const role = session && currentUser?.success ? currentUser.role : null;
-  const currentUserId =
-    session && currentUser?.success ? currentUser.userId : null;
+  const isStudent = viewer.status === "student";
+  const needsStudentOnboarding =
+    viewer.status === "needs-onboarding" && viewer.role === "student";
+  const role = isStudent ? "student" : null;
+  const currentUserId = isStudent ? viewer.user.id : null;
   const otherSuggestedMentors = await db.query.mentorProfile.findMany({
     where: (fields, { eq }) =>
       mentorRecord.country
@@ -223,11 +221,7 @@ export default async function MentorDetailPage({
   ]);
   // Logged-out visitors and students without a profile are routed to login /
   // onboarding by the booking page; only non-student accounts can't book.
-  const canBookServices = !(
-    currentUser &&
-    !currentUser.success &&
-    currentUser.errorType === "not_a_student"
-  );
+  const canBookServices = !signedInUser || signedInUser.role === "student";
 
   return (
     <div className="min-h-screen bg-white">
@@ -379,7 +373,7 @@ export default async function MentorDetailPage({
                       </Link>
                     </Button>
                   )}
-                  {!session && (
+                  {!signedInUser && (
                     <>
                       <Button
                         asChild
@@ -390,23 +384,13 @@ export default async function MentorDetailPage({
                     </>
                   )}
 
-                  {currentUser?.success && currentUser.role === "student" ? (
-                    <>
-                      <Button
-                        asChild
-                        className="w-[200px] bg-white text-black border border-gray-300 hover:bg-gray-50 h-12 font-semibold transition-all"
-                      >
-                        {currentUser.success && currentUser.chatId && (
-                          <Link href={`/chats/${currentUser.chatId}`}>
-                            <MessageCircleIcon className="w-5 h-5 mr-2 text-emerald-600" />
-                            Chat
-                          </Link>
-                        )}
-                      </Button>
-                    </>
+                  {isStudent ? (
+                    <StartChatButton
+                      mentorId={mentorId}
+                      className="w-[200px] bg-white text-black border border-gray-300 hover:bg-gray-50 h-12 font-semibold transition-all"
+                    />
                   ) : (
-                    !currentUser?.success &&
-                    currentUser?.errorType === "no_student_profile" && (
+                    needsStudentOnboarding && (
                       <Button
                         asChild
                         className="w-[400px] bg-white text-black border border-gray-300 hover:bg-gray-50 h-12 font-semibold transition-all"

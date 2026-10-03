@@ -1,5 +1,3 @@
-export const revalidate = 3600;
-
 import { getStudentProfiles } from "../../../server/helper/connect-student/get-student-profile";
 import { redirect } from "next/navigation";
 import ConnectStudent from "@/components/students/connect-students/connect-student";

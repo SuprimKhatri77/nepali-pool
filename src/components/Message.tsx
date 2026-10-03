@@ -25,6 +25,9 @@ import { getFileType } from "../../server/helper/getFileType";
 import { PaymentButton } from "./PaymentButton";
 import { Spinner } from "./ui/spinner";
 
+// sendAttachments accepts at most this many files per message.
+const MAX_ATTACHMENTS = 10;
+
 type Props = {
   role: "student" | "mentor";
   chatId: string;
@@ -728,6 +731,7 @@ const Message = ({ chatId, currentUser, chatRecord }: Props) => {
               options={{
                 resourceType: "auto",
                 multiple: true,
+                maxFiles: MAX_ATTACHMENTS,
               }}
               onSuccess={(result) => {
                 const info = result.info as CloudinaryUploadWidgetInfo;
@@ -742,6 +746,12 @@ const Message = ({ chatId, currentUser, chatRecord }: Props) => {
                   console.log("Adding file to state:", newFile);
 
                   setUploadedFiles((prev) => {
+                    if (prev.length >= MAX_ATTACHMENTS) {
+                      toast.error(
+                        `You can attach up to ${MAX_ATTACHMENTS} files per message.`
+                      );
+                      return prev;
+                    }
                     const updated = [...prev, newFile];
                     console.log("Updated uploadedFiles array:", updated);
                     return updated;

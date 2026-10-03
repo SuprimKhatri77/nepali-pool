@@ -1,78 +1,39 @@
-"use server";
+import "server-only";
 
 import { db } from "../../../lib/db";
-import { auth } from "../../lib/auth/auth";
-import { headers } from "next/headers";
-import {
-  ConnectStudentProfileSelectType,
-  UserSelectType,
-} from "../../../lib/db/schema";
+import { ConnectStudentProfileSelectType } from "../../../lib/db/schema";
+import { getViewer } from "../../lib/auth/viewer";
 
-type GetStudentProfilesResult = {
-  students: (ConnectStudentProfileSelectType & {
-    user: UserSelectType | null;
-  })[];
+type ConnectStudentViewer = {
   hasCurrentUserProfile: boolean;
   hasSession: boolean;
   role: "student" | "mentor" | "admin" | null;
-  user: ConnectStudentProfileSelectType | undefined
+  user: ConnectStudentProfileSelectType | undefined;
 };
 
-export async function getStudentProfiles(): Promise<GetStudentProfilesResult> {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
-
-  if (!session) {
-    const students = await db.query.connectStudentProfiles.findMany({
-      with: {
-        user: true,
-      },
-    });
+// What /connect-student needs to know about the visitor: whether they are
+// signed in, their role, and their own student card. The list of cards is
+// loaded page by page on the client (getPaginatedStudentProfiles).
+export async function getStudentProfiles(): Promise<ConnectStudentViewer> {
+  const viewer = await getViewer();
+  if (viewer.status === "anonymous" || viewer.status === "invalid") {
     return {
-      students: students ?? [],
       hasCurrentUserProfile: false,
       hasSession: false,
       role: null,
-      user: undefined
-    };
-  }
-
-  const userProfile = await db.query.user.findFirst({
-    where: (fields, { eq }) => eq(fields.id, session.user.id),
-  });
-  if (!userProfile) {
-    await auth.api.signOut({ headers: await headers() });
-    const students = await db.query.connectStudentProfiles.findMany({
-      with: {
-        user: true,
-      },
-    });
-    return {
-      students: students ?? [],
-      hasCurrentUserProfile: false,
-      hasSession: false,
-      role: null,
-      user: undefined
+      user: undefined,
     };
   }
 
   const myProfile = await db.query.connectStudentProfiles.findFirst({
-    where: (fields, { eq }) => eq(fields.userId, session.user.id),
+    where: (fields, { eq }) => eq(fields.userId, viewer.user.id),
   });
-
-  const students = await db.query.connectStudentProfiles.findMany({
-    where: (fields, { ne }) => ne(fields.userId, session.user.id),
-    with: {
-      user: true,
-    },
-  });
+  const role = viewer.user.role;
 
   return {
-    students,
     hasCurrentUserProfile: Boolean(myProfile),
     hasSession: true,
-    role: userProfile.role as "student" | "mentor" | "admin" | null,
-    user: myProfile
+    role: role === "none" ? null : role,
+    user: myProfile,
   };
 }

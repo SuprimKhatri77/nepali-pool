@@ -18,7 +18,7 @@ export async function resendEmailVerification() {
     }
     const userRecord = viewer.user;
 
-    const allowed = await checkAndUpdateRateLimit(
+    const { allowed } = await checkAndUpdateRateLimit(
       `resend-verification:${userRecord.id}`
     );
 

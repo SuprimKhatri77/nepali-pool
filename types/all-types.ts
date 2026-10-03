@@ -1,5 +1,6 @@
 import {
   ChatsSelectType,
+  ConnectStudentProfileSelectType,
   MentorProfileSelectType,
   PreferredTimeSelectType,
   StudentProfileSelectType,
@@ -75,3 +76,10 @@ export type MentorProfileWithUserAndChat = MentorProfileSelectType & {
   user: UserSelectType;
   chats: ChatsSelectType[];
 };
+
+// A connect-student card as shown to everyone on /connect-student: no contact
+// number, no user id, and only the owner's name from their account.
+export type PublicConnectStudent = Omit<
+  ConnectStudentProfileSelectType,
+  "whatsAppNumber" | "userId"
+> & { user: { name: string } | null };

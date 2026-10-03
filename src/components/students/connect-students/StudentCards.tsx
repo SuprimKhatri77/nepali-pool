@@ -5,10 +5,8 @@ import {
   CardHeader,
 } from "@/components/ui/card";
 import { Building2, Calendar, Clock,  XIcon } from "lucide-react";
-import {
-  ConnectStudentProfileSelectType,
-  UserSelectType,
-} from "../../../../lib/db/schema";
+import { ConnectStudentProfileSelectType } from "../../../../lib/db/schema";
+import type { PublicConnectStudent } from "../../../../types/all-types";
 import { capitalizeFirstLetter } from "better-auth";
 import { Button } from "@/components/ui/button";
 import { FaFacebook, FaUserGraduate, FaWhatsapp } from "react-icons/fa";
@@ -21,9 +19,7 @@ import { DialogContent, DialogTitle } from "@radix-ui/react-dialog";
 import React, { useState } from "react";
 
 type StudentType = {
-  student: ConnectStudentProfileSelectType & {
-    user: UserSelectType | null;
-  };
+  student: PublicConnectStudent;
   hasCurrentUserProfile: boolean;
   hasSession: boolean,
   user: ConnectStudentProfileSelectType | undefined,
@@ -168,9 +164,7 @@ export const StudentCard = ({ student, hasSession, user, connectWith, setConnect
 
 
 // for user after clicking view more 
-export const DialogStudentCard = ({student, open, setOpen}:{student: (ConnectStudentProfileSelectType & {
-    user: UserSelectType | null;
-  }), open: boolean, setOpen: React.Dispatch<React.SetStateAction<boolean>>}) =>  {
+export const DialogStudentCard = ({student, open, setOpen}:{student: PublicConnectStudent, open: boolean, setOpen: React.Dispatch<React.SetStateAction<boolean>>}) =>  {
   return <Dialog open={open} onOpenChange={setOpen}>
     <DialogContent
     className="fixed z-50 left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 max-w-lg w-full"

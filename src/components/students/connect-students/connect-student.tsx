@@ -70,7 +70,6 @@ export default function ConnectStudent({
   const students = useMemo(() => {
     return studentsProfiles?.students ?? [];
   }, [studentsProfiles]);
-  console.log(students);
   const totalStudents = studentsProfiles?.total ?? 0;
   const totalPages = Math.ceil(totalStudents / limit);
 

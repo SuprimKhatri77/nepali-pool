@@ -119,56 +119,16 @@ export default function ScheduleCall({
   }
 
   const handleAccept = async () => {
-    setPending(true);
-    const studentId = videoRecord.studentId;
-    const mentorId = videoRecord.mentorId;
-
-    if (!role || !videoId || !studentId || !mentorId) {
+    if (!videoId) {
       toast.warning("Something went wrong");
       return;
     }
-    let date: string;
-    if (role === "student" && videoRecord.preferredTime.mentorPreferredTime) {
-      date = videoRecord.preferredTime.mentorPreferredTime.toLocaleString(
-        "en-US",
-        {
-          weekday: "long",
-          year: "numeric",
-          month: "long",
-          day: "numeric",
-          hour: "2-digit",
-          minute: "2-digit",
-        }
-      );
-    } else if (
-      role === "mentor" &&
-      videoRecord.preferredTime.studentPreferredTime
-    ) {
-      date = videoRecord.preferredTime.studentPreferredTime.toLocaleString(
-        "en-US",
-        {
-          weekday: "long",
-          year: "numeric",
-          month: "long",
-          day: "numeric",
-          hour: "2-digit",
-          minute: "2-digit",
-        }
-      );
-    } else {
-      toast.error("invalid attempt to schedule a call");
-      return;
-    }
+    setPending(true);
 
     try {
-      const result = await sendVideoCallSchedule(
-        videoId,
-        date,
-        role,
-        // time,
-        studentId,
-        mentorId
-      );
+      // The server accepts the time the other side proposed; it works out
+      // who we are and which time that is.
+      const result = await sendVideoCallSchedule(videoId);
 
       if (result.success && result.message) {
         toast.success(result.message);

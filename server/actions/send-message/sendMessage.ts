@@ -5,6 +5,8 @@ import { chats, messages } from "../../../lib/db/schema";
 import { and, eq, or } from "drizzle-orm";
 import { getCurrentUser } from "../../lib/auth/guards";
 
+const MAX_MESSAGE_LENGTH = 5000;
+
 type SendMessageType =
   | { success: true; messageId: string }
   | { success: false; error: string };
@@ -14,8 +16,14 @@ export async function sendMessage(
   chatId: string,
   hasAttachment: boolean = false
 ): Promise<SendMessageType> {
-  if (!chatId || !senderId || (!message.trim() && !hasAttachment)) {
+  if (typeof message !== "string" || typeof chatId !== "string" || !chatId) {
+    return { success: false, error: "Invalid message" };
+  }
+  if (!message.trim() && !hasAttachment) {
     return { success: false, error: "Message cannot be empty" };
+  }
+  if (message.length > MAX_MESSAGE_LENGTH) {
+    return { success: false, error: "Message is too long" };
   }
 
   try {
@@ -49,7 +57,8 @@ export async function sendMessage(
     const [newMessage] = await db
       .insert(messages)
       .values({
-        senderId,
+        // Always the signed-in user; the senderId argument is not trusted.
+        senderId: userRecord.id,
         chatId,
         message,
       })
