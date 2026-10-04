@@ -45,8 +45,9 @@ export function DashboardShellSkeleton() {
           <Skeleton className="size-7" />
           <Skeleton className="h-4 w-40" />
         </div>
-        <div className="mx-auto w-full max-w-6xl p-4 md:p-6 lg:p-8">
-          <MentorOverviewSkeleton />
+        <div className="mx-auto w-full max-w-6xl space-y-8 p-4 md:p-6 lg:p-8">
+          <PageHeadingSkeleton />
+          <CardGridSkeleton count={3} />
         </div>
       </div>
     </div>
@@ -92,6 +93,16 @@ export function MentorServicesSkeleton() {
         <Skeleton className="h-24 w-24" />
       </div>
       <CardGridSkeleton count={3} className="lg:grid-cols-2" />
+    </div>
+  );
+}
+
+// Student overview / favorites: heading, then a grid of mentor cards.
+export function StudentMentorGridSkeleton() {
+  return (
+    <div aria-busy="true" aria-label="Loading" className="mx-auto max-w-6xl space-y-8">
+      <PageHeadingSkeleton />
+      <CardGridSkeleton count={6} />
     </div>
   );
 }

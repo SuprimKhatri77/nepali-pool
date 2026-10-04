@@ -53,24 +53,23 @@ import { formatDuration, formatNpr } from "./format";
 
 // Loads the mentor's services and payment details on the client.
 export default function ManageServices() {
-  const { data, error, isPending, isError, refetch, isFetching } = useQuery(
+  const { data, error, isError, refetch, isFetching } = useQuery(
     mentorServicesQueryOptions(),
   );
 
-  if (isPending) return <MentorServicesSkeleton />;
-  if (isError) {
-    return (
-      <div className="mx-auto max-w-5xl">
-        <QueryErrorState
-          title="Couldn't load your services"
-          error={error}
-          onRetry={() => refetch()}
-          isRetrying={isFetching}
-        />
-      </div>
-    );
-  }
-  return <ManageServicesContent {...data} />;
+  // A failed background refetch keeps showing the data we have.
+  if (data) return <ManageServicesContent {...data} />;
+  if (!isError) return <MentorServicesSkeleton />;
+  return (
+    <div className="mx-auto max-w-5xl">
+      <QueryErrorState
+        title="Couldn't load your services"
+        error={error}
+        onRetry={() => refetch()}
+        isRetrying={isFetching}
+      />
+    </div>
+  );
 }
 
 function ManageServicesContent({
