@@ -1,17 +1,13 @@
+import { AdminMentorsTable } from "@/components/dashboard/admin/admin-mentors-table";
 import { requireAdmin } from "../../../../server/lib/auth/guards";
-import { db } from "../../../../lib/db";
-import { MentorProfileWithUser } from "../../../../types/all-types";
-import AdminMentors from "@/components/admin/mentors/AdminMentor";
 
-export default async function Page() {
+export const metadata = {
+  title: "Mentors | NepaliPool admin",
+};
+
+// Filter, search and page live in the URL; rows load on the client.
+export default async function AdminMentorsPage() {
   await requireAdmin();
 
-  const mentors: MentorProfileWithUser[] =
-    await db.query.mentorProfile.findMany({
-      with: {
-        user: true,
-      },
-    });
-
-  return <AdminMentors mentors={mentors} />;
+  return <AdminMentorsTable variant="directory" />;
 }

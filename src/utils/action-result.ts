@@ -13,6 +13,15 @@ export type ActionResult<T> =
 // One page of a cursor-paginated list (useInfiniteQuery).
 export type CursorPage<T> = { items: T[]; nextCursor: string | null };
 
+// One numbered page of a table (page is 1-based, already clamped to range).
+export type OffsetPage<T> = {
+  items: T[];
+  total: number;
+  page: number;
+  pageCount: number;
+  pageSize: number;
+};
+
 // A failure the server reported on purpose; its message is safe to show.
 export class ActionError extends Error {
   constructor(message: string) {

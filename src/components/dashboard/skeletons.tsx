@@ -192,3 +192,73 @@ export function AdminSchoolsSkeleton() {
     </div>
   );
 }
+
+// Admin tables: rows with an avatar, three columns and an action.
+export function AdminTableSkeleton({ rows = 8 }: { rows?: number }) {
+  return (
+    <div
+      aria-busy="true"
+      aria-label="Loading"
+      className="divide-y divide-slate-100 rounded-xl border border-slate-200"
+    >
+      {Array.from({ length: rows }, (_, i) => (
+        <div key={i} className="flex items-center gap-4 px-4 py-3">
+          <Skeleton className="size-9 shrink-0 rounded-full" />
+          <div className="min-w-0 flex-1 space-y-2">
+            <Skeleton className="h-4 w-40 max-w-full" />
+            <Skeleton className="h-3 w-56 max-w-full" />
+          </div>
+          <Skeleton className="hidden h-4 w-28 sm:block" />
+          <Skeleton className="hidden h-5 w-20 rounded-full md:block" />
+          <Skeleton className="hidden h-4 w-24 md:block" />
+          <Skeleton className="h-4 w-14" />
+        </div>
+      ))}
+    </div>
+  );
+}
+
+// Admin table pages: heading, filter tabs and search, then the table.
+export function AdminTablePageSkeleton({ tabs = 0 }: { tabs?: number }) {
+  return (
+    <div aria-busy="true" aria-label="Loading" className="mx-auto max-w-6xl space-y-6">
+      <PageHeadingSkeleton />
+      <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+        <div className="flex flex-wrap gap-2">
+          {Array.from({ length: tabs }, (_, i) => (
+            <Skeleton key={i} className="h-9 w-24 rounded-full" />
+          ))}
+        </div>
+        <Skeleton className="h-9 w-full sm:max-w-xs" />
+      </div>
+      <AdminTableSkeleton />
+    </div>
+  );
+}
+
+// Admin profile pages (mentor, student, application): header card with
+// photo and name, then detail cards.
+export function AdminProfileSkeleton() {
+  return (
+    <div aria-busy="true" aria-label="Loading" className="mx-auto max-w-6xl space-y-6">
+      <div className="flex flex-col items-center gap-6 rounded-2xl border border-slate-200 p-6 lg:flex-row lg:items-start">
+        <Skeleton className="size-36 shrink-0 rounded-full sm:size-48" />
+        <div className="w-full flex-1 space-y-3">
+          <Skeleton className="h-9 w-64 max-w-full" />
+          <Skeleton className="h-5 w-48" />
+          <Skeleton className="h-4 w-full" />
+          <Skeleton className="h-4 w-4/5" />
+        </div>
+      </div>
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+        {Array.from({ length: 4 }, (_, i) => (
+          <div key={i} className="space-y-3 rounded-xl border border-slate-200 p-5">
+            <Skeleton className="h-5 w-32" />
+            <Skeleton className="h-4 w-full" />
+            <Skeleton className="h-4 w-2/3" />
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}

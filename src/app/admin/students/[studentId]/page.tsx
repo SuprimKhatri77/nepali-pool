@@ -1,5 +1,6 @@
 import { requireAdmin } from "../../../../../server/lib/auth/guards";
 import AdminStudentSpecific from "@/components/admin/students/AdminStudentSpecific";
+import { AdminNotFound } from "@/components/admin/AdminNotFound";
 import { db } from "../../../../../lib/db";
 import { studentProfile } from "../../../../../lib/db/schema";
 import { StudentProfileWithUser } from "../../../../../types/all-types";
@@ -24,9 +25,13 @@ export default async function MentorSpecificServer({
         
       })
        if(!studentDetail){
-       return  <div>
-          <h1>Student Detail not found!.</h1>
-        </div>
+         return (
+           <AdminNotFound
+             title="Student not found"
+             backHref="/admin/students"
+             backLabel="Back to students"
+           />
+         );
        }
      
 
