@@ -11,13 +11,13 @@ import {
 } from "@/components/ui/command";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import { MentorProfileWithUser } from "../../types/all-types";
+import { PublicMentor } from "../../types/all-types";
 import { capitalizeFirstLetter } from "better-auth";
 
 
 
 interface SearchBelowHeroProps {
-  mentors: MentorProfileWithUser [];
+  mentors: PublicMentor [];
   sendTo?: string
 }
 

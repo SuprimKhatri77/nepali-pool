@@ -3,7 +3,8 @@ import React from "react";
 import { MapContainer, Marker, Popup, TileLayer, useMap } from "react-leaflet";
 import L from "leaflet";
 // import "leaflet/dist/leaflet.css";
-import { SchoolSelectType, UserSelectType } from "../../lib/db/schema";
+import { SchoolSelectType } from "../../lib/db/schema";
+import type { PublicMentor } from "../../types/all-types";
 import { capitalizeFirstLetter } from "better-auth";
 import Link from "next/link";
 import Image from "next/image";
@@ -25,24 +26,11 @@ interface MapProps {
   school: SchoolSelectType;
 }
 
-export type NearbyMentor = {
+// Public mentor fields only (see server/lib/mentors/public-mentor.ts).
+export type NearbyMentor = PublicMentor & {
   distance?: number;
   lat?: number;
   lng?: number;
-  sex: "male" | "female" | "other" | null;
-  createdAt: Date | null;
-  updatedAt: Date | null;
-  userId: string;
-  bio: string | null;
-  phoneNumber: string | null;
-  city: string | null;
-  imageUrl: string | null;
-  country: string | null;
-  zipCode: string | null;
-  nationality: string | null;
-  zyroCard: string | null;
-  verifiedStatus: "pending" | "accepted" | "rejected" | null;
-  user: UserSelectType;
 };
 
 export type NearbyMentorsList = NearbyMentor[];
@@ -218,7 +206,7 @@ export default function MapWithMentors({
 
                 {/*  View Profile */}
                 <Link
-                  href={`/mentors/${m.user.id}`}
+                  href={`/mentors/${m.userId}`}
                   className="inline-block mt-2 px-3 py-1 bg-emerald-600 !text-white text-sm rounded-md hover:bg-emerald-700 transition"
                 >
                   View Profile

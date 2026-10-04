@@ -3,7 +3,7 @@
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
-import type { VideoCallWithStudentAndMentor } from "../../types/all-types";
+import type { VideoCallWithParticipants } from "../../types/all-types";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 
@@ -11,7 +11,7 @@ export default function VideoCall({
   videoCallRecords,
   role,
 }: {
-  videoCallRecords: VideoCallWithStudentAndMentor[];
+  videoCallRecords: VideoCallWithParticipants[];
   role: string;
 }) {
   const params = useSearchParams();

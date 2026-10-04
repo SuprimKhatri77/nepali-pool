@@ -24,6 +24,10 @@ import { geocodeAddress } from "../../../../hooks/useGeoCode";
 import { capitalizeFirstLetter } from "better-auth";
 import { z } from "zod/v4";
 import MapContainer from "@/components/nearby-mentors/MapContainer";
+import {
+  publicMentorColumns,
+  publicMentorWith,
+} from "../../../../server/lib/mentors/public-mentor";
 
 const uuidCheck = z.string().uuid();
 export default async function SchoolNearByMentors({
@@ -67,17 +71,23 @@ export default async function SchoolNearByMentors({
 
   //  Fetch mentors with accepted status
   const mentors = await db.query.mentorProfile.findMany({
+    columns: publicMentorColumns,
+    with: publicMentorWith,
     where: (m, { eq }) => eq(m.verifiedStatus, "accepted"),
-    with: { user: true },
   });
 
-  //  Geocode mentors (city, country)
-  const mentorsWithCoords = await Promise.all(
-    mentors.map(async (mentor) => {
-      const coords = await geocodeAddress(`${mentor.city}, ${mentor.country}`);
-      return { ...mentor, ...coords };
-    })
+  //  Geocode mentors (city, country): one lookup per distinct place, not per
+  //  mentor (geocodeAddress caches results for a day).
+  const places = [...new Set(mentors.map((m) => `${m.city}, ${m.country}`))];
+  const placeCoords = new Map(
+    await Promise.all(
+      places.map(async (place) => [place, await geocodeAddress(place)] as const)
+    )
   );
+  const mentorsWithCoords = mentors.map((mentor) => ({
+    ...mentor,
+    ...placeCoords.get(`${mentor.city}, ${mentor.country}`),
+  }));
 
   let nearbyMentors = mentorsWithCoords
     .filter((m) => m.lat && m.lng) // ignore mentors without coords
@@ -140,7 +150,7 @@ export default async function SchoolNearByMentors({
         <div className="flex items-start gap-4">
           {/* School Image */}
           <Image
-            src={school.imageUrl ?? "https://via.placeholder.com/120"}
+            src={school.imageUrl || "/school-default-preview.png"}
             alt={school.name ?? "School"}
             className="w-24 h-24 rounded-xl object-cover border"
             width={24}
@@ -324,7 +334,7 @@ export default async function SchoolNearByMentors({
                 <CardFooter className="relative z-10 px-6 pb-6 mt-auto">
                   {/* Chat Button */}
                   <Link
-                    href={`/chats/${mentor.userId}`}
+                    href={`/mentors/${mentor.userId}`}
                     className="w-full group/btn"
                   >
                     <Button className="w-full inline-flex items-center justify-center gap-2 rounded-xl text-sm font-semibold bg-gradient-to-r from-emerald-600 to-emerald-500 text-white hover:from-emerald-700 hover:to-emerald-600 h-11 px-6 shadow-lg shadow-emerald-600/30 hover:shadow-xl hover:shadow-emerald-600/40 transition-all duration-300 hover:-translate-y-0.5">

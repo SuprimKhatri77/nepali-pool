@@ -72,14 +72,43 @@ export type AddSchoolType = {
   currentUserId: string;
 };
 
-export type MentorProfileWithUserAndChat = MentorProfileSelectType & {
-  user: UserSelectType;
-  chats: ChatsSelectType[];
-};
-
 // A connect-student card as shown to everyone on /connect-student: no contact
 // number, no user id, and only the owner's name from their account.
 export type PublicConnectStudent = Omit<
   ConnectStudentProfileSelectType,
   "whatsAppNumber" | "userId"
 > & { user: { name: string } | null };
+
+// A mentor as shown on public pages (see server/lib/mentors/public-mentor.ts).
+export type PublicMentor = Pick<
+  MentorProfileSelectType,
+  | "userId"
+  | "bio"
+  | "country"
+  | "city"
+  | "nationality"
+  | "sex"
+  | "imageUrl"
+  | "verifiedStatus"
+  | "createdAt"
+> & { user: Pick<UserSelectType, "name" | "image"> };
+
+// One side of a chat as the other side sees it: photo and name only.
+export type ChatParticipant = {
+  userId: string;
+  imageUrl: string | null;
+  user: Pick<UserSelectType, "id" | "name" | "image">;
+};
+
+export type ChatWithParticipants = ChatsSelectType & {
+  studentProfile: ChatParticipant;
+  mentorProfile: ChatParticipant;
+};
+
+// A video call as its participants see it: the other side's name and photo
+// only (admin pages use VideoCallWithStudentAndMentor).
+export type VideoCallWithParticipants = VideoCallSelectType & {
+  studentProfile: ChatParticipant;
+  mentorProfile: ChatParticipant;
+  preferredTime: PreferredTimeSelectType;
+};

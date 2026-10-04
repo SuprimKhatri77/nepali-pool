@@ -9,7 +9,6 @@ import Image from "next/image";
 import Link from "next/link";
 import {
   MapPin,
-  Mail,
   CheckCircle2,
   ArrowRight,
   Globe,
@@ -37,6 +36,11 @@ import MentorServicesSection from "@/components/mentor-services/MentorServicesSe
 import { StartChatButton } from "@/components/chat/start-chat-button";
 import { Metadata } from "next";
 import { getMentorById } from "../../../../server/seo-helpers/get-mentor-by-id";
+import {
+  getPublicMentor,
+  publicMentorColumns,
+  publicMentorWith,
+} from "../../../../server/lib/mentors/public-mentor";
 
 export async function generateMetadata({
   params,
@@ -142,16 +146,7 @@ export default async function MentorDetailPage({
   const signedInUser = "user" in viewer ? viewer.user : null;
   if (signedInUser?.id === mentorId) return redirect("/profile");
 
-  const mentorRecord = await db.query.mentorProfile.findFirst({
-    where: (fields, { eq }) =>
-      and(
-        eq(mentorProfile.userId, mentorId),
-        eq(mentorProfile.verifiedStatus, "accepted")
-      ),
-    with: {
-      user: true,
-    },
-  });
+  const mentorRecord = await getPublicMentor(mentorId);
 
   if (!mentorRecord) {
     return (
@@ -194,16 +189,16 @@ export default async function MentorDetailPage({
   const role = isStudent ? "student" : null;
   const currentUserId = isStudent ? viewer.user.id : null;
   const otherSuggestedMentors = await db.query.mentorProfile.findMany({
+    columns: publicMentorColumns,
+    with: publicMentorWith,
     where: (fields, { eq }) =>
-      mentorRecord.country
-        ? and(
-            eq(mentorProfile.country, mentorRecord.country),
-            ne(mentorProfile.userId, mentorId)
-          )
-        : ne(mentorProfile.userId, mentorId),
-    with: {
-      user: true,
-    },
+      and(
+        eq(mentorProfile.verifiedStatus, "accepted"),
+        ne(mentorProfile.userId, mentorId),
+        mentorRecord.country
+          ? eq(mentorProfile.country, mentorRecord.country)
+          : undefined
+      ),
     limit: 3,
   });
 
@@ -351,17 +346,6 @@ export default async function MentorDetailPage({
                   <h3 className="text-xl font-bold">Get in Touch</h3>
                 </div>
                 <div className="grid grid-cols-[repeat(auto-fit,_minmax(200px,_1fr))] gap-3 p-4 rounded-xl bg-white border border-gray-200">
-                  <Button
-                    asChild
-                    className="w-[200px] bg-emerald-50 text-emerald-700 hover:bg-emerald-100 h-12 font-semibold shadow-sm border border-emerald-200 transition-all"
-                  >
-                    <Link
-                      href={`https://mail.google.com/mail/?view=cm&fs=1&to=${mentorRecord.user.email}`}
-                    >
-                      <Mail className="w-5 h-5 mr-2" />
-                      Send Email
-                    </Link>
-                  </Button>
                   {canBookServices && (
                     <Button
                       asChild
@@ -518,16 +502,6 @@ export default async function MentorDetailPage({
                       </p>
                       <p className="text-lg text-slate-900 capitalize">
                         {mentorRecord.sex}
-                      </p>
-                    </div>
-                  )}
-                  {mentorRecord.zipCode && (
-                    <div>
-                      <p className="text-sm font-semibold text-slate-500 mb-2">
-                        Zip Code
-                      </p>
-                      <p className="text-lg text-slate-900">
-                        {mentorRecord.zipCode}
                       </p>
                     </div>
                   )}

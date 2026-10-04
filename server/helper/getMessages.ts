@@ -53,20 +53,6 @@ export async function getMessages(chatId: string, limit: number = 20) {
     const messageRecords = await db.query.messages.findMany({
       where: eq(messages.chatId, chatId),
       with: {
-        chats: {
-          with: {
-            studentProfile: {
-              with: {
-                user: true,
-              },
-            },
-            mentorProfile: {
-              with: {
-                user: true,
-              },
-            },
-          },
-        },
         messageAttachments: true,
       },
       orderBy: [desc(messages.createdAt)],
@@ -159,20 +145,6 @@ export async function getMoreMessages(
         lt(messages.createdAt, oldestMessage.createdAt!)
       ),
       with: {
-        chats: {
-          with: {
-            studentProfile: {
-              with: {
-                user: true,
-              },
-            },
-            mentorProfile: {
-              with: {
-                user: true,
-              },
-            },
-          },
-        },
         messageAttachments: true,
       },
       orderBy: [desc(messages.createdAt)],

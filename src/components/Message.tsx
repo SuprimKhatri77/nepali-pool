@@ -3,13 +3,11 @@
 import { useEffect, useState, useRef, useCallback } from "react";
 import { getMessages, getMoreMessages } from "../../server/helper/getMessages";
 import type {
-  ChatsSelectType,
-  MentorProfileSelectType,
   MessageAttachmentsSelectType,
   MessageSelectType,
-  StudentProfileSelectType,
   UserSelectType,
 } from "../../lib/db/schema";
+import type { ChatWithParticipants } from "../../types/all-types";
 import Image from "next/image";
 import { Input } from "./ui/input";
 import { sendMessage } from "../../server/actions/send-message/sendMessage";
@@ -32,27 +30,10 @@ type Props = {
   role: "student" | "mentor";
   chatId: string;
   currentUser: UserSelectType;
-  chatRecord: ChatsSelectType & {
-    studentProfile: StudentProfileSelectType & {
-      user: UserSelectType;
-    };
-    mentorProfile: MentorProfileSelectType & {
-      user: UserSelectType;
-    };
-  };
+  chatRecord: ChatWithParticipants;
 };
 
 type MessagesWithUser = MessageSelectType & {
-  chats:
-    | (ChatsSelectType & {
-        studentProfile: StudentProfileSelectType & {
-          user: UserSelectType;
-        };
-        mentorProfile: MentorProfileSelectType & {
-          user: UserSelectType;
-        };
-      })
-    | null;
   messageAttachments: MessageAttachmentsSelectType[];
 };
 
@@ -220,11 +201,6 @@ const Message = ({ chatId, currentUser, chatRecord }: Props) => {
 
           const newMessage: MessagesWithUser = {
             ...newMessageData,
-            chats: {
-              ...chatRecord,
-              studentProfile: chatRecord.studentProfile,
-              mentorProfile: chatRecord.mentorProfile,
-            },
             messageAttachments: [],
           };
 
