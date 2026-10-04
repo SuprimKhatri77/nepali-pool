@@ -11,6 +11,18 @@ import {
   type AdminMentorFilter,
 } from "../../../server/actions/admin-dashboard/people";
 
+import {
+  getAdminVideoCallCounts,
+  listAdminSessions,
+  listAdminVideoCalls,
+  type AdminVideoCallFilter,
+} from "../../../server/actions/admin-dashboard/calls";
+
+export type AdminVideoCallsParams = {
+  status: AdminVideoCallFilter;
+  page: number;
+};
+export type AdminSessionsParams = { q: string; page: number };
 export type AdminMentorsParams = {
   status: AdminMentorFilter;
   q: string;
@@ -30,6 +42,12 @@ export const adminDashboardKeys = {
     [...adminDashboardKeys.all, "mentors", "counts"] as const,
   students: (params: AdminStudentsParams) =>
     [...adminDashboardKeys.all, "students", "list", params] as const,
+  videoCalls: (params: AdminVideoCallsParams) =>
+    [...adminDashboardKeys.all, "video-calls", "list", params] as const,
+  videoCallCounts: () =>
+    [...adminDashboardKeys.all, "video-calls", "counts"] as const,
+  sessions: (params: AdminSessionsParams) =>
+    [...adminDashboardKeys.all, "sessions", "list", params] as const,
 };
 
 export const adminOverviewQueryOptions = () =>
@@ -66,5 +84,25 @@ export const adminStudentsQueryOptions = (params: AdminStudentsParams) =>
   queryOptions({
     queryKey: adminDashboardKeys.students(params),
     queryFn: async () => unwrap(await listAdminStudents(params)),
+    placeholderData: keepPreviousData,
+  });
+
+export const adminVideoCallsQueryOptions = (params: AdminVideoCallsParams) =>
+  queryOptions({
+    queryKey: adminDashboardKeys.videoCalls(params),
+    queryFn: async () => unwrap(await listAdminVideoCalls(params)),
+    placeholderData: keepPreviousData,
+  });
+
+export const adminVideoCallCountsQueryOptions = () =>
+  queryOptions({
+    queryKey: adminDashboardKeys.videoCallCounts(),
+    queryFn: async () => unwrap(await getAdminVideoCallCounts()),
+  });
+
+export const adminSessionsQueryOptions = (params: AdminSessionsParams) =>
+  queryOptions({
+    queryKey: adminDashboardKeys.sessions(params),
+    queryFn: async () => unwrap(await listAdminSessions(params)),
     placeholderData: keepPreviousData,
   });

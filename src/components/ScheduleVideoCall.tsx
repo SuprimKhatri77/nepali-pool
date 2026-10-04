@@ -30,15 +30,16 @@ export default function ScheduleVideoCallWithMentor({
   const queryClient = useQueryClient();
 
   useEffect(() => {
-    if (state.success && state.message) {
-      toast.success(state.message);
-      // The pending-requests badge and the overview counts are cached.
-      queryClient.invalidateQueries({ queryKey: adminDashboardKeys.all });
-    }
-    if (!state.success && state.message) {
-      toast.error(state.message);
-    }
-  }, [state.success, state.message, queryClient]);
+    if (!state.message) return;
+    if (state.success) toast.success(state.message);
+    else toast.error(state.message);
+    // Even a failure can mean the call moved on (scheduled but the emails
+    // failed, or someone else scheduled it): refresh the cached lists,
+    // counts and badges either way.
+    queryClient.invalidateQueries({ queryKey: adminDashboardKeys.all });
+    // Each submit returns a new state object, so depend on it as a whole:
+    // two identical replies in a row are still two results.
+  }, [state, queryClient]);
   return (
     <div className="flex flex-col max-w-xl bg-slate-50 mx-auto h-full w-full my-5 py-5 px-7 rounded-lg gap-3">
       <div className="flex items-center justify-between">
