@@ -21,7 +21,7 @@ import type { AdminStudentRow } from "../../../../server/actions/admin-dashboard
 import { Avatar } from "./admin-mentors-table";
 import { TablePagination } from "./table-pagination";
 import { TableSearch } from "./table-search";
-import { useTableParams } from "./use-table-params";
+import { useTableParams } from "@/components/dashboard/use-table-params";
 
 export function AdminStudentsTable() {
   const { setParams, q, page } = useTableParams();

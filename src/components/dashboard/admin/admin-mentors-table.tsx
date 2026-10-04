@@ -26,11 +26,11 @@ import type {
   AdminMentorFilter,
   AdminMentorRow,
 } from "../../../../server/actions/admin-dashboard/people";
-import { FilterTabs } from "./filter-tabs";
+import { FilterTabs } from "@/components/dashboard/filter-tabs";
 import { ADMIN_MENTOR_APPLICATIONS_HREF } from "./routes";
 import { TablePagination } from "./table-pagination";
 import { TableSearch } from "./table-search";
-import { useTableParams } from "./use-table-params";
+import { useTableParams } from "@/components/dashboard/use-table-params";
 
 const STATUS_META: Record<
   NonNullable<AdminMentorRow["verifiedStatus"]>,
