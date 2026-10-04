@@ -24,7 +24,6 @@ export default function AdminStudentProfile({
   const router = useRouter();
   const [openImage, setOpenImage] = useState(false);
   const [imageUrl, setImageUrl] = useState("");
-  console.log(studentDetail);
 
 
   return (

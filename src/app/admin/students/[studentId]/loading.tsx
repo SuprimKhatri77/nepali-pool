@@ -1,9 +1,5 @@
-import { LoaderCircleIcon } from "lucide-react";
+import { AdminProfileSkeleton } from "@/components/dashboard/skeletons";
 
 export default function Loading() {
-  return (
-    <div className="flex items-center justify-center h-screen">
-      <LoaderCircleIcon />
-    </div>
-  );
+  return <AdminProfileSkeleton />;
 }
