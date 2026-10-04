@@ -11,6 +11,8 @@ import {
 import { Label } from "@/components/ui/label";
 import { useActionState, useEffect, useState } from "react";
 import { toast } from "sonner";
+import { useQueryClient } from "@tanstack/react-query";
+import { adminDashboardKeys } from "@/modules/admin-dashboard/queries";
 import { Input } from "./ui/input";
 
 import {
@@ -37,16 +39,19 @@ export default function AddSchool({
   );
 
   const [profilePhotoUrl, setProfilePhotoUrl] = useState<string>("");
+  const queryClient = useQueryClient();
 
   useEffect(() => {
     if (state.success) {
       toast.success(state.message, { position: "top-right" });
+      // The admin overview's school count is cached.
+      queryClient.invalidateQueries({ queryKey: adminDashboardKeys.all });
       setTimeout(() => setProfilePhotoUrl(""), 0);
     }
     if (!state.success && state.message) {
       toast.error(state.message);
     }
-  }, [state]);
+  }, [state, queryClient]);
 
   return (
     <div

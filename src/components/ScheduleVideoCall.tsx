@@ -9,6 +9,8 @@ import {
 import { Button } from "./ui/button";
 import { useActionState, useEffect } from "react";
 import { toast } from "sonner";
+import { useQueryClient } from "@tanstack/react-query";
+import { adminDashboardKeys } from "@/modules/admin-dashboard/queries";
 import { VideoCallWithStudentAndMentor } from "../../types/all-types";
 
 export default function ScheduleVideoCallWithMentor({
@@ -25,15 +27,18 @@ export default function ScheduleVideoCallWithMentor({
     scheduleVideoCall,
     initialState
   );
+  const queryClient = useQueryClient();
 
   useEffect(() => {
     if (state.success && state.message) {
       toast.success(state.message);
+      // The pending-requests badge and the overview counts are cached.
+      queryClient.invalidateQueries({ queryKey: adminDashboardKeys.all });
     }
     if (!state.success && state.message) {
       toast.error(state.message);
     }
-  }, [state.success, state.message]);
+  }, [state.success, state.message, queryClient]);
   return (
     <div className="flex flex-col max-w-xl bg-slate-50 mx-auto h-full w-full my-5 py-5 px-7 rounded-lg gap-3">
       <div className="flex items-center justify-between">

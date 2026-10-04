@@ -23,6 +23,9 @@ import {
 import { useActionState, useEffect } from "react";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import { useQueryClient } from "@tanstack/react-query";
+import { adminDashboardKeys } from "@/modules/admin-dashboard/queries";
+import { ADMIN_MENTOR_APPLICATIONS_HREF } from "@/components/dashboard/admin/routes";
 import Image from "next/image";
 import { MentorProfileWithUser } from "../../types/all-types";
 
@@ -43,23 +46,32 @@ export default function MentorApplication({
     FormData
   >(RejectMentorApplication, initialState);
   const router = useRouter();
+  const queryClient = useQueryClient();
 
   useEffect(() => {
     if (stateAccept.message && stateAccept.success) {
       toast(stateAccept.message);
+      // The pending-applications badge and the overview counts are cached.
+      queryClient.invalidateQueries({ queryKey: adminDashboardKeys.all });
       setTimeout(() => {
-        router.replace(stateAccept.redirectTo as string);
+        router.replace(stateAccept.redirectTo ?? ADMIN_MENTOR_APPLICATIONS_HREF);
       }, 1500);
+    } else if (stateAccept.message && !stateAccept.success) {
+      toast.error(stateAccept.message);
     }
-  }, [stateAccept.message, stateAccept.redirectTo, stateAccept.success, router]);
+  }, [stateAccept.message, stateAccept.redirectTo, stateAccept.success, router, queryClient]);
   useEffect(() => {
     if (stateReject.message && stateReject.success) {
       toast(stateReject.message);
+      // The pending-applications badge and the overview counts are cached.
+      queryClient.invalidateQueries({ queryKey: adminDashboardKeys.all });
       setTimeout(() => {
-        router.replace(stateReject.redirectTo as string);
+        router.replace(stateReject.redirectTo ?? ADMIN_MENTOR_APPLICATIONS_HREF);
       }, 1500);
+    } else if (stateReject.message && !stateReject.success) {
+      toast.error(stateReject.message);
     }
-  }, [stateReject.message, stateReject.redirectTo, stateReject.success, router]);
+  }, [stateReject.message, stateReject.redirectTo, stateReject.success, router, queryClient]);
   return (
     <div className="min-h-screen bg-gray-50 py-8 my-40 sm:my-0">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">

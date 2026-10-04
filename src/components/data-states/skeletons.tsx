@@ -82,15 +82,22 @@ export function StatCardsSkeleton({
     <div
       aria-busy="true"
       aria-label="Loading"
-      className={cn("grid grid-cols-2 gap-4 lg:grid-cols-4", className)}
+      className={cn(
+        "grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4",
+        className,
+      )}
     >
       {Array.from({ length: count }, (_, i) => (
         <div
           key={i}
-          className="space-y-3 rounded-xl border border-slate-100 p-5"
+          className="flex items-start justify-between gap-4 rounded-xl border border-slate-100 p-5"
         >
-          <Skeleton className="h-4 w-1/2" />
-          <Skeleton className="h-8 w-1/3" />
+          <div className="flex-1 space-y-3">
+            <Skeleton className="h-4 w-1/2" />
+            <Skeleton className="h-8 w-1/3" />
+            <Skeleton className="h-3 w-3/4" />
+          </div>
+          <Skeleton className="size-10 shrink-0 rounded-full" />
         </div>
       ))}
     </div>
