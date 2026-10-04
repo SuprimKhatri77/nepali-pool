@@ -4,8 +4,20 @@ import { useState, useTransition } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { useQueryClient } from "@tanstack/react-query";
-import { mentorDashboardKeys } from "@/modules/mentor-dashboard/queries";
+import {
+  useInfiniteQuery,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
+import {
+  mentorDashboardKeys,
+  mentorEnquiriesInfiniteOptions,
+  mentorEnquiryCountsQueryOptions,
+} from "@/modules/mentor-dashboard/queries";
+import { EmptyState } from "@/components/data-states/empty-state";
+import { ListSkeleton } from "@/components/data-states/skeletons";
+import { LoadMore } from "@/components/data-states/load-more";
+import { QueryErrorState } from "@/components/data-states/query-error-state";
 import {
   CheckCircle2,
   Inbox,
@@ -26,10 +38,11 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import type { MentorEnquiryStatus } from "../../../lib/db/schema";
 import type {
-  MentorEnquirySelectType,
-  MentorEnquiryStatus,
-} from "../../../lib/db/schema";
+  EnquiryFilter,
+  MentorEnquiryRow,
+} from "../../../server/actions/mentor-dashboard/enquiries";
 import { respondToEnquiry } from "../../../server/actions/mentor-enquiry/update-enquiry-status";
 import {
   BUDGET_READINESS_LABELS,
@@ -39,13 +52,7 @@ import {
 } from "./format";
 import { LocalDateTime } from "./LocalDateTime";
 
-export type EnquiryFilter = MentorEnquiryStatus | "all";
-
-// Contact details are null until the mentor accepts (redacted server-side).
-export type MentorEnquiryRow = Omit<
-  MentorEnquirySelectType,
-  "email" | "whatsappNumber"
-> & { email: string | null; whatsappNumber: string | null };
+export type { EnquiryFilter, MentorEnquiryRow };
 
 const FILTERS: { value: EnquiryFilter; label: string }[] = [
   { value: "new", label: "New" },
@@ -55,31 +62,27 @@ const FILTERS: { value: EnquiryFilter; label: string }[] = [
   { value: "all", label: "All" },
 ];
 
-type Props = {
-  mentorName: string;
-  filter: EnquiryFilter;
-  counts: Partial<Record<MentorEnquiryStatus, number>>;
-  enquiries: MentorEnquiryRow[];
-  chatIdByStudent: Record<string, string>;
-  isTruncated: boolean;
-};
-
 export default function MentorEnquiries({
   mentorName,
   filter,
-  counts,
-  enquiries,
-  chatIdByStudent,
-  isTruncated,
-}: Props) {
+}: {
+  mentorName: string;
+  filter: EnquiryFilter;
+}) {
   const router = useRouter();
+  const { data: counts } = useQuery(mentorEnquiryCountsQueryOptions());
+  const list = useInfiniteQuery(mentorEnquiriesInfiniteOptions(filter));
+  const enquiries = list.data?.pages.flatMap((page) => page.items) ?? [];
   const [opened, setOpened] = useState<MentorEnquiryRow | null>(null);
-  // Prefer fresh props; fall back to the snapshot when the enquiry leaves the
-  // current tab (e.g. right after accepting from "New") so the dialog stays put.
+  // Prefer the fresh row; fall back to the snapshot when the enquiry leaves
+  // the current tab (e.g. right after accepting from "New") so the dialog
+  // stays put.
   const selected = opened
     ? (enquiries.find((e) => e.id === opened.id) ?? opened)
     : null;
-  const total = Object.values(counts).reduce((sum, n) => sum + (n ?? 0), 0);
+  const total = counts
+    ? Object.values(counts).reduce((sum, n) => sum + (n ?? 0), 0)
+    : undefined;
 
   return (
     <div className="mx-auto max-w-5xl">
@@ -92,38 +95,45 @@ export default function MentorEnquiries({
 
         <div className="flex flex-wrap gap-2 mb-6">
           {FILTERS.map((f) => {
-            const n = f.value === "all" ? total : (counts[f.value] ?? 0);
+            const n = f.value === "all" ? total : counts && (counts[f.value] ?? 0);
             const active = f.value === filter;
             return (
               <Link
                 key={f.value}
                 href={`/dashboard/mentor/enquiries?status=${f.value}`}
+                aria-current={active ? "page" : undefined}
                 className={`px-3 py-1.5 rounded-full text-sm font-medium border transition-colors ${
                   active
                     ? "bg-emerald-600 text-white border-emerald-600"
                     : "bg-white text-gray-700 border-gray-200 hover:border-emerald-300"
                 }`}
               >
-                {f.label}{" "}
-                <span className={active ? "text-emerald-100" : "text-gray-400"}>
-                  {n}
-                </span>
+                {f.label}
+                {n !== undefined && (
+                  <span className={active ? "text-emerald-100" : "text-gray-400"}>
+                    {" "}
+                    {n}
+                  </span>
+                )}
               </Link>
             );
           })}
         </div>
 
-        {enquiries.length === 0 ? (
-          <Card className="border-emerald-100">
-            <CardContent className="py-14 text-center">
-              <Inbox className="w-10 h-10 text-gray-300 mx-auto mb-3" />
-              <p className="text-gray-600">
-                {filter === "new"
-                  ? "No new enquiries."
-                  : "No enquiries here yet."}
-              </p>
-            </CardContent>
-          </Card>
+        {list.isPending ? (
+          <ListSkeleton rows={5} />
+        ) : list.isError ? (
+          <QueryErrorState
+            title="Couldn't load enquiries"
+            error={list.error}
+            onRetry={() => list.refetch()}
+            isRetrying={list.isFetching}
+          />
+        ) : enquiries.length === 0 ? (
+          <EmptyState
+            icon={Inbox}
+            title={filter === "new" ? "No new enquiries" : "No enquiries here yet"}
+          />
         ) : (
           <div className="space-y-3">
             {enquiries.map((enquiry) => (
@@ -164,11 +174,13 @@ export default function MentorEnquiries({
                 </CardContent>
               </Card>
             ))}
-            {isTruncated && (
-              <p className="text-center text-sm text-gray-500 pt-2">
-                Showing the 100 most recent enquiries.
-              </p>
-            )}
+            <LoadMore
+              hasNextPage={list.hasNextPage}
+              isFetchingNextPage={list.isFetchingNextPage}
+              isFetchNextPageError={list.isFetchNextPageError}
+              fetchNextPage={list.fetchNextPage}
+              skeleton={<ListSkeleton rows={2} />}
+            />
           </div>
         )}
       </div>
@@ -183,7 +195,7 @@ export default function MentorEnquiries({
               key={selected.id}
               enquiry={selected}
               mentorName={mentorName}
-              chatId={chatIdByStudent[selected.studentId]}
+              chatId={selected.chatId}
               onDeclined={() => setOpened(null)}
               onAccepted={(contact) => {
                 setOpened({
@@ -196,10 +208,8 @@ export default function MentorEnquiries({
                   router.replace("/dashboard/mentor/enquiries?status=accepted");
                 }
               }}
-              onStale={() => {
-                setOpened(null);
-                router.refresh();
-              }}
+              // The lists were already refetched; just close the stale dialog.
+              onStale={() => setOpened(null)}
             />
           )}
         </DialogContent>
@@ -242,7 +252,7 @@ function EnquiryDetails({
 }: {
   enquiry: MentorEnquiryRow;
   mentorName: string;
-  chatId: string | undefined;
+  chatId: string | null;
   onAccepted: (contact: { email: string; whatsappNumber: string }) => void;
   onDeclined: () => void;
   onStale: () => void;

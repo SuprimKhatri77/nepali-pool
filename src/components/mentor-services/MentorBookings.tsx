@@ -4,8 +4,20 @@ import { useState, useTransition } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { useQueryClient } from "@tanstack/react-query";
-import { mentorDashboardKeys } from "@/modules/mentor-dashboard/queries";
+import {
+  useInfiniteQuery,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
+import {
+  mentorBookingCountsQueryOptions,
+  mentorBookingsInfiniteOptions,
+  mentorDashboardKeys,
+} from "@/modules/mentor-dashboard/queries";
+import { EmptyState } from "@/components/data-states/empty-state";
+import { ListSkeleton } from "@/components/data-states/skeletons";
+import { LoadMore } from "@/components/data-states/load-more";
+import { QueryErrorState } from "@/components/data-states/query-error-state";
 import {
   CheckCircle2,
   Inbox,
@@ -27,10 +39,11 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { ClickableImage } from "@/components/ClickableImage";
+import type { ServiceBookingStatus } from "../../../lib/db/schema";
 import type {
-  ServiceBookingSelectType,
-  ServiceBookingStatus,
-} from "../../../lib/db/schema";
+  BookingFilter,
+  MentorBookingRow,
+} from "../../../server/actions/mentor-dashboard/bookings";
 import {
   completeServiceBooking,
   confirmServiceBooking,
@@ -40,7 +53,7 @@ import {
 import { BOOKING_STATUS_META, formatNpr, whatsappLink } from "./format";
 import { LocalDateTime } from "./LocalDateTime";
 
-export type BookingFilter = ServiceBookingStatus | "all";
+export type { BookingFilter };
 
 const FILTERS: { value: BookingFilter; label: string }[] = [
   { value: "pending", label: "Pending" },
@@ -51,32 +64,27 @@ const FILTERS: { value: BookingFilter; label: string }[] = [
   { value: "all", label: "All" },
 ];
 
-type Props = {
-  mentorName: string;
-  filter: BookingFilter;
-  counts: Partial<Record<ServiceBookingStatus, number>>;
-  bookings: ServiceBookingSelectType[];
-  chatIdByStudent: Record<string, string>;
-  isTruncated: boolean;
-};
-
 export default function MentorBookings({
   mentorName,
   filter,
-  counts,
-  bookings,
-  chatIdByStudent,
-  isTruncated,
-}: Props) {
+}: {
+  mentorName: string;
+  filter: BookingFilter;
+}) {
   const router = useRouter();
-  const [opened, setOpened] = useState<ServiceBookingSelectType | null>(null);
-  // Prefer fresh props so the dialog reflects revalidated data, but fall back to
-  // the snapshot when the booking drops out of the current tab (e.g. right after
-  // confirming from "Pending") so the dialog doesn't vanish mid-action.
+  const { data: counts } = useQuery(mentorBookingCountsQueryOptions());
+  const list = useInfiniteQuery(mentorBookingsInfiniteOptions(filter));
+  const bookings = list.data?.pages.flatMap((page) => page.items) ?? [];
+  const [opened, setOpened] = useState<MentorBookingRow | null>(null);
+  // Prefer the fresh row so the dialog reflects refetched data, but fall back
+  // to the snapshot when the booking drops out of the current tab (e.g. right
+  // after confirming from "Pending") so the dialog doesn't vanish mid-action.
   const selected = opened
     ? (bookings.find((b) => b.id === opened.id) ?? opened)
     : null;
-  const total = Object.values(counts).reduce((sum, n) => sum + (n ?? 0), 0);
+  const total = counts
+    ? Object.values(counts).reduce((sum, n) => sum + (n ?? 0), 0)
+    : undefined;
 
   return (
     <div className="mx-auto max-w-5xl">
@@ -88,35 +96,49 @@ export default function MentorBookings({
 
         <div className="flex flex-wrap gap-2 mb-6">
           {FILTERS.map((f) => {
-            const n = f.value === "all" ? total : (counts[f.value] ?? 0);
+            const n = f.value === "all" ? total : counts && (counts[f.value] ?? 0);
             const active = f.value === filter;
             return (
               <Link
                 key={f.value}
                 href={`/dashboard/mentor/bookings?status=${f.value}`}
+                aria-current={active ? "page" : undefined}
                 className={`px-3 py-1.5 rounded-full text-sm font-medium border transition-colors ${
                   active
                     ? "bg-emerald-600 text-white border-emerald-600"
                     : "bg-white text-gray-700 border-gray-200 hover:border-emerald-300"
                 }`}
               >
-                {f.label} <span className={active ? "text-emerald-100" : "text-gray-400"}>{n}</span>
+                {f.label}
+                {n !== undefined && (
+                  <span className={active ? "text-emerald-100" : "text-gray-400"}>
+                    {" "}
+                    {n}
+                  </span>
+                )}
               </Link>
             );
           })}
         </div>
 
-        {bookings.length === 0 ? (
-          <Card className="border-emerald-100">
-            <CardContent className="py-14 text-center">
-              <Inbox className="w-10 h-10 text-gray-300 mx-auto mb-3" />
-              <p className="text-gray-600">
-                {filter === "pending"
-                  ? "No bookings waiting for verification."
-                  : "No bookings here yet."}
-              </p>
-            </CardContent>
-          </Card>
+        {list.isPending ? (
+          <ListSkeleton rows={5} />
+        ) : list.isError ? (
+          <QueryErrorState
+            title="Couldn't load bookings"
+            error={list.error}
+            onRetry={() => list.refetch()}
+            isRetrying={list.isFetching}
+          />
+        ) : bookings.length === 0 ? (
+          <EmptyState
+            icon={Inbox}
+            title={
+              filter === "pending"
+                ? "No bookings waiting for verification"
+                : "No bookings here yet"
+            }
+          />
         ) : (
           <div className="space-y-3">
             {bookings.map((booking) => (
@@ -126,11 +148,13 @@ export default function MentorBookings({
                 onReview={() => setOpened(booking)}
               />
             ))}
-            {isTruncated && (
-              <p className="text-center text-sm text-gray-500 pt-2">
-                Showing the 100 most recent bookings.
-              </p>
-            )}
+            <LoadMore
+              hasNextPage={list.hasNextPage}
+              isFetchingNextPage={list.isFetchingNextPage}
+              isFetchNextPageError={list.isFetchNextPageError}
+              fetchNextPage={list.fetchNextPage}
+              skeleton={<ListSkeleton rows={2} />}
+            />
           </div>
         )}
       </div>
@@ -146,12 +170,10 @@ export default function MentorBookings({
               key={selected.id}
               booking={selected}
               mentorName={mentorName}
-              chatId={chatIdByStudent[selected.studentId]}
+              chatId={selected.chatId}
               onDone={() => setOpened(null)}
-              onStale={() => {
-                setOpened(null);
-                router.refresh();
-              }}
+              // The lists were already refetched; just close the stale dialog.
+              onStale={() => setOpened(null)}
               // Keep the dialog open on the confirmed booking so the mentor can
               // contact the student right away.
               onConfirmed={() => {
@@ -181,7 +203,7 @@ function BookingRow({
   booking,
   onReview,
 }: {
-  booking: ServiceBookingSelectType;
+  booking: MentorBookingRow;
   onReview: () => void;
 }) {
   return (
@@ -234,9 +256,9 @@ function BookingDetails({
   onConfirmed,
   onStale,
 }: {
-  booking: ServiceBookingSelectType;
+  booking: MentorBookingRow;
   mentorName: string;
-  chatId: string | undefined;
+  chatId: string | null;
   onDone: () => void;
   onConfirmed: () => void;
   onStale: () => void;

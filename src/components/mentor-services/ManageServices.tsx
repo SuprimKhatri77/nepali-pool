@@ -33,6 +33,14 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import CustomProfileUploader from "@/components/CustomImageButton";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  mentorDashboardKeys,
+  mentorServicesQueryOptions,
+} from "@/modules/mentor-dashboard/queries";
+import { QueryErrorState } from "@/components/data-states/query-error-state";
+import { MentorServicesSkeleton } from "@/components/dashboard/skeletons";
+import type { MentorServicesData } from "../../../server/actions/mentor-dashboard/services";
 import type { MentorServiceSelectType } from "../../../lib/db/schema";
 import {
   saveMentorPaymentDetails,
@@ -43,17 +51,33 @@ import {
 } from "../../../server/actions/mentor-services/manage-services";
 import { formatDuration, formatNpr } from "./format";
 
-type Props = {
-  services: MentorServiceSelectType[];
-  paymentInstructions: string | null;
-  paymentQrUrl: string | null;
-};
+// Loads the mentor's services and payment details on the client.
+export default function ManageServices() {
+  const { data, error, isPending, isError, refetch, isFetching } = useQuery(
+    mentorServicesQueryOptions(),
+  );
 
-export default function ManageServices({
+  if (isPending) return <MentorServicesSkeleton />;
+  if (isError) {
+    return (
+      <div className="mx-auto max-w-5xl">
+        <QueryErrorState
+          title="Couldn't load your services"
+          error={error}
+          onRetry={() => refetch()}
+          isRetrying={isFetching}
+        />
+      </div>
+    );
+  }
+  return <ManageServicesContent {...data} />;
+}
+
+function ManageServicesContent({
   services,
   paymentInstructions,
   paymentQrUrl,
-}: Props) {
+}: MentorServicesData) {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editing, setEditing] = useState<MentorServiceSelectType | null>(null);
   // Remount the form each time the dialog opens so stale errors/inputs from a
@@ -164,6 +188,7 @@ function ServiceItem({
   service: MentorServiceSelectType;
   onEdit: () => void;
 }) {
+  const queryClient = useQueryClient();
   const [isPending, startTransition] = useTransition();
   const duration = formatDuration(service.durationMinutes);
 
@@ -172,6 +197,8 @@ function ServiceItem({
       const result = await setMentorServiceActive(service.id, !service.isActive);
       if (result.success) toast.success(result.message);
       else toast.error(result.message);
+      // Refetch either way: on failure the service may have changed elsewhere.
+      await queryClient.invalidateQueries({ queryKey: mentorDashboardKeys.all });
     });
 
   return (
@@ -234,6 +261,7 @@ function ServiceForm({
   service: MentorServiceSelectType | null;
   onSaved: () => void;
 }) {
+  const queryClient = useQueryClient();
   const [state, formAction, isPending] = useActionState(
     saveMentorService,
     initialServiceState,
@@ -243,6 +271,7 @@ function ServiceForm({
     if (!result.message) return;
     if (result.success) {
       toast.success(result.message);
+      queryClient.invalidateQueries({ queryKey: mentorDashboardKeys.all });
       onSaved();
     } else {
       toast.error(result.message);
@@ -339,11 +368,20 @@ function PaymentDetailsCard({
     initialPaymentState,
   );
   const [qrUrl, setQrUrl] = useState(paymentQrUrl ?? "");
+  const queryClient = useQueryClient();
 
+  const onResult = useEffectEvent((result: PaymentDetailsFormState) => {
+    if (!result.message) return;
+    if (result.success) {
+      toast.success(result.message);
+      queryClient.invalidateQueries({ queryKey: mentorDashboardKeys.all });
+    } else {
+      toast.error(result.message);
+    }
+  });
+  // `state` only changes when a submission returns.
   useEffect(() => {
-    if (state === initialPaymentState || !state.message) return;
-    if (state.success) toast.success(state.message);
-    else toast.error(state.message);
+    if (state !== initialPaymentState) onResult(state);
   }, [state]);
 
   return (
