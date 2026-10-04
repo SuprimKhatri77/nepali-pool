@@ -4,8 +4,9 @@ import { useState, useTransition } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import { useQueryClient } from "@tanstack/react-query";
+import { mentorDashboardKeys } from "@/modules/mentor-dashboard/queries";
 import {
-  ArrowLeft,
   CheckCircle2,
   Inbox,
   Loader2,
@@ -81,14 +82,8 @@ export default function MentorEnquiries({
   const total = Object.values(counts).reduce((sum, n) => sum + (n ?? 0), 0);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-white to-green-50">
-      <main className="container mx-auto px-4 py-8 max-w-5xl">
-        <Link
-          href="/dashboard/mentor"
-          className="inline-flex items-center gap-1 text-sm text-gray-600 hover:text-emerald-700 mb-4"
-        >
-          <ArrowLeft className="w-4 h-4" /> Back to dashboard
-        </Link>
+    <div className="mx-auto max-w-5xl">
+      <div>
         <h1 className="text-3xl font-bold text-gray-900">Enquiries</h1>
         <p className="text-gray-600 mt-1 mb-6">
           Free questions from students, with their background to help you
@@ -176,7 +171,7 @@ export default function MentorEnquiries({
             )}
           </div>
         )}
-      </main>
+      </div>
 
       <Dialog
         open={selected !== null}
@@ -252,12 +247,15 @@ function EnquiryDetails({
   onDeclined: () => void;
   onStale: () => void;
 }) {
+  const queryClient = useQueryClient();
   const [isPending, startTransition] = useTransition();
   const [note, setNote] = useState("");
 
   const respond = (decision: "accepted" | "declined") =>
     startTransition(async () => {
       const result = await respondToEnquiry(enquiry.id, decision, note);
+      // Pending/new counts feed the sidebar badges and the overview.
+      queryClient.invalidateQueries({ queryKey: mentorDashboardKeys.all });
       if (result.success) {
         toast.success(result.message);
         if (decision === "accepted" && result.contact)
