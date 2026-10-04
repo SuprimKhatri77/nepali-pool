@@ -38,7 +38,7 @@ import {
 import type { AdminSessionRow } from "../../../../server/actions/admin-dashboard/calls";
 import { TablePagination } from "./table-pagination";
 import { TableSearch } from "./table-search";
-import { useTableParams } from "./use-table-params";
+import { useTableParams } from "@/components/dashboard/use-table-params";
 
 export function AdminSessionsTable() {
   const { setParams, q, page } = useTableParams();

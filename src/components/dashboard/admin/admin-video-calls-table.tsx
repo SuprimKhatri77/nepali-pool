@@ -25,10 +25,10 @@ import type {
   AdminVideoCallFilter,
   AdminVideoCallRow,
 } from "../../../../server/actions/admin-dashboard/calls";
-import { FilterTabs } from "./filter-tabs";
+import { FilterTabs } from "@/components/dashboard/filter-tabs";
 import { ADMIN_VIDEO_CALLS_HREF } from "./routes";
 import { TablePagination } from "./table-pagination";
-import { useTableParams } from "./use-table-params";
+import { useTableParams } from "@/components/dashboard/use-table-params";
 
 // Pending first: that's the queue an admin works through.
 const FILTERS = [
