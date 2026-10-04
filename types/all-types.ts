@@ -1,5 +1,4 @@
 import {
-  ChatsSelectType,
   ConnectStudentProfileSelectType,
   MentorProfileSelectType,
   PreferredTimeSelectType,
@@ -98,11 +97,6 @@ export type ChatParticipant = {
   userId: string;
   imageUrl: string | null;
   user: Pick<UserSelectType, "id" | "name" | "image">;
-};
-
-export type ChatWithParticipants = ChatsSelectType & {
-  studentProfile: ChatParticipant;
-  mentorProfile: ChatParticipant;
 };
 
 // A video call as its participants see it: the other side's name and photo

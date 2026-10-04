@@ -16,9 +16,24 @@ const CURSOR_RE =
 
 type Cursor = { createdAt: string; id: string };
 
+// Columns are `timestamptz` by default. `naive: true` is for a `timestamp
+// without time zone` column that holds UTC wall time (e.g. messages).
+type TimestampKind = { naive?: boolean };
+
 // Select this alongside each row; it becomes the next cursor.
-export function cursorTimestamp(createdAt: AnyColumn) {
-  return sql<string>`to_char(${createdAt} at time zone 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS.US"Z"')`;
+export function cursorTimestamp(
+  createdAt: AnyColumn,
+  { naive = false }: TimestampKind = {},
+) {
+  return naive
+    ? sql<string>`to_char(${createdAt}, 'YYYY-MM-DD"T"HH24:MI:SS.US"Z"')`
+    : sql<string>`to_char(${createdAt} at time zone 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS.US"Z"')`;
+}
+
+function cursorValue(cursor: Cursor, { naive = false }: TimestampKind) {
+  return naive
+    ? sql`(${cursor.createdAt}::timestamptz at time zone 'UTC')`
+    : sql`${cursor.createdAt}::timestamptz`;
 }
 
 // null = first page; "invalid" = a cursor this server never issued.
@@ -33,8 +48,22 @@ export function afterCursor(
   createdAt: AnyColumn,
   id: AnyColumn,
   cursor: Cursor,
+  kind: TimestampKind = {},
 ): SQL {
-  return sql`(${createdAt}, ${id}) < (${cursor.createdAt}::timestamptz, ${cursor.id}::uuid)`;
+  return sql`(${createdAt}, ${id}) < (${cursorValue(cursor, kind)}, ${cursor.id}::uuid)`;
+}
+
+// Rows created at or after `seconds` before the cursor: a live tail ("what's
+// new since the newest row I have"). The overlap catches rows from
+// transactions that started earlier but committed later, which a strict
+// "newer than" would skip for good; callers drop the ones they already have.
+export function sinceCursor(
+  createdAt: AnyColumn,
+  cursor: Cursor,
+  seconds: number,
+  kind: TimestampKind = {},
+): SQL {
+  return sql`${createdAt} >= ${cursorValue(cursor, kind)} - make_interval(secs => ${seconds})`;
 }
 
 // Query PAGE_SIZE + 1 rows; the extra one only tells us there's a next page.

@@ -1,6 +1,6 @@
 import type React from "react";
 import { requireViewer } from "../../../server/lib/auth/guards";
-import Chats from "@/components/Chats";
+import { ChatList } from "@/components/chat/chat-list";
 import {
   SidebarProvider,
   SidebarInset,
@@ -13,9 +13,7 @@ export default async function ChatLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const viewer = await requireViewer(["student", "mentor"]);
-  const userRecord = viewer.user;
-  const role = viewer.status;
+  const { user } = await requireViewer(["student", "mentor"]);
 
   return (
     <SidebarProvider
@@ -25,7 +23,9 @@ export default async function ChatLayout({
         } as React.CSSProperties
       }
     >
-      <Chats role={role} currentUser={userRecord} />
+      <ChatList
+        user={{ name: user.name, email: user.email, image: user.image }}
+      />
       <SidebarInset className="flex relative flex-col">
         <header className="flex sticky top-0 z-20 bg-white h-14 shrink-0 items-center gap-2 border-b border-gray-200 px-4">
           <SidebarTrigger className="-ml-1" />
