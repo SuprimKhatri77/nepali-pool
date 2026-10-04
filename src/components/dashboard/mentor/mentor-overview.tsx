@@ -34,11 +34,12 @@ function formatNextCall(date: Date) {
 }
 
 export function MentorOverview({ firstName }: { firstName: string }) {
-  const { data, error, isPending, isError, refetch, isFetching } = useQuery(
+  const { data, error, isError, refetch, isFetching } = useQuery(
     mentorOverviewQueryOptions(),
   );
 
-  if (isPending) return <MentorOverviewSkeleton />;
+  // A failed background refetch keeps showing the numbers we have.
+  if (!data && !isError) return <MentorOverviewSkeleton />;
 
   return (
     <div className="mx-auto max-w-6xl space-y-8">
@@ -51,15 +52,15 @@ export function MentorOverview({ firstName }: { firstName: string }) {
         </p>
       </div>
 
-      {isError ? (
+      {data ? (
+        <OverviewContent data={data} />
+      ) : (
         <QueryErrorState
           title="Couldn't load your overview"
           error={error}
           onRetry={() => refetch()}
           isRetrying={isFetching}
         />
-      ) : (
-        <OverviewContent data={data} />
       )}
     </div>
   );

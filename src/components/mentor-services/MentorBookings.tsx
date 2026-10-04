@@ -121,15 +121,19 @@ export default function MentorBookings({
           })}
         </div>
 
-        {list.isPending ? (
-          <ListSkeleton rows={5} />
-        ) : list.isError ? (
-          <QueryErrorState
-            title="Couldn't load bookings"
-            error={list.error}
-            onRetry={() => list.refetch()}
-            isRetrying={list.isFetching}
-          />
+        {!list.data ? (
+          // Only before the first page arrives: once there's data, a failed
+          // refetch or next page keeps the list (LoadMore shows its own retry).
+          list.isError ? (
+            <QueryErrorState
+              title="Couldn't load bookings"
+              error={list.error}
+              onRetry={() => list.refetch()}
+              isRetrying={list.isFetching}
+            />
+          ) : (
+            <ListSkeleton rows={5} />
+          )
         ) : bookings.length === 0 ? (
           <EmptyState
             icon={Inbox}
