@@ -1,6 +1,15 @@
-export const getFileType = (
-  info: any
-): "image" | "video" | "audio" | "pdf" | "file" => {
+import type { CloudinaryUploadWidgetInfo } from "next-cloudinary";
+
+export type ChatFileType = "image" | "video" | "audio" | "pdf" | "file";
+
+// The upload widget also sends `mime_type`, which its types leave out.
+type UploadInfo = Pick<
+  CloudinaryUploadWidgetInfo,
+  "secure_url" | "format" | "original_filename" | "resource_type"
+> & { mime_type?: string };
+
+// How a chat attachment is shown: inline image or video, or a download card.
+export function getFileType(info: UploadInfo): ChatFileType {
   const url = info.secure_url || "";
   const mime = info.mime_type || "";
   const format = info.format || "";
@@ -27,7 +36,8 @@ export const getFileType = (
   }
 
   if (info.resource_type === "video") return "video";
-  if (info.resource_type === "raw") return "file"; // Raw files are usually documents
+  // Raw uploads are usually documents.
+  if (info.resource_type === "raw") return "file";
 
   if (mime.startsWith("audio") || /\.(mp3|wav|ogg|m4a|flac)$/i.test(url)) {
     return "audio";
@@ -48,4 +58,4 @@ export const getFileType = (
   }
 
   return "file";
-};
+}

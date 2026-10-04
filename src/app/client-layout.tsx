@@ -12,17 +12,18 @@ function isUnder(pathname: string, routes: readonly string[]) {
   );
 }
 
-// Pages with their own chrome (auth screens, admin and the mentor/student
-// dashboards with a sidebar) don't get the site header.
+// Pages with their own chrome (auth screens, admin, the mentor/student
+// dashboards and chats, each with a sidebar) don't get the site header.
 const NO_HEADER = [
   "/login",
   "/sign-up",
   "/verify-email",
   "/admin",
   "/dashboard",
+  "/chats",
 ] as const;
 
-const NO_FOOTER = [...NO_HEADER, "/chats"] as const;
+const NO_FOOTER = NO_HEADER;
 
 export default function ClientLayout({
   children,

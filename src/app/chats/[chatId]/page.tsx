@@ -1,31 +1,26 @@
+import { notFound } from "next/navigation";
+import { z } from "zod";
 import { db } from "../../../../lib/db";
 import { chats } from "../../../../lib/db/schema";
-import { notFound } from "next/navigation";
-import Message from "@/components/Message";
+import { ChatThread } from "@/components/chat/chat-thread";
 import { requireViewer } from "../../../../server/lib/auth/guards";
 import { participantColumns } from "../../../../server/lib/chats/participant-columns";
 
-type ParamsType = {
-  params: Promise<{ chatId: string }>;
+export const metadata = {
+  title: "Messages | NepaliPool",
 };
 
-function isUUID(id: string) {
-  const uuidRegex =
-    /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
-  return typeof id === "string" && uuidRegex.test(id);
-}
-
-const page = async ({ params }: ParamsType) => {
-  const { chatId } = await params;
-
-  if (!chatId || !isUUID(chatId)) {
-    return notFound();
-  }
-
+export default async function ChatPage({
+  params,
+}: {
+  params: Promise<{ chatId: string }>;
+}) {
   const viewer = await requireViewer(["student", "mentor"]);
-  const userRecord = viewer.user;
+  const { chatId } = await params;
+  // Not uuid-shaped: Postgres would reject the comparison.
+  if (!z.guid().safeParse(chatId).success) notFound();
 
-  const chatRecord = await db.query.chats.findFirst({
+  const chat = await db.query.chats.findFirst({
     where: (fields, { eq }) => eq(chats.id, chatId),
     // Each side only gets the other's name and photo.
     with: {
@@ -33,30 +28,27 @@ const page = async ({ params }: ParamsType) => {
       mentorProfile: participantColumns,
     },
   });
-
-  if (!chatRecord) {
-    return notFound();
+  // Someone else's chat looks exactly like a missing one.
+  const isStudent = viewer.status === "student";
+  if (
+    !chat ||
+    (isStudent ? chat.studentId : chat.mentorId) !== viewer.user.id
+  ) {
+    notFound();
   }
 
-  const isParticipant =
-    viewer.status === "student"
-      ? chatRecord.studentId === userRecord.id
-      : chatRecord.mentorId === userRecord.id;
-  if (!isParticipant) {
-    console.warn(
-      `Unauthorized access attempt: User ${userRecord.id} tried to access chat ${chatId}`
-    );
-    return notFound();
-  }
+  const other = isStudent ? chat.mentorProfile : chat.studentProfile;
 
   return (
-    <Message
+    <ChatThread
+      // Fresh thread state (scroll position, composer) per chat.
+      key={chat.id}
+      chatId={chat.id}
       role={viewer.status}
-      chatId={chatId}
-      currentUser={userRecord}
-      chatRecord={chatRecord}
+      viewer={{ id: viewer.user.id, email: viewer.user.email }}
+      active={chat.status === "active"}
+      mentorId={chat.mentorId}
+      other={{ name: other.user.name, imageUrl: other.imageUrl }}
     />
   );
-};
-
-export default page;
+}
