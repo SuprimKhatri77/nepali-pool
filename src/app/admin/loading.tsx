@@ -1,12 +1,5 @@
-import { Spinner } from "@/components/ui/spinner";
-import React from "react";
+import { AdminPageSkeleton } from "@/components/dashboard/skeletons";
 
-const loading = () => {
-  return (
-    <div className="min-h-screen flex items-center justify-center">
-      <Spinner />
-    </div>
-  );
-};
-
-export default loading;
+export default function Loading() {
+  return <AdminPageSkeleton />;
+}

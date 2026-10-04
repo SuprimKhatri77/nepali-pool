@@ -43,6 +43,9 @@ export const mentorNavCountsQueryOptions = () =>
     queryKey: mentorDashboardKeys.navCounts(),
     queryFn: async () => unwrap(await getMentorNavCounts()),
     staleTime: 60 * 1000,
+    // The shell lives in the layout and never remounts, so poll for work
+    // that arrives while the dashboard is open.
+    refetchInterval: 60 * 1000,
   });
 
 export const mentorServicesQueryOptions = () =>

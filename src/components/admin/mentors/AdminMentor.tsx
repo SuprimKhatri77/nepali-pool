@@ -3,12 +3,11 @@ import React, { useState } from 'react'
 import { MentorProfileWithUser } from '../../../../types/all-types'
 import DataTable from './DataTable'
 import ImageViewComponent from '../ImageViewComponent'
-import { MentorBarChart } from './MentorBarChart'
 import SearchBelowHero from '@/components/SearchBelowHero'
 import MentorList from '@/components/mentors/MentorList'
 
 
-export default function AdminMentors({mentors, chartData}:{mentors: MentorProfileWithUser[], chartData: {date: string, mentors: number, students: number}[]}) {
+export default function AdminMentors({mentors}:{mentors: MentorProfileWithUser[]}) {
      const [openImage, setOpenImage] = useState(false)
      const [imageUrl, setImageUrl] = useState<string>("");
  return  <main className=" mb-4">
@@ -16,9 +15,6 @@ export default function AdminMentors({mentors, chartData}:{mentors: MentorProfil
       <div className='max-w-[90%] w-full mx-auto my-4'>
       <DataTable openImage={openImage} setOpenImage={setOpenImage} setImageUrl={setImageUrl} data={mentors} ></DataTable>
 
-      </div>
-      <div className='my-4'>
-        <MentorBarChart chartData={chartData} />
       </div>
       <MentorList mentors={mentors} />
       {openImage && (

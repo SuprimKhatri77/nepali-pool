@@ -148,3 +148,47 @@ export function StudentRequestsPageSkeleton() {
     </div>
   );
 }
+
+// Admin overview: heading, two rows of stat cards, attention rows, chart.
+export function AdminOverviewSkeleton() {
+  return (
+    <div aria-busy="true" aria-label="Loading" className="mx-auto max-w-6xl space-y-8">
+      <PageHeadingSkeleton />
+      <StatCardsSkeleton count={8} />
+      <div className="space-y-3">
+        <Skeleton className="h-5 w-40" />
+        <Skeleton className="h-14 w-full rounded-lg" />
+      </div>
+      <div className="space-y-4 rounded-xl border border-slate-200 p-6">
+        <div className="flex items-start justify-between gap-4">
+          <div className="space-y-2">
+            <Skeleton className="h-5 w-24" />
+            <Skeleton className="h-4 w-64 max-w-full" />
+          </div>
+          <Skeleton className="h-8 w-48" />
+        </div>
+        <Skeleton className="h-64 w-full" />
+      </div>
+    </div>
+  );
+}
+
+// Admin pages without a shape of their own yet: heading, then rows.
+export function AdminPageSkeleton() {
+  return (
+    <div aria-busy="true" aria-label="Loading" className="mx-auto max-w-6xl space-y-6">
+      <PageHeadingSkeleton />
+      <ListSkeleton rows={6} />
+    </div>
+  );
+}
+
+// Admin school directory: heading, then a grid of school cards.
+export function AdminSchoolsSkeleton() {
+  return (
+    <div aria-busy="true" aria-label="Loading" className="mx-auto max-w-6xl space-y-8">
+      <PageHeadingSkeleton />
+      <CardGridSkeleton count={6} />
+    </div>
+  );
+}
