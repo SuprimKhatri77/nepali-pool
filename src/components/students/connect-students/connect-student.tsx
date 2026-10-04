@@ -28,6 +28,8 @@ import StudentCards from "./student-card";
 import { Input } from "@/components/ui/input";
 import StudentDetailForm from "./StudentDetailForm";
 
+const PAGE_SIZE = 20;
+
 type Props = {
   hasCurrentUserProfile: boolean;
   hasSession: boolean;
@@ -54,14 +56,13 @@ export default function ConnectStudent({
     ) as ConnectStudentProfileSelectType["intakeMonth"]) ?? "";
   const search = (searchQuery.get("search") as string) ?? "";
   const [debounceSearch, setDebounceSearch] = useState(search);
-  const limit = 20;
   const {
     data: studentsProfiles,
     isPending,
     isError,
   } = useQuery({
-    queryKey: ["all-student-profiles", currentPage],
-    queryFn: () => getPaginatedStudentProfiles(currentPage, limit),
+    queryKey: ["all-student-profiles", { page: currentPage, limit: PAGE_SIZE }],
+    queryFn: () => getPaginatedStudentProfiles(currentPage, PAGE_SIZE),
 
     staleTime: 1000 * 60 * 60,
     gcTime: 1000 * 60 * 60,
@@ -71,7 +72,7 @@ export default function ConnectStudent({
     return studentsProfiles?.students ?? [];
   }, [studentsProfiles]);
   const totalStudents = studentsProfiles?.total ?? 0;
-  const totalPages = Math.ceil(totalStudents / limit);
+  const totalPages = Math.ceil(totalStudents / PAGE_SIZE);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -210,7 +211,7 @@ export default function ConnectStudent({
 
         {isPending ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 p-4">
-            {Array.from({ length: limit }).map((_, i) => (
+            {Array.from({ length: PAGE_SIZE }).map((_, i) => (
               <StudentCardSkeleton key={i} />
             ))}
           </div>

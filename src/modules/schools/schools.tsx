@@ -25,7 +25,7 @@ export function Schools({
   totalPages,
 }: Props) {
   const { data: schools } = useQuery({
-    queryKey: ["schools", page],
+    queryKey: ["schools", { limit, offset }],
     queryFn: () => getAllSchools(limit, offset).then((res) => res.schools),
     initialData: allSchools,
     staleTime: 1000 * 60 * 60,
