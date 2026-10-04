@@ -12,6 +12,7 @@ import { createEnquirySchema } from "../../lib/mentor-services/schemas";
 import { isUniqueViolation } from "../../lib/mentor-services/pg-error";
 import { generateReferenceCode } from "../../lib/mentor-services/reference-code";
 import { notifyMentorOfNewEnquiry } from "../../lib/mentor-services/enquiry-emails";
+import { STUDENT_ENQUIRIES_HREF } from "../../../src/components/dashboard/student/routes";
 
 // Each enquiry emails the mentor, so cap how often a student can send them
 // (create → withdraw → create would otherwise be unlimited).
@@ -156,7 +157,6 @@ export async function createMentorEnquiry(
       }),
     );
 
-    revalidatePath("/bookings");
     revalidatePath("/dashboard/mentor");
     revalidatePath("/dashboard/mentor/enquiries");
   } catch (error) {
@@ -166,5 +166,5 @@ export async function createMentorEnquiry(
 
   // Redirect from the action (outside try: redirect() throws) so the enquiry
   // page isn't re-rendered into its "already asked" state first.
-  redirect(`/bookings?enquired=${referenceCode}`);
+  redirect(`${STUDENT_ENQUIRIES_HREF}?enquired=${referenceCode}`);
 }

@@ -1,4 +1,5 @@
 import { authBaseURL } from "../auth/base-url";
+import { STUDENT_ENQUIRIES_HREF } from "../../../src/components/dashboard/student/routes";
 import { emailLayout, safeSendEmail } from "./email-layout";
 import { escapeHtml } from "./escape-html";
 
@@ -40,7 +41,7 @@ export function notifyStudentEnquiryAccepted(args: {
       `<p style="color:#374151;">Hi ${escapeHtml(args.studentName)},</p>
        <p style="color:#374151;">${escapeHtml(args.mentorName)} accepted your enquiry (${escapeHtml(args.referenceCode)}) and will get in touch with you. You can also message them on NepaliPool.</p>
        ${args.mentorNote ? `<p style="color:#374151;"><strong>Note from your mentor:</strong> ${escapeHtml(args.mentorNote)}</p>` : ""}`,
-      { href: `${authBaseURL}/bookings#enquiries`, label: "View my enquiries" },
+      { href: `${authBaseURL}${STUDENT_ENQUIRIES_HREF}`, label: "View my enquiries" },
     ),
   });
 }

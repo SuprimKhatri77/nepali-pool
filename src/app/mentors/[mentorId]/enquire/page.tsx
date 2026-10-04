@@ -10,6 +10,7 @@ import { db } from "../../../../../lib/db";
 import { intakeMonthEnum, intakeYearEnum, mentorEnquiry, mentorProfile } from "../../../../../lib/db/schema";
 import { requireUser } from "../../../../../server/lib/auth/guards";
 import { getViewer } from "../../../../../server/lib/auth/viewer";
+import { STUDENT_ENQUIRIES_HREF } from "@/components/dashboard/student/routes";
 
 export const metadata = {
   title: "Ask a Mentor | NepaliPool",
@@ -77,7 +78,7 @@ export default async function EnquirePage({
     return (
       <Notice
         title="Already asked"
-        backHref="/bookings#enquiries"
+        backHref={STUDENT_ENQUIRIES_HREF}
         backLabel="View my enquiries"
       >
         You already have an open enquiry ({openEnquiry.referenceCode}) with{" "}

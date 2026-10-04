@@ -10,3 +10,11 @@ export function generateReferenceCode(prefix: string) {
     code += REF_ALPHABET[randomInt(REF_ALPHABET.length)];
   return code;
 }
+
+// Loose on purpose (the column is varchar(20)): callers still look the code
+// up against the owner, this only keeps junk from a URL out of the query.
+const REFERENCE_CODE_RE = /^[A-Z0-9-]{1,20}$/;
+
+export function isReferenceCode(value: unknown): value is string {
+  return typeof value === "string" && REFERENCE_CODE_RE.test(value);
+}

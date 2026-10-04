@@ -28,7 +28,7 @@ export default function BookServiceForm({ serviceId, defaults }: Props) {
   );
   const [proofUrl, setProofUrl] = useState("");
 
-  // Success redirects server-side to /bookings, so only failures land here.
+  // Success redirects server-side to the student's bookings page, so only failures land here.
   useEffect(() => {
     if (state !== initialState && state.message) toast.error(state.message);
   }, [state]);

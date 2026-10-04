@@ -28,6 +28,5 @@ export const config = {
     "/payment/:path*",
     "/waitlist",
     "/rejected",
-    "/bookings",
   ],
 };

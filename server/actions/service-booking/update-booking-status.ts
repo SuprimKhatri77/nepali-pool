@@ -29,7 +29,6 @@ async function getStudentAccount(studentId: string) {
 }
 
 function revalidateBookingPages() {
-  revalidatePath("/bookings");
   revalidatePath("/dashboard/mentor");
   revalidatePath("/dashboard/mentor/bookings");
 }

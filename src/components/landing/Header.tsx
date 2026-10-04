@@ -11,6 +11,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { cn } from "../lib/utils";
 import { useQuery } from "@tanstack/react-query";
 import { navViewerQueryOptions } from "@/modules/viewer/queries";
+import { STUDENT_BOOKINGS_HREF } from "@/components/dashboard/student/routes";
 
 const MotionLink = motion(Link);
 
@@ -75,7 +76,7 @@ export default function Header() {
       arr.push({ name: "Add School", href: "/add-school" });
     }
     if (role === "student") {
-      arr.push({ name: "My Bookings", href: "/bookings" });
+      arr.push({ name: "My Bookings", href: STUDENT_BOOKINGS_HREF });
     }
     if (role === "mentor") {
       arr.push({ name: "Bookings", href: "/dashboard/mentor/bookings" });

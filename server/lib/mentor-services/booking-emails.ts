@@ -1,5 +1,6 @@
 import { emailLayout, safeSendEmail } from "./email-layout";
 import { authBaseURL } from "../auth/base-url";
+import { STUDENT_BOOKINGS_HREF } from "../../../src/components/dashboard/student/routes";
 import { escapeHtml } from "./escape-html";
 
 type BookingSummary = {
@@ -50,7 +51,7 @@ export function notifyStudentBookingConfirmed(args: {
       `<p style="color:#374151;">Hi ${escapeHtml(args.studentName)},</p>
        <p style="color:#374151;">${escapeHtml(args.mentorName)} verified your payment and confirmed your booking. They'll reach out to you shortly, and you can also message them from NepaliPool.</p>
        ${summary(args.booking)}`,
-      { href: `${authBaseURL}/bookings`, label: "View my bookings" },
+      { href: `${authBaseURL}${STUDENT_BOOKINGS_HREF}`, label: "View my bookings" },
     ),
   });
 }
@@ -71,7 +72,7 @@ export function notifyStudentBookingRejected(args: {
        <p style="color:#374151;">${escapeHtml(args.mentorName)} couldn't verify the payment for your booking.</p>
        <p style="color:#374151;"><strong>Reason:</strong> ${escapeHtml(args.reason)}</p>
        ${summary(args.booking)}`,
-      { href: `${authBaseURL}/bookings`, label: "View my bookings" },
+      { href: `${authBaseURL}${STUDENT_BOOKINGS_HREF}`, label: "View my bookings" },
     ),
   });
 }
