@@ -26,6 +26,7 @@ import type {
   AdminMentorFilter,
   AdminMentorRow,
 } from "../../../../server/actions/admin-dashboard/people";
+import { FilterTabs } from "./filter-tabs";
 import { ADMIN_MENTOR_APPLICATIONS_HREF } from "./routes";
 import { TablePagination } from "./table-pagination";
 import { TableSearch } from "./table-search";
@@ -98,7 +99,6 @@ export function AdminMentorsTable({
 
   const { data: counts } = useQuery(adminMentorCountsQueryOptions());
   const list = useQuery(adminMentorsQueryOptions({ status, q, page }));
-  const countFor = (filter: AdminMentorFilter) => counts?.[filter];
 
   return (
     <div className="mx-auto max-w-6xl space-y-6">
@@ -110,34 +110,16 @@ export function AdminMentorsTable({
       </div>
 
       <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
-        <div className="flex flex-wrap gap-2" role="group" aria-label="Status">
-          {filters.map((filter) => {
-            const active = filter === status;
-            const n = countFor(filter);
-            return (
-              <button
-                key={filter}
-                type="button"
-                aria-pressed={active}
-                onClick={() => setParams({ status: filter, page: null })}
-                className={cn(
-                  "rounded-full border px-3 py-1.5 text-sm font-medium transition-colors",
-                  active
-                    ? "border-emerald-600 bg-emerald-600 text-white"
-                    : "border-gray-200 bg-white text-gray-700 hover:border-emerald-300",
-                )}
-              >
-                {FILTER_LABEL[filter]}
-                {n !== undefined && (
-                  <span className={active ? "text-emerald-100" : "text-gray-400"}>
-                    {" "}
-                    {n}
-                  </span>
-                )}
-              </button>
-            );
-          })}
-        </div>
+        <FilterTabs
+          label="Status"
+          options={filters.map((filter) => ({
+            value: filter,
+            label: FILTER_LABEL[filter],
+          }))}
+          value={status}
+          counts={counts}
+          onChange={(filter) => setParams({ status: filter, page: null })}
+        />
         <TableSearch
           value={q}
           onSearch={(text) => setParams({ q: text, page: null }, { replace: true })}

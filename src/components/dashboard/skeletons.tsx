@@ -219,7 +219,13 @@ export function AdminTableSkeleton({ rows = 8 }: { rows?: number }) {
 }
 
 // Admin table pages: heading, filter tabs and search, then the table.
-export function AdminTablePageSkeleton({ tabs = 0 }: { tabs?: number }) {
+export function AdminTablePageSkeleton({
+  tabs = 0,
+  search = true,
+}: {
+  tabs?: number;
+  search?: boolean;
+}) {
   return (
     <div aria-busy="true" aria-label="Loading" className="mx-auto max-w-6xl space-y-6">
       <PageHeadingSkeleton />
@@ -229,7 +235,7 @@ export function AdminTablePageSkeleton({ tabs = 0 }: { tabs?: number }) {
             <Skeleton key={i} className="h-9 w-24 rounded-full" />
           ))}
         </div>
-        <Skeleton className="h-9 w-full sm:max-w-xs" />
+        {search && <Skeleton className="h-9 w-full sm:max-w-xs" />}
       </div>
       <AdminTableSkeleton />
     </div>

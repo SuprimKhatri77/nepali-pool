@@ -1,11 +1,12 @@
+import { AdminSessionsTable } from "@/components/dashboard/admin/admin-sessions-table";
 import { requireAdmin } from "../../../../server/lib/auth/guards";
-import SessionUserList from "@/components/admin/session-user-list/session-user-list";
-import { db } from "../../../../lib/db";
 
-export default async function Page() {
+export const metadata = {
+  title: "Meeting sessions | NepaliPool admin",
+};
+
+export default async function AdminSessionsPage() {
   await requireAdmin();
 
-  const sessionUsers = await db.query.meetingSession.findMany();
-
-  return <SessionUserList sessionUsers={sessionUsers ?? []} />;
+  return <AdminSessionsTable />;
 }

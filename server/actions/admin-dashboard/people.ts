@@ -125,7 +125,9 @@ export async function getAdminMentorCounts(): Promise<
     success: true,
     data: {
       ...Object.fromEntries(
-        rows.flatMap((row) => (row.status ? [[row.status, row.total]] : [])),
+        rows.flatMap((row) =>
+          row.status ? [[row.status, row.total] as const] : [],
+        ),
       ),
       all: rows.reduce((sum, row) => sum + row.total, 0),
     },
