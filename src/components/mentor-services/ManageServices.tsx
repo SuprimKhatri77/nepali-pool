@@ -7,11 +7,9 @@ import {
   useState,
   useTransition,
 } from "react";
-import Link from "next/link";
 import { toast } from "sonner";
 import {
   AlertTriangle,
-  ArrowLeft,
   Clock,
   Eye,
   EyeOff,
@@ -72,15 +70,9 @@ export default function ManageServices({
   const activeCount = services.filter((s) => s.isActive).length;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-white to-green-50">
-      <main className="container mx-auto px-4 py-8 max-w-5xl space-y-8">
+    <div className="mx-auto max-w-5xl">
+      <div className="space-y-8">
         <div>
-          <Link
-            href="/dashboard/mentor"
-            className="inline-flex items-center gap-1 text-sm text-gray-600 hover:text-emerald-700 mb-4"
-          >
-            <ArrowLeft className="w-4 h-4" /> Back to dashboard
-          </Link>
           <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
             <div>
               <h1 className="text-3xl font-bold text-gray-900">My Services</h1>
@@ -144,7 +136,7 @@ export default function ManageServices({
             )}
           </CardContent>
         </Card>
-      </main>
+      </div>
 
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
         <DialogContent className="sm:max-w-lg">

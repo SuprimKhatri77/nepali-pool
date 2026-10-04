@@ -4,13 +4,25 @@ import { usePathname } from "next/navigation";
 import Header from "@/components/landing/Header";
 import Footer from "@/components/landing/Footer";
 
-const excludeNavRoutes = [
+// Matches a route and everything under it ("/admin" and "/admin/x", but not
+// "/administer" or "/mentors/admin").
+function isUnder(pathname: string, routes: readonly string[]) {
+  return routes.some(
+    (route) => pathname === route || pathname.startsWith(`${route}/`),
+  );
+}
+
+// Pages with their own chrome (auth screens, admin and mentor dashboards
+// with a sidebar) don't get the site header.
+const NO_HEADER = [
   "/login",
   "/sign-up",
-  "/admin",
   "/verify-email",
-  "/admin/dashboard",
-];
+  "/admin",
+  "/dashboard/mentor",
+] as const;
+
+const NO_FOOTER = [...NO_HEADER, "/chats"] as const;
 
 export default function ClientLayout({
   children,
@@ -18,19 +30,12 @@ export default function ClientLayout({
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
-  const isExcludedNavRoute = excludeNavRoutes.some((route) =>
-    pathname.includes(route)
-  );
 
   return (
     <>
-      {!isExcludedNavRoute && <Header />}
+      {!isUnder(pathname, NO_HEADER) && <Header />}
       {children}
-      {!pathname.startsWith("/chats") &&
-        !pathname.startsWith("/login") &&
-        !pathname.startsWith("/sign-up") &&
-        !pathname.startsWith("/verify-email") &&
-        !pathname.startsWith("/admin") && <Footer />}
+      {!isUnder(pathname, NO_FOOTER) && <Footer />}
     </>
   );
 }

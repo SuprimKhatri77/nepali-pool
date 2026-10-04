@@ -4,8 +4,9 @@ import { useState, useTransition } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import { useQueryClient } from "@tanstack/react-query";
+import { mentorDashboardKeys } from "@/modules/mentor-dashboard/queries";
 import {
-  ArrowLeft,
   CheckCircle2,
   Inbox,
   Loader2,
@@ -78,14 +79,8 @@ export default function MentorBookings({
   const total = Object.values(counts).reduce((sum, n) => sum + (n ?? 0), 0);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-white to-green-50">
-      <main className="container mx-auto px-4 py-8 max-w-5xl">
-        <Link
-          href="/dashboard/mentor"
-          className="inline-flex items-center gap-1 text-sm text-gray-600 hover:text-emerald-700 mb-4"
-        >
-          <ArrowLeft className="w-4 h-4" /> Back to dashboard
-        </Link>
+    <div className="mx-auto max-w-5xl">
+      <div>
         <h1 className="text-3xl font-bold text-gray-900">Service Bookings</h1>
         <p className="text-gray-600 mt-1 mb-6">
           Check each payment screenshot against your account before confirming.
@@ -138,7 +133,7 @@ export default function MentorBookings({
             )}
           </div>
         )}
-      </main>
+      </div>
 
       <Dialog
         open={selected !== null}
@@ -246,6 +241,7 @@ function BookingDetails({
   onConfirmed: () => void;
   onStale: () => void;
 }) {
+  const queryClient = useQueryClient();
   const [isPending, startTransition] = useTransition();
   const [rejecting, setRejecting] = useState(false);
   const [reason, setReason] = useState("");
@@ -256,6 +252,8 @@ function BookingDetails({
   ) =>
     startTransition(async () => {
       const result = await action();
+      // Pending/new counts feed the sidebar badges and the overview.
+      queryClient.invalidateQueries({ queryKey: mentorDashboardKeys.all });
       if (result.success) {
         toast.success(result.message);
         onSuccess();
