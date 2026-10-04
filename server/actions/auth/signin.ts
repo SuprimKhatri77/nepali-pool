@@ -3,6 +3,7 @@
 import z from "zod";
 import { auth } from "../../lib/auth/auth";
 import { APIError } from "better-auth/api";
+import { safeNext } from "../../../src/utils/safe-next";
 
 export type FormState = {
   errors?: {
@@ -81,7 +82,7 @@ export async function SignIn(
       success: true,
       message: "Redirecting...",
       timestamp: Date.now(),
-      redirectTo: "/connect-student",
+      redirectTo: safeNext(formData.get("next")) ?? "/connect-student",
     };
   } catch (error) {
     if (error instanceof APIError) {

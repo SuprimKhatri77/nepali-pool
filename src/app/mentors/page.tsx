@@ -1,7 +1,10 @@
-import { count, eq } from "drizzle-orm";
+import { and, count, eq, inArray } from "drizzle-orm";
+import Link from "next/link";
 import { db } from "../../../lib/db";
 import { PublicMentor } from "../../../types/all-types";
 import {
+  getServiceSummaries,
+  mentorsOfferingServices,
   publicMentorColumns,
   publicMentorWith,
 } from "../../../server/lib/mentors/public-mentor";
@@ -11,7 +14,8 @@ import { PaginationClient } from "@/components/PaginationClient";
 import { getViewer } from "../../../server/lib/auth/viewer";
 import SearchBelowHero from "@/components/SearchBelowHero";
 import MentorCard from "@/components/MentorCard";
-import { Sparkles } from "lucide-react";
+import { Briefcase, Sparkles, Users } from "lucide-react";
+import { cn } from "@/components/lib/utils";
 import MentorHero from "@/components/mentors/MentorHero";
 import { Metadata } from "next";
 
@@ -56,9 +60,12 @@ export const metadata: Metadata = {
 export default async function Page({
   searchParams,
 }: {
-  searchParams: Promise<{ page: string }>;
+  searchParams: Promise<{ page?: string; services?: string }>;
 }) {
-  const requestedPage = Number((await searchParams).page);
+  const params = await searchParams;
+  const requestedPage = Number(params.page);
+  // ?services=1 shows only mentors who offer at least one service.
+  const onlyWithServices = params.services === "1";
   const page =
     Number.isSafeInteger(requestedPage) && requestedPage > 0 ? requestedPage : 1;
   const limit = 6;
@@ -68,13 +75,26 @@ export default async function Page({
     db
       .select({ count: count() })
       .from(mentorProfile)
-      .where(eq(mentorProfile.verifiedStatus, "accepted")),
+      .where(
+        and(
+          eq(mentorProfile.verifiedStatus, "accepted"),
+          onlyWithServices
+            ? inArray(mentorProfile.userId, mentorsOfferingServices)
+            : undefined,
+        ),
+      ),
     getViewer(),
     db.query.mentorProfile
       .findMany({
         columns: publicMentorColumns,
         with: publicMentorWith,
-        where: (fields, { eq }) => eq(fields.verifiedStatus, "accepted"),
+        where: (fields, { and, eq, inArray }) =>
+          and(
+            eq(fields.verifiedStatus, "accepted"),
+            onlyWithServices
+              ? inArray(fields.userId, mentorsOfferingServices)
+              : undefined,
+          ),
         limit,
         offset,
         orderBy: (fields, { asc }) => [asc(fields.createdAt)],
@@ -89,16 +109,9 @@ export default async function Page({
   const totalPages = Math.max(Math.ceil(total / limit), 1);
   const currentUserId = "user" in viewer ? viewer.user.id : undefined;
   const currentUserRole = "user" in viewer ? viewer.user.role : null;
-
-  if (!allMentors || allMentors.length === 0) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <h1 className="text-xl font-semibold text-gray-700">
-          No mentors found
-        </h1>
-      </div>
-    );
-  }
+  const serviceSummaries = await getServiceSummaries(
+    allMentors.map((mentor) => mentor.userId),
+  );
 
   return (
     <main className="overflow-hidden relative">
@@ -124,11 +137,26 @@ export default async function Page({
                 <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse" />
                 <span className="text-xs sm:text-sm text-slate-600">
                   <span className="font-semibold text-slate-900">{total}</span>{" "}
-                  mentors available
+                  {onlyWithServices ? "mentors offering services" : "mentors available"}
                 </span>
               </div>
             </div>
           </div>
+
+          {/* Filter */}
+          <nav
+            aria-label="Filter mentors"
+            className="flex justify-center gap-2 -mt-4 mb-8 sm:mb-10"
+          >
+            <FilterChip href="/mentors" active={!onlyWithServices}>
+              <Users className="w-4 h-4" />
+              All mentors
+            </FilterChip>
+            <FilterChip href="/mentors?services=1" active={onlyWithServices}>
+              <Briefcase className="w-4 h-4" />
+              Offers services
+            </FilterChip>
+          </nav>
 
           {/* Mentors Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-12 sm:mb-16">
@@ -138,16 +166,13 @@ export default async function Page({
                   <MentorCard
                     key={mentor.userId}
                     mentor={mentor}
+                    services={serviceSummaries.get(mentor.userId)}
                     currentUserRole={currentUserRole ?? null}
                     currentUserId={currentUserId ?? null}
                   />
                 );
               })
-            ) : (
-              <div>
-                <h1>Hello</h1>
-              </div>
-            )}
+            ) : null}
           </div>
 
           {/* Empty State */}
@@ -160,7 +185,9 @@ export default async function Page({
                 No mentors found
               </h3>
               <p className="text-slate-600">
-                Check back soon for available mentors
+                {onlyWithServices
+                  ? "No mentor is offering services yet."
+                  : "Check back soon for available mentors"}
               </p>
             </div>
           )}
@@ -180,5 +207,30 @@ export default async function Page({
         </div>
       </div>
     </main>
+  );
+}
+
+function FilterChip({
+  href,
+  active,
+  children,
+}: {
+  href: string;
+  active: boolean;
+  children: React.ReactNode;
+}) {
+  return (
+    <Link
+      href={href}
+      aria-current={active ? "page" : undefined}
+      className={cn(
+        "inline-flex items-center gap-1.5 rounded-full border px-4 py-1.5 text-sm font-medium transition-colors",
+        active
+          ? "border-emerald-600 bg-emerald-600 text-white"
+          : "border-slate-200 bg-white text-slate-700 hover:border-emerald-300 hover:text-emerald-700",
+      )}
+    >
+      {children}
+    </Link>
   );
 }

@@ -23,7 +23,11 @@ export default async function EnquirePage({
   const { mentorId } = await params;
 
   const viewer = await getViewer();
-  if (viewer.status === "anonymous") redirect("/login?message=Please+login+to+ask+a+mentor+a+question");
+  if (viewer.status === "anonymous") {
+    // Come straight back to this form after logging in.
+    const next = encodeURIComponent(`/mentors/${mentorId}/enquire`);
+    redirect(`/login?message=Please+login+to+ask+a+mentor+a+question&next=${next}`);
+  }
   if (viewer.status === "needs-onboarding" && viewer.role === "student") {
     redirect("/onboarding/student?message=Please+complete+your+profile+before+contacting+a+mentor");
   }

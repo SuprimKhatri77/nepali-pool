@@ -26,7 +26,10 @@ export function PaginationClient({
   const page = Number(searchParams.get("page")) || 1;
 
   const goToPage = (p: number) => {
-    router.push(`?page=${p}`);
+    // Keep other filters (e.g. ?services=1) when changing page.
+    const params = new URLSearchParams(searchParams.toString());
+    params.set("page", String(p));
+    router.push(`?${params.toString()}`);
   };
 
   useEffect(() => {

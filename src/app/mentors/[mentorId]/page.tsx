@@ -346,6 +346,17 @@ export default async function MentorDetailPage({
                   <h3 className="text-xl font-bold">Get in Touch</h3>
                 </div>
                 <div className="grid grid-cols-[repeat(auto-fit,_minmax(200px,_1fr))] gap-3 p-4 rounded-xl bg-white border border-gray-200">
+                  {services.length > 0 && (
+                    <Button
+                      asChild
+                      className="w-[200px] bg-emerald-50 text-emerald-700 hover:bg-emerald-100 h-12 font-semibold shadow-sm border border-emerald-200 transition-all"
+                    >
+                      <Link href="#services">
+                        <Briefcase className="w-5 h-5 mr-2" />
+                        View services ({services.length})
+                      </Link>
+                    </Button>
+                  )}
                   {canBookServices && (
                     <Button
                       asChild
@@ -363,7 +374,11 @@ export default async function MentorDetailPage({
                         asChild
                         className="w-[200px] bg-white text-black border border-gray-300 hover:bg-gray-50 h-12 font-semibold transition-all"
                       >
-                        <Link href={"/login"}>Login to Chat</Link>
+                        <Link
+                          href={`/login?next=${encodeURIComponent(`/mentors/${mentorId}`)}`}
+                        >
+                          Login to Chat
+                        </Link>
                       </Button>
                     </>
                   )}

@@ -1,6 +1,7 @@
 "use client";
 
 import { viewerKeys } from "@/modules/viewer/queries";
+import { safeNext } from "@/utils/safe-next";
 import { Button } from "@/components/ui/button";
 import {
   Field,
@@ -35,6 +36,8 @@ export function LoginForm({
   const router = useRouter();
   const params = useSearchParams();
   const message = params.get("message");
+  // Where to go after logging in (validated; only same-site paths).
+  const next = safeNext(params.get("next"));
   const [state, formAction, isPending] = useActionState<FormState, FormData>(
     SignIn,
     initialState,
@@ -82,6 +85,7 @@ export function LoginForm({
       className={cn("flex flex-col gap-6", className)}
       {...props}
     >
+      {next && <input type="hidden" name="next" value={next} />}
       <FieldGroup>
         <div className="flex flex-col items-center gap-1 text-center">
           <h1 className="text-2xl font-bold">Login to your account</h1>
@@ -161,7 +165,12 @@ export function LoginForm({
         </Field>
         <Field>
           <FieldDescription className="px-6 text-center">
-            Don&apos;t have an account? <Link href="/sign-up">Sign up</Link>
+            Don&apos;t have an account?{" "}
+            <Link
+              href={next ? `/sign-up?next=${encodeURIComponent(next)}` : "/sign-up"}
+            >
+              Sign up
+            </Link>
           </FieldDescription>
         </Field>
       </FieldGroup>

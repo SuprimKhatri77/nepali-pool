@@ -23,8 +23,12 @@ export const metadata: Metadata = {
   },
 };
 
-export default async function Page() {
-  await redirectIfSignedIn();
+export default async function Page({
+  searchParams,
+}: {
+  searchParams: Promise<{ next?: string | string[] }>;
+}) {
+  await redirectIfSignedIn((await searchParams).next);
 
   return (
     <div className="grid min-h-svh lg:grid-cols-2">

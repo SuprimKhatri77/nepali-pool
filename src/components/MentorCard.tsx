@@ -9,7 +9,8 @@ import {
   CardFooter,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Star, BadgeCheck, Globe, ArrowRight } from "lucide-react";
+import { Star, BadgeCheck, Globe, ArrowRight, Briefcase } from "lucide-react";
+import { formatNpr } from "@/components/mentor-services/format";
 import { PublicMentor } from "../../types/all-types";
 
 export default function MentorCard({
@@ -17,12 +18,14 @@ export default function MentorCard({
   currentUserRole,
   currentUserId,
   sendTo = "/mentors/",
+  services,
 }: {
   mentor: PublicMentor;
   currentUserRole?: "student" | "mentor" | "none" | "admin" | null;
   currentUserId: string | null;
   sendTo?: string,
-
+  // Active services, when the page loaded them (public mentor list).
+  services?: { count: number; fromPriceNpr: number };
 }) {
   const router = useRouter();
   const {
@@ -89,6 +92,17 @@ export default function MentorCard({
         <p className="text-sm text-gray-700 text-center line-clamp-3 italic">
           “{bio?.slice(0,50)  || "This mentor hasn’t added a bio yet."}...
         </p>
+
+        {services && services.count > 0 && (
+          <div className="mt-3 flex justify-center items-center gap-1.5 text-sm text-emerald-700 font-medium">
+            <Briefcase className="h-4 w-4" />
+            <span>
+              {services.count} {services.count === 1 ? "service" : "services"}
+              {" · from "}
+              {formatNpr(services.fromPriceNpr)}
+            </span>
+          </div>
+        )}
 
         <div className="mt-3 flex justify-center items-center gap-1 text-yellow-500 text-sm font-medium">
           <Star className="h-4 w-4 fill-yellow-500" />

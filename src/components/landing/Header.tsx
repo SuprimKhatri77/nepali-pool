@@ -18,6 +18,7 @@ const navLinks = [
   { name: "Home", href: "/" },
   { name: "Schools", href: "/schools" },
   { name: "Mentors", href: "/mentors" },
+  { name: "Services", href: "/mentors?services=1" },
   // { name: "Scholarships", href: "/scholarships" },
   { name: "Students", href: "/connect-student" },
   { name: "Guides", href: "/guides" },

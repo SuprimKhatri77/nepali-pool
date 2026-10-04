@@ -26,7 +26,11 @@ export default async function BookServicePage({
   if (!z.uuid().safeParse(serviceId).success) notFound();
 
   const viewer = await getViewer();
-  if (viewer.status === "anonymous") redirect("/login?message=Please+login+to+book+a+service");
+  if (viewer.status === "anonymous") {
+    // Come straight back to this booking after logging in.
+    const next = encodeURIComponent(`/mentors/${mentorId}/book/${serviceId}`);
+    redirect(`/login?message=Please+login+to+book+a+service&next=${next}`);
+  }
   if (viewer.status === "needs-onboarding" && viewer.role === "student") {
     redirect("/onboarding/student?message=Please+complete+your+profile+before+booking");
   }
