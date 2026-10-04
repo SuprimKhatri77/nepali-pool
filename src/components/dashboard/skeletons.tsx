@@ -106,3 +106,45 @@ export function StudentMentorGridSkeleton() {
     </div>
   );
 }
+
+// A student's booking / enquiry cards: reference and status, title, hint,
+// action buttons.
+export function RequestCardsSkeleton({ count = 3 }: { count?: number }) {
+  return (
+    <div aria-busy="true" aria-label="Loading" className="space-y-4">
+      {Array.from({ length: count }, (_, i) => (
+        <div
+          key={i}
+          className="space-y-3 rounded-xl border border-emerald-100 p-5"
+        >
+          <div className="flex items-center justify-between gap-2">
+            <div className="flex items-center gap-2">
+              <Skeleton className="h-4 w-28" />
+              <Skeleton className="h-5 w-20 rounded-full" />
+            </div>
+            <Skeleton className="h-3 w-24" />
+          </div>
+          <div className="flex items-end justify-between gap-2">
+            <div className="space-y-2">
+              <Skeleton className="h-5 w-56 max-w-full" />
+              <Skeleton className="h-4 w-36" />
+            </div>
+            <Skeleton className="h-5 w-20" />
+          </div>
+          <Skeleton className="h-4 w-2/3" />
+          <Skeleton className="h-8 w-32" />
+        </div>
+      ))}
+    </div>
+  );
+}
+
+// Student bookings / enquiries pages: heading, then cards.
+export function StudentRequestsPageSkeleton() {
+  return (
+    <div aria-busy="true" aria-label="Loading" className="mx-auto max-w-4xl space-y-6">
+      <PageHeadingSkeleton />
+      <RequestCardsSkeleton count={4} />
+    </div>
+  );
+}

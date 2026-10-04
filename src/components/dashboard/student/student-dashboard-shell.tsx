@@ -3,6 +3,7 @@
 import {
   ClipboardList,
   Heart,
+  HelpCircle,
   LayoutDashboard,
   MessagesSquare,
   Search,
@@ -14,8 +15,11 @@ import {
   type DashboardNavGroup,
   type DashboardUser,
 } from "@/components/dashboard/dashboard-shell";
-
-export const STUDENT_DASHBOARD_HREF = "/dashboard/student";
+import {
+  STUDENT_BOOKINGS_HREF,
+  STUDENT_DASHBOARD_HREF,
+  STUDENT_ENQUIRIES_HREF,
+} from "./routes";
 
 const groups: DashboardNavGroup[] = [
   {
@@ -32,7 +36,8 @@ const groups: DashboardNavGroup[] = [
         href: `${STUDENT_DASHBOARD_HREF}/favorites`,
         icon: Heart,
       },
-      { title: "My bookings", href: "/bookings", icon: ClipboardList },
+      { title: "My bookings", href: STUDENT_BOOKINGS_HREF, icon: ClipboardList },
+      { title: "Enquiries", href: STUDENT_ENQUIRIES_HREF, icon: HelpCircle },
     ],
   },
   {

@@ -29,7 +29,25 @@ const nextConfig: NextConfig = {
   },
   experimental:{
     typedEnv: true
-  }
+  },
+  // Bookings and enquiries moved into the student dashboard. Old links
+  // (emails already sent, bookmarks) keep working; the query string, and so
+  // the success banner's reference, is carried over.
+  async redirects() {
+    return [
+      {
+        source: "/bookings",
+        has: [{ type: "query", key: "enquired" }],
+        destination: "/dashboard/student/enquiries",
+        permanent: true,
+      },
+      {
+        source: "/bookings",
+        destination: "/dashboard/student/bookings",
+        permanent: true,
+      },
+    ];
+  },
   // cacheComponents: true,
 };
 

@@ -8,6 +8,12 @@ import {
 import { toast } from "sonner";
 import { ActionError, unwrap } from "@/utils/action-result";
 import {
+  listStudentBookings,
+  listStudentEnquiries,
+} from "../../../server/actions/student-dashboard/bookings";
+import { cancelServiceBooking } from "../../../server/actions/service-booking/update-booking-status";
+import { withdrawEnquiry } from "../../../server/actions/mentor-enquiry/update-enquiry-status";
+import {
   listFavoriteMentors,
   listMatchingMentors,
   setFavoriteMentor,
@@ -20,6 +26,8 @@ export const studentDashboardKeys = {
   matchingMentors: () =>
     [...studentDashboardKeys.all, "matching-mentors"] as const,
   favorites: () => [...studentDashboardKeys.all, "favorites"] as const,
+  bookings: () => [...studentDashboardKeys.all, "bookings"] as const,
+  enquiries: () => [...studentDashboardKeys.all, "enquiries"] as const,
 };
 
 export const matchingMentorsInfiniteOptions = () =>
@@ -37,6 +45,55 @@ export const favoriteMentorsQueryOptions = () =>
     queryFn: async () => unwrap(await listFavoriteMentors()),
   });
 
+export const studentBookingsInfiniteOptions = () =>
+  infiniteQueryOptions({
+    queryKey: studentDashboardKeys.bookings(),
+    queryFn: async ({ pageParam }) =>
+      unwrap(await listStudentBookings({ cursor: pageParam })),
+    initialPageParam: null as string | null,
+    getNextPageParam: (lastPage) => lastPage.nextCursor,
+  });
+
+export const studentEnquiriesInfiniteOptions = () =>
+  infiniteQueryOptions({
+    queryKey: studentDashboardKeys.enquiries(),
+    queryFn: async ({ pageParam }) =>
+      unwrap(await listStudentEnquiries({ cursor: pageParam })),
+    initialPageParam: null as string | null,
+    getNextPageParam: (lastPage) => lastPage.nextCursor,
+  });
+
+// Cancel / withdraw. Either way the list is refetched afterwards: on success
+// to show the new status, on failure because the mentor most likely acted
+// first and the card is out of date.
+function useStatusChange(
+  action: (id: string) => Promise<{ success: boolean; message: string }>,
+  queryKey: readonly unknown[],
+) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (id: string) => {
+      const result = await action(id);
+      if (!result.success) throw new ActionError(result.message);
+      return result.message;
+    },
+    onSuccess: (message) => toast.success(message),
+    onError: (error) =>
+      toast.error(
+        error instanceof ActionError
+          ? error.message
+          : "Something went wrong. Please try again.",
+      ),
+    onSettled: () => queryClient.invalidateQueries({ queryKey }),
+  });
+}
+
+export const useCancelBooking = () =>
+  useStatusChange(cancelServiceBooking, studentDashboardKeys.bookings());
+
+export const useWithdrawEnquiry = () =>
+  useStatusChange(withdrawEnquiry, studentDashboardKeys.enquiries());
+
 type FavoriteVars = { mentorId: string; favorite: boolean };
 
 // Flips the heart immediately in every cached list, rolls back if the server
@@ -50,7 +107,10 @@ export function useSetFavoriteMentor() {
     mutationFn: async (vars: FavoriteVars) =>
       unwrap(await setFavoriteMentor(vars)),
     onMutate: async ({ mentorId, favorite }) => {
-      await queryClient.cancelQueries({ queryKey: studentDashboardKeys.all });
+      await Promise.all([
+        queryClient.cancelQueries({ queryKey: matchingKey }),
+        queryClient.cancelQueries({ queryKey: favoritesKey }),
+      ]);
       const previousMatching =
         queryClient.getQueryData<InfiniteData<MatchingMentorsPage, number>>(
           matchingKey,
@@ -89,7 +149,11 @@ export function useSetFavoriteMentor() {
           : "Couldn't update favorites. Please try again.",
       );
     },
+    // Only the two mentor lists: bookings and enquiries don't change.
     onSettled: () =>
-      queryClient.invalidateQueries({ queryKey: studentDashboardKeys.all }),
+      Promise.all([
+        queryClient.invalidateQueries({ queryKey: matchingKey }),
+        queryClient.invalidateQueries({ queryKey: favoritesKey }),
+      ]),
   });
 }

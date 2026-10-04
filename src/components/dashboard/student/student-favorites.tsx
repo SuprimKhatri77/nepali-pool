@@ -8,7 +8,7 @@ import { EmptyState } from "@/components/data-states/empty-state";
 import { QueryErrorState } from "@/components/data-states/query-error-state";
 import { CardGridSkeleton } from "@/components/data-states/skeletons";
 import { favoriteMentorsQueryOptions } from "@/modules/student-dashboard/queries";
-import { STUDENT_DASHBOARD_HREF } from "./student-dashboard-shell";
+import { STUDENT_DASHBOARD_HREF } from "./routes";
 import { StudentMentorCard } from "./student-mentor-card";
 
 export function StudentFavorites() {

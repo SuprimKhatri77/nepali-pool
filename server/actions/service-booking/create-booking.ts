@@ -12,6 +12,7 @@ import { createBookingSchema } from "../../lib/mentor-services/schemas";
 import { isUniqueViolation } from "../../lib/mentor-services/pg-error";
 import { notifyMentorOfNewBooking } from "../../lib/mentor-services/booking-emails";
 import { generateReferenceCode } from "../../lib/mentor-services/reference-code";
+import { STUDENT_BOOKINGS_HREF } from "../../../src/components/dashboard/student/routes";
 
 type BookingField =
   | "fullName"
@@ -124,7 +125,6 @@ export async function createServiceBooking(
       }),
     );
 
-    revalidatePath("/bookings");
     revalidatePath("/dashboard/mentor");
     revalidatePath("/dashboard/mentor/bookings");
   } catch (error) {
@@ -134,5 +134,5 @@ export async function createServiceBooking(
 
   // Redirect from the action (outside try: redirect() throws) so the client
   // never re-renders this booking page, which would now show "Already booked".
-  redirect(`/bookings?booked=${referenceCode}`);
+  redirect(`${STUDENT_BOOKINGS_HREF}?booked=${referenceCode}`);
 }

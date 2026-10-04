@@ -12,6 +12,7 @@ import { db } from "../../../../../../lib/db";
 import { mentorService, serviceBooking } from "../../../../../../lib/db/schema";
 import { requireUser } from "../../../../../../server/lib/auth/guards";
 import { getViewer } from "../../../../../../server/lib/auth/viewer";
+import { STUDENT_BOOKINGS_HREF } from "@/components/dashboard/student/routes";
 
 export const metadata = {
   title: "Book a Service | NepaliPool",
@@ -90,7 +91,7 @@ export default async function BookServicePage({
     return (
       <Notice
         title="Already booked"
-        backHref="/bookings"
+        backHref={STUDENT_BOOKINGS_HREF}
         backLabel="View my bookings"
       >
         You already have a pending booking ({pendingBooking.referenceCode}) for

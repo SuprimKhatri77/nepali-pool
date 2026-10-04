@@ -24,7 +24,6 @@ export type EnquiryActionResult = {
 const STALE_MESSAGE = "This enquiry has already been answered or withdrawn.";
 
 function revalidateEnquiryPages() {
-  revalidatePath("/bookings");
   revalidatePath("/dashboard/mentor");
   revalidatePath("/dashboard/mentor/enquiries");
 }
