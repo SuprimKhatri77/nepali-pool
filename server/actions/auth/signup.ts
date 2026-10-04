@@ -3,6 +3,7 @@
 import z from "zod";
 import { auth } from "../../lib/auth/auth";
 import { APIError } from "better-auth/api";
+import { safeNext } from "../../../src/utils/safe-next";
 import { db } from "../../../lib/db";
 import { user } from "../../../lib/db/schema";
 import { eq } from "drizzle-orm";
@@ -103,6 +104,9 @@ export async function SignUp(
     };
   }
 
+  // Where to send the user after signing up (validated; same-site only).
+  const next = safeNext(formData.get("next"));
+
   const {
     firstname,
     middlename,
@@ -149,14 +153,14 @@ export async function SignUp(
     await auth.api.sendVerificationEmail({
       body: {
         email,
-        callbackURL:
-          userRecord.role !== "none"
+        callbackURL: next ??
+          (userRecord.role !== "none"
             ? userRecord.role === "admin"
               ? "/admin"
               : userRecord.role === "mentor"
                 ? "/dashboard/mentor"
                 : "/mentors"
-            : "/select-role",
+            : "/select-role"),
 
         // to be set after the session
         // userRecord.role !== "none"
@@ -169,7 +173,7 @@ export async function SignUp(
 
     return {
       errors: {},
-      redirectTo: "/connect-student", //`/verify-email?from=signup`,
+      redirectTo: next ?? "/connect-student",
       message: "Signup successfull",
       success: true,
       timestamp: Date.now(),

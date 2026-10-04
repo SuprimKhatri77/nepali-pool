@@ -1,6 +1,7 @@
 "use client";
 
 import { viewerKeys } from "@/modules/viewer/queries";
+import { safeNext } from "@/utils/safe-next";
 import { cn } from "./lib/utils";
 import { Button } from "@/components/ui/button";
 import {
@@ -44,6 +45,8 @@ export function SignupForm({
   const router = useRouter();
   const params = useSearchParams();
   const roleFromParams = params.get("role");
+  // Where to go after signing up (validated; only same-site paths).
+  const next = safeNext(params.get("next"));
   const [toggleInputType, setToggleInputType] = useState<"text" | "password">(
     "password",
   );
@@ -101,6 +104,7 @@ export function SignupForm({
       className={cn("flex flex-col gap-x-6 gap-y-2", className)}
       {...props}
     >
+      {next && <input type="hidden" name="next" value={next} />}
       <FieldGroup className="gap-x-2 gap-y-4">
         <div className="flex flex-col items-center gap-1 text-center mb-2">
           <h1 className="text-2xl font-bold">Create your account</h1>
@@ -270,7 +274,10 @@ export function SignupForm({
         </Field>
         <Field className="gap-1">
           <FieldDescription className="px-6 text-center">
-            Already have an account? <Link href="/login">Sign in</Link>
+            Already have an account?{" "}
+            <Link href={next ? `/login?next=${encodeURIComponent(next)}` : "/login"}>
+              Sign in
+            </Link>
           </FieldDescription>
         </Field>
       </FieldGroup>

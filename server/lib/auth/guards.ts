@@ -7,6 +7,7 @@ import type {
 } from "../../../lib/db/schema";
 import type { MentorProfileWithUser } from "../../../types/all-types";
 import { getViewer, homeFor, type Viewer, type ViewerStatus } from "./viewer";
+import { safeNext } from "../../../src/utils/safe-next";
 
 // ---------------------------------------------------------------------------
 // Page guards: redirect anyone who doesn't belong to where they do belong.
@@ -81,11 +82,11 @@ export async function requireAdmin() {
 }
 
 // Pages only for people who are not signed in (login, sign-up): a signed-in
-// viewer is sent home instead.
-export async function redirectIfSignedIn() {
+// viewer is sent to `next` (when it's a safe same-site path) or home.
+export async function redirectIfSignedIn(next?: unknown) {
   const viewer = await getViewer();
   if (viewer.status !== "anonymous" && viewer.status !== "invalid") {
-    redirect(homeFor(viewer));
+    redirect(safeNext(next) ?? homeFor(viewer));
   }
 }
 
