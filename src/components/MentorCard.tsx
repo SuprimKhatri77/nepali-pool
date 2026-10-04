@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Star, BadgeCheck, Globe, ArrowRight } from "lucide-react";
-import { MentorProfileWithUser } from "../../types/all-types";
+import { PublicMentor } from "../../types/all-types";
 
 export default function MentorCard({
   mentor,
@@ -18,7 +18,7 @@ export default function MentorCard({
   currentUserId,
   sendTo = "/mentors/",
 }: {
-  mentor: MentorProfileWithUser;
+  mentor: PublicMentor;
   currentUserRole?: "student" | "mentor" | "none" | "admin" | null;
   currentUserId: string | null;
   sendTo?: string,

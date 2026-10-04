@@ -2,7 +2,8 @@ import VideoCall from "@/components/VideoCall";
 import { db } from "../../../lib/db";
 import { videoCall } from "../../../lib/db/schema";
 import { requireViewer } from "../../../server/lib/auth/guards";
-import { VideoCallWithStudentAndMentor } from "../../../types/all-types";
+import { participantColumns } from "../../../server/lib/chats/participant-columns";
+import { VideoCallWithParticipants } from "../../../types/all-types";
 
 export default async function Page() {
   const viewer = await requireViewer(["student", "mentor"]);
@@ -12,11 +13,11 @@ export default async function Page() {
     const videoRecords = (await db.query.videoCall.findMany({
       where: (fields, { eq }) => eq(videoCall.studentId, userRecord.id),
       with: {
-        studentProfile: { with: { user: true } },
-        mentorProfile: { with: { user: true } },
+        studentProfile: participantColumns,
+        mentorProfile: participantColumns,
         preferredTime: true,
       },
-    })) as VideoCallWithStudentAndMentor[];
+    })) as VideoCallWithParticipants[];
     // if (videoRecords.length === 0) {
     //   return (
     //     <div className="min-h-screen w-full flex items-center justify-center">
@@ -31,11 +32,11 @@ export default async function Page() {
     const videoRecords = (await db.query.videoCall.findMany({
       where: (fields, { eq }) => eq(videoCall.mentorId, userRecord.id),
       with: {
-        studentProfile: { with: { user: true } },
-        mentorProfile: { with: { user: true } },
+        studentProfile: participantColumns,
+        mentorProfile: participantColumns,
         preferredTime: true,
       },
-    })) as VideoCallWithStudentAndMentor[];
+    })) as VideoCallWithParticipants[];
     // if (videoRecords.length === 0) {
     //   return (
     //     <div className="min-h-screen w-full flex items-center justify-center">

@@ -12,12 +12,8 @@ import {
 } from "@/components/ui/sidebar";
 import { useEffect, useState } from "react";
 import { getUserChats } from "../../server/helper/getUserChats";
-import type {
-  ChatsSelectType,
-  MentorProfileSelectType,
-  StudentProfileSelectType,
-  UserSelectType,
-} from "../../lib/db/schema";
+import type { UserSelectType } from "../../lib/db/schema";
+import type { ChatWithParticipants } from "../../types/all-types";
 import Link from "next/link";
 import Image from "next/image";
 import { NavUser } from "./ui/nav-user";
@@ -29,17 +25,8 @@ type Props = {
   currentUser: UserSelectType;
 };
 
-type ChatWithUser = ChatsSelectType & {
-  mentorProfile: MentorProfileSelectType & {
-    user: UserSelectType;
-  };
-  studentProfile: StudentProfileSelectType & {
-    user: UserSelectType;
-  };
-};
-
 const Chats = ({ role, currentUser }: Props) => {
-  const [chats, setChats] = useState<ChatWithUser[]>([]);
+  const [chats, setChats] = useState<ChatWithParticipants[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {

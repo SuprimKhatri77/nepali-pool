@@ -22,7 +22,7 @@ import {
 } from "@/components/ui/breadcrumb";
 import Link from "next/link";
 import { sendVideoCallSchedule } from "../../server/actions/send-video-call-schedule/sendVideoCallSchedule";
-import type { VideoCallWithStudentAndMentor } from "../../types/all-types";
+import type { VideoCallWithParticipants } from "../../types/all-types";
 import {
   Card,
   CardContent,
@@ -65,7 +65,7 @@ export default function ScheduleCall({
   const [date, setDate] = useState<Date | undefined>(new Date());
   const [time, setTime] = useState<string>("10:30:00");
   const [videoRecord, setVideoRecord] =
-    useState<VideoCallWithStudentAndMentor | null>(null);
+    useState<VideoCallWithParticipants | null>(null);
   const [pending, setPending] = useState<boolean>(false);
   const [, setErrors] = useState<
     | {

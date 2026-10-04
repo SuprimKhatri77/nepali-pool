@@ -4,13 +4,14 @@ import { unstable_noStore } from "next/cache";
 import z from "zod";
 import { db } from "../../lib/db";
 import { videoCall } from "../../lib/db/schema";
-import { VideoCallWithStudentAndMentor } from "../../types/all-types";
+import { VideoCallWithParticipants } from "../../types/all-types";
 import { getCurrentUser } from "../lib/auth/guards";
+import { participantColumns } from "../lib/chats/participant-columns";
 
 type VideoCallRecord =
   | {
       success: true;
-      videoCallRecordWithStudentAndMentor: VideoCallWithStudentAndMentor;
+      videoCallRecordWithStudentAndMentor: VideoCallWithParticipants;
     }
   | { success: false; message: string };
 
@@ -33,19 +34,11 @@ export async function getVideoCallRecordWithStudentAndMentor(
           or(eq(fields.studentId, userId), eq(fields.mentorId, userId))
         ),
       with: {
-        mentorProfile: {
-          with: {
-            user: true,
-          },
-        },
+        mentorProfile: participantColumns,
         preferredTime: true,
-        studentProfile: {
-          with: {
-            user: true,
-          },
-        },
+        studentProfile: participantColumns,
       },
-    })) as VideoCallWithStudentAndMentor | undefined;
+    })) as VideoCallWithParticipants | undefined;
     if (!result) return { success: false, message: "No record found" };
     return { success: true, videoCallRecordWithStudentAndMentor: result };
   } catch (error) {

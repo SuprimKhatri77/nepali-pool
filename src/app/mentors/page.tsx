@@ -1,6 +1,10 @@
 import { count, eq } from "drizzle-orm";
 import { db } from "../../../lib/db";
-import { MentorProfileWithUser } from "../../../types/all-types";
+import { PublicMentor } from "../../../types/all-types";
+import {
+  publicMentorColumns,
+  publicMentorWith,
+} from "../../../server/lib/mentors/public-mentor";
 import { mentorProfile } from "../../../lib/db/schema";
 
 import { PaginationClient } from "@/components/PaginationClient";
@@ -54,34 +58,37 @@ export default async function Page({
 }: {
   searchParams: Promise<{ page: string }>;
 }) {
+  const requestedPage = Number((await searchParams).page);
   const page =
-    Number((await searchParams).page) > 0
-      ? Number((await searchParams).page)
-      : 1;
+    Number.isSafeInteger(requestedPage) && requestedPage > 0 ? requestedPage : 1;
   const limit = 6;
-  const [totalResult] = await db
-    .select({ count: count() })
-    .from(mentorProfile)
-    .where(eq(mentorProfile.verifiedStatus, "accepted"));
+  const offset = (page - 1) * limit;
+
+  const [[totalResult], viewer, allMentors] = await Promise.all([
+    db
+      .select({ count: count() })
+      .from(mentorProfile)
+      .where(eq(mentorProfile.verifiedStatus, "accepted")),
+    getViewer(),
+    db.query.mentorProfile
+      .findMany({
+        columns: publicMentorColumns,
+        with: publicMentorWith,
+        where: (fields, { eq }) => eq(fields.verifiedStatus, "accepted"),
+        limit,
+        offset,
+        orderBy: (fields, { asc }) => [asc(fields.createdAt)],
+      })
+      .catch((err): PublicMentor[] => {
+        console.error("Error fetching mentors:", err);
+        return [];
+      }),
+  ]);
 
   const total = Number(totalResult.count);
   const totalPages = Math.max(Math.ceil(total / limit), 1);
-  const offset = (page - 1) * limit;
-  const viewer = await getViewer();
   const currentUserId = "user" in viewer ? viewer.user.id : undefined;
   const currentUserRole = "user" in viewer ? viewer.user.role : null;
-  let allMentors: MentorProfileWithUser[] = [];
-  try {
-    allMentors = await db.query.mentorProfile.findMany({
-      where: (fields, { eq }) => eq(fields.verifiedStatus, "accepted"),
-      limit,
-      offset,
-      with: { user: true },
-      orderBy: (fields, { asc }) => [asc(fields.createdAt)],
-    });
-  } catch (err) {
-    console.error("Error fetching mentors:", err);
-  }
 
   if (!allMentors || allMentors.length === 0) {
     return (

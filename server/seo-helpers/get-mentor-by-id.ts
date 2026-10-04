@@ -1,16 +1,6 @@
-import { db } from "../../lib/db";
-import { MentorProfileSelectType, UserSelectType } from "../../lib/db/schema";
+import { getPublicMentor } from "../lib/mentors/public-mentor";
 
-export async function getMentorById(
-  mentorId: string
-): Promise<(MentorProfileSelectType & { user: UserSelectType }) | null> {
-  const mentorRecord = await db.query.mentorProfile.findFirst({
-    where: (fields, { eq }) => eq(fields.userId, mentorId),
-    with: {
-      user: true,
-    },
-  });
-  if (!mentorRecord) return null;
-
-  return mentorRecord;
+// Used by generateMetadata; only approved mentors, only public fields.
+export async function getMentorById(mentorId: string) {
+  return getPublicMentor(mentorId);
 }

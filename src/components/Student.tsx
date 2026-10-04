@@ -20,7 +20,7 @@ import { removeFavorite } from "../../server/actions/add-remove-favorite/removeF
 import Link from "next/link";
 import { toast } from "sonner";
 import type {
-  MentorProfileWithUserAndChat,
+  PublicMentor,
   StudentProfileWithUser,
 } from "../../types/all-types";
 import { capitalizeFirstLetter } from "better-auth";
@@ -32,7 +32,7 @@ export default function StudentPage({
   studentRecordWithUser,
   favoriteMentor,
 }: {
-  matchingMentors: MentorProfileWithUserAndChat[];
+  matchingMentors: PublicMentor[];
   studentRecordWithUser: StudentProfileWithUser;
   favoriteMentor: FavoriteSelectType[];
 }) {

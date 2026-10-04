@@ -3,6 +3,7 @@ import { chats } from "../../../../lib/db/schema";
 import { notFound } from "next/navigation";
 import Message from "@/components/Message";
 import { requireViewer } from "../../../../server/lib/auth/guards";
+import { participantColumns } from "../../../../server/lib/chats/participant-columns";
 
 type ParamsType = {
   params: Promise<{ chatId: string }>;
@@ -26,9 +27,10 @@ const page = async ({ params }: ParamsType) => {
 
   const chatRecord = await db.query.chats.findFirst({
     where: (fields, { eq }) => eq(chats.id, chatId),
+    // Each side only gets the other's name and photo.
     with: {
-      studentProfile: { with: { user: true } },
-      mentorProfile: { with: { user: true } },
+      studentProfile: participantColumns,
+      mentorProfile: participantColumns,
     },
   });
 
